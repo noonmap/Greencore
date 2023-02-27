@@ -1,13 +1,12 @@
 # 🌱 새싹이
 
 > 반려식물 SNS 플랫폼
+> [Notion](https://www.notion.so/yeomss/5124ae734ee54c5bbecc120cf571f55b)
 
 <br/>
 <br/>
 
 ## ⚡ 일해라일조 (부울경 1반 1조 E101)
-
-> [Notion](https://www.notion.so/yeomss/5124ae734ee54c5bbecc120cf571f55b)
 
 <table>
   <tbody>
@@ -89,8 +88,13 @@
   </thead>
   <tbody>
     <tr>
-      <td>1주차 (월)</td>
-      <td>2023.02.27(화) ~ 2023.03.05(일)</td>
+      <td>1주차 스프린트</td>
+      <td>2023.02.27(월) ~ 2023.03.05(일)</td>
+      <td colspan=2>프로젝트 세팅 기간</td>
+    </tr>
+    <tr>
+      <td>1주차-1</td>
+      <td>02.27 (월)</td>
       <td>Git, Jira 초기화</td>
       <td>
         <a href="https://lab.ssafy.com/s08-ai-image-sub1/S08P21E101">Git</a>,
@@ -98,16 +102,16 @@
       </td>
     </tr>
     <tr>
-      <td>1주차 (수)</td>
-      <td>2023.02.27(화) ~ 2023.03.05(일)</td>
+      <td>1주차-2</td>
+      <td>03.01 (수)</td>
       <td>FE, BE 초기화</td>
       <td>
         프론트 및 백엔드 프로젝트 초기화
       </td>
     </tr>
     <tr>
-      <td>1주차 (금)</td>
-      <td>2023.02.27(화) ~ 2023.03.05(일)</td>
+      <td>1주차-3</td>
+      <td>03.03 (금)</td>
       <td></td>
       <td>
       </td>
