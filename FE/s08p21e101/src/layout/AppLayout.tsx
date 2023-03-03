@@ -12,7 +12,10 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
   return (
     <>
       <Head>
-        <title>공통 타이틀</title>
+        <title>치코치코</title>
+        <meta name='description' content='특화프로젝트' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <AppHeader />
