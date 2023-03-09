@@ -4,15 +4,17 @@ package com.chicochico.domain.feed.service;
 import com.chicochico.domain.feed.dto.CommentRequestDto;
 import com.chicochico.domain.feed.entity.CommentEntity;
 import com.chicochico.domain.feed.repository.CommentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
-	private CommentRepository commentRepository;
+	private final CommentRepository commentRepository;
 
 
 	/**
