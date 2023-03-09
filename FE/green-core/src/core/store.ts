@@ -1,13 +1,15 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
-import counterReduer from "./temp/counter/counterSlice";
-import postReducer from "./temp/post/postSlice";
+import counterReduer from './temp/counter/counterSlice';
+import postReducer from './temp/post/postSlice';
+import diaryReducer from './temp/diary/diarySlice';
 
 export function makeStore() {
   return configureStore({
     reducer: {
       counter: counterReduer,
       post: postReducer,
+      diary: diaryReducer,
     },
   });
 }
