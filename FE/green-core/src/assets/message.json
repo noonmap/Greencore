@@ -1,0 +1,5 @@
+{
+	"SignUpSuccess": "회원가입에 성공하였습니다 👏",
+	"SignUpFail": "회원가입에 실패하셨습니다 ❌",
+	"GetAlertListFail": "알림 조회에 실패하셨습니다 ❌"
+}

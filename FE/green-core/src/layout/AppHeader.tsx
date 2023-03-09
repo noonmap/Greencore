@@ -1,14 +1,23 @@
 import React from 'react';
 import Link from 'next/link';
+import styles from './AppHeader.module.scss';
 
 export default function AppHeader() {
   return (
-    <div className='flex space-x-4 items-center'>
-      <Link href='/'>Home</Link>
-      <Link href='/post'>Post(Redux & React Skeleton 사용하기)</Link>
-      <Link href='/temp'>Temp(Next API Route 로 데이터 가져오기)</Link>
+		<div className={`flex space-x-4 items-center ${styles.headerWrap}`}>
+			<Link href="/">Home</Link>
+			<Link href="/temp/post">Post</Link>
+			<Link href="/temp">Temp</Link>
 
-      <button className='bg-white p-2 rounded-lg shadow-sm font-medium'>로그인</button>
-    </div>
-  );
+			{/* 정아 */}
+			<Link href="/user/signup">회원가입</Link>
+			<Link href="/user/login">로그인</Link>
+
+			{/* 승태 */}
+			<Link href="/alert">알림</Link>
+
+			{/* 형규 */}
+			<Link href="/diary">일지</Link>
+		</div>
+	);
 }

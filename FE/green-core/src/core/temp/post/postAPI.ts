@@ -1,10 +1,11 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import http from "@/lib/http.js";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+// import http from '@/lib/http.js';
+import axios from 'axios';
 
 // type, parameter
-export const getPostList = createAsyncThunk("getPostList", async () => {
-	const { data } = await http.get("/posts");
-	return data;
+export const getPostList = createAsyncThunk('getPostList', async () => {
+  const { data } = await axios.get('https://jsonplaceholder.typicode.com/posts');
+  return data;
 });
 
 // useSWR 사용
