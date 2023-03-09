@@ -40,8 +40,8 @@
     </tr>
     <tr>
       <td align="center">
-        <a href="https://github.com/noonmap">
-            <img src="https://avatars.githubusercontent.com/u/36250213?v=4" width="100px;" alt="Jeroen Engels"/>
+        <a href="https://github.com/seungtaeryu">
+            <img src="https://avatars.githubusercontent.com/u/81846487?v=4" width="100px;" alt="Jeroen Engels"/>
             <br />
             <sub><b>팀원 류승태</b></sub>
         </a>
@@ -58,8 +58,8 @@
         <div>BE</div>
       </td>
       <td align="center">
-        <a href="https://github.com/hyeonaseome">
-            <img src="https://avatars.githubusercontent.com/u/109887404?v=4" width="100px;" alt="Jeroen Engels"/>
+        <a href="https://github.com/Choihyoungkyu">
+            <img src="https://avatars.githubusercontent.com/u/109322428?v=4" width="100px;" alt="Jeroen Engels"/>
             <br />
             <sub><b>팀원 최형규</b></sub>
         </a>
