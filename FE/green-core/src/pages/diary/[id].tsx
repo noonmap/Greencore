@@ -7,14 +7,14 @@ import Skeleton from 'react-loading-skeleton';
 
 const fetcher = (url: string) => http.get(url).then((res) => res.data);
 
-export default function PostDetail() {
+export default function DiaryDetail() {
   const router = useRouter();
   const diaryId = router.query.id; // string
-  const { data: post, error, isLoading: hasPost } = useSWR(`/photos/${diaryId}`, fetcher);
+  const { data: diary, error, isLoading: hasDiary } = useSWR(`/photos/${diaryId}`, fetcher);
 
   return (
     <AppLayout>
-      {hasPost ? (
+      {hasDiary ? (
         <ul>
           <Skeleton />
           <Skeleton />
@@ -23,10 +23,10 @@ export default function PostDetail() {
       ) : (
         <ul>
           <li>
-            <img src={post.thumbnailUrl} alt='img' />
+            <img src={diary.thumbnailUrl} alt='img' />
           </li>
-          <li>{post.albumId}</li>
-          <li>{post.title}</li>
+          <li>{diary.albumId}</li>
+          <li>{diary.title}</li>
         </ul>
       )}
     </AppLayout>
