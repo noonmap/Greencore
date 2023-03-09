@@ -1,17 +1,18 @@
 package com.chicochico.domain.user.service;
 
 
+import com.chicochico.domain.user.dto.PasswordRequestDto;
 import com.chicochico.domain.user.dto.RegisterRequestDto;
 import com.chicochico.domain.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 
 	/**
@@ -35,18 +36,18 @@ public class UserService {
 	/**
 	 * 비밀번호를 확인합니다 (회원정보 조회)
 	 *
-	 * @param userRequestDto 비밀번호 (password)
+	 * @param passwordRequestDto 비밀번호 (password)
 	 */
-	public void checkPassword(Map<String, Object> userRequestDto) {
+	public void checkPassword(PasswordRequestDto passwordRequestDto) {
 	}
 
 
 	/**
 	 * 비밀번호를 수정합니다 (회원정보 수정)
 	 *
-	 * @param userRequestDto 새 비밀번호 (newPassword)
+	 * @param passwordRequestDto 새 비밀번호 (newPassword)
 	 */
-	public void modifyPassword(Map<String, Object> userRequestDto) {
+	public void modifyPassword(PasswordRequestDto passwordRequestDto) {
 	}
 
 
