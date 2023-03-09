@@ -48,7 +48,7 @@ public class UserController {
 	}
 
 
-	@PostMapping("/user/password")
+	@PutMapping("/user/password")
 	@ApiOperation(value = "비밀번호를 수정합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> modifyPassword(@RequestBody Map<String, Object> userRequestDto) {
 		userService.modifyPassword(userRequestDto);
@@ -57,12 +57,12 @@ public class UserController {
 	}
 
 
-	@PostMapping("/user")
+	@DeleteMapping("/user")
 	@ApiOperation(value = "회원탈퇴를 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteUser() {
 		userService.deleteUser();
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
-
+	
 }
