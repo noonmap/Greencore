@@ -4,6 +4,7 @@ package com.chicochico.domain.feed.service;
 import com.chicochico.domain.feed.dto.DiarySetRequestDto;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,10 @@ import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class DiarySetService {
 
-	private DiarySetRepository diarySetRepository;
+	private final DiarySetRepository diarySetRepository;
 
 
 	/**
