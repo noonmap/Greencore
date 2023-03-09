@@ -54,7 +54,7 @@ public class ScheduleController {
 	}
 
 
-	@PutMapping("/{scheduelId}")
+	@PutMapping("/{scheduleId}")
 	@ApiOperation(value = "일정을 수정합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> modifySchedule(@PathVariable Long scheduleId, @RequestBody ScheduleRequestDto scheduleRequestDto) {
 		scheduleService.modifySchedule(scheduleId, scheduleRequestDto);
@@ -65,7 +65,7 @@ public class ScheduleController {
 
 	@DeleteMapping("/{scheduleId}")
 	@ApiOperation(value = "일정을 삭제합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> modifySchedule(@PathVariable Long scheduleId) {
+	public ResponseEntity<ResultDto<Boolean>> deleteSchedule(@PathVariable Long scheduleId) {
 		scheduleService.deleteSchedule(scheduleId);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
@@ -82,7 +82,7 @@ public class ScheduleController {
 
 
 	@DeleteMapping("/{scheduleId}/done")
-	@ApiOperation(value = "일정 완료로 등록합니다.", notes = "")
+	@ApiOperation(value = "일정 완료를 취소합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> incompleteSchedule(@PathVariable Long scheduleId) {
 		scheduleService.incompleteSchedule(scheduleId);
 
