@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import AppLayout from '@/layout/AppLayout';
-import { useAppDispatch, useAppSelector } from '../core/hooks';
-import { getDiaryList } from '@/core/temp/diary/diaryAPI';
-import DiaryListItem from '../components/DiaryListItem';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
+import { getDiaryList } from '~/src/core/diary/diaryAPI';
+import DiaryListItem from '@/components/DiaryListItem';
 
 export default function diary() {
   const dispatch = useAppDispatch();

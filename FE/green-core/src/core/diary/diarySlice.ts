@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import * as DiaryType from './diaryType';
+import { DiaryType } from './diaryType';
 import * as diaryAPI from './diaryAPI';
 
 interface DiaryState {
   isLoading: boolean;
-  diaryList: Array<DiaryType.DiaryList>;
+  diaryList: Array<DiaryType>;
 }
 
 const initialState: DiaryState = {

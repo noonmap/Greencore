@@ -1,4 +1,4 @@
-export type DiaryList = {
+export type DiaryType = {
   albumId: number;
   id: number;
   title: string;
