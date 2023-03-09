@@ -9,10 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -51,6 +48,15 @@ public class LoginController {
 	@ApiOperation(value = "엑세스 토큰을 발급합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, Object> loginRequestHeader) {
 		loginService.createAccessToken(loginRequestHeader);
+
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	}
+
+
+	@DeleteMapping("/logout")
+	@ApiOperation(value = "로그아웃합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> logout(@RequestHeader Map<String, Object> logoutRequestHeader) {
+		loginService.deleteAccessToken(logoutRequestHeader);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
