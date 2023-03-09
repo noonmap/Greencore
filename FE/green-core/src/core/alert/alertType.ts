@@ -1,4 +1,4 @@
-export type AlertItem = {
+export type AlertType = {
   alertId: number;
   content: string;
   urlPath: string;

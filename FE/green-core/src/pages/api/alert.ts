@@ -1,13 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import * as AlertType from "@/core/alert/alertType";
+import { AlertType } from "@/core/alert/alertType";
 
-// export type Data = {
-//   alretId: number;
-//   content: string;
-//   urlPath: string;
-// };
 export type Data = {
-  data: Array<AlertType.AlertItem>;
+  data: Array<AlertType>;
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {

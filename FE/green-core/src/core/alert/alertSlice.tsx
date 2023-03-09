@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import * as AlertType from "./alertType";
-import * as AlertAPI from "./alertAPI";
+import { AlertType } from "./alertType";
+import { getAlertList } from "./alertAPI";
 
 interface AlertState {
   isLoading: boolean;
-  alertList: Array<AlertType.AlertItem>;
+  alertList: Array<AlertType>;
 }
 
 const initialState: AlertState = {
@@ -21,11 +21,11 @@ const alertSlice = createSlice({
   // pending, fulfiiled, rejected, (state, action)
   extraReducers(builder) {
     builder
-      .addCase(AlertAPI.getAlertList.pending, (state) => {
+      .addCase(getAlertList.pending, (state) => {
         state.isLoading = true;
         state.alertList = [];
       })
-      .addCase(AlertAPI.getAlertList.fulfilled, (state, action) => {
+      .addCase(getAlertList.fulfilled, (state, action) => {
         state.isLoading = false;
         state.alertList = action.payload;
       });
