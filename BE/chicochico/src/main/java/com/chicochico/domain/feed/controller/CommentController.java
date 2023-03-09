@@ -27,9 +27,7 @@ public class CommentController {
 
 	@GetMapping("/{feedId}/comment")
 	@ApiOperation(value = "해당 피드의 댓글을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<Page<CommentResponseDto>>> getCommentList(
-		@PathVariable Long feedId,
-		Pageable pageable) {
+	public ResponseEntity<ResultDto<Page<CommentResponseDto>>> getCommentList(@PathVariable Long feedId, Pageable pageable) {
 		Page<CommentEntity> commentList = service.getCommentList(feedId, pageable);
 		//entity page를 dto page로 변환 필요합니다.
 		//CommentResponseDto responseDto = CommentResponseDto.fromEntity(commentList);
@@ -39,8 +37,7 @@ public class CommentController {
 
 	@PostMapping("/{feedId}/comment")
 	@ApiOperation(value = "해당 피드에 댓글을 생성합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> createComment(@PathVariable Long feedId, @RequestBody
-	CommentRequestDto commentRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> createComment(@PathVariable Long feedId, @RequestBody	CommentRequestDto commentRequestDto) {
 		service.createComment(feedId, commentRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
@@ -48,9 +45,7 @@ public class CommentController {
 
 	@PutMapping("/{feedId}/comment/{commentId}")
 	@ApiOperation(value = "해당 댓글을 수정합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> modifyComment(@PathVariable Long feedId,
-		@PathVariable Long commentId, @RequestBody
-	CommentRequestDto commentRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> modifyComment(@PathVariable Long feedId, @PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto) {
 		service.modifyComment(commentId, commentRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
@@ -58,8 +53,7 @@ public class CommentController {
 
 	@DeleteMapping("/{feedId}/comment/comment/{commentId}")
 	@ApiOperation(value = "해당 댓글을 삭제합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> deleteComment(@PathVariable Long feedId,
-		@PathVariable Long commentId) {
+	public ResponseEntity<ResultDto<Boolean>> deleteComment(@PathVariable Long feedId,	@PathVariable Long commentId) {
 		service.deleteComment(commentId);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
