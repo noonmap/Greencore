@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import AppLayout from "@/layout/AppLayout";
-import Link from "next/link";
-import { useAppDispatch, useAppSelector } from "@/core/hooks";
-import { getPostList } from "@/core/temp/post/postAPI";
-import useSWR from "swr";
-import http from "@/lib/http";
-import PostListItem from "@/components/PostListItem";
+import React, { useEffect } from 'react';
+import AppLayout from '@/layout/AppLayout';
+import Link from 'next/link';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
+import { getPostList } from '@/core/temp/post/postAPI';
+import useSWR from 'swr';
+import http from '@/lib/http';
+import PostListItem from '@/components/PostListItem';
 
 export default function post() {
   const dispatch = useAppDispatch();
@@ -22,12 +22,13 @@ export default function post() {
     }
 
     return () => {
-      console.log("unmounted");
+      console.log('unmounted');
     };
   }, []);
 
   return (
     <AppLayout>
+      <h1>Redux & React Skeleton 사용하기</h1>
       <div className='mx-auto max-w-7xl p-6 lg:px-8 '>
         {isLoading ? (
           new Array(10).fill(1).map((_, i) => {
