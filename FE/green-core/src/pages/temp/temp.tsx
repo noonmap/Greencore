@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 
 import http from '@/lib/http';
-import { Data } from './api/temp';
+import { Data } from '../api/temp';
 
 export default function temp() {
   const [tempData, setTempDate] = useState<Data>(null);
@@ -24,7 +24,8 @@ export default function temp() {
 
   return (
     <AppLayout>
-      <div>next api 사용해서 데이터 불러오기(더미 데이터 주고받을 때 써보자)</div>
+      <h1 className='text-3xl font-bold'>next api 사용해서 데이터 불러오기</h1>
+      <div>(더미 데이터 주고받을 때 써보자)</div>
       <div>추후에는 삭제 예정</div>
 
       {tempData ? <div>{JSON.stringify(tempData)}</div> : 'no data'}
