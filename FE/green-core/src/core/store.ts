@@ -3,6 +3,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReduer from './temp/counter/counterSlice';
 import postReducer from './temp/post/postSlice';
 import diaryReducer from './diary/diarySlice';
+import alertReducer from './alert/alertSlice';
 
 export function makeStore() {
   return configureStore({
@@ -10,6 +11,7 @@ export function makeStore() {
       counter: counterReduer,
       post: postReducer,
       diary: diaryReducer,
+      alert: alertReducer,
     },
   });
 }
