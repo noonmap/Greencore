@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import AppLayout from "@/layout/AppLayout";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/core/hooks";
-import { getAlertList } from "@/core/alert/alertAPI";
+import { getAlertList, deleteAlert } from "@/core/alert/alertAPI";
 
 export default function Alert() {
   const dispatch = useAppDispatch();
@@ -10,28 +10,35 @@ export default function Alert() {
   const alertList = useAppSelector((state) => state.alert.alertList);
 
   useEffect(() => {
-		dispatch(getAlertList());
-		return () => {};
-	}, []);
+    dispatch(getAlertList());
+    return () => {};
+  }, []);
 
-	return (
-		<AppLayout>
-			{isLoading ? (
-				<></>
-			) : (
-				<div>
-					{alertList.map((alert) => (
-						<div key={alert.alertId}>
-							<Link href={alert.urlPath}>
-								{alert.content}
-								<span>{alert.createdAt}</span>
-							</Link>
+  const handleDeleteAlert = async (alertId) => {
+    await dispatch(deleteAlert(alertId));
+    // Todo : 알림 리스트 다시 조회하기
+  };
 
-							<button className="bg-blue-500 px-3 rounded">삭제</button>
-						</div>
-					))}
-				</div>
-			)}
-		</AppLayout>
-	);
+  return (
+    <AppLayout>
+      {isLoading ? (
+        <></>
+      ) : (
+        <div>
+          {alertList.map((alert) => (
+            <div key={alert.alertId}>
+              <Link href={alert.urlPath}>
+                {alert.content}
+                <span>{alert.createdAt}</span>
+              </Link>
+
+              <button className='bg-blue-500 px-3 rounded' onClick={() => handleDeleteAlert(alert.alertId)}>
+                삭제
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </AppLayout>
+  );
 }
