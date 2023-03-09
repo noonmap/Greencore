@@ -24,7 +24,7 @@ public class AlertController {
 
 
 	@GetMapping
-	@ApiOperation(value = "관찰 일지를 생성합니다.", notes = "")
+	@ApiOperation(value = "알림 목록 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<AlertResponseDto>>> getAlertList() {
 
 		List<AlertEntity> alertList = alertService.getAlertList();
@@ -35,7 +35,7 @@ public class AlertController {
 
 
 	@DeleteMapping("/{alertId}")
-	@ApiOperation(value = "관찰 일지를 생성합니다.", notes = "")
+	@ApiOperation(value = "알림 삭제합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteAlert(@PathVariable Long alertId) {
 		alertService.deleteAlert(alertId);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
