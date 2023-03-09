@@ -25,7 +25,7 @@ public class CommentService {
 	 * @return
 	 */
 	public Page<CommentEntity> getCommentList(Long feedId, Pageable pageable) {
-		return null;
+		return Page.empty();
 	}
 
 
