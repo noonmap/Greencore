@@ -10,35 +10,28 @@ export default function Alert() {
   const alertList = useAppSelector((state) => state.alert.alertList);
 
   useEffect(() => {
-    dispatch(getAlertList());
+		dispatch(getAlertList());
+		return () => {};
+	}, []);
 
-    if (!isLoading) {
-      console.log(alertList);
-    }
+	return (
+		<AppLayout>
+			{isLoading ? (
+				<></>
+			) : (
+				<div>
+					{alertList.map((alert) => (
+						<div key={alert.alertId}>
+							<Link href={alert.urlPath}>
+								{alert.content}
+								<span>{alert.createdAt}</span>
+							</Link>
 
-    return () => {
-      console.log("unmounted");
-    };
-  }, []);
-
-  return (
-    <AppLayout>
-      {isLoading ? (
-        <></>
-      ) : (
-        <div>
-          {alertList.map((alert) => (
-            <div key={alert.alertId}>
-              <Link href={alert.urlPath}>
-                {alert.content}
-                <span>{alert.createdAt}</span>
-              </Link>
-
-              <button className='bg-blue-500 px-3 rounded'>삭제</button>
-            </div>
-          ))}
-        </div>
-      )}
-    </AppLayout>
-  );
+							<button className="bg-blue-500 px-3 rounded">삭제</button>
+						</div>
+					))}
+				</div>
+			)}
+		</AppLayout>
+	);
 }

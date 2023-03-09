@@ -1,15 +1,39 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import http from '@/lib/http';
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
 
 import { SearchType } from '@/core/common/commonType';
 import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType } from './userType';
 
 // 회원가입
-export const signUp = createAsyncThunk('signUp', async (payload: SignUpDataType) => {
-  const { data } = await http.post('/user', payload);
-  console.log('data!!!', data);
-  return data;
-});
+export const signUp = async (payload: SignUpDataType) => {
+	/* "background": "linear-gradient(to right, #00b09b, #96c93d)",*/
+	// "background": "linear-gradient(to top, #c1dfc4 0%, #deecdd 100%)",
+
+	try {
+		const { data } = await http.post('/user', payload);
+
+		Toastify({
+			text: message.SignUpSuccess,
+			duration: 1500,
+			position: 'center',
+			stopOnFocus: true,
+			style: toastifyCSS.success
+		}).showToast();
+
+		return data;
+	} catch (err) {
+		Toastify({
+			text: message.SignUpFail,
+			duration: 1500,
+			position: 'center',
+			stopOnFocus: true,
+			style: toastifyCSS.fail
+		}).showToast();
+	}
+};
 
 // 회원탈퇴
 export const deleteUser = createAsyncThunk('deleteUser', async () => {
