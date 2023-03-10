@@ -28,7 +28,7 @@ public class ProfileController {
 	private final ProfileService profileService;
 
 
-	@GetMapping
+	@GetMapping("/{nickname}")
 	@ApiOperation(value = "프로필을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<ProfileResponseDto>> getUserProfile(@PathVariable String nickname) {
 		UserEntity userProfile = profileService.getUserProfile(nickname);
