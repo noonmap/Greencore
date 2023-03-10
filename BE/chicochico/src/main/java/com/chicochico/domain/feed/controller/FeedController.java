@@ -3,6 +3,7 @@ package com.chicochico.domain.feed.controller;
 
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.domain.feed.dto.FeedResponseDto;
+import com.chicochico.domain.feed.dto.FeedSimpleResponseDto;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.service.FeedService;
 import io.swagger.annotations.Api;
@@ -35,7 +36,7 @@ public class FeedController {
 
 	@GetMapping("/tag")
 	@ApiOperation(value = "태그로 피드를 검색한 결과를 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(@RequestParam("search") String tag, Pageable pageable) {
+	public ResponseEntity<ResultDto<Page<FeedSimpleResponseDto>>> getFeedList(@RequestParam("search") String tag, Pageable pageable) {
 		Page<FeedEntity> feedEntityPage = feedService.getFeedListByTag(tag, pageable);
 		// TODO : entity page -> dto page 변환 추가
 
