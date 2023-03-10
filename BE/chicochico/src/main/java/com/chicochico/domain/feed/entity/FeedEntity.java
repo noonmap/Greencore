@@ -18,6 +18,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name="feed_code")
 @Table(name = "feed")
 public class FeedEntity extends CommonEntity {
 	@Id
