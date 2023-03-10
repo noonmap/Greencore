@@ -156,8 +156,25 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 export const checkNickname = async (nickname: string) => {
   try {
     const { data } = await http.get(`/user/${nickname}`);
+
+    Toastify({
+      text: message.CheckNicknameSuccess,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
+
     return data;
-  } catch (error) {}
+  } catch (error) {
+    Toastify({
+      text: message.CheckNicknameFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
 };
 
 // 회원정보 조회 (현재 비밀번호 확인)

@@ -27,5 +27,8 @@
   "UpdateProfileSuccess": "프로필이 수정되었습니다 ✅",
   "UpdateProfileFail": "프로필 수정에 실패하셨습니다 ❌",
   "UpdateProfileImageSuccess": "프로필 이미지가 수정되었습니다 ✅",
-  "UpdateProfileImageFail": "프로필 이미지 수정에 실패하셨습니다 ❌"
+  "UpdateProfileImageFail": "프로필 이미지 수정에 실패하셨습니다 ❌",
+
+  "CheckNicknameSuccess": "사용 가능한 닉네입 입니다 ✅",
+  "CheckNicknameFail": "사용 불가능한 닉네입 입니다. 닉네임을 다시 설정해주세요 ❌"
 }
