@@ -4,7 +4,7 @@
 
   "GetAlertListFail": "알림 조회에 실패하셨습니다 ❌",
 
-  "CheckEmailSuccess": "인증코드가 전송되었습니다 🎉",
+  "CheckEmailSuccess": "해당 이메일로 인증코드가 전송되었습니다 🎉",
   "CheckEmailFail": "중복된 이메일 입니다 ❌",
 
   "FindPasswordSuccess": "해당 이메일로 임시 비밀번호가 전송되었습니다 🎉",

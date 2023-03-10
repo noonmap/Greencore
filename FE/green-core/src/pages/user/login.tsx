@@ -1,45 +1,68 @@
-import React, { InputHTMLAttributes, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import AppLayout from '@/layout/AppLayout';
-import { useInput } from '@/core/hooks';
 import { logIn } from '@/core/user/userAPI';
+import { useForm } from 'react-hook-form';
+import { useAppDispatch } from '@/core/hooks';
+
+type StateType = {
+  email: string;
+  password: string;
+  files: Object;
+};
+
+const initialState: StateType = {
+  email: '',
+  password: '',
+  files: null,
+};
 
 export default function login() {
-  const [email, onChangeEmail] = useInput('');
-  const [password, onChangePassword] = useInput('');
-  const [image, setImage] = useState('');
+  const dispatch = useAppDispatch();
+  const {
+    register,
+    formState: { errors },
+    setValue,
+    getValues,
+    watch,
+  } = useForm<StateType>({ defaultValues: initialState, mode: 'onBlur' });
 
-  function handleLogIn() {
-    console.log('login');
+  async function handleLogIn() {
+    const [email, password, files] = getValues(['email', 'password', 'files']);
     const payload = { email, password };
-  }
 
-  function handleChangeFile(e: any) {
-    console.log(e.target.files);
+    if (files != null) console.log(files[0]);
+
+    console.log(payload);
+    try {
+      dispatch(logIn(payload));
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
-    console.log(image);
+    watch();
     return () => {};
-  }, [image]);
+  }, []);
 
   return (
     <AppLayout>
       <h1>로그인</h1>
 
-      <input type='file' accept='image/*' value={image} onChange={handleChangeFile} />
+      <input type='file' accept='image/*' {...register('files')} />
 
       <div className='space-y-2'>
         <label>이메일</label>
-        <input type='text' required className='block' onChange={onChangeEmail} />
+        <input type='text' required className='block' {...register('email')} />
         <label>비밀번호</label>
-        <input type='text' required className='block' onChange={onChangePassword} />
+        <input type='text' required className='block' {...register('password')} />
       </div>
 
       <div>
         req data:
         <div>
-          {email} {password}
+          {getValues('email')} {getValues('password')} {JSON.stringify(getValues('files'))}
         </div>
       </div>
 
