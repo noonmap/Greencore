@@ -11,6 +11,11 @@ export type LogInDataType = {
   password: string;
 };
 
+export type EmailType = {
+  email?: string;
+  authCode?: string;
+};
+
 export type PasswordType = {
   password?: string;
   newPassword?: string;

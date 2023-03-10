@@ -1,6 +1,31 @@
 {
   "SignUpSuccess": "회원가입에 성공하였습니다 👏",
   "SignUpFail": "회원가입에 실패하셨습니다 ❌",
+
   "GetAlertListFail": "알림 조회에 실패하셨습니다 ❌",
-  "DeleteAlertFail": "알림 삭제에 실패하셨습니다 ❌"
+  "DeleteAlertFail": "알림 삭제에 실패하셨습니다 ❌",
+
+  "CheckEmailSuccess": "해당 이메일로 인증코드가 전송되었습니다 🎉",
+  "CheckEmailFail": "중복된 이메일 입니다 ❌",
+
+  "FindPasswordSuccess": "해당 이메일로 임시 비밀번호가 전송되었습니다 🎉",
+
+  "CheckAuthCodeSuccess": "인증코드가 확인되었습니다 ✅",
+  "CheckAuthCodeFail": "인증코드가 틀렸습니다 ❌",
+
+  "DeleteUserSuccess": "회원탈퇴 되셨습니다",
+  "DeleteUserFail": "회원탈퇴에 실패하셨습니다 ❌",
+
+  "LogInSuccess": "로그인 하셨습니다 👋",
+  "LogInFail": "로그인에 실패하셨습니다 ❌",
+
+  "CheckPasswordFail": "회원 정보 조회에 실패하셨습니다 ❌",
+  "UpdatePasswordSuccess": "회원 정보가 수정되었습니다 ✅",
+  "UpdatePasswordFail": "회원 정보가 수정에 실패하셨습니다 ❌",
+
+  "GetProfileFail": "프로필 조회에 실패하셨습니다 ❌",
+  "UpdateProfileSuccess": "프로필이 수정되었습니다 ✅",
+  "UpdateProfileFail": "프로필 수정에 실패하셨습니다 ❌",
+  "UpdateProfileImageSuccess": "프로필 이미지가 수정되었습니다 ✅",
+  "UpdateProfileImageFail": "프로필 이미지 수정에 실패하셨습니다 ❌"
 }
