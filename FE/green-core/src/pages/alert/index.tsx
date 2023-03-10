@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import AppLayout from "@/layout/AppLayout";
-import Link from "next/link";
-import { useAppDispatch, useAppSelector } from "@/core/hooks";
-import { getAlertList, deleteAlert } from "@/core/alert/alertAPI";
+import React, { useEffect } from 'react';
+import AppLayout from '@/layout/AppLayout';
+import Link from 'next/link';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
+import { getAlertList, deleteAlert } from '@/core/alert/alertAPI';
 
 export default function Alert() {
   const dispatch = useAppDispatch();
@@ -14,10 +14,15 @@ export default function Alert() {
     return () => {};
   }, []);
 
-  const handleDeleteAlert = async (alertId) => {
-    await dispatch(deleteAlert(alertId));
-    // Todo : 알림 리스트 다시 조회하기
-  };
+  async function handleDeleteAlert(alertId: number) {
+    console.log(alertId);
+    try {
+      const { data } = await deleteAlert(alertId);
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
     <AppLayout>
