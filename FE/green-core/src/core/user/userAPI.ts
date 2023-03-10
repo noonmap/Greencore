@@ -169,7 +169,7 @@ export const checkNickname = async (nickname: string) => {
   } catch (error) {
     Toastify({
       text: message.CheckNicknameFail,
-      duration: 1500,
+      duration: 3000,
       position: 'center',
       stopOnFocus: true,
       style: toastifyCSS.fail,

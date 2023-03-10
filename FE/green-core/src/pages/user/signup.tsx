@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useForm } from 'react-hook-form';
 import { signUp, checkEmail, checkNickname, checkAuthCode } from '~/src/core/user/userAPI';
+
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
 
 type StateType = {
   email: string;
@@ -13,7 +17,7 @@ type StateType = {
 };
 
 const initialState: StateType = {
-  email: '',
+  email: '1',
   password: '',
   checkPassword: '',
   passwordMessage: '',
@@ -39,17 +43,49 @@ export default function signup() {
     'nickname',
   ]);
 
+  const inputRef = useRef(null);
+
   useEffect(() => {
     watch();
+    console.log(errors);
+    console.log(inputRef);
+    if (errors?.email) console.log(errors);
     return () => {};
   }, []);
+
+  function checkVaildSignUp(): boolean {
+    let flag = true;
+
+    if (errors?.email || email == '') {
+      // if (register?.ref?.email.current !== null) ref.current.focus();
+      return false;
+    } else if (errors?.password || password == '') {
+      return false;
+    } else if (errors?.checkPassword || checkPassword == '') {
+      return false;
+    } else if (errors?.nickname || nickname == '') {
+      return false;
+    }
+
+    return flag;
+  }
 
   async function handleSignUp(e: React.SyntheticEvent<EventTarget>) {
     e.preventDefault();
     try {
-      const payload = { email, password, nickname };
-      const { data } = await signUp(payload);
-      console.log(data);
+      if (checkVaildSignUp()) {
+        const payload = { email, password, nickname };
+        const { data } = await signUp(payload);
+        console.log(data);
+      } else {
+        Toastify({
+          text: message.CheckInputForm,
+          duration: 1500,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -59,7 +95,7 @@ export default function signup() {
     try {
       const payload = { email };
       const { data } = await checkEmail(payload);
-      // console.log('hi:', errors['email'].message);
+      console.log(errors);
       console.log(data);
     } catch (error) {
       setValue('email', '');
@@ -100,7 +136,7 @@ export default function signup() {
         <div>
           <label>이메일</label>
 
-          <form className='flex'>
+          <div className='flex'>
             <input
               type='text'
               className='block'
@@ -108,6 +144,9 @@ export default function signup() {
                 required: '필수 항목입니다',
                 pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: '가능한 문자 입력하삼' },
               })}
+              ref={(e) => {
+                inputRef.current = e;
+              }}
               placeholder='이메일'
             />
             <button className='bg-blue-500 rounded' onClick={handleCheckEmail}>
@@ -118,7 +157,7 @@ export default function signup() {
               {errors?.email && errors?.email.type === 'required' && <span>{errors?.email?.message}</span>}
               {errors?.email && errors?.email.type === 'pattern' && <span>{errors?.email?.message}</span>}
             </div>
-          </form>
+          </div>
         </div>
 
         <div>
