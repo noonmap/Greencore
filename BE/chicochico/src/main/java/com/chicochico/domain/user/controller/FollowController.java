@@ -22,7 +22,6 @@ public class FollowController {
 	private final FollowService followService;
 
 
-	// 팔로잉 생성
 	@PostMapping("/following/{nickname}")
 	@ApiOperation(value = "필로잉합니다. (팔로잉 생성)", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> createFollowing(@PathVariable("nickname") String nickname) {
@@ -32,7 +31,6 @@ public class FollowController {
 	}
 
 
-	// 팔로잉 목록 조회
 	@GetMapping("/following/{nickname}")
 	@ApiOperation(value = "팔로잉 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<FollowResponseDto>>> getFollowingList(@PathVariable("nickname") String nickname) {
@@ -43,7 +41,6 @@ public class FollowController {
 	}
 
 
-	// 팔로잉 삭제 (언팔로우)
 	@DeleteMapping("/following/{nickname}")
 	@ApiOperation(value = "팔로잉을 삭제합니다. (언팔로우)", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteFollowing(@PathVariable("nickname") String nickname) {
@@ -53,7 +50,6 @@ public class FollowController {
 	}
 
 
-	// 팔로워 목록 조회
 	@GetMapping("/follower/{nickname}")
 	@ApiOperation(value = "팔로워 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<FollowResponseDto>>> getFollowerList(@PathVariable("nickname") String nickname) {
@@ -63,8 +59,7 @@ public class FollowController {
 		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoList));
 	}
 
-
-	// 팔로워 삭제
+	
 	@DeleteMapping("/follower/{nickname}")
 	@ApiOperation(value = "팔로워를 삭제합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteFollower(@PathVariable("nickname") String nickname) {
