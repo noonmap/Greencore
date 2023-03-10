@@ -7,8 +7,8 @@ server:
       max-file-size: 200MB
 
 spring:
-#  profiles:
-#    default: local
+  #  profiles:
+  #    default: local
   output:
     ansi:
       enabled: always
@@ -45,7 +45,13 @@ spring:
   # JPA for auto reload
   jpa:
     show-sql: ${jpa.show.sql}
-    hibernate.ddl-auto: ${jpa.ddl.option}
+    hibernate:
+      ddl-auto: ${jpa.ddl.option}
+      naming:
+        # camelCase -> snake_case
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     properties:
