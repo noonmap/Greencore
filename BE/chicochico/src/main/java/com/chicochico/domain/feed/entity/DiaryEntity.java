@@ -25,7 +25,7 @@ public class DiaryEntity extends FeedEntity{
 	private DiarySetEntity diarySet;
 
 	@Column(nullable = false)
-	private LocalDate opservationDate;
+	private LocalDate observationDate;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
