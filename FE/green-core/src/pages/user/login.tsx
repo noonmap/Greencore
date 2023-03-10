@@ -25,10 +25,10 @@ export default function login() {
     setValue,
     getValues,
     watch,
-  } = useForm<StateType>({ defaultValues: initialState, mode: 'onBlur' });
+  } = useForm<StateType>({ defaultValues: initialState });
+  const [email, password, files] = getValues(['email', 'password', 'files']);
 
   async function handleLogIn() {
-    const [email, password, files] = getValues(['email', 'password', 'files']);
     const payload = { email, password };
 
     if (files != null) console.log(files[0]);

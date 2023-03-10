@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useForm } from 'react-hook-form';
-import { signUp, checkEmail } from '~/src/core/user/userAPI';
+import { signUp, checkEmail, checkNickname, checkAuthCode } from '~/src/core/user/userAPI';
 
 type StateType = {
   email: string;
@@ -30,6 +30,15 @@ export default function signup() {
     watch,
   } = useForm<StateType>({ defaultValues: initialState, mode: 'onBlur' });
 
+  const [email, password, checkPassword, passwordMessage, authCode, nickname] = getValues([
+    'email',
+    'password',
+    'checkPassword',
+    'passwordMessage',
+    'authCode',
+    'nickname',
+  ]);
+
   useEffect(() => {
     watch();
     return () => {};
@@ -38,13 +47,8 @@ export default function signup() {
   async function handleSignUp(e: React.SyntheticEvent<EventTarget>) {
     e.preventDefault();
     try {
-      const email = getValues('email');
-      const password = getValues('password');
-      const nickname = getValues('nickname');
-
       const payload = { email, password, nickname };
       const { data } = await signUp(payload);
-
       console.log(data);
     } catch (err) {
       console.error(err);
@@ -53,31 +57,39 @@ export default function signup() {
 
   async function handleCheckEmail() {
     try {
-      const email = getValues('email');
-
       const payload = { email };
       const { data } = await checkEmail(payload);
-      console.log('hi:', errors['email'].message);
-
-      setValue('email', '');
+      // console.log('hi:', errors['email'].message);
       console.log(data);
     } catch (error) {
+      setValue('email', '');
       console.error(error);
     }
   }
 
   function handleCheckPassword(e) {
-    const password = getValues('password');
     if (password === e.target.value) return setValue('passwordMessage', '똑같음');
     else return setValue('passwordMessage', '다름');
   }
 
-  function handleCheckNickname() {
-    console.log('handleCheckNickname');
+  async function handleCheckNickname() {
+    try {
+      const { data } = await checkNickname(nickname);
+      console.log(data);
+    } catch (error) {
+      setValue('nickname', '');
+      console.error(error);
+    }
   }
 
-  function handleCheckAuthCode() {
-    console.log('handleCheckNickname');
+  async function handleCheckAuthCode() {
+    try {
+      const payload = { authCode };
+      const { data } = await checkAuthCode(payload);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
