@@ -3,9 +3,15 @@ package com.chicochico.domain.user.service;
 
 import com.chicochico.domain.user.dto.PasswordRequestDto;
 import com.chicochico.domain.user.dto.RegisterRequestDto;
+import com.chicochico.domain.user.dto.UserPlantRequestDto;
+import com.chicochico.domain.user.dto.UserPlantSimpleRequestDto;
+import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -55,6 +61,55 @@ public class UserService {
 	 * 회원정보를 삭제합니다 (회원탈퇴)
 	 */
 	public void deleteUser() {
+	}
+
+
+	/**
+	 * @param nickname    유저 닉네임
+	 * @param userPlantId 유저 식물 id
+	 * @return 유저가 키우는 식물
+	 */
+	public UserPlantEntity getUserPlant(String nickname, Long userPlantId) {
+		return (UserPlantEntity) new Object();
+	}
+
+
+	/**
+	 * 유저가 키우는 식물 목록을 조회합니다.
+	 *
+	 * @param nickname 유저 닉네임
+	 * @return 유저가 키우는 식물 목록
+	 */
+	public List<UserPlantEntity> getUserPlantList(String nickname) {
+		return new ArrayList<>();
+	}
+
+
+	/**
+	 * 내가 키우는 식물 생성합니다.
+	 *
+	 * @param userPlantRequestDto 생성할 유저 식물 정보
+	 */
+	public void createUserPlant(UserPlantRequestDto userPlantRequestDto) {
+	}
+
+
+	/**
+	 * 내가 키우는 식물 닉네임을 수정합니다.
+	 *
+	 * @param userPlantId               수정할 유저 식물 id
+	 * @param userPlantSimpleRequestDto 수정 내용 (plantNickname)
+	 */
+	public void modifyUserPlant(Long userPlantId, UserPlantSimpleRequestDto userPlantSimpleRequestDto) {
+	}
+
+
+	/**
+	 * 내가 키우는 식물을 삭제합니다.
+	 *
+	 * @param userPlantId 삭제할 유저 식물 id
+	 */
+	public void deleteUserPlant(Long userPlantId) {
 	}
 
 }
