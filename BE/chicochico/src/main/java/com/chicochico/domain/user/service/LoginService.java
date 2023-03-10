@@ -15,6 +15,8 @@ public class LoginService {
 
 	// TODO JwtTokenProvider 생성
 	// private final JwtTokenProvider jwtTokenProvider;
+	
+	private final UserRepository userRepository;
 
 
 	/**

@@ -7,7 +7,11 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
+
+	private final UserRepository userRepository;
+	
 
 	/**
 	 * 인증 이메일을 발송합니다
