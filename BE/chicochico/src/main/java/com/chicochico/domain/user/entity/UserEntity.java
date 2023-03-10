@@ -26,21 +26,29 @@ public class UserEntity extends CommonEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String email;
 
+	@Column(nullable = false)
 	private String password;
 
+	@Column(nullable = false)
 	private String nickname;
 
+	@Column(nullable = false)
 	private String profileImagePath;
 
+	@Column(nullable = false)
 	private String introduction;
 
+	@Column(nullable = false)
 	private Integer followingCount;
 
+	@Column(nullable = false)
 	private Integer followerCount;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private IsDeletedType isDeleted;
 
 	@OneToMany(mappedBy = "user")
