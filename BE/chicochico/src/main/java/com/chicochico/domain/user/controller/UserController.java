@@ -78,6 +78,16 @@ public class UserController {
 
 
 	@GetMapping("/plant")
+	@ApiOperation(value = "유저가 키우는 식물을 조회합니다.", notes = "")
+	public ResponseEntity<ResultDto<UserPlantResponseDto>> getUserPlant(@PathVariable("nickname") String nickname, @PathVariable("userPlantId") String userPlantId) {
+		UserPlantEntity userPlant = userService.getUserPlant(nickname, userPlantId);
+		UserPlantResponseDto userPlantResponseDto = UserPlantResponseDto.fromEntity(userPlant);
+
+		return ResponseEntity.ok().body(ResultDto.of(userPlantResponseDto));
+	}
+
+
+	@GetMapping("/plant")
 	@ApiOperation(value = "유저가 키우는 식물 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<UserPlantResponseDto>>> getUserPlantList(@PathVariable("nickname") String nickname) {
 		List<UserPlantEntity> userPlantEntityList = userService.getUserPlantList(nickname);

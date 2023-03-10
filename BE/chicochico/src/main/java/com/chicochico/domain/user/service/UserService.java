@@ -65,6 +65,16 @@ public class UserService {
 
 
 	/**
+	 * @param nickname    유저 닉네임
+	 * @param userPlantId 유저 식물 id
+	 * @return 유저가 키우는 식물
+	 */
+	public UserPlantEntity getUserPlant(String nickname, String userPlantId) {
+		return (UserPlantEntity) new Object();
+	}
+
+
+	/**
 	 * 유저가 키우는 식물 목록을 조회합니다.
 	 *
 	 * @param nickname 유저 닉네임
