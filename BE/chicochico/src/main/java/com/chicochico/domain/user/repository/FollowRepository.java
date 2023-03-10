@@ -1,5 +1,8 @@
 package com.chicochico.domain.user.repository;
 
 
-public interface FollowRepository  {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+
+public interface FollowRepository extends JpaRepository<FollowRepository, Long> {
 }
