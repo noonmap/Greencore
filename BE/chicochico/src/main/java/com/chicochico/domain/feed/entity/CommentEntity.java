@@ -35,7 +35,6 @@ public class CommentEntity extends CommonEntity {
 	@Column(nullable = false)
 	private String content;
 
-	@Column(nullable = false)
 	private Long mentionUserId; // 역정규화(?). FK로 엮지 않았음
 
 
