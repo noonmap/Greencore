@@ -11,3 +11,11 @@ export type DiaryType = {
   // opservationDate: string;
   // image: FormData;
 };
+
+export type CreateDiaryType = {
+  diarySetId: number;
+  content: string;
+  tags: Array<string>;
+  opservationDate: string;
+  image: FormData;
+};
