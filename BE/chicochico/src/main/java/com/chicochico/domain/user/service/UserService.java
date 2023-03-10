@@ -69,7 +69,7 @@ public class UserService {
 	 * @param userPlantId 유저 식물 id
 	 * @return 유저가 키우는 식물
 	 */
-	public UserPlantEntity getUserPlant(String nickname, String userPlantId) {
+	public UserPlantEntity getUserPlant(String nickname, Long userPlantId) {
 		return (UserPlantEntity) new Object();
 	}
 

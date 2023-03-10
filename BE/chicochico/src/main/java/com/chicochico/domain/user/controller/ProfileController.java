@@ -47,7 +47,7 @@ public class ProfileController {
 	}
 
 
-	@PutMapping("/img")
+	@PutMapping("/image")
 	@ApiOperation(value = "프로필 이미지를 수정합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> modifyUserProfileImage(@RequestPart("profileImage") MultipartFile profileImage) {
 		profileService.modifyUserProfileImage(profileImage);

@@ -77,9 +77,9 @@ public class UserController {
 	 */
 
 
-	@GetMapping("/plant")
+	@GetMapping("/plant/{nickname}/{userPlantId}")
 	@ApiOperation(value = "유저가 키우는 식물을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<UserPlantResponseDto>> getUserPlant(@PathVariable("nickname") String nickname, @PathVariable("userPlantId") String userPlantId) {
+	public ResponseEntity<ResultDto<UserPlantResponseDto>> getUserPlant(@PathVariable("nickname") String nickname, @PathVariable("userPlantId") Long userPlantId) {
 		UserPlantEntity userPlant = userService.getUserPlant(nickname, userPlantId);
 		UserPlantResponseDto userPlantResponseDto = UserPlantResponseDto.fromEntity(userPlant);
 
@@ -87,7 +87,7 @@ public class UserController {
 	}
 
 
-	@GetMapping("/plant")
+	@GetMapping("/plant/{nickname}")
 	@ApiOperation(value = "유저가 키우는 식물 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<UserPlantResponseDto>>> getUserPlantList(@PathVariable("nickname") String nickname) {
 		List<UserPlantEntity> userPlantEntityList = userService.getUserPlantList(nickname);
@@ -106,7 +106,7 @@ public class UserController {
 	}
 
 
-	@PutMapping("/plant")
+	@PutMapping("/plant/{userPlantId}")
 	@ApiOperation(value = "내가 키우는 식물 닉네임을 수정합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> modifyUserPlant(@PathVariable("userPlantId") Long userPlantId, @RequestBody UserPlantSimpleRequestDto userPlantSimpleRequestDto) {
 		userService.modifyUserPlant(userPlantId, userPlantSimpleRequestDto);
@@ -115,7 +115,7 @@ public class UserController {
 	}
 
 
-	@DeleteMapping("/plant")
+	@DeleteMapping("/plant/{userPlantId}")
 	@ApiOperation(value = "내가 키우는 식물을 삭제합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteUserPlant(@PathVariable("userPlantId") Long userPlantId) {
 		userService.deleteUserPlant(userPlantId);
