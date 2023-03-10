@@ -57,10 +57,10 @@ spring:
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
 
-# hibernate logging
-logging:
-  level:
-    org.hibernate: ${log.hibernate.level}
+  # hibernate logging
+  logging:
+    level:
+      org.hibernate: ${log.hibernate.level}
 
 # JWT Login
 token:
