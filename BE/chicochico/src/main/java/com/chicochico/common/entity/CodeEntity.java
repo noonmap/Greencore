@@ -21,9 +21,8 @@ public class CodeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "group_id", nullable = false) // FK 이름 지정
-	private GroupCodeEntity groupCode;
+	@Column(nullable = false)
+	private Long groupId;
 
 	@Column(nullable = false)
 	private String description;
