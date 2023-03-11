@@ -27,6 +27,6 @@ public class LikeEntity {
 	private UserEntity user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "diary_set_id", nullable = false) // FK 이름 지정
-	private DiarySetEntity diarySet;
+	@JoinColumn(name = "feed_id", nullable = false) // FK 이름 지정
+	private FeedEntity feed;
 }
