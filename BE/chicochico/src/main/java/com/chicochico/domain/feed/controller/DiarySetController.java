@@ -10,11 +10,11 @@ import com.chicochico.domain.feed.service.DiarySetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,7 +29,7 @@ public class DiarySetController {
 
 	@GetMapping("/{nickname}") // notion의 API docs를 참고해서 url 매핑을 해준다.
 	@ApiOperation(value = "관찰 일지 목록을 조회합니다.", notes = "") // Swagger 문서에 들어갈 API 설명을 적음. (notes는 부가 상세 설명임. optional함)
-	public ResponseEntity<ResultDto<List<DiarySetResponseDto>>> getDiarySetList(@PathVariable("nickname") String nickname, Pageable pageable) { // notion의 API docs를 참고해서 response, request를 적음.
+	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetList(@PathVariable("nickname") String nickname, Pageable pageable) { // notion의 API docs를 참고해서 response, request를 적음.
 		/*
 		 * 페이지네이션할 때 page, size는 @RequestParam으로 각각 주지말고 Pageable 사용하기
 		 *
@@ -38,10 +38,9 @@ public class DiarySetController {
 		 * 2. 서비스 메소드가 안 만들어져서 빨간 표시가 뜰텐데, 마우스 오버하면 "Create method 어쩌고" 문구가 뜬다. 그걸 클릭함
 		 * 3. 그럼 service 클래스에 메소드 구현체가 자동으로 생성된다!
 		 * */
-		List<DiarySetEntity> diarySetList = diarySetService.getDiarySetList(nickname, pageable);
-		List<DiarySetResponseDto> diarySetResponseDtoList = DiarySetResponseDto.fromEnityList(diarySetList);
-
-		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtoList));
+		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname, pageable);
+		// entity page -> dto page 변환
+		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
 	}
 
 
@@ -74,11 +73,10 @@ public class DiarySetController {
 
 	@GetMapping("/{nickname}/bookmark")
 	@ApiOperation(value = "유저가 북마크한 관찰 일지 목록을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<List<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("diarySetId") Long diarySetId, Pageable pageable) {
-		List<DiarySetEntity> diarySetList = diarySetService.getDiarySetBookmarkList(diarySetId, pageable);
-		List<DiarySetResponseDto> diarySetResponseDtoList = new ArrayList<>();
-
-		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtoList));
+	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("diarySetId") Long diarySetId, Pageable pageable) {
+		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(diarySetId, pageable);
+		// entity page -> dto page 변환
+		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
 	}
 
 

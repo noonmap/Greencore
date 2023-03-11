@@ -2,6 +2,7 @@ package com.chicochico.domain.user.service;
 
 
 import com.chicochico.domain.user.dto.LoginRequestDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,14 @@ import java.util.Map;
 
 
 @Service
+@RequiredArgsConstructor
 public class LoginService {
+
+	// TODO JwtTokenProvider 생성
+	// private final JwtTokenProvider jwtTokenProvider;
+	
+	private final UserRepository userRepository;
+
 
 	/**
 	 * 로그인을 수행합니다

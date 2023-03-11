@@ -5,6 +5,7 @@ import com.chicochico.domain.feed.dto.DiarySetRequestDto;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,8 @@ public class DiarySetService {
 	 * @param pageable 페이지네이션
 	 * @return
 	 */
-	public List<DiarySetEntity> getDiarySetList(String nickname, Pageable pageable) {
-		return new ArrayList<>();
+	public Page<DiarySetEntity> getDiarySetList(String nickname, Pageable pageable) {
+		return Page.empty();
 	}
 
 
@@ -66,8 +67,8 @@ public class DiarySetService {
 	 * @param pageable   페이지네이션
 	 * @return
 	 */
-	public List<DiarySetEntity> getDiarySetBookmarkList(Long diarySetId, Pageable pageable) {
-		return new ArrayList<>();
+	public Page<DiarySetEntity> getDiarySetBookmarkList(Long diarySetId, Pageable pageable) {
+		return Page.empty();
 	}
 
 

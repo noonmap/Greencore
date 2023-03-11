@@ -2,14 +2,16 @@ package com.chicochico.domain.user.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.user.dto.PasswordRequestDto;
-import com.chicochico.domain.user.dto.RegisterRequestDto;
+import com.chicochico.domain.user.dto.*;
+import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -20,8 +22,12 @@ public class UserController {
 
 	private final UserService userService;
 
+	/*
+	 * 유저 인증 관련
+	 */
 
-	@PostMapping("/")
+
+	@PostMapping
 	@ApiOperation(value = "회원가입을 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> signUp(@RequestBody RegisterRequestDto registerRequestDto) {
 		userService.createUser(registerRequestDto);
@@ -57,10 +63,62 @@ public class UserController {
 	}
 
 
-	@DeleteMapping("/")
+	@DeleteMapping
 	@ApiOperation(value = "회원탈퇴를 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteUser() {
 		userService.deleteUser();
+
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	}
+
+
+	/*
+	 * 유저 정보 (내키식) 관련
+	 */
+
+
+	@GetMapping("/plant/{nickname}/{userPlantId}")
+	@ApiOperation(value = "유저가 키우는 식물을 조회합니다.", notes = "")
+	public ResponseEntity<ResultDto<UserPlantResponseDto>> getUserPlant(@PathVariable("nickname") String nickname, @PathVariable("userPlantId") Long userPlantId) {
+		UserPlantEntity userPlant = userService.getUserPlant(nickname, userPlantId);
+		UserPlantResponseDto userPlantResponseDto = UserPlantResponseDto.fromEntity(userPlant);
+
+		return ResponseEntity.ok().body(ResultDto.of(userPlantResponseDto));
+	}
+
+
+	@GetMapping("/plant/{nickname}")
+	@ApiOperation(value = "유저가 키우는 식물 목록을 조회합니다.", notes = "")
+	public ResponseEntity<ResultDto<List<UserPlantResponseDto>>> getUserPlantList(@PathVariable("nickname") String nickname) {
+		List<UserPlantEntity> userPlantEntityList = userService.getUserPlantList(nickname);
+		List<UserPlantResponseDto> userPlantResponseDtoList = UserPlantResponseDto.fromEnityList(userPlantEntityList);
+
+		return ResponseEntity.ok().body(ResultDto.of(userPlantResponseDtoList));
+	}
+
+
+	@PostMapping("/plant")
+	@ApiOperation(value = "내가 키우는 식물 생성합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> createUserPlant(@RequestBody UserPlantRequestDto userPlantRequestDto) {
+		userService.createUserPlant(userPlantRequestDto);
+
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	}
+
+
+	@PutMapping("/plant/{userPlantId}")
+	@ApiOperation(value = "내가 키우는 식물 닉네임을 수정합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> modifyUserPlant(@PathVariable("userPlantId") Long userPlantId, @RequestBody UserPlantSimpleRequestDto userPlantSimpleRequestDto) {
+		userService.modifyUserPlant(userPlantId, userPlantSimpleRequestDto);
+
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	}
+
+
+	@DeleteMapping("/plant/{userPlantId}")
+	@ApiOperation(value = "내가 키우는 식물을 삭제합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> deleteUserPlant(@PathVariable("userPlantId") Long userPlantId) {
+		userService.deleteUserPlant(userPlantId);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
