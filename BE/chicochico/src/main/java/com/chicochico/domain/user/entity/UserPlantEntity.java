@@ -30,7 +30,7 @@ public class UserPlantEntity extends CommentEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "plant_id", nullable = false) // FK 이름 지정
-	private PlantEntity Plant;
+	private PlantEntity plant;
 
 	@Column(nullable = false)
 	private String plantNickname;
