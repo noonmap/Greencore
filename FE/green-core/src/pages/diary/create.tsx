@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
 import { useAppDispatch, useInput } from '@/core/hooks';
 import { createDiary } from '@/core/diary/diaryAPI';
+import { useRouter } from 'next/router';
 
 export default function creatediary() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [diarySetId, onChangeDiarySetId] = useInput(0);
   const [content, onChangeContent] = useInput('');
   const [opservationDate, onChangeOpservationDate] = useInput(new Date().toISOString().substring(0, 10));
@@ -35,17 +40,26 @@ export default function creatediary() {
       formData.append('tags', hashtags ? hashtags : []);
       formData.append('opservationDate', opservationDate);
       formData.append('image', image);
-      console.log(formData);
-      // const payload = {
-      //   diarySetId,
-      //   content,
-      //   tags: hashtags ? hashtags : [],
-      //   opservationDate,
-      //   image: formData,
-      // };
-      // console.log(payload);
-      // const { data } = await dispatch(createDiary(formData));
-      // console.log(data);
+      const data = await dispatch(createDiary(formData));
+
+      if (data.payload.result === 'SUCCESS') {
+        router.push('/diary');
+        Toastify({
+          text: message.CheckNicknameFail, // 바꿔야됨
+          duration: 1000,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.CheckNicknameFail, // 바꿔야됨
+          duration: 1000,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
     } catch (err) {
       console.log(err);
     }

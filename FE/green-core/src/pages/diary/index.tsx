@@ -11,12 +11,12 @@ export default function diary() {
   const router = useRouter();
   const isLoading = useAppSelector((state) => state.diary.isLoading);
   const diaryList = useAppSelector((state) => state.diary.diaryList);
+  const diarySet = useAppSelector((state) => state.diary.diarySet);
 
   useEffect(() => {
-    dispatch(getDiaryList());
-
+    const diarySetId: number = 0;
+    dispatch(getDiaryList(diarySetId));
     if (!isLoading) {
-      console.log(diaryList[0].id);
     }
 
     return () => {
@@ -36,9 +36,17 @@ export default function diary() {
           })
         ) : (
           <div>
-            {diaryList.map((diary) => (
-              <DiaryListItem key={diary.id} diary={diary} id={diary.id} title={diary.title} url={diary.url} thumbnailUrl={diary.thumbnailUrl} />
-            ))}
+            <div>제목 : {diarySet.title}</div>
+            <div style={{ display: 'flex' }}>
+              <img src={diarySet.user.profileImagePath} style={{ borderRadius: '100%', width: '50px', height: '50px' }} />
+              <div>식집사 : {diarySet.user.nickname}</div>
+            </div>
+            <div>관찰 시작 : {diarySet.startDate}</div>
+            <div>
+              {diaryList.map((diary) => (
+                <DiaryListItem key={diary.diaryId} diary={diary} />
+              ))}
+            </div>
           </div>
         )}
       </div>
