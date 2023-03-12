@@ -54,7 +54,10 @@ public class UserEntity extends CommonEntity {
 	@OneToMany(mappedBy = "user")
 	private List<BookmarkEntity> bookmarkList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "user")
-	private List<FollowEntity> followList = new ArrayList<>();
+	@OneToMany(mappedBy = "follower")
+	private List<FollowEntity> followerList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "following")
+	private List<FollowEntity> followingList = new ArrayList<>();
 
 }
