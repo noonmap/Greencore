@@ -3,6 +3,8 @@ package com.chicochico.domain.user.service;
 
 import com.chicochico.domain.user.dto.AuthCodeRequestDto;
 import com.chicochico.domain.user.dto.EmailRequestDto;
+import com.chicochico.domain.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
 	private final UserRepository userRepository;
-	
+
 
 	/**
 	 * 인증 이메일을 발송합니다
