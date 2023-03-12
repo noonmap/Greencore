@@ -1,7 +1,6 @@
-package com.chicochico.domain.alert.entity;
+package com.chicochico.domain.feed.entity;
 
 
-import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,21 +15,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "alert") // snake_case로 설정
-public class AlertEntity extends CommonEntity {
+@Table(name = "bookmark") // snake_case로 설정
+public class BookmarkEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false) // FK 이름 지정
 	private UserEntity user;
 
-	@Column(nullable = false)
-	private String content;
-
-	@Column(nullable = false)
-	private String urlPath;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "diary_set_id", nullable = false) // FK 이름 지정
+	private DiarySetEntity diarySet;
 
 }

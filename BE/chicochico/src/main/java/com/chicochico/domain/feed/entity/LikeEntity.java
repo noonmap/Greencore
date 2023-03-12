@@ -1,6 +1,7 @@
-package com.chicochico.domain.user.entity;
+package com.chicochico.domain.feed.entity;
 
 
+import com.chicochico.domain.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,19 +15,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "follow") // snake_case로 설정
-public class FollowEntity {
+@Table(name = "like") // snake_case로 설정
+public class LikeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "follower_id", nullable = false)
-	private UserEntity follower;
+	@JoinColumn(name = "user_id", nullable = false) // FK 이름 지정
+	private UserEntity user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "following_id", nullable = false)
-	private UserEntity following;
-
+	@JoinColumn(name = "feed_id", nullable = false) // FK 이름 지정
+	private FeedEntity feed;
 }

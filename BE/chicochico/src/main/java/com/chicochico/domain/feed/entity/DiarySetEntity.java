@@ -29,20 +29,24 @@ public class DiarySetEntity extends CommonEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id") // FK 이름 지정
+	@JoinColumn(name = "user_id", nullable = false) // FK 이름 지정
 	private UserEntity user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_plant_id") // FK 이름 지정
+	@JoinColumn(name = "user_plant_id", nullable = false) // FK 이름 지정
 	private UserPlantEntity userPlant;
 
+	@Column(nullable = false)
 	private String imagePath;
 
+	@Column(nullable = false)
 	private Integer diaryCount;
 
+	@Column(nullable = false)
 	private String title;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private IsDeletedType isDeleted;
 
 	// OneToMany는 관찰일기처럼 관찰일기에서 일기 목록을 조회하는게 효율적인 경우 추가한다. (optional)

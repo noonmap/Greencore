@@ -4,3 +4,7 @@ export type AlertType = {
   urlPath: string;
   createdAt: string;
 };
+
+export type AlertDataType = {
+  page: number;
+};

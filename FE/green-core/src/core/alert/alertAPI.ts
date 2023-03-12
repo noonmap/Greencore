@@ -4,10 +4,12 @@ import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 
+import { AlertDataType } from './alertType';
+
 // 알림 리스트 조회
-export const getAlertList = createAsyncThunk('getAlertList', async () => {
+export const getAlertList = createAsyncThunk('getAlertList', async (payload: AlertDataType) => {
   try {
-    const { data } = await http.get('/alert');
+    const { data } = await http.get('/alert', { params: { page: payload.page } });
 
     return data.data;
   } catch (err) {
