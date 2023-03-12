@@ -2,6 +2,7 @@ package com.chicochico.domain.user.service;
 
 
 import com.chicochico.domain.user.dto.LoginRequestDto;
+import com.chicochico.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class LoginService {
 
 	// TODO JwtTokenProvider 생성
 	// private final JwtTokenProvider jwtTokenProvider;
-	
+
 	private final UserRepository userRepository;
 
 

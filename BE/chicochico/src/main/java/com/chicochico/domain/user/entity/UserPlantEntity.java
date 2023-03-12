@@ -2,7 +2,7 @@ package com.chicochico.domain.user.entity;
 
 
 import com.chicochico.common.code.IsDeletedType;
-import com.chicochico.domain.feed.entity.CommentEntity;
+import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "user_plant")
-public class UserPlantEntity extends CommentEntity {
+public class UserPlantEntity extends CommonEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -18,10 +18,10 @@ import java.time.LocalDate;
 @Builder
 @DiscriminatorValue("FEED_DIARY")
 @Table(name = "diary") // snake_case로 설정
-public class DiaryEntity extends FeedEntity{
+public class DiaryEntity extends FeedEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="diary_set_id", nullable = false)
+	@JoinColumn(name = "diary_set_id", nullable = false)
 	private DiarySetEntity diarySet;
 
 	@Column(nullable = false)
@@ -30,4 +30,5 @@ public class DiaryEntity extends FeedEntity{
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private IsDeletedType isDeleted;
+
 }
