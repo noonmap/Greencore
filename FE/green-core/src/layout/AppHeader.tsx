@@ -12,6 +12,7 @@ export default function AppHeader() {
 			{/* 정아 */}
 			<Link href="/user/signup">회원가입</Link>
 			<Link href="/user/login">로그인</Link>
+			<Link href="/user/password">새로운 비밀번호</Link>
 
 			{/* 승태 */}
 			<Link href="/alert">알림</Link>
