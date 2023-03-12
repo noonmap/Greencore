@@ -8,208 +8,267 @@ import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 
 type StateType = {
-  email: string;
-  password: string;
-  checkPassword: string;
-  passwordMessage: string;
-  authCode: string;
-  nickname: string;
+	email: string;
+	password: string;
+	checkPassword: string;
+	passwordMessage: string;
+	authCode: string;
+	isCheckedAuthCode: boolean;
+	nickname: string;
+	isCheckedNickname: boolean;
 };
 
 const initialState: StateType = {
-  email: '1',
-  password: '',
-  checkPassword: '',
-  passwordMessage: '',
-  authCode: '',
-  nickname: '',
+	email: '',
+	password: '',
+	checkPassword: '',
+	passwordMessage: '',
+	authCode: '',
+	isCheckedAuthCode: false,
+	nickname: '',
+	isCheckedNickname: false
 };
 
 export default function signup() {
-  const {
-    register,
-    formState: { errors },
-    setValue,
-    getValues,
-    watch,
-  } = useForm<StateType>({ defaultValues: initialState, mode: 'onBlur' });
+	const {
+		register,
+		formState: { errors },
+		setValue,
+		getValues,
+		watch
+	} = useForm<StateType>({ defaultValues: initialState, mode: 'onBlur' });
 
-  const [email, password, checkPassword, passwordMessage, authCode, nickname] = getValues([
-    'email',
-    'password',
-    'checkPassword',
-    'passwordMessage',
-    'authCode',
-    'nickname',
-  ]);
+	const [email, password, checkPassword, passwordMessage, authCode, isCheckedAuthCode, nickname, isCheckedNickname] = getValues([
+		'email',
+		'password',
+		'checkPassword',
+		'passwordMessage',
+		'authCode',
+		'isCheckedAuthCode',
+		'nickname',
+		'isCheckedNickname'
+	]);
 
-  const inputRef = useRef(null);
+	const inputRef = useRef(null);
 
-  useEffect(() => {
-    watch();
-    console.log(errors);
-    console.log(inputRef);
-    if (errors?.email) console.log(errors);
-    return () => {};
-  }, []);
+	useEffect(() => {
+		watch();
+		// console.log(errors);
+		// console.log(inputRef);
+		// if (errors?.email) console.log(errors);
+		return () => {};
+	}, []);
 
-  function checkVaildSignUp(): boolean {
-    let flag = true;
+	function toast() {
+		Toastify({
+			text: message.CheckInputForm,
+			duration: 1500,
+			position: 'center',
+			stopOnFocus: true,
+			style: toastifyCSS.fail
+		}).showToast();
+	}
 
-    if (errors?.email || email == '') {
-      // if (register?.ref?.email.current !== null) ref.current.focus();
-      return false;
-    } else if (errors?.password || password == '') {
-      return false;
-    } else if (errors?.checkPassword || checkPassword == '') {
-      return false;
-    } else if (errors?.nickname || nickname == '') {
-      return false;
-    }
+	function checkVaildSignUp(): boolean {
+		let flag = true;
 
-    return flag;
-  }
+		if (errors?.email || email == '') {
+			// if (register?.ref?.email.current !== null) ref.current.focus();
+			return false;
+		} else if (!isCheckedAuthCode) {
+			return false;
+		} else if (!isCheckedNickname) {
+			return false;
+		} else if (errors?.password || password == '') {
+			return false;
+		} else if (errors?.checkPassword || checkPassword == '') {
+			return false;
+		} else if (errors?.nickname || nickname == '') {
+			return false;
+		}
 
-  async function handleSignUp(e: React.SyntheticEvent<EventTarget>) {
-    e.preventDefault();
-    try {
-      if (checkVaildSignUp()) {
-        const payload = { email, password, nickname };
-        const { data } = await signUp(payload);
-        console.log(data);
-      } else {
-        Toastify({
-          text: message.CheckInputForm,
-          duration: 1500,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.fail,
-        }).showToast();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
+		return flag;
+	}
 
-  async function handleCheckEmail() {
-    try {
-      const payload = { email };
-      const { data } = await checkEmail(payload);
-      console.log(errors);
-      console.log(data);
-    } catch (error) {
-      setValue('email', '');
-      console.error(error);
-    }
-  }
+	async function handleSignUp(e: React.SyntheticEvent<EventTarget>) {
+		// e.preventDefault();
 
-  function handleCheckPassword(e) {
-    if (password === e.target.value) return setValue('passwordMessage', '똑같음');
-    else return setValue('passwordMessage', '다름');
-  }
+		try {
+			if (checkVaildSignUp()) {
+				const payload = { email, password, nickname };
+				const { data } = await signUp(payload);
+				console.log(data);
+			} else toast();
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
-  async function handleCheckNickname() {
-    try {
-      const { data } = await checkNickname(nickname);
-      console.log(data);
-    } catch (error) {
-      setValue('nickname', '');
-      console.error(error);
-    }
-  }
+	async function handleCheckEmail() {
+		if (errors?.email || email == '') {
+			toast();
+			return;
+		}
 
-  async function handleCheckAuthCode() {
-    try {
-      const payload = { authCode };
-      const { data } = await checkAuthCode(payload);
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+		try {
+			const payload = { email };
+			const { data } = await checkEmail(payload);
+			console.log(data);
+		} catch (error) {
+			setValue('email', '');
+			console.error(error);
+		}
+	}
 
-  return (
-    <AppLayout>
-      <h1>회원가입</h1>
+	function handleCheckPassword(e) {
+		if (password === e.target.value) return setValue('passwordMessage', '똑같음');
+		else return setValue('passwordMessage', '다름');
+	}
 
-      <div className='space-y-2'>
-        <div>
-          <label>이메일</label>
+	async function handleCheckNickname() {
+		if (errors?.nickname || nickname == '') {
+			toast();
+			return;
+		}
 
-          <div className='flex'>
-            <input
-              type='text'
-              className='block'
-              {...register('email', {
-                required: '필수 항목입니다',
-                pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: '가능한 문자 입력하삼' },
-              })}
-              ref={(e) => {
-                inputRef.current = e;
-              }}
-              placeholder='이메일'
-            />
-            <button className='bg-blue-500 rounded' onClick={handleCheckEmail}>
-              이메일 확인
-            </button>
+		try {
+			const { data } = await checkNickname(nickname);
+			setValue('isCheckedNickname', data);
+		} catch (error) {
+			setValue('nickname', '');
+			console.error(error);
+		}
+	}
 
-            <div>
-              {errors?.email && errors?.email.type === 'required' && <span>{errors?.email?.message}</span>}
-              {errors?.email && errors?.email.type === 'pattern' && <span>{errors?.email?.message}</span>}
-            </div>
-          </div>
-        </div>
+	async function handleCheckAuthCode() {
+		if (authCode == '') {
+			toast();
+			return;
+		}
 
-        <div>
-          <label>이메일 인증 코드</label>
-          <div className='flex'>
-            <input type='text' required className='block' {...register('authCode')} placeholder='인증코드' />
-            <button className='bg-blue-500 rounded' onClick={handleCheckAuthCode}>
-              인증코드 확인
-            </button>
-          </div>
-        </div>
+		try {
+			const payload = { authCode };
+			const { data } = await checkAuthCode(payload);
+			setValue('isCheckedAuthCode', data);
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
-        <div>
-          <label>비밀번호</label>
-          <input type='text' required className='block' {...register('password')} placeholder='비밀번호' />
-          <label>비밀번호 확인</label>
-          <input
-            type='text'
-            required
-            className='block'
-            {...register('checkPassword', { onBlur: (e) => handleCheckPassword(e) })}
-            placeholder='비밀번호 확인'
-          />
+	return (
+		<AppLayout>
+			<h1>회원가입</h1>
 
-          <div>
-            {errors?.email && errors?.email.type === 'required' && <span>{errors?.email?.message}</span>}
-            {errors?.email && errors?.email.type === 'pattern' && <span>{errors?.email?.message}</span>}
-            {getValues('passwordMessage')}
-          </div>
-        </div>
+			<div className="space-y-2">
+				<div>
+					<label>이메일</label>
 
-        <div>
-          <label>닉네임</label>
-          <div className='flex'>
-            <input type='text' required className='block' {...register('nickname')} placeholder='닉네임' />
-            <button className='bg-blue-500 rounded' onClick={handleCheckNickname}>
-              닉네임 중복 확인
-            </button>
-          </div>
-        </div>
-      </div>
+					<div className="flex">
+						<input
+							type="text"
+							className="block"
+							{...register('email', {
+								required: '필수 항목입니다',
+								pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: '가능한 문자 입력하삼' }
+							})}
+							placeholder="이메일"
+						/>
+						<button className="bg-blue-500 rounded" onClick={handleCheckEmail}>
+							이메일 확인
+						</button>
 
-      <div>
-        req data:
-        <div>
-          {getValues('email')} {getValues('password')} {getValues('checkPassword')} {getValues('nickname')}
-        </div>
-      </div>
+						<div>
+							{errors?.email && errors?.email.type === 'required' && <span>{errors?.email?.message}</span>}
+							{errors?.email && errors?.email.type === 'pattern' && <span>{errors?.email?.message}</span>}
+						</div>
+					</div>
+				</div>
 
-      <button className='bg-blue-500 rounded' onClick={handleSignUp}>
-        회원가입
-      </button>
-    </AppLayout>
-  );
+				<div>
+					<label>이메일 인증 코드</label>
+					<div className="flex">
+						<input type="text" required className="block" {...register('authCode')} placeholder="인증코드" />
+						<button className="bg-blue-500 rounded" onClick={handleCheckAuthCode}>
+							인증코드 확인
+						</button>
+					</div>
+				</div>
+
+				<div>
+					<label>비밀번호</label>
+					<input
+						type="text"
+						required
+						className="block"
+						{...register('password', {
+							required: '필수 항목입니다',
+							pattern: {
+								value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
+								message: '최소 8 자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자'
+							}
+						})}
+						placeholder="비밀번호"
+					/>
+					<label>비밀번호 확인</label>
+					<input
+						type="text"
+						required
+						className="block"
+						{...register('checkPassword', {
+							required: '필수 항목입니다',
+							pattern: {
+								value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
+								message: '최소 8 자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자'
+							},
+							onBlur: (e) => handleCheckPassword(e)
+						})}
+						placeholder="비밀번호 확인"
+					/>
+
+					<div>
+						{errors?.password && errors?.password.type === 'required' && <span>{errors?.password?.message}</span>}
+						{errors?.password && errors?.password.type === 'pattern' && <span>{errors?.password?.message}</span>}
+						{passwordMessage}
+					</div>
+				</div>
+
+				<div>
+					<label>닉네임</label>
+					<div className="flex">
+						<input
+							type="text"
+							required
+							className="block"
+							{...register('nickname', {
+								required: '필수 항목입니다',
+								pattern: { value: /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$/, message: '2자 이상 16자 이하, 영어 또는 숫자 또는 한글로 구성' }
+							})}
+							placeholder="닉네임"
+						/>
+						<button className="bg-blue-500 rounded" onClick={handleCheckNickname}>
+							닉네임 중복 확인
+						</button>
+
+						<div>
+							{errors?.nickname && errors?.nickname.type === 'required' && <span>{errors?.nickname?.message}</span>}
+							{errors?.nickname && errors?.nickname.type === 'pattern' && <span>{errors?.nickname?.message}</span>}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				req data:
+				<div>
+					{email} {password} {JSON.stringify(isCheckedAuthCode)}
+					<div></div>
+					{getValues('email')} {getValues('password')} {getValues('checkPassword')} {getValues('nickname')}
+				</div>
+			</div>
+
+			<button className="bg-blue-500 rounded" onClick={handleSignUp}>
+				회원가입
+			</button>
+		</AppLayout>
+	);
 }
