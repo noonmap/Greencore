@@ -18,6 +18,8 @@
 
   "LogInSuccess": "로그인 하셨습니다 👋",
   "LogInFail": "로그인에 실패하셨습니다 ❌",
+  "LogOutSuccess": "로그아웃 하셨습니다 👋",
+  "LogOutFail": "로그아웃에 실패하셨습니다 ❌",
 
   "CheckPasswordFail": "회원 정보 조회에 실패하셨습니다 ❌",
   "UpdatePasswordSuccess": "회원 정보가 수정되었습니다 ✅",
@@ -33,5 +35,7 @@
   "CheckNicknameFail": "사용 불가능한 닉네입 입니다. 닉네임을 다시 설정해주세요 ❌",
 
   "GetFeedListFail": "피드 조회에 실패하셨습니다 ❌",
-  "CheckInputForm": "👇 입력된 폼을 확인해주세요"
+  "CheckInputForm": "👇 입력된 폼을 확인해주세요",
+
+  "GetTagFeedListFail": "태그 검색에 실패하셨습니다 ❌"
 }
