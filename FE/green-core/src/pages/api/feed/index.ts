@@ -1,0 +1,48 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { FeedType } from '@/core/feed/feedType';
+
+export type Data = {
+  result: string;
+  data: Array<FeedType>;
+};
+
+export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  if (req.method === 'GET') {
+    // res.status(400).json({ result: 'FAIL', data: null });
+    console.log(req.query.page);
+    console.log(req.query.size);
+
+    const page = Number(req.query.page);
+
+    if (page >= 200) {
+      res.status(200).json({
+        result: 'SUCCESS',
+        data: [],
+      });
+    } else {
+      res.status(200).json({
+        result: 'SUCCESS',
+        data: [
+          {
+            user: {
+              nickname: '닉네임',
+              profileImagePath: '/images/noProfile.png',
+              introduction: '한 줄 자기소개',
+              followingCount: 1,
+              followerCount: 1,
+              isFollowed: true,
+            },
+            feedCode: '0101',
+            opservationDate: '2023-03-13', // 일지에만
+            feedId: page + 1,
+            content: '치코치코',
+            imagePath: '/images/noProfile.png', // 포스트엔 없을수도
+            likeCount: 1,
+            craetedAt: '2023-03-13T13:00:00',
+            commentCount: 1,
+          },
+        ],
+      });
+    }
+  }
+}

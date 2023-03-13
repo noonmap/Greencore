@@ -4,6 +4,7 @@ import counterReduer from './temp/counter/counterSlice';
 import postReducer from './temp/post/postSlice';
 import diaryReducer from './diary/diarySlice';
 import alertReducer from './alert/alertSlice';
+import feedReducer from './feed/feedSlice';
 
 export function makeStore() {
   return configureStore({
@@ -12,6 +13,7 @@ export function makeStore() {
       post: postReducer,
       diary: diaryReducer,
       alert: alertReducer,
+      feed: feedReducer,
     },
   });
 }
