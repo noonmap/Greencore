@@ -17,7 +17,6 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/diary")
 @RequiredArgsConstructor
 @Api(tags = "일지 관련 API")
 public class DiaryController {
@@ -25,7 +24,7 @@ public class DiaryController {
 	private final DiaryService diaryService;
 
 
-	@PostMapping("/{diarySetId}")
+	@PostMapping("/diaryset/{diarySetId}")
 	@ApiOperation(value = "해당 관찰일지에 일지를 생성한다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> createDiary(@PathVariable Long diarySetId, @RequestPart DiaryRequestDto diaryRequestDto) {
 		diaryService.createDiary(diarySetId, diaryRequestDto);
@@ -33,7 +32,7 @@ public class DiaryController {
 	}
 
 
-	@GetMapping("/{diarySetId}")
+	@GetMapping("/diaryset/{diarySetId}")
 	@ApiOperation(value = "해당 관찰일지의 일지 목록을 조회한다.", notes = "")
 	public ResponseEntity<ResultDto<List<DiarySimpleResponseDto>>> getDiaryList(@PathVariable Long diarySetId) {
 		List<DiaryEntity> diaryEntityList = diaryService.getDiaryList(diarySetId);
@@ -42,7 +41,7 @@ public class DiaryController {
 	}
 
 
-	@GetMapping("/{diaryId}")
+	@GetMapping("/diary/{diaryId}")
 	@ApiOperation(value = "해당 일지를 상세 조회한다.", notes = "")
 	public ResponseEntity<ResultDto<DiaryResponseDto>> getDiary(@PathVariable Long diaryId) {
 		DiaryEntity diary = diaryService.getDiary(diaryId);
@@ -51,7 +50,7 @@ public class DiaryController {
 	}
 
 
-	@PutMapping("/{diaryId}")
+	@PutMapping("/diary/{diaryId}")
 	@ApiOperation(value = "해당 일지를 수정한다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> modifyDiary(@PathVariable Long diaryId, @RequestPart DiaryRequestDto diaryRequestDto) {
 		diaryService.modifyDiary(diaryId, diaryRequestDto);
@@ -59,7 +58,7 @@ public class DiaryController {
 	}
 
 
-	@DeleteMapping("/{diaryId}")
+	@DeleteMapping("/diary/{diaryId}")
 	@ApiOperation(value = "해당 일지를 삭제한다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteDiary(@PathVariable Long diaryId) {
 		diaryService.deleteDiary(diaryId);
