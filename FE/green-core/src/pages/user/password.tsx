@@ -32,6 +32,8 @@ export default function password() {
     try {
       const payload = { email };
       const { data } = await findPassword(payload);
+      // FIXME: 백에서 새로운 비밀번호로 바꿔주겠지? 굳이 프론트에서 api 보낼 필요 없겠지?
+      // TODO: 로그인 화면으로 이동하기
       console.log(data);
     } catch (error) {
       console.error(error);
