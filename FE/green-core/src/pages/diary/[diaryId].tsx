@@ -12,7 +12,7 @@ const fetcher = (url: string) => http.get(url).then((res) => res.data);
 export default function DiaryDetail() {
   const router = useRouter();
   const diaryId = router.query.diaryId; // string
-  const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/diaryDetail/${diaryId}`, fetcher);
+  const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
   return (
     <AppLayout>
       {hasDiary ? (
