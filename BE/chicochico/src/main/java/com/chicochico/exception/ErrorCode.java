@@ -35,7 +35,9 @@ public enum ErrorCode {
 
 	/* 404 NOT_FOUND : 대상이 존재하지 않음 */
 	ENTITY_NOT_FOUND(NOT_FOUND, "엔티티가 존재하지 않습니다."),
-	USER_NOT_FOUND(NOT_FOUND, "대상이 존재하지 않습니다.");
+	USER_NOT_FOUND(NOT_FOUND, "대상이 존재하지 않습니다."),
+	ALERT_NOT_FOUND(NOT_FOUND, "해당 알림이 존재하지 않습니다."),
+	FEED_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;

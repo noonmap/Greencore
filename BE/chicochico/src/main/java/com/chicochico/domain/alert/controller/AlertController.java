@@ -8,6 +8,9 @@ import com.chicochico.domain.alert.service.AlertService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +28,9 @@ public class AlertController {
 
 	@GetMapping
 	@ApiOperation(value = "알림 목록 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<List<AlertResponseDto>>> getAlertList() {
+	public ResponseEntity<ResultDto<List<AlertResponseDto>>> getAlertList(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-		List<AlertEntity> alertList = alertService.getAlertList();
+		List<AlertEntity> alertList = alertService.getAlertList(pageable);
 		List<AlertResponseDto> alertResponseDtoList = AlertResponseDto.fromEntityList(alertList);
 
 		return ResponseEntity.ok().body(ResultDto.of(alertResponseDtoList));
