@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
-
 import AppLayout from '@/layout/AppLayout';
-import { logIn } from '@/core/user/userAPI';
+
 import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getAuth as GitHubGetAuth, signInWithPopup as GitHubSignInWithPopup, GithubAuthProvider, signOut as GitHubSignOut } from 'firebase/auth';
 import { getAuth as GoogleGetAuth, signInWithPopup as GoogleSignInWithPopup, GoogleAuthProvider, signOut as GoogleSignOut } from 'firebase/auth';
 
+import { signUp, logIn, logOut, checkEmailDuplicated } from '@/core/user/userAPI';
+import { SET_ACCESS_TOKEN, SET_IS_OAUTH_FALSE, SET_IS_OAUTH_TRUE } from '@/core/user/userSlice';
 import { checkInputFormToast } from '@/lib/utils';
+import * as cookies from '@/lib/cookies';
 
 type StateType = {
   email: string;
@@ -24,6 +26,7 @@ const initialState: StateType = {
 export default function login() {
   const dispatch = useAppDispatch();
   const firebase = useAppSelector((state) => state.common.firebase);
+  const accessToken = useAppSelector((state) => state.user.accessToken);
 
   // github
   const githubAuth = GitHubGetAuth(firebase);
@@ -33,13 +36,7 @@ export default function login() {
   const googleAuth = GoogleGetAuth(firebase);
   const googleProvider = new GoogleAuthProvider();
 
-  const {
-    register,
-    formState: { errors },
-    setValue,
-    getValues,
-    watch,
-  } = useForm<StateType>({ defaultValues: initialState });
+  const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
   const [email, password, files] = getValues(['email', 'password', 'files']);
 
@@ -53,7 +50,6 @@ export default function login() {
 
     try {
       const payload = { email, password };
-      console.log(payload);
       dispatch(logIn(payload));
     } catch (error) {
       console.error(error);
@@ -62,15 +58,34 @@ export default function login() {
 
   function handleGithubLogIn() {
     GitHubSignInWithPopup(githubAuth, githubProvider)
-      .then((result) => {
-        const credential = GithubAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-        console.log('credential:', credential);
-        console.log('token:', token);
-        console.log('user:', user);
-        // setUser(user);
-        // dispatch(logIn(result.user));
+      .then(async (result) => {
+        // const credential = GithubAuthProvider.credentialFromResult(result);
+        const token = result?.user?.stsTokenManager;
+        const user = result?.user?.reloadUserInfo;
+
+        // TODO: 만약 이메일 중복이 아니라면 -> 회원가입 되도록
+        // const { data } = await checkEmailDuplicated();
+        // console.log(data);
+
+        const githubEmail = user.email;
+        const githubUID = user.localId;
+        const githubNickname = user.screenName;
+        const githubPhotoUrl = user.photoUrl;
+
+        const githubAccessToken = token.accessToken;
+        const githubRefreshToken = token.refreshToken;
+
+        console.log(githubEmail, githubUID, githubNickname, githubPhotoUrl);
+        console.log(githubAccessToken, githubRefreshToken);
+
+        if (!false) {
+          const payload = { email: githubEmail, password: githubUID + '!', nickname: githubNickname };
+          const { data } = await signUp(payload);
+        }
+
+        dispatch(SET_IS_OAUTH_TRUE());
+        dispatch(SET_ACCESS_TOKEN(githubAccessToken));
+        cookies.setRefreshToken(githubRefreshToken);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -84,14 +99,31 @@ export default function login() {
 
   function handleGoogleLogIn() {
     GoogleSignInWithPopup(googleAuth, googleProvider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-        console.log('auth:', googleAuth);
-        console.log('credential:', credential);
-        console.log('token:', token);
-        console.log('user:', user);
+      .then(async (result) => {
+        // const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = result.user.stsTokenManager;
+        const user = result?.user?.reloadUserInfo;
+
+        const googleEmail = user.email;
+        const googleUID = user.localId;
+        const googleNickname = user.displayName;
+        const googlePhotoUrl = user.photoUrl;
+
+        const googleAccessToken = token.accessToken;
+        const googleRefreshToken = token.refreshToken;
+
+        console.log(googleEmail, googleNickname, googleUID, googlePhotoUrl);
+        console.log(googleAccessToken, googleRefreshToken);
+
+        // TODO: api 완성되면 이메일 중복 확인 하고 token 도 넘겨주기
+        if (!false) {
+          const payload = { email: googleEmail, password: googleUID + '!', nickname: googleNickname };
+          const { data } = await signUp(payload);
+        }
+
+        dispatch(SET_IS_OAUTH_TRUE());
+        dispatch(SET_ACCESS_TOKEN(googleAccessToken));
+        cookies.setRefreshToken(googleRefreshToken);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -109,10 +141,17 @@ export default function login() {
     });
   }
 
-  function handleLogOut() {
+  async function handleLogOut() {
+    try {
+      dispatch(logOut(accessToken));
+    } catch (error) {
+      console.error(error);
+    }
+
     GitHubSignOut(githubAuth)
       .then(() => {
         console.log('github sign out!');
+        dispatch(SET_IS_OAUTH_FALSE());
         // dispatch(logOut());
       })
       .catch((error) => {
@@ -122,6 +161,7 @@ export default function login() {
     GoogleSignOut(googleAuth)
       .then(() => {
         console.log('google sign out!');
+        dispatch(SET_IS_OAUTH_FALSE());
       })
       .catch((error) => {
         console.error(error);
@@ -131,6 +171,7 @@ export default function login() {
       .then(function () {
         console.log('kakao sign out!');
         alert('logout ok\naccess token -> ' + window.Kakao.Auth.getAccessToken());
+        dispatch(SET_IS_OAUTH_FALSE());
         // deleteCookie();
       })
       .catch(function () {

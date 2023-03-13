@@ -3,12 +3,10 @@ import AppLayout from '@/layout/AppLayout';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getDiaryList } from '~/src/core/diary/diaryAPI';
 import DiaryListItem from '@/components/DiaryListItem';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 export default function diary() {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const isLoading = useAppSelector((state) => state.diary.isLoading);
   const diaryList = useAppSelector((state) => state.diary.diaryList);
   const diarySet = useAppSelector((state) => state.diary.diarySet);
