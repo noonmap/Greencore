@@ -5,11 +5,13 @@ export const TOKEN_TIME_OUT = 600 * 1000;
 
 interface UserState {
   isAuthenticated: boolean;
+  isOAuth: boolean;
   accessToken: string | null;
 }
 
 const initialState: UserState = {
   isAuthenticated: false,
+  isOAuth: false,
   accessToken: null,
 };
 
@@ -17,7 +19,17 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
 
-  reducers: {},
+  reducers: {
+    SET_IS_OAUTH_TRUE: (state) => {
+      state.isOAuth = true;
+    },
+    SET_IS_OAUTH_FALSE: (state) => {
+      state.isOAuth = false;
+    },
+    SET_ACCESS_TOKEN: (state, action) => {
+      state.accessToken = action.payload;
+    },
+  },
 
   extraReducers(builder) {
     builder
@@ -51,4 +63,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { SET_IS_OAUTH_TRUE, SET_IS_OAUTH_FALSE, SET_ACCESS_TOKEN } = userSlice.actions;
 export default userSlice.reducer;

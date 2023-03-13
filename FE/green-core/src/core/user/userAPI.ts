@@ -62,6 +62,14 @@ export const checkEmail = async (payload: EmailType) => {
   }
 };
 
+// 이메일 중복 확인
+export const checkEmailDuplicated = async () => {
+  try {
+    const { data } = await http.get('/mail/confirm');
+    return data;
+  } catch (error) {}
+};
+
 // 임시 비밀번호 전송
 export const findPassword = async (payload: EmailType, accessToken: string) => {
   try {
