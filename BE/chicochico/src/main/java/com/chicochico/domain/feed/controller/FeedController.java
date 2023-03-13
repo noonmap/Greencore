@@ -25,9 +25,19 @@ public class FeedController {
 
 
 	@GetMapping
-	@ApiOperation(value = "피드를 조회합니다.", notes = "")
+	@ApiOperation(value = "피드 추천 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(Pageable pageable) {
 		Page<FeedEntity> feedEntityPage = feedService.getFeedList(pageable);
+		// TODO : entity page -> dto page 변환 추가
+
+		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+	}
+
+
+	@GetMapping("/follow")
+	@ApiOperation(value = "팔로우한 사람의 최신 피드 목록을 조회합니다.", notes = "")
+	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedListByFollowUser(Pageable pageable) {
+		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(pageable);
 		// TODO : entity page -> dto page 변환 추가
 
 		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
@@ -45,7 +55,7 @@ public class FeedController {
 
 
 	@PostMapping("/{feedId}/like")
-	@ApiOperation(value = "", notes = "")
+	@ApiOperation(value = "피드 좋아요를 누릅니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> createFeedLike(@PathVariable("feedId") Long feedId) {
 		feedService.createFeedLike(feedId);
 
@@ -54,7 +64,7 @@ public class FeedController {
 
 
 	@DeleteMapping("/{feedId}/like")
-	@ApiOperation(value = "", notes = "")
+	@ApiOperation(value = "피드 좋아요를 취소합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteFeedLike(@PathVariable("feedId") Long feedId) {
 		feedService.deleteFeedLike(feedId);
 

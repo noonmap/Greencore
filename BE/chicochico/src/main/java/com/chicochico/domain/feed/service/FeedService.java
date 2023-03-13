@@ -17,12 +17,23 @@ public class FeedService {
 
 
 	/**
-	 * 피드를 조회합니다.
+	 * 추천 피드를 조회합니다.
 	 *
 	 * @param pageable 페이지네이션
 	 * @return 피드 조회 페이지
 	 */
 	public Page<FeedEntity> getFeedList(Pageable pageable) {
+		return Page.empty();
+	}
+
+
+	/**
+	 * 팔로우한 사람의 최신 피드를 조회합니다.
+	 *
+	 * @param pageable
+	 * @return
+	 */
+	public Page<FeedEntity> getFeedListByFollowUser(Pageable pageable) {
 		return Page.empty();
 	}
 
