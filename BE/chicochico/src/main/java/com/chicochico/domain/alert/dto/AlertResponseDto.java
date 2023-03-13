@@ -34,6 +34,7 @@ public class AlertResponseDto {
 			.urlPath(alert.getUrlPath())
 			.createdAt(alert.getCreatedAt())
 			.build();
+		
 		return response;
 	}
 
