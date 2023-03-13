@@ -136,9 +136,7 @@ export default function login() {
   }
 
   function handleKakaoLogIn() {
-    window.Kakao.Auth.authorize({
-      redirectUri: 'http://localhost:3000/user/kakao',
-    });
+    window.Kakao.Auth.authorize({ redirectUri: 'http://localhost:3000/user/kakao' });
   }
 
   async function handleLogOut() {
@@ -152,7 +150,7 @@ export default function login() {
       .then(() => {
         console.log('github sign out!');
         dispatch(SET_IS_OAUTH_FALSE());
-        // dispatch(logOut());
+        // dispatch(logOut(accessToken)); // 위에서 했으니 굳이 할 필요 없음
       })
       .catch((error) => {
         console.error(error);
@@ -162,6 +160,7 @@ export default function login() {
       .then(() => {
         console.log('google sign out!');
         dispatch(SET_IS_OAUTH_FALSE());
+        // dispatch(logOut(accessToken));
       })
       .catch((error) => {
         console.error(error);
@@ -170,12 +169,13 @@ export default function login() {
     window.Kakao.Auth.logout()
       .then(function () {
         console.log('kakao sign out!');
-        alert('logout ok\naccess token -> ' + window.Kakao.Auth.getAccessToken());
+        console.log(window.Kakao.Auth.getAccessToken());
+        // alert('logout ok\naccess token -> ' + window.Kakao.Auth.getAccessToken());
         dispatch(SET_IS_OAUTH_FALSE());
-        // deleteCookie();
+        // dispatch(logOut(accessToken));
       })
       .catch(function () {
-        alert('Not logged in');
+        console.log('Not kakao logged in');
       });
   }
 
