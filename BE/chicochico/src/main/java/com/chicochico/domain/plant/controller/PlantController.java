@@ -37,7 +37,7 @@ public class PlantController {
 	}
 
 
-	@GetMapping("/docs")
+	@GetMapping(value = "/docs", params = { "search" })
 	@ApiOperation(value = "도감페이지에서 식물이름을 검색합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantList(@RequestParam("search") String search, Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantList(search, pageable);
@@ -47,7 +47,7 @@ public class PlantController {
 	}
 
 
-	@GetMapping("/docs")
+	@GetMapping(value = "/docs", params = { "index" })
 	@ApiOperation(value = "식물 도감 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantListByIndex(@RequestParam("index") String index, Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantListByIndex(index, pageable);
@@ -57,7 +57,7 @@ public class PlantController {
 	}
 
 
-	@GetMapping("/docs")
+	@GetMapping("/docs/{plantId}")
 	@ApiOperation(value = "식물 도감에서 상세 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<PlantDocResponseDto>> getPlant(@PathVariable("plantId") String plantId) {
 		PlantEntity plant = plantService.getPlant(plantId);
