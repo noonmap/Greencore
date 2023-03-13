@@ -1,5 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import http from '@/lib/http';
+import * as cookies from '@/lib/cookies';
+
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
@@ -60,10 +62,23 @@ export const checkEmail = async (payload: EmailType) => {
   }
 };
 
-// 임시 비밀번호 전송
-export const findPassword = async (payload: EmailType) => {
+// 이메일 중복 확인
+export const checkEmailDuplicated = async () => {
   try {
-    const { data } = await http.post('/mail/password', payload);
+    const { data } = await http.get('/mail/confirm');
+    return data;
+  } catch (error) {}
+};
+
+// 임시 비밀번호 전송
+export const findPassword = async (payload: EmailType, accessToken: string) => {
+  try {
+    const headers = {
+      authorization: accessToken,
+      'x-refresh-token': cookies.getCookieToken(),
+    };
+
+    const { data } = await http.post('/mail/password', payload, { headers });
 
     Toastify({
       text: message.FindPasswordSuccess,
@@ -130,20 +145,98 @@ export const deleteUser = async () => {
 // 로그인
 export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
   try {
-    const { data } = await http.post('/login', payload);
+    const res = await http.post('/login', payload);
+    console.log('login data: ', res);
+
+    let accessToken = null;
+    let refreshToken = null;
+
+    if (res.data.result == 'SUCCESS') {
+      Toastify({
+        text: message.LogInSuccess,
+        duration: 1500,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+
+      accessToken = res.headers['authorization'];
+      refreshToken = res.headers['x-refresh-token'];
+
+      cookies.setRefreshToken(refreshToken);
+    } else {
+      Toastify({
+        text: message.LogInFail,
+        duration: 1500,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+
+      if (cookies.getCookieToken()) cookies.removeCookieToken();
+    }
+
+    return { accessToken };
+  } catch (error) {
+    Toastify({
+      text: message.LogInFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
+});
+
+// refresh 토큰
+export const getAccessToken = createAsyncThunk('getAccessToken', async (payload) => {
+  try {
+    if (cookies.getCookieToken()) {
+      const res = await http.post('/refresh', payload);
+
+      let accessToken = null;
+      let refreshToken = null;
+
+      if (res.data.result == 'SUCCESS') {
+        accessToken = res.headers['authorization'];
+        refreshToken = res.headers['x-refresh-token'];
+
+        cookies.setRefreshToken(refreshToken);
+      }
+
+      return { accessToken };
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// 로그아웃
+export const logOut = createAsyncThunk('logOut', async (accessToken: string) => {
+  try {
+    const headers = {
+      authorization: accessToken,
+      'x-refresh-token': cookies.getCookieToken(),
+    };
+
+    const { data } = await http.delete('/logout', { headers });
+
+    if (cookies.getCookieToken()) cookies.removeCookieToken();
 
     Toastify({
-      text: message.LogInSuccess,
+      text: message.LogOutSuccess,
       duration: 1500,
       position: 'center',
       stopOnFocus: true,
       style: toastifyCSS.success,
     }).showToast();
 
-    return data;
+    console.log(data);
   } catch (error) {
     Toastify({
-      text: message.LogInFail,
+      text: message.LogOutFail,
       duration: 1500,
       position: 'center',
       stopOnFocus: true,

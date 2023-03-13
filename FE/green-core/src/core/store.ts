@@ -2,7 +2,9 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
 import counterReduer from './temp/counter/counterSlice';
 import postReducer from './temp/post/postSlice';
+
 import commonReducer from './common/commonSlice';
+import userReducer from './user/userSlice';
 import diaryReducer from './diary/diarySlice';
 import alertReducer from './alert/alertSlice';
 import feedReducer from './feed/feedSlice';
@@ -14,6 +16,7 @@ export function makeStore() {
       post: postReducer,
 
       common: commonReducer,
+      user: userReducer,
       diary: diaryReducer,
       alert: alertReducer,
       feed: feedReducer,
