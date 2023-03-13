@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import kakaoConfig from '~/config/kakaoConfig.json';
 
 import counterReduer from './temp/counter/counterSlice';
 import postReducer from './temp/post/postSlice';
@@ -13,11 +12,13 @@ export function makeStore() {
     reducer: {
       counter: counterReduer,
       post: postReducer,
-      diary: diaryReducer,
+
       common: commonReducer,
+      diary: diaryReducer,
       alert: alertReducer,
       feed: feedReducer,
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
   });
 }
 
