@@ -9,8 +9,8 @@ import { useForm } from 'react-hook-form';
 
 export default function creatediary() {
   const router = useRouter();
-  const [preview, onChangePreview] = useState('');
-  const [tagList, onChangeTagList] = useState([]);
+  const [preview, setPreview] = useState<any>('');
+  const [tagList, setTagList] = useState([]);
 
   type StateType = {
     diarysetId: number;
@@ -38,28 +38,28 @@ export default function creatediary() {
   }, []);
 
   // 태그 입력
-  const handlerOnChangeTagItem = (e) => {
+  const handleOnChangeTagItem = (e) => {
     if ((tagItem.length !== 0 && e.key === 'Enter') || e.key === ' ') {
-      handlerChangeTagList();
+      handleChangeTagList();
     }
   };
 
   // 태그 생성
-  const handlerChangeTagList = () => {
+  const handleChangeTagList = () => {
     const updatedTagList = [...tagList];
     let filteredTagList = updatedTagList.filter((item) => item !== tagItem);
     if (tagItem.trim()) {
       filteredTagList.push(tagItem.trim());
     }
-    onChangeTagList(filteredTagList);
+    setTagList(filteredTagList);
     setValue('tagItem', '');
   };
 
   // 태그 삭제
-  const handlerDeleteTagItem = (e) => {
+  const handleDeleteTagItem = (e) => {
     const deleteTagItem = e.target.parentElement.firstChild.innerText;
     const filteredTagList = tagList.filter((item) => item !== deleteTagItem);
-    onChangeTagList(filteredTagList);
+    setTagList(filteredTagList);
   };
 
   // 이미지 미리보기
@@ -67,7 +67,7 @@ export default function creatediary() {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(e.target.files[0]);
     fileReader.onload = () => {
-      onChangePreview(fileReader.result);
+      setPreview(fileReader.result);
     };
   };
 
@@ -138,7 +138,7 @@ export default function creatediary() {
               return (
                 <div key={index} style={{ display: 'flex' }}>
                   <div style={{}}>{tagItem}</div>
-                  <button onClick={handlerDeleteTagItem} style={{ paddingInline: '4px' }}>
+                  <button onClick={handleDeleteTagItem} style={{ paddingInline: '4px' }}>
                     X
                   </button>
                 </div>
@@ -149,7 +149,7 @@ export default function creatediary() {
               {...register('tagItem')}
               placeholder='태그(엔터 눌리면 입력됨)'
               onKeyUp={(event) => {
-                handlerOnChangeTagItem(event);
+                handleOnChangeTagItem(event);
               }}
             />
           </div>
