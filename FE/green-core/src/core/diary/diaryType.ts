@@ -13,11 +13,3 @@ export type DiaryType = {
   imagePath: FormData;
   commentCount: number;
 };
-
-export type CreateDiaryType = {
-  diarySetId: number;
-  content: string;
-  tags: Array<string>;
-  opservationDate: string;
-  image: FormData;
-};
