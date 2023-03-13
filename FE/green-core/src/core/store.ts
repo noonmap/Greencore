@@ -1,25 +1,26 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import kakaoConfig from '~/config/kakaoConfig.json';
-
 
 import counterReduer from './temp/counter/counterSlice';
 import postReducer from './temp/post/postSlice';
 import commonReducer from './common/commonSlice';
 import diaryReducer from './diary/diarySlice';
 import alertReducer from './alert/alertSlice';
+import feedReducer from './feed/feedSlice';
 
 export function makeStore() {
   return configureStore({
-		reducer: {
-			counter: counterReduer,
-			post: postReducer,
-			common: commonReducer,
-			diary: diaryReducer,
-			alert: alertReducer
-		}
-	});
-}
+    reducer: {
+      counter: counterReduer,
+      post: postReducer,
 
+      common: commonReducer,
+      diary: diaryReducer,
+      alert: alertReducer,
+      feed: feedReducer,
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
+  });
+}
 
 const store = makeStore();
 
