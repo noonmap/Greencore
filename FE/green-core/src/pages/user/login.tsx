@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-
 import AppLayout from '@/layout/AppLayout';
-import { logIn } from '@/core/user/userAPI';
+import { logIn, logOut } from '@/core/user/userAPI';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getAuth as GitHubGetAuth, signInWithPopup as GitHubSignInWithPopup, GithubAuthProvider, signOut as GitHubSignOut } from 'firebase/auth';
 import { getAuth as GoogleGetAuth, signInWithPopup as GoogleSignInWithPopup, GoogleAuthProvider, signOut as GoogleSignOut } from 'firebase/auth';
 
 import { checkInputFormToast } from '@/lib/utils';
+import * as cookies from '@/lib/cookies';
 
 type StateType = {
   email: string;
@@ -53,7 +53,6 @@ export default function login() {
 
     try {
       const payload = { email, password };
-      console.log(payload);
       dispatch(logIn(payload));
     } catch (error) {
       console.error(error);
@@ -109,7 +108,13 @@ export default function login() {
     });
   }
 
-  function handleLogOut() {
+  async function handleLogOut() {
+    try {
+      dispatch(logOut());
+    } catch (error) {
+      console.error(error);
+    }
+
     GitHubSignOut(githubAuth)
       .then(() => {
         console.log('github sign out!');

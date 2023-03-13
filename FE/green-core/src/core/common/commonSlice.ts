@@ -1,32 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 // firebase
-import firebaseConfig from "~/config/firebaseConfig.json";
-import { initializeApp } from "firebase/app";
+import firebaseConfig from '~/config/firebaseConfig.json';
+import { initializeApp } from 'firebase/app';
 
 interface CommonState {
-	firebase: any;
-	isLoading: boolean;
-	accessToken: string;
-	refreshToken: string;
-	expireTime: string;
+  firebase: any;
+  isLoading: boolean;
 }
 
 const firebase = initializeApp(firebaseConfig);
 
 const initialState: CommonState = {
-	firebase: firebase,
-	isLoading: false,
-	accessToken: '',
-	refreshToken: '',
-	expireTime: ''
+  firebase: firebase,
+  isLoading: false,
 };
 
 const commonSlice = createSlice({
-  name: "common",
+  name: 'common',
   initialState,
 
   reducers: {},
+
   extraReducers(builder) {},
 });
 

@@ -1,15 +1,18 @@
 import { Provider } from 'react-redux';
+import { CookiesProvider } from 'react-cookie';
 import type { AppProps } from 'next/app';
+import { useEffect } from 'react';
 import Script from 'next/script';
+import store from '@/core/store';
 
 import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'toastify-js/src/toastify.css';
-import kakaoConfig from '~/config/kakaoConfig.json';
 
-import store from '@/core/store';
-import { useEffect } from 'react';
+import kakaoConfig from '~/config/kakaoConfig.json';
+import { useAppDispatch } from '@/core/hooks';
+import { getAccessToken } from '@/core/user/userAPI';
 
 declare global {
   interface Window {
@@ -17,13 +20,12 @@ declare global {
   }
 }
 
-export default function App({ Component, pageProps }: AppProps) {
-  function kakaoInit() {
-    window.Kakao.init(kakaoConfig.apiKey);
-    console.log('kakao:', window.Kakao.isInitialized());
-  }
+function App() {
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(getAccessToken());
+
     var styles = [
       'background-image: radial-gradient( circle 1259px at 2.8% 48.8%,  rgba(255,243,110,1) 0%, rgba(30,204,214,1) 45.6%, rgba(5,54,154,1) 65.9% );',
       // "border: 1px solid #3E0E02",
@@ -46,14 +48,26 @@ export default function App({ Component, pageProps }: AppProps) {
     return () => {};
   }, []);
 
+  return <></>;
+}
+
+export default function AppWraper({ Component, pageProps }: AppProps) {
+  function kakaoInit() {
+    window.Kakao.init(kakaoConfig.apiKey);
+    console.log('kakao:', window.Kakao.isInitialized());
+  }
+
   return (
-    <Provider store={store}>
-      <Component {...pageProps} />
-      <Script
-        src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js'
-        integrity='sha384-dpu02ieKC6NUeKFoGMOKz6102CLEWi9+5RQjWSV0ikYSFFd8M3Wp2reIcquJOemx'
-        crossOrigin='anonymous'
-        onLoad={kakaoInit}></Script>
-    </Provider>
+    <CookiesProvider>
+      <Provider store={store}>
+        <App />
+        <Component {...pageProps} />
+        <Script
+          src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js'
+          integrity='sha384-dpu02ieKC6NUeKFoGMOKz6102CLEWi9+5RQjWSV0ikYSFFd8M3Wp2reIcquJOemx'
+          crossOrigin='anonymous'
+          onLoad={kakaoInit}></Script>
+      </Provider>
+    </CookiesProvider>
   );
 }
