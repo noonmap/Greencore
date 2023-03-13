@@ -63,9 +63,14 @@ export const checkEmail = async (payload: EmailType) => {
 };
 
 // 임시 비밀번호 전송
-export const findPassword = async (payload: EmailType) => {
+export const findPassword = async (payload: EmailType, accessToken: string) => {
   try {
-    const { data } = await http.post('/mail/password', payload);
+    const headers = {
+      authorization: accessToken,
+      'x-refresh-token': cookies.getCookieToken(),
+    };
+
+    const { data } = await http.post('/mail/password', payload, { headers });
 
     Toastify({
       text: message.FindPasswordSuccess,
@@ -201,9 +206,14 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (payload)
 });
 
 // 로그아웃
-export const logOut = createAsyncThunk('logOut', async () => {
+export const logOut = createAsyncThunk('logOut', async (accessToken: string) => {
   try {
-    const { data } = await http.delete('/logout');
+    const headers = {
+      authorization: accessToken,
+      'x-refresh-token': cookies.getCookieToken(),
+    };
+
+    const { data } = await http.delete('/logout', { headers });
 
     if (cookies.getCookieToken()) cookies.removeCookieToken();
 

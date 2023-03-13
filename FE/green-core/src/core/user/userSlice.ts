@@ -5,7 +5,7 @@ export const TOKEN_TIME_OUT = 600 * 1000;
 
 interface UserState {
   isAuthenticated: boolean;
-  accessToken: string;
+  accessToken: string | null;
 }
 
 const initialState: UserState = {

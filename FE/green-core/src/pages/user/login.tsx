@@ -7,7 +7,6 @@ import { getAuth as GitHubGetAuth, signInWithPopup as GitHubSignInWithPopup, Git
 import { getAuth as GoogleGetAuth, signInWithPopup as GoogleSignInWithPopup, GoogleAuthProvider, signOut as GoogleSignOut } from 'firebase/auth';
 
 import { checkInputFormToast } from '@/lib/utils';
-import * as cookies from '@/lib/cookies';
 
 type StateType = {
   email: string;
@@ -24,6 +23,7 @@ const initialState: StateType = {
 export default function login() {
   const dispatch = useAppDispatch();
   const firebase = useAppSelector((state) => state.common.firebase);
+  const accessToken = useAppSelector((state) => state.user.accessToken);
 
   // github
   const githubAuth = GitHubGetAuth(firebase);
@@ -110,7 +110,7 @@ export default function login() {
 
   async function handleLogOut() {
     try {
-      dispatch(logOut());
+      dispatch(logOut(accessToken));
     } catch (error) {
       console.error(error);
     }
