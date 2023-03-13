@@ -4,11 +4,10 @@ import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 import { useAppDispatch, useInput } from '@/core/hooks';
-import { createDiary } from '@/core/diary/diaryAPI';
 import { useRouter } from 'next/router';
+import http from '@/lib/http';
 
 export default function creatediary() {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const [diarySetId, onChangeDiarySetId] = useInput(0);
   const [content, onChangeContent] = useInput('');
@@ -29,20 +28,30 @@ export default function creatediary() {
     };
   };
 
+  // 일지 생성, {diarySetId, content, tags, opservationDate, image}
+  const createDiary = async (formData: FormData) => {
+    try {
+      const { data } = await http.post(`/diary/${formData.get('diarySetId')}`, formData);
+      return data;
+    } catch (err) {
+      console.log(err);
+      return '';
+    }
+  };
+
   // 일지 생성
   const handlecreateDiary = async (e) => {
     e.preventDefault();
+    const hashtags = content.match(/#[^\s#]+/g);
+    const formData = new FormData();
+    formData.append('diarySetId', diarySetId);
+    formData.append('content', content);
+    formData.append('tags', hashtags ? hashtags : []);
+    formData.append('opservationDate', opservationDate);
+    formData.append('image', image);
     try {
-      const hashtags = content.match(/#[^\s#]+/g);
-      const formData = new FormData();
-      formData.append('diarySetId', diarySetId);
-      formData.append('content', content);
-      formData.append('tags', hashtags ? hashtags : []);
-      formData.append('opservationDate', opservationDate);
-      formData.append('image', image);
-      const data = await dispatch(createDiary(formData));
-
-      if (data.payload.result === 'SUCCESS') {
+      const { data } = await http.post(`/diaryset/${formData.get('diarySetId')}`, formData);
+      if (data.result === 'SUCCESS') {
         router.push('/diary');
         Toastify({
           text: message.CheckNicknameFail, // 바꿔야됨
