@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { FeedType } from './feedType';
-import { getFeedList } from './feedAPI';
+import { getFeedList, getFollowFeedList } from './feedAPI';
 
 interface FeedState {
   isLoading: boolean;
@@ -20,14 +20,27 @@ const feedSlice = createSlice({
   name: 'feed',
   initialState,
 
-  reducers: {},
+  reducers: {
+    initFeedList: (state) => {
+      state.feedList = [];
+      state.page = 0;
+      state.isStop = false;
+    },
+  },
 
   extraReducers(builder) {
     builder
-      .addCase(getFeedList.pending, (state) => {
-        // state.isLoading = true;
-      })
+      .addCase(getFeedList.pending, (state) => {})
       .addCase(getFeedList.fulfilled, (state, action) => {
+        if (action.payload.length === 0) {
+          state.isStop = true;
+        }
+        state.page = state.page + 1;
+        state.isLoading = false;
+        state.feedList = [...state.feedList, ...action.payload];
+      })
+      .addCase(getFollowFeedList.pending, (state) => {})
+      .addCase(getFollowFeedList.fulfilled, (state, action) => {
         if (action.payload.length === 0) {
           state.isStop = true;
         }
@@ -37,5 +50,5 @@ const feedSlice = createSlice({
       });
   },
 });
-
+export const { initFeedList } = feedSlice.actions;
 export default feedSlice.reducer;

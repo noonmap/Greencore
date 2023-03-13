@@ -50,6 +50,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
           </Link>
         </div>
         <div>좋아요 수 : {feed.likeCount || <Skeleton />}</div>
+        <div>좋아요 여부 : {feed.isLiked ? 'true' : 'false' || <Skeleton />}</div>
         <div>댓글 수 : {feed.commentCount || <Skeleton />}</div>
         <div>작성일자 : {feed.craetedAt || <Skeleton />}</div>
       </div>

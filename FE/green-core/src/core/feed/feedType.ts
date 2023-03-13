@@ -18,6 +18,7 @@ export type FeedType = {
   content: string;
   imagePath?: string; // 포스트엔 없을수도
   likeCount: number;
+  isLiked: boolean;
   craetedAt: string;
   commentCount: number;
 };

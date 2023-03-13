@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import { getFeedList } from '@/core/feed/feedAPI';
+import { getFeedList, getFollowFeedList } from '@/core/feed/feedAPI';
 import FeedListItem from '@/components/FeedListItem';
+import { initFeedList } from '@/core/feed/feedSlice';
 
 export default function feed() {
   // 전역 상태관리
@@ -17,6 +18,13 @@ export default function feed() {
   const dispatch = useAppDispatch();
 
   const [isSelectRecomment, setIsSelectRecomment] = useState(true);
+
+  //
+  useEffect(() => {
+    // feedList 초기화 하기
+    dispatch(initFeedList());
+    setIsLoaded(true);
+  }, [isSelectRecomment]);
 
   // 초기 웹 훅
   useEffect(() => {
@@ -33,7 +41,11 @@ export default function feed() {
       };
 
       // 전역 상태관리
-      await dispatch(getFeedList(params));
+      if (isSelectRecomment) {
+        await dispatch(getFeedList(params));
+      } else {
+        await dispatch(getFollowFeedList(params));
+      }
       setIsLoaded(false);
     }
   }
@@ -64,7 +76,7 @@ export default function feed() {
       }, 100);
     }
     return () => observer && observer.disconnect();
-  }, [target, isLoaded]);
+  }, [target, isLoaded, isSelectRecomment]);
 
   function handleClickRecommend() {
     setIsSelectRecomment(true);
@@ -89,19 +101,12 @@ export default function feed() {
         </div>
       ) : (
         <>
-          {isSelectRecomment ? (
-            <div>
-              <div>
-                {feedList.map((feed) => (
-                  <FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
-                ))}
-                <div ref={setTarget} />
-              </div>
-            </div>
-          ) : (
-            <div>팔로우피드</div>
-          )}
-          <div />
+          <div>
+            {feedList.map((feed) => (
+              <FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
+            ))}
+            <div ref={setTarget} />
+          </div>
         </>
       )}
     </AppLayout>
