@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "like") // snake_case로 설정
+@Table(name = "feed_like") // snake_case로 설정
 public class LikeEntity {
 
 	@Id
@@ -29,4 +29,5 @@ public class LikeEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "feed_id", nullable = false) // FK 이름 지정
 	private FeedEntity feed;
+
 }
