@@ -22,3 +22,10 @@ export type FeedType = {
   craetedAt: string;
   commentCount: number;
 };
+
+export type TagFeedType = {
+  feedId: number;
+  feedCode: string;
+  imagePath?: string;
+  content: string;
+};
