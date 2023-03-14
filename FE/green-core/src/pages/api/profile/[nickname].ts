@@ -7,7 +7,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
       result: 'SUCCESS',
       data: {
         nickname: 'test',
-        profileImagePath: '/public/images/profile.png',
+        profileImagePath: '/images/noProfile_white.png',
         introduction: '안녕하세요 test 입니다',
         followingCount: 111,
         followerCount: 222,
