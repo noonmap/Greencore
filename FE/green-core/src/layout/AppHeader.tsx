@@ -13,7 +13,8 @@ export default function AppHeader() {
       <Link href='/user/signup'>회원가입</Link>
       <Link href='/user/login'>로그인</Link>
       <Link href='/user/password'>새로운 비밀번호</Link>
-      <Link href='/myfeed'>내 피드</Link>
+      <Link href='/user/feed'>redux-persist test</Link>
+      <Link href='/user/feed/anyNickname'>내 피드</Link>
 
       {/* 승태 */}
       <Link href='/alert'>알림</Link>

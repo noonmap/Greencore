@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import counterReduer from './temp/counter/counterSlice';
@@ -12,7 +12,7 @@ import alertReducer from './alert/alertSlice';
 import feedReducer from './feed/feedSlice';
 
 // whitelist: 이것만 적용, blacklist: 해당 것만 제외하고 모두 적용
-const persistConfig = { key: 'root', storage, whitelist: ['common'] };
+const persistConfig = { key: 'root', version: 1, storage, whitelist: ['common'] };
 
 const rootReducer = combineReducers({
   counter: counterReduer,
@@ -29,7 +29,9 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export function makeStore() {
   return configureStore({
     reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
+    middleware: (getDefaultMiddleware) =>
+      // getDefaultMiddleware({ serializableCheck: { ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] } }),
+      getDefaultMiddleware({ serializableCheck: false }),
   });
 }
 

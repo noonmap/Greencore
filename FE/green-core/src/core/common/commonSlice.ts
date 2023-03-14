@@ -1,12 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 // firebase
 import firebaseConfig from '~/config/firebaseConfig.json';
 import { initializeApp } from 'firebase/app';
 
+import { UserInfoType } from './commonType';
+import { logIn } from '@/core/user/userAPI';
+
 interface CommonState {
   firebase: any;
   isLoading: boolean;
+  userInfo: UserInfoType;
 }
 
 const firebase = initializeApp(firebaseConfig);
@@ -14,6 +17,7 @@ const firebase = initializeApp(firebaseConfig);
 const initialState: CommonState = {
   firebase: firebase,
   isLoading: false,
+  userInfo: { nickname: 'temp', profileImagePath: '/public/images/noProfile.png' },
 };
 
 const commonSlice = createSlice({
@@ -29,8 +33,17 @@ const commonSlice = createSlice({
     },
   },
 
-  extraReducers(builder) {},
+  extraReducers(builder) {
+    builder
+      .addCase(logIn.pending, (state) => {
+        state.userInfo = { nickname: 'temp', profileImagePath: '/public/images/noProfile.png' };
+      })
+      .addCase(logIn.fulfilled, (state, action) => {
+        state.userInfo = action.payload.userInfo;
+      });
+  },
 });
 
 export const { SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE } = commonSlice.actions;
+
 export default commonSlice.reducer;
