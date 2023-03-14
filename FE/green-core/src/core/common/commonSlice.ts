@@ -4,7 +4,7 @@ import firebaseConfig from '~/config/firebaseConfig.json';
 import { initializeApp } from 'firebase/app';
 
 import { UserInfoType } from './commonType';
-import { logIn } from '@/core/user/userAPI';
+import { logIn, deleteUser } from '@/core/user/userAPI';
 
 interface CommonState {
   firebase: any;
@@ -17,7 +17,7 @@ const firebase = initializeApp(firebaseConfig);
 const initialState: CommonState = {
   firebase: firebase,
   isLoading: false,
-  userInfo: { nickname: 'temp', profileImagePath: '/public/images/noProfile.png' },
+  userInfo: null,
 };
 
 const commonSlice = createSlice({
@@ -36,10 +36,13 @@ const commonSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(logIn.pending, (state) => {
-        state.userInfo = { nickname: 'temp', profileImagePath: '/public/images/noProfile.png' };
+        state.userInfo = null;
       })
       .addCase(logIn.fulfilled, (state, action) => {
         state.userInfo = action.payload.userInfo;
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.userInfo = null;
       });
   },
 });

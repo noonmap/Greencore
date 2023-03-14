@@ -118,9 +118,16 @@ export const checkAuthCode = async (payload: EmailType) => {
 };
 
 // 회원탈퇴
-export const deleteUser = async () => {
+export const deleteUser = createAsyncThunk('deleteUser', async (accessToken: string) => {
   try {
-    const { data } = await http.delete(`/user`);
+    const headers = {
+      authorization: accessToken,
+      'x-refresh-token': cookies.getCookieToken(),
+    };
+
+    const { data } = await http.delete(`/user`, { headers });
+
+    if (cookies.getCookieToken()) cookies.removeCookieToken();
 
     Toastify({
       text: message.DeleteUserSuccess,
@@ -140,7 +147,7 @@ export const deleteUser = async () => {
       style: toastifyCSS.fail,
     }).showToast();
   }
-};
+});
 
 // 로그인
 export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
@@ -330,7 +337,7 @@ export const getProfile = async (nickname: string | string[]) => {
 };
 
 // 회원 프로필 수정
-export const updateProfile = createAsyncThunk('updateProfile', async (payload: ProfileType) => {
+export const updateProfile = async (payload: ProfileType) => {
   try {
     const { data } = await http.put(`/profile`, payload);
 
@@ -352,7 +359,7 @@ export const updateProfile = createAsyncThunk('updateProfile', async (payload: P
       style: toastifyCSS.fail,
     }).showToast();
   }
-});
+};
 
 // 회원 프로필 이미지 수정
 export const updateProfileImage = createAsyncThunk('updateProfileImage', async (payload: ProfileType) => {

@@ -57,6 +57,10 @@ const userSlice = createSlice({
           state.isAuthenticated = true;
           state.accessToken = action.payload?.accessToken;
         }
+      })
+      .addCase(userAPI.deleteUser.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.accessToken = null;
       });
   },
 });

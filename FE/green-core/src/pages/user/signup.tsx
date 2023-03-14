@@ -46,7 +46,7 @@ export default function signup() {
     'isCheckedNickname',
   ]);
 
-  const inputRef = useRef(null);
+  // const inputRef = useRef(null);
 
   useEffect(() => {
     watch();
@@ -108,7 +108,7 @@ export default function signup() {
   }
 
   function handleCheckPassword(e) {
-    if (password === e.target.value) return setValue('passwordMessage', '똑같음');
+    if (password === e.target.value || checkPassword === e.target.value) return setValue('passwordMessage', '똑같음');
     else return setValue('passwordMessage', '다름');
   }
 
@@ -193,6 +193,7 @@ export default function signup() {
                 value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
                 message: '최소 8 자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자',
               },
+              onChange: (e) => handleCheckPassword(e),
             })}
             placeholder='비밀번호'
           />
@@ -207,7 +208,7 @@ export default function signup() {
                 value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
                 message: '최소 8 자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자',
               },
-              onBlur: (e) => handleCheckPassword(e),
+              onChange: (e) => handleCheckPassword(e),
             })}
             placeholder='비밀번호 확인'
           />
