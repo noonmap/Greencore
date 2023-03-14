@@ -195,7 +195,7 @@ export default function login() {
     <AppLayout>
       <h1>로그인</h1>
 
-      <input type='file' accept='image/*' {...register('files')} />
+      {/* <input type='file' accept='image/*' {...register('files')} /> */}
 
       <div className='space-y-2'>
         <label>이메일</label>
