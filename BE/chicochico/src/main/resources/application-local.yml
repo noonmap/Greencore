@@ -1,0 +1,75 @@
+server:
+  servlet:
+    context-path: /api
+    # file upload
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+
+spring:
+  #  profiles:
+  #    default: local
+  output:
+    ansi:
+      enabled: always
+
+  # MySQL
+  datasource:
+    driver-class-name: ${db.mysql.driver}
+    url: ${db.mysql.url}
+    username: ${db.mysql.username}
+    password: ${db.mysql.password}
+
+  # swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  # Mail ??
+  mail:
+    # Naver smtp server ??
+    host: smtp.naver.com
+    port: 465
+    username: ${auth.smtp.username}
+    password: ${auth.smtp.password}
+    properties:
+      debug: true
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+  # SERVER AUTO RELOAD
+  devtools:
+    livereload.enabled: true
+  freemarker:
+    cache: false
+  # JPA for auto reload
+  jpa:
+    show-sql: ${jpa.show.sql}
+    hibernate:
+      ddl-auto: ${jpa.ddl.option}
+      naming:
+        # camelCase -> snake_case
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: ${sql.init.mode}
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+
+  # hibernate logging
+  logging:
+    level:
+      org.hibernate: ${log.hibernate.level}
+
+# JWT Login
+token:
+  accesskey: ${jwt.accesskey}
+  refreshkey: ${jwt.refreshkey}
+  datakey: ${jwt.datakey}
