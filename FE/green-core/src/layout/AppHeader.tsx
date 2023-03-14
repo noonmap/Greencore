@@ -17,6 +17,7 @@ export default function AppHeader() {
 
       {/* 승태 */}
       <Link href='/alert'>알림</Link>
+      <Link href='/feed'>피드</Link>
 
       {/* 형규 */}
       <Link href='/diary'>일지</Link>

@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import { TagFeedType } from '../core/feed/feedType';
-import Image from 'next/image';
 import styles from '@/styles/feed.module.scss';
 
 export default function TagFeedListItem(props: { tagFeed: TagFeedType }) {
