@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as userAPI from './userAPI';
 
-export const TOKEN_TIME_OUT = 600 * 1000;
-
 interface UserState {
   isAuthenticated: boolean;
   isOAuth: boolean;
