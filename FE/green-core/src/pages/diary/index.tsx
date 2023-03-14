@@ -7,9 +7,9 @@ import Link from 'next/link';
 
 export default function diary() {
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector((state) => state.diary.isLoading);
-  const diaryList = useAppSelector((state) => state.diary.diaryList);
-  const diarySet = useAppSelector((state) => state.diary.diarySet);
+  const isLoading = useAppSelector<boolean>((state) => state.diary.isLoading);
+  const diaryList = useAppSelector<Array<any>>((state) => state.diary.diaryList);
+  const diarySet = useAppSelector<any>((state) => state.diary.diarySet);
 
   useEffect(() => {
     const diarySetId: number = 0;
