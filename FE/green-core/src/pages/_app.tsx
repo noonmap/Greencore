@@ -7,6 +7,7 @@ import store from '@/core/store';
 
 import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'toastify-js/src/toastify.css';
 
@@ -54,7 +55,7 @@ function App() {
 export default function AppWraper({ Component, pageProps }: AppProps) {
   function kakaoInit() {
     window.Kakao.init(kakaoConfig.apiKey);
-    console.log('kakao:', window.Kakao.isInitialized());
+    window.Kakao.isInitialized();
   }
 
   return (
@@ -63,8 +64,8 @@ export default function AppWraper({ Component, pageProps }: AppProps) {
         <App />
         <Component {...pageProps} />
         <Script
-          src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js'
-          integrity='sha384-dpu02ieKC6NUeKFoGMOKz6102CLEWi9+5RQjWSV0ikYSFFd8M3Wp2reIcquJOemx'
+          src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'
+          integrity='sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB'
           crossOrigin='anonymous'
           onLoad={kakaoInit}></Script>
       </Provider>
