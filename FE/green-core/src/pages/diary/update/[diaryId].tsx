@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import Toastify from 'toastify-js';
 import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
-import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import http from '@/lib/http';
-import { useForm } from 'react-hook-form';
 
-export default function creatediary() {
+const fetcher = (url: string) => http.get(url).then((res) => res.data);
+
+export default function updatediary() {
   const router = useRouter();
   const [preview, setPreview] = useState<any>('');
   const [tagList, setTagList] = useState<Array<string>>([]);
+  const diaryId = router.query.diaryId; // string
+  const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
 
   type StateType = {
     diarysetId: number;
@@ -33,12 +38,22 @@ export default function creatediary() {
   const [diarysetId, content, opservationDate, image, tagItem] = getValues(['diarysetId', 'content', 'opservationDate', 'image', 'tagItem']);
 
   useEffect(() => {
+    if (!hasDiary) {
+      setPreview(diary.data.imagePath);
+      setTagList(diary.data.tags);
+      setValue('diarysetId', diary.data.diarySetId);
+      setValue('content', diary.data.content);
+      setValue('opservationDate', diary.data.observationDate);
+    }
+  }, [hasDiary]);
+
+  useEffect(() => {
     watch();
     return () => {};
   }, []);
 
   // 태그 입력
-  const handleOnChangeTagItem = (e) => {
+  const handleOnChangeTagItem = (e: any) => {
     if ((tagItem.length !== 0 && e.key === 'Enter') || e.key === ' ') {
       handleChangeTagList();
     }
@@ -80,13 +95,13 @@ export default function creatediary() {
     router.back();
   };
 
-  // 일지 생성
-  const handleCreateDiary = async (e: any) => {
+  // 일지 수정
+  const handleUpdateDiary = async (e: any) => {
     e.preventDefault();
     const payload = { diarysetId, content, opservationDate, image, tags: tagList };
     try {
       console.log(payload);
-      const { data } = await http.post(`/diaryset/${diarysetId}`, payload);
+      const { data } = await http.put(`/diary/${diaryId}`, payload);
       if (data.result === 'SUCCESS') {
         router.push('/diary');
         Toastify({
@@ -114,12 +129,6 @@ export default function creatediary() {
     <AppLayout>
       <div>
         <div>
-          <select {...register('diarysetId')} defaultValue={getValues('diarysetId')}>
-            <option value={0}>내키식 종류들</option>
-            <option value={1}>선인장</option>
-          </select>
-        </div>
-        <div>
           <label htmlFor='image'>
             <img src={preview} alt='이미지를 등록해주세요' style={{ cursor: 'pointer' }} />
           </label>
@@ -143,10 +152,10 @@ export default function creatediary() {
         </div>
         <div>
           <div style={{ display: 'flex' }}>
-            {tagList.map((tagItem, index) => {
+            {tagList.map((item, index) => {
               return (
                 <div key={index} style={{ display: 'flex' }}>
-                  <div style={{}}>{tagItem}</div>
+                  <div>{item}</div>
                   <button onClick={handleDeleteTagItem} style={{ paddingInline: '4px' }}>
                     X
                   </button>
@@ -166,7 +175,7 @@ export default function creatediary() {
         <div>
           <textarea required cols={50} rows={10} {...register('content')} placeholder='내용' />
         </div>
-        <button onClick={handleCreateDiary}>일지 생성</button>
+        <button onClick={handleUpdateDiary}>일지 수정</button>
         <button onClick={handleGoBack}>취소</button>
       </div>
     </AppLayout>
