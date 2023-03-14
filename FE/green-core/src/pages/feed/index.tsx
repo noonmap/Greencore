@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getFeedList, getFollowFeedList, getTagFeedList, getTagFeedListMore } from '@/core/feed/feedAPI';
-import FeedListItem from '@/components/FeedListItem';
 import { initFeedList } from '@/core/feed/feedSlice';
 import styles from '@/styles/feed.module.scss';
+import FeedListItem from '@/components/FeedListItem';
+import TagFeedListItem from '@/components/TagFeedListItem';
 
 export default function feed() {
   const dispatch = useAppDispatch();
@@ -185,7 +186,6 @@ export default function feed() {
                 <button onClick={handleClickFollow}>팔로우</button>
               </div>
               <div className={`overflow-auto`} style={{ height: '700px' }}>
-                {/* <div> */}
                 {feedList.map((feed) => (
                   <FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
                 ))}
@@ -203,16 +203,10 @@ export default function feed() {
               ) : (
                 <div className={`overflow-auto`} style={{ height: '700px' }}>
                   {tagFeedList.map((tagFeed) => (
-                    <div key={tagFeed.feedId}>
-                      <div>{tagFeed.feedId}</div>
-                      <div>{tagFeed.feedCode}</div>
-                      <div>
-                        <img src={tagFeed.imagePath} width={300} height={300} alt='' />
-                      </div>
-                      <div>{tagFeed.content}</div>
-                    </div>
+                    <TagFeedListItem key={tagFeed.feedId} tagFeed={tagFeed}></TagFeedListItem>
                   ))}
                   <div ref={setTargetAtTag} />
+                  <div className={`p-5`}></div>
                 </div>
               )}
             </div>

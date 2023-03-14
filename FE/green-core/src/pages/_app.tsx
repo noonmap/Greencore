@@ -7,6 +7,7 @@ import store from '@/core/store';
 
 import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'toastify-js/src/toastify.css';
 

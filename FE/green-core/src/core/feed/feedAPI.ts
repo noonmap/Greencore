@@ -73,3 +73,21 @@ export const getTagFeedListMore = createAsyncThunk('getTagFeedListMore', async (
     }).showToast();
   }
 });
+
+// 피드 좋아요
+export const createLike = async (feedId: number) => {
+  try {
+    const { data } = await http.post(`/feed/${feedId}/like`);
+
+    return data.data;
+  } catch (error) {}
+};
+
+// 피드 좋아요 취소
+export const deleteLike = async (feedId: number) => {
+  try {
+    const { data } = await http.delete(`/feed/${feedId}/like`);
+
+    return data.data;
+  } catch (error) {}
+};
