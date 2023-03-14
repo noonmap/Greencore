@@ -105,7 +105,7 @@ export default function updatediary() {
       if (data.result === 'SUCCESS') {
         router.push('/diary');
         Toastify({
-          text: '알림 메시지 바꿔야됨!!', // 바꿔야됨
+          text: message.UpdateDiarySuccess,
           duration: 1000,
           position: 'center',
           stopOnFocus: true,
@@ -113,7 +113,7 @@ export default function updatediary() {
         }).showToast();
       } else {
         Toastify({
-          text: '알림 메시지 바꿔야됨!!', // 바꿔야됨
+          text: message.UpdateDiaryFail,
           duration: 1000,
           position: 'center',
           stopOnFocus: true,
@@ -133,7 +133,7 @@ export default function updatediary() {
             <img src={preview} alt='이미지를 등록해주세요' style={{ cursor: 'pointer' }} />
           </label>
           <input
-            required
+            // required
             type='file'
             accept='image/*'
             {...(register('image'),
