@@ -90,7 +90,7 @@ export default function creatediary() {
       if (data.result === 'SUCCESS') {
         router.push('/diary');
         Toastify({
-          text: '알림 메시지 바꿔야됨!!', // 바꿔야됨
+          text: message.CreateDiarySuccess,
           duration: 1000,
           position: 'center',
           stopOnFocus: true,
@@ -98,7 +98,7 @@ export default function creatediary() {
         }).showToast();
       } else {
         Toastify({
-          text: '알림 메시지 바꿔야됨!!', // 바꿔야됨
+          text: message.CreateDiaryFail,
           duration: 1000,
           position: 'center',
           stopOnFocus: true,

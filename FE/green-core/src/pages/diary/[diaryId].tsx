@@ -1,5 +1,8 @@
 import React from 'react';
 import AppLayout from '@/layout/AppLayout';
+import Toastify from 'toastify-js';
+import toastifyCSS from '@/assets/toastify.json';
+import message from '@/assets/message.json';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import http from '@/lib/http.js';
@@ -14,6 +17,40 @@ export default function DiaryDetail() {
   const router = useRouter();
   const diaryId = router.query.diaryId; // string
   const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
+
+  // 삭제 확인
+  const checkDeleteDiary = () => {
+    if (window.confirm('삭제하시겠습니까?')) {
+      handleDeleteDiary();
+    }
+  };
+
+  // 삭제
+  const handleDeleteDiary = async () => {
+    try {
+      const { data } = await http.delete(`/diary/${diaryId}`);
+      if (data.result === 'SUCCESS') {
+        router.push('/diary');
+        Toastify({
+          text: message.DeleteDiarySuccess,
+          duration: 1000,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.DeleteDiaryFail,
+          duration: 1000,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // 뒤로가기
   const handleGoBack = () => {
@@ -52,6 +89,7 @@ export default function DiaryDetail() {
           <Link href={`update/${diaryId}`}>
             <button>수정</button>
           </Link>
+          <button onClick={checkDeleteDiary}>삭제</button>
           <button onClick={handleGoBack}>뒤로</button>
         </div>
       )}

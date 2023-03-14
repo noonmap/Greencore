@@ -37,5 +37,14 @@
   "GetFeedListFail": "피드 조회에 실패하셨습니다 ❌",
   "CheckInputForm": "👇 입력된 폼을 확인해주세요",
 
-  "GetTagFeedListFail": "태그 검색에 실패하셨습니다 ❌"
+  "GetTagFeedListFail": "태그 검색에 실패하셨습니다 ❌",
+
+  "DeleteDiarySuccess": "일지를 삭제하셨습니다 ✅",
+  "DeleteDiaryFail": "일지 삭제에 실패하셨습니다 ❌",
+
+  "CreateDiarySuccess": "일지가 생성되었습니다 ✅",
+  "CreateDiaryFail": "일지 생성에 실패하셨습니다 ❌",
+
+  "UpdateDiarySuccess": "일지가 수정되었습니다 ✅",
+  "UpdateDiaryFail": "일지 수정에 실패하셨습니다 ❌"
 }
