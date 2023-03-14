@@ -1,11 +1,10 @@
 package com.chicochico.domain.feed.entity;
 
 
-import com.chicochico.common.code.IsDeletedType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @DiscriminatorValue("FEED_DIARY")
 @Table(name = "diary") // snake_case로 설정
 public class DiaryEntity extends FeedEntity {
@@ -26,9 +25,5 @@ public class DiaryEntity extends FeedEntity {
 
 	@Column(nullable = false)
 	private LocalDate observationDate;
-
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private IsDeletedType isDeleted;
 
 }

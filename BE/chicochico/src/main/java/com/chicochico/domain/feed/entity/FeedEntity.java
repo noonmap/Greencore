@@ -8,6 +8,7 @@ import com.chicochico.domain.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
@@ -16,7 +17,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Builder
+@SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "feed_code")
 @Table(name = "feed")
@@ -44,6 +45,6 @@ public class FeedEntity extends CommonEntity {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private IsDeletedType isDeletedType;
+	private IsDeletedType isDeleted;
 
 }
