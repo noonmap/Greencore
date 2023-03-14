@@ -40,3 +40,54 @@ export const getFollowFeedList = createAsyncThunk('getFollowFeedList', async (pa
     }).showToast();
   }
 });
+
+// 태그검색 피드 리스트 조회
+export const getTagFeedList = createAsyncThunk('getTagFeedList', async (params: FeedDataType) => {
+  try {
+    const { data } = await http.get('/feed/tag', { params });
+    return data.data;
+  } catch (error) {
+    Toastify({
+      text: message.GetTagFeedListFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
+});
+
+// 태그검색 피드 리스트 조회
+export const getTagFeedListMore = createAsyncThunk('getTagFeedListMore', async (params: FeedDataType) => {
+  try {
+    const { data } = await http.get('/feed/tag', { params });
+
+    return data.data;
+  } catch (error) {
+    Toastify({
+      text: message.GetTagFeedListFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
+});
+
+// 피드 좋아요
+export const createLike = async (feedId: number) => {
+  try {
+    const { data } = await http.post(`/feed/${feedId}/like`);
+
+    return data.data;
+  } catch (error) {}
+};
+
+// 피드 좋아요 취소
+export const deleteLike = async (feedId: number) => {
+  try {
+    const { data } = await http.delete(`/feed/${feedId}/like`);
+
+    return data.data;
+  } catch (error) {}
+};

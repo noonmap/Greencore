@@ -29,11 +29,11 @@ export default function login() {
   const accessToken = useAppSelector((state) => state.user.accessToken);
 
   // github
-  const githubAuth = GitHubGetAuth(firebase);
+  const githubAuth = GitHubGetAuth();
   const githubProvider = new GithubAuthProvider();
 
   // google
-  const googleAuth = GoogleGetAuth(firebase);
+  const googleAuth = GoogleGetAuth();
   const googleProvider = new GoogleAuthProvider();
 
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
@@ -58,7 +58,7 @@ export default function login() {
 
   function handleGithubLogIn() {
     GitHubSignInWithPopup(githubAuth, githubProvider)
-      .then(async (result) => {
+      .then(async (result: any) => {
         // const credential = GithubAuthProvider.credentialFromResult(result);
         const token = result?.user?.stsTokenManager;
         const user = result?.user?.reloadUserInfo;
@@ -99,7 +99,7 @@ export default function login() {
 
   function handleGoogleLogIn() {
     GoogleSignInWithPopup(googleAuth, googleProvider)
-      .then(async (result) => {
+      .then(async (result: any) => {
         // const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = result.user.stsTokenManager;
         const user = result?.user?.reloadUserInfo;
@@ -136,9 +136,7 @@ export default function login() {
   }
 
   function handleKakaoLogIn() {
-    window.Kakao.Auth.authorize({
-      redirectUri: 'http://localhost:3000/user/kakao',
-    });
+    window.Kakao.Auth.authorize({ redirectUri: 'http://localhost:3000/user/kakao' });
   }
 
   async function handleLogOut() {
@@ -152,7 +150,7 @@ export default function login() {
       .then(() => {
         console.log('github sign out!');
         dispatch(SET_IS_OAUTH_FALSE());
-        // dispatch(logOut());
+        // dispatch(logOut(accessToken)); // 위에서 했으니 굳이 할 필요 없음
       })
       .catch((error) => {
         console.error(error);
@@ -162,20 +160,29 @@ export default function login() {
       .then(() => {
         console.log('google sign out!');
         dispatch(SET_IS_OAUTH_FALSE());
+        // dispatch(logOut(accessToken));
       })
       .catch((error) => {
         console.error(error);
       });
 
     window.Kakao.Auth.logout()
-      .then(function () {
+      .then(async function () {
         console.log('kakao sign out!');
-        alert('logout ok\naccess token -> ' + window.Kakao.Auth.getAccessToken());
+        console.log(window.Kakao.Auth.getAccessToken());
+
+        // const params = {
+        // 	client_id: kakaoConfig.restApiKey,
+        // 	logout_redirect_uri: kakaoConfig.logOutRedirectUri
+        // };
+
+        // await axios.get(`https://kauth.kakao.com/oauth/logout`, {params});
+        // alert('logout ok\naccess token -> ' + window.Kakao.Auth.getAccessToken());
         dispatch(SET_IS_OAUTH_FALSE());
-        // deleteCookie();
+        // dispatch(logOut(accessToken));
       })
       .catch(function () {
-        alert('Not logged in');
+        console.log('Not kakao logged in');
       });
   }
 

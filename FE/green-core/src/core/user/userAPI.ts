@@ -147,6 +147,8 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
   try {
     const res = await http.post('/login', payload);
     console.log('login data: ', res);
+    const nickname = res.data.data.nickname;
+    const profileImagePath = res.data.data.profileImagePath;
 
     let accessToken = null;
     let refreshToken = null;
@@ -176,7 +178,7 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
       if (cookies.getCookieToken()) cookies.removeCookieToken();
     }
 
-    return { accessToken };
+    return { accessToken, userInfo: { nickname, profileImagePath } };
   } catch (error) {
     Toastify({
       text: message.LogInFail,
@@ -312,10 +314,9 @@ export const updatePassword = async (payload: PasswordType) => {
 };
 
 // 회원 프로필 조회
-export const getProfile = createAsyncThunk('getProfile', async (nickname: string) => {
+export const getProfile = async (nickname: string | string[]) => {
   try {
     const { data } = await http.get(`/profile/${nickname}`);
-
     return data;
   } catch (error) {
     Toastify({
@@ -326,7 +327,7 @@ export const getProfile = createAsyncThunk('getProfile', async (nickname: string
       style: toastifyCSS.fail,
     }).showToast();
   }
-});
+};
 
 // 회원 프로필 수정
 export const updateProfile = createAsyncThunk('updateProfile', async (payload: ProfileType) => {

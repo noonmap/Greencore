@@ -1,24 +1,32 @@
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import type { AppProps } from 'next/app';
+import { PersistGate } from 'redux-persist/integration/react';
+
 import { useEffect } from 'react';
 import Script from 'next/script';
-import store from '@/core/store';
+import store, { persistor } from '@/core/store';
 
 import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'toastify-js/src/toastify.css';
 
 import kakaoConfig from '~/config/kakaoConfig.json';
 import { useAppDispatch } from '@/core/hooks';
 import { getAccessToken } from '@/core/user/userAPI';
+import AppLoading from '@/components/common/AppLoading';
 
 declare global {
   interface Window {
     Kakao: any;
   }
 }
+
+const onBeforeLift = () => {
+  // take some action before the gate lifts
+};
 
 function App() {
   const dispatch = useAppDispatch();
@@ -54,19 +62,25 @@ function App() {
 export default function AppWraper({ Component, pageProps }: AppProps) {
   function kakaoInit() {
     window.Kakao.init(kakaoConfig.apiKey);
-    console.log('kakao:', window.Kakao.isInitialized());
+    window.Kakao.isInitialized();
   }
 
   return (
     <CookiesProvider>
       <Provider store={store}>
-        <App />
-        <Component {...pageProps} />
-        <Script
-          src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js'
-          integrity='sha384-dpu02ieKC6NUeKFoGMOKz6102CLEWi9+5RQjWSV0ikYSFFd8M3Wp2reIcquJOemx'
-          crossOrigin='anonymous'
-          onLoad={kakaoInit}></Script>
+        <PersistGate loading={<AppLoading />} onBeforeLift={onBeforeLift} persistor={persistor}>
+          <App />
+          <Component {...pageProps} />
+          <link
+            href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
+            rel='stylesheet'
+          />
+          <Script
+            src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'
+            integrity='sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB'
+            crossOrigin='anonymous'
+            onLoad={kakaoInit}></Script>
+        </PersistGate>
       </Provider>
     </CookiesProvider>
   );
