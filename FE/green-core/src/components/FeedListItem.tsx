@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import { FeedType } from '../core/feed/feedType';
+import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import Image from 'next/image';
 import styles from '@/styles/feed.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 
 export default function FeedListItem(props: { feed: FeedType }) {
   const feed = props.feed;
+  const [isLiked, setIsLiked] = useState<boolean>(feed.isLiked);
+
+  function handleDeleteLike() {
+    deleteLike(feed.feedId);
+    setIsLiked(false);
+  }
+
+  function handlePostLike() {
+    createLike(feed.feedId);
+    setIsLiked(true);
+  }
 
   return (
     <>
@@ -26,7 +41,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
             <br />
             <span>팔로잉 수 : {feed.user.followingCount || <Skeleton />}</span>
             <br />
-            <span>팔로잉 여부 : {feed.user.isFollowed ? 'true' : 'false'}</span>
+            <span>팔로잉 여부 : {feed.user.isFollowed ? <i className='fa-solid fa-heart'></i> : 'false'}</span>
           </div>
           <Image className='mb-3' src={feed.user.profileImagePath} alt='로고' width='30' height='30'></Image>
           <span>{feed.user.nickname || <Skeleton />}</span>
@@ -50,7 +65,14 @@ export default function FeedListItem(props: { feed: FeedType }) {
           </Link>
         </div>
         <div>좋아요 수 : {feed.likeCount || <Skeleton />}</div>
-        <div>좋아요 여부 : {feed.isLiked ? 'true' : 'false' || <Skeleton />}</div>
+        <div>
+          좋아요 여부 :{' '}
+          {isLiked ? (
+            <FontAwesomeIcon icon={solidHeart} onClick={handleDeleteLike} style={{ cursor: 'pointer' }} />
+          ) : (
+            <FontAwesomeIcon icon={regularHeart} onClick={handlePostLike} style={{ cursor: 'pointer' }}></FontAwesomeIcon> || <Skeleton />
+          )}
+        </div>
         <div>댓글 수 : {feed.commentCount || <Skeleton />}</div>
         <div>작성일자 : {feed.craetedAt || <Skeleton />}</div>
       </div>
