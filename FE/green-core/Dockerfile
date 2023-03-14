@@ -5,7 +5,7 @@ FROM node:18.12.1
 WORKDIR /app
 
 # Copy the package.json and package-lock.json files
-COPY /home/ubuntu/greencore/jenkins_home/workspace/greencore/FE/green-core/package*.json ./
+COPY package*.json ./
 
 # Install the dependencies
 RUN npm install
