@@ -1,9 +1,11 @@
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import type { AppProps } from 'next/app';
+import { PersistGate } from 'redux-persist/integration/react';
+
 import { useEffect } from 'react';
 import Script from 'next/script';
-import store from '@/core/store';
+import store, { persistor } from '@/core/store';
 
 import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
@@ -14,12 +16,17 @@ import 'toastify-js/src/toastify.css';
 import kakaoConfig from '~/config/kakaoConfig.json';
 import { useAppDispatch } from '@/core/hooks';
 import { getAccessToken } from '@/core/user/userAPI';
+import AppLoading from '@/components/common/AppLoading';
 
 declare global {
   interface Window {
     Kakao: any;
   }
 }
+
+const onBeforeLift = () => {
+  // take some action before the gate lifts
+};
 
 function App() {
   const dispatch = useAppDispatch();
@@ -61,13 +68,15 @@ export default function AppWraper({ Component, pageProps }: AppProps) {
   return (
     <CookiesProvider>
       <Provider store={store}>
-        <App />
-        <Component {...pageProps} />
-        <Script
-          src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'
-          integrity='sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB'
-          crossOrigin='anonymous'
-          onLoad={kakaoInit}></Script>
+        <PersistGate loading={<AppLoading />} onBeforeLift={onBeforeLift} persistor={persistor}>
+          <App />
+          <Component {...pageProps} />
+          <Script
+            src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'
+            integrity='sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB'
+            crossOrigin='anonymous'
+            onLoad={kakaoInit}></Script>
+        </PersistGate>
       </Provider>
     </CookiesProvider>
   );

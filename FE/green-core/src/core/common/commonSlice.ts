@@ -20,9 +20,17 @@ const commonSlice = createSlice({
   name: 'common',
   initialState,
 
-  reducers: {},
+  reducers: {
+    SET_IS_LOADING_TRUE: (state) => {
+      state.isLoading = true;
+    },
+    SET_IS_LOADING_FALSE: (state) => {
+      state.isLoading = false;
+    },
+  },
 
   extraReducers(builder) {},
 });
 
+export const { SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE } = commonSlice.actions;
 export default commonSlice.reducer;
