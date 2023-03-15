@@ -1,13 +1,9 @@
-package com.chicochico.feed;
+package com.chicochico.feed.repository;
 
 
 import com.chicochico.common.code.IsDeletedType;
-import com.chicochico.domain.feed.entity.DiaryEntity;
-import com.chicochico.domain.feed.entity.DiarySetEntity;
-import com.chicochico.domain.feed.entity.FeedEntity;
-import com.chicochico.domain.feed.repository.DiaryRepository;
-import com.chicochico.domain.feed.repository.DiarySetRepository;
-import com.chicochico.domain.feed.repository.FeedRepository;
+import com.chicochico.domain.feed.entity.*;
+import com.chicochico.domain.feed.repository.*;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import com.chicochico.domain.plant.repository.PlantRepository;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -26,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @DataJpaTest
@@ -112,14 +109,14 @@ public class FeedRepositoryTest {
 
 
 	@Test
-	@DisplayName("IN Query 동작 테스트")
+	@DisplayName("여러 유저가 쓴 피드 조회 테스트")
 	public void INQueryTest() {
 		// given
 		Pageable pageable = PageRequest.of(0, 10);
 		UserEntity user1 = userRepository.save(doUserEntity());
 		UserEntity user2 = userRepository.save(doUserEntity());
 		UserEntity user3 = userRepository.save(doUserEntity());
-		UserEntity[] userIds = new UserEntity[] { user1, user3 }; // 1번, 3번 user의 피드만 조회
+		List<UserEntity> userIds = List.of(user1, user3); // 1번, 3번 user의 피드만 조회
 		DiaryEntity diary1 = diaryRepository.save(doDiaryEntity(user1));
 		DiaryEntity diary2 = diaryRepository.save(doDiaryEntity(user2)); // 이건 2번 user의 피드이므로 조회되면 안된다.
 		DiaryEntity diary3 = diaryRepository.save(doDiaryEntity(user3));

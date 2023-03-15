@@ -2,18 +2,16 @@ package com.chicochico.domain.feed.service;
 
 
 import com.chicochico.common.code.IsDeletedType;
-import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.repository.FeedRepository;
 import com.chicochico.domain.user.entity.UserEntity;
-import com.chicochico.domain.user.repository.UserRepository;
-import com.chicochico.exception.CustomException;
-import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,9 +22,6 @@ public class FeedService {
 
 	private final FeedRepository feedRepository;
 
-	private final UserRepository userRepository;
-
-	private final AuthService authService;
 
 
 	/**
@@ -37,20 +32,17 @@ public class FeedService {
 	 */
 	public Page<FeedEntity> getFeedList(Pageable pageable) {
 
-		Page<FeedEntity> page = feedRepository.findAll(pageable);
-		return page;
+		Page<FeedEntity> feedPage = feedRepository.findAll(pageable);
+		return getUnDeletedFeedPage(feedPage, pageable);
 	}
 
 
-	private List<UserEntity> getFollowingList(Long userId) {
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		List<UserEntity> followingUser = user.getFollowingList().stream()
-			.map(fe -> userRepository.findById(
-				fe.getFollowing().getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
-			.collect(Collectors.toList());
-		// deleted된(탈퇴한) 유저를 삭제함
-		followingUser.removeIf(e -> e.getIsDeleted().equals(IsDeletedType.Y));
-		return followingUser;
+	private Page<FeedEntity> getUnDeletedFeedPage(Page<FeedEntity> feedPage, Pageable pageable) {
+		List<FeedEntity> feedList = new ArrayList<>(feedPage.toList());
+		// 삭제된 피드 삭제
+		feedList.removeIf(feed -> feed.getIsDeleted().equals(IsDeletedType.Y));
+		Page<FeedEntity> noDeletedFeedPage = new PageImpl<>(feedList, pageable, feedList.size());
+		return noDeletedFeedPage;
 	}
 
 
@@ -60,16 +52,10 @@ public class FeedService {
 	 * @param pageable
 	 * @return
 	 */
-	public Page<FeedEntity> getFeedListByFollowUser(Pageable pageable) {
-		Long userId = authService.getUserId();
-		// 팔로우하고 있는 유저들
-		List<UserEntity> followingUserList = getFollowingList(userId);
-		// 팔로우하고 있는 유저들의 Id
-		//		Long[] followingUserIds = (Long[]) followingUserList.stream().map(u -> u.getId()).toArray();
+	public Page<FeedEntity> getFeedListByFollowUser(List<UserEntity> followingUserList, Pageable pageable) {
 		// 팔로우하고 있는 유저들의 피드
-		Page<FeedEntity> feedList = feedRepository.findByUserIn((UserEntity[]) followingUserList.toArray(), pageable);
-
-		return feedList;
+		Page<FeedEntity> feedPage = feedRepository.findByUserIn(followingUserList, pageable);
+		return getUnDeletedFeedPage(feedPage, pageable);
 	}
 
 
