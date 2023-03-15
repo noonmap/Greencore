@@ -2,7 +2,7 @@
 FROM node:18.12.1 as build
 
 # 작업 폴더 설정
-WORKDIR /app
+WORKDIR /FE/green-core 
 
 # 앱 종속성 설치
 COPY package*.json ./
