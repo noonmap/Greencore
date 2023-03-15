@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { PlainResData } from '@/core/common/commonType';
 
-// export type Data = {
-// 	result: string;
-// 	data: Object | boolean | null;
-// };
+export type Data = {
+  result: string;
+  data: Object | boolean | null;
+};
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<PlainResData>) {
   if (req.method === 'GET') {

@@ -64,7 +64,7 @@ export default function kakao() {
 	}
 
 	async function handleLogOut() {
-		try {
+			try {
 			const headers = {
 				headers: {
 					Authorization: `Bearer ${accessToken}`

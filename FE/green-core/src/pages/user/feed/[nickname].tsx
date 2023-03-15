@@ -1,98 +1,214 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useAppSelector } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 
 import { getProfile } from '@/core/user/userAPI';
-import { getStorage, ref, listAll, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import Skeleton from 'react-loading-skeleton';
+import { useForm } from 'react-hook-form';
+
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
+import { File } from 'buffer';
+import Link from 'next/link';
+import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 
 type ProfileType = {
-  followerCount: number;
-  followingCount: number;
-  introduction: string;
-  isFollowed: boolean;
-  nickname: string;
-  profileImagePath: string;
+	followerCount: number;
+	followingCount: number;
+	introduction: string;
+	isFollowed: boolean;
+	nickname: string;
+	profileImagePath: string;
+};
+
+type StateType = {
+	uploadProfileImage: File;
+};
+
+const initialState: StateType = {
+	uploadProfileImage: null
 };
 
 export default function FeedDetail() {
-  const firebase = useAppSelector((state) => state.common.firebase);
-  const storage = getStorage();
+	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const storage = getStorage();
 
-  const router = useRouter();
-  const { nickname } = router.query;
-  const [profile, setProfile] = useState<ProfileType>();
+	const { nickname } = router.query;
+	const myNickname = useAppSelector((state) => state.common.userInfo?.nickname);
 
-  const getUserProfile = useCallback(async () => {
-    const { data } = await getProfile(nickname);
-    setProfile(data);
-    console.log(data);
-  }, [nickname]);
+	const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
+	const [uploadProfileImage] = getValues(['uploadProfileImage']);
 
-  function handleProfileImageUpdate() {
-    console.log('handleProfileImageUpdate');
-  }
+	const [userProfile, setUserProfile] = useState<ProfileType>();
+	const [isSameUser, setIsSameUser] = useState<boolean>(false);
+	const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
 
-  function handleNicknameUpdate() {
-    console.log('handleNicknameUpdate');
-  }
+	const getUserProfile = useCallback(async () => {
+		const { data } = await getProfile(nickname);
+		setUserProfile(data);
 
-  useEffect(() => {
-    if (!router.isReady) return;
-    getUserProfile();
-    return () => {};
-  }, [nickname]);
+		const profileRef = ref(storage, `${myNickname}/profileImage`);
 
-  return (
-    <AppLayout>
-      <h1>User Feed</h1>
+		getDownloadURL(profileRef)
+			.then((downloadURL) => {
+				setUserProfileImagePath(downloadURL);
+			})
+			.catch((error) => {
+				switch (error.code) {
+					case 'storage/object-not-found':
+						setUserProfileImagePath(null);
+						break;
+					case 'storage/unauthorized':
+						break;
+					case 'storage/canceled':
+						break;
+					case 'storage/unknown':
+						break;
+				}
+			});
+	}, [nickname]);
 
-      <div className='space-y-2 '>
-        {/* 프로필 라인 */}
-        <div>
-          <div className='flex space-x-3'>
-            {profile?.profileImagePath ? (
-              <Image src={profile?.profileImagePath} width={90} height={90} alt='사용자 프로필 이미지' onClick={handleProfileImageUpdate} /> || (
-                <Skeleton width={90} height={90} />
-              )
-            ) : (
-              <Skeleton width={90} height={90} />
-            )}
-            <div>
-              <div className='flex'>
-                <div>{profile?.nickname}</div>
-                <span className='material-symbols-outlined' onClick={handleNicknameUpdate}>
-                  edit
-                </span>
-              </div>
-              <div>{profile?.introduction}</div>
-              <div>
-                {profile?.isFollowed ? (
-                  <button className='bg-blue-500 rounded'>팔로우중</button>
-                ) : (
-                  <button className='bg-blue-500 rounded'>팔로우하기</button>
-                )}
-              </div>
-            </div>
-            <div>
-              <div>팔로워 {profile?.followerCount}</div>
-              <div>팔로잉 {profile?.followingCount}</div>
-            </div>
-          </div>
-          <div>profileImagePath: {profile?.profileImagePath}</div>
-        </div>
+	function checkSameUser() {
+		if (myNickname == nickname) setIsSameUser(true);
+	}
 
-        {/* 내키식 라인 */}
-        <div>내키식 라인</div>
+	function handleImageExploerOpen() {
+		const profileImageInput: any = document.querySelector(`.profileImageInput`);
+		profileImageInput.click();
+	}
 
-        {/* 관찰일지 라인 */}
-        <div>관찰일지 라인</div>
+	function handleProfileImageUpdate() {
+		if (!uploadProfileImage) return;
 
-        {/* 포스트 라인 */}
-        <div>포스트 라인</div>
-      </div>
-    </AppLayout>
-  );
+		const profileRef = ref(storage, `${myNickname}/profileImage`);
+		const uploadTask = uploadBytesResumable(profileRef, uploadProfileImage[0]);
+
+		uploadTask.on(
+			'state_changed',
+			(snapshot) => {
+				const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+				switch (snapshot.state) {
+					case 'paused':
+						console.log('Upload is paused');
+						break;
+					case 'running':
+						console.log('Upload is running');
+						break;
+				}
+			},
+			(error) => {
+				Toastify({
+					text: message.UpdateProfileImageFail,
+					duration: 1500,
+					position: 'center',
+					stopOnFocus: true,
+					style: toastifyCSS.fail
+				}).showToast();
+				console.error(error);
+			},
+			() => {
+				Toastify({
+					text: message.UpdateProfileImageSuccess,
+					duration: 1500,
+					position: 'center',
+					stopOnFocus: true,
+					style: toastifyCSS.success
+				}).showToast();
+
+				getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+					setUserProfileImagePath(downloadURL);
+				});
+			}
+		);
+	}
+
+	async function handleFollowDelete() {
+		const { data } = await deleteFollow(nickname);
+		console.log(data);
+	}
+
+	async function handleFollowUpdate() {
+		const { data } = await updateFollow(nickname);
+		console.log(data);
+	}
+
+	useEffect(() => {
+		if (!router.isReady) return;
+		getUserProfile();
+		checkSameUser();
+		watch();
+
+		handleProfileImageUpdate();
+		return () => {};
+	}, [nickname, isSameUser, uploadProfileImage]);
+
+	return (
+		<AppLayout>
+			<h1>User Feed</h1>
+
+			<div className="space-y-2 ">
+				{/* 프로필 라인 */}
+				<div>
+					<input type="file" accept="image/*" hidden className="profileImageInput" {...register('uploadProfileImage')} />
+					<div className="flex space-x-3">
+						<div onClick={handleImageExploerOpen}>
+							{userProfileImagePath ? (
+								(
+									<img
+										src={userProfileImagePath}
+										alt="사용자 프로필 이미지"
+										className="rounded-full w-20 h-20 bg-cover"
+										onClick={handleProfileImageUpdate}
+									/>
+								) || <Skeleton width={90} height={90} circle />
+							) : (
+								<img src="/images/noProfile.png" alt="사용자 프로필 이미지" className="rounded-full w-20 h-20 bg-cover" />
+							)}
+						</div>
+
+						<div>
+							<div className="flex">
+								<div>{userProfile?.nickname}</div>
+								{isSameUser ? (
+									<Link href="/user/settings">
+										<span className="material-symbols-outlined">edit</span>
+									</Link>
+								) : null}
+							</div>
+							<div>{userProfile?.introduction}</div>
+							<div>
+								{userProfile?.isFollowed ? (
+									<button className="bg-blue-500 rounded" onClick={handleFollowDelete}>
+										팔로우중
+									</button>
+								) : (
+									<button className="bg-blue-500 rounded" onClick={handleFollowUpdate}>
+										팔로우하기
+									</button>
+								)}
+							</div>
+						</div>
+						<div>
+							<div>팔로워 {userProfile?.followerCount}</div>
+							<div>팔로잉 {userProfile?.followingCount}</div>
+						</div>
+					</div>
+				</div>
+
+				{/* 내키식 라인 */}
+				<div>내키식 라인</div>
+
+				{/* 관찰일지 라인 */}
+				<div>관찰일지 라인</div>
+
+				{/* 포스트 라인 */}
+				<div>포스트 라인</div>
+			</div>
+		</AppLayout>
+	);
 }

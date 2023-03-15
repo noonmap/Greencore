@@ -11,5 +11,6 @@ export type PlainResData = {
 
 export type UserInfoType = {
   nickname: string;
-  profileImagePath: string;
+  profileImagePath?: string;
+  introduction?: string;
 };
