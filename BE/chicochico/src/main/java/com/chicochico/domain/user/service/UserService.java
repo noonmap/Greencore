@@ -1,24 +1,32 @@
 package com.chicochico.domain.user.service;
 
 
+import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.user.dto.PasswordRequestDto;
 import com.chicochico.domain.user.dto.RegisterRequestDto;
 import com.chicochico.domain.user.dto.UserPlantRequestDto;
 import com.chicochico.domain.user.dto.UserPlantSimpleRequestDto;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.repository.UserRepository;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final AuthService authService;
 
 
 	/**
@@ -27,6 +35,18 @@ public class UserService {
 	 * @param registerRequestDto 생성된 회원정보
 	 */
 	public void createUser(RegisterRequestDto registerRequestDto) {
+		// 이미 존재하는 이메일인지 다시 한번 확인
+		if (userRepository.findByEmail(registerRequestDto.getEmail()).isPresent()) {
+			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+		}
+
+		// 이미 존재하는 닉네임인지 다시 한번 확인
+		if (userRepository.findByNickname(registerRequestDto.getNickname()).isPresent()) {
+			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+		}
+
+		registerRequestDto.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+		userRepository.save(registerRequestDto.toEntity());
 	}
 
 
