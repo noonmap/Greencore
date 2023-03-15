@@ -387,10 +387,16 @@ export const updateProfileImage = createAsyncThunk('updateProfileImage', async (
 });
 
 // 키우는 식물 리스트 조회
-export const getUserPlantList = createAsyncThunk('getUserPlantList', async (nickname: string) => {
+export const getUserPlantList = async (nickname: string | string[]) => {
 	const { data } = await http.get(`/user/plant/${nickname}`);
 	return data;
-});
+};
+
+// 키우는 식물  조회
+export const getUserPlant = async (nickname: string, userPlatId: string) => {
+	const { data } = await http.get(`/user/plant/${nickname}/${userPlatId}`);
+	return data;
+};
 
 // 키우는 식물 생성
 export const createUserPlant = createAsyncThunk('createUserPlant', async (payload: UserPlantType) => {

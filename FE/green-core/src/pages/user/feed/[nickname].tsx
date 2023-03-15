@@ -1,19 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
+import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-
-import { getProfile } from '@/core/user/userAPI';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import Skeleton from 'react-loading-skeleton';
 import { useForm } from 'react-hook-form';
+
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { getProfile, getUserPlantList } from '@/core/user/userAPI';
+import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
+import Skeleton from 'react-loading-skeleton';
 
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
-import { File } from 'buffer';
-import Link from 'next/link';
-import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
+import styles from './[nickname].module.scss';
 
 type ProfileType = {
 	followerCount: number;
@@ -22,6 +23,14 @@ type ProfileType = {
 	isFollowed: boolean;
 	nickname: string;
 	profileImagePath: string;
+};
+
+type UserPlantType = {
+	plantId: number;
+	plantImagePath: string;
+	plantName: string;
+	plantNickname: string;
+	userPlantId: number;
 };
 
 type StateType = {
@@ -43,15 +52,21 @@ export default function FeedDetail() {
 	const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 	const [uploadProfileImage] = getValues(['uploadProfileImage']);
 
-	const [userProfile, setUserProfile] = useState<ProfileType>();
 	const [isSameUser, setIsSameUser] = useState<boolean>(false);
+	const [userProfile, setUserProfile] = useState<ProfileType>();
+	const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>();
 	const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
+	const [isPopUp, setIsPopUp] = useState(false);
 
-	const getUserProfile = useCallback(async () => {
+	function checkSameUser() {
+		if (myNickname == nickname) setIsSameUser(true);
+	}
+
+	const fetchUserProfile = useCallback(async () => {
 		const { data } = await getProfile(nickname);
 		setUserProfile(data);
 
-		const profileRef = ref(storage, `${myNickname}/profileImage`);
+		const profileRef = ref(storage, `${nickname}/profileImage`);
 
 		getDownloadURL(profileRef)
 			.then((downloadURL) => {
@@ -72,9 +87,14 @@ export default function FeedDetail() {
 			});
 	}, [nickname]);
 
-	function checkSameUser() {
-		if (myNickname == nickname) setIsSameUser(true);
-	}
+	const fetchUserPlantList = useCallback(async () => {
+		try {
+			const { data } = await getUserPlantList(nickname);
+			setUserPlantList(data);
+		} catch (error) {
+			console.error(error);
+		}
+	}, [nickname]);
 
 	function handleImageExploerOpen() {
 		const profileImageInput: any = document.querySelector(`.profileImageInput`);
@@ -139,17 +159,20 @@ export default function FeedDetail() {
 
 	useEffect(() => {
 		if (!router.isReady) return;
-		getUserProfile();
+		console.log(router.query);
+
 		checkSameUser();
+		fetchUserProfile();
+		fetchUserPlantList();
 		watch();
 
 		handleProfileImageUpdate();
 		return () => {};
-	}, [nickname, isSameUser, uploadProfileImage]);
+	}, [nickname, uploadProfileImage]); // 해당 변수가 업데이트 되면 한번 더 불러짐
 
 	return (
 		<AppLayout>
-			<h1>User Feed</h1>
+			<h1>프로필 라인</h1>
 
 			<div className="space-y-2 ">
 				{/* 프로필 라인 */}
@@ -159,15 +182,18 @@ export default function FeedDetail() {
 						<div onClick={handleImageExploerOpen}>
 							{userProfileImagePath ? (
 								(
-									<img
+									<Image
 										src={userProfileImagePath}
 										alt="사용자 프로필 이미지"
-										className="rounded-full w-20 h-20 bg-cover"
+										width={90}
+										height={90}
+										className="rounded-full bg-cover"
 										onClick={handleProfileImageUpdate}
+										priority
 									/>
 								) || <Skeleton width={90} height={90} circle />
 							) : (
-								<img src="/images/noProfile.png" alt="사용자 프로필 이미지" className="rounded-full w-20 h-20 bg-cover" />
+								<Image src="/images/noProfile.png" alt="사용자 프로필 이미지" width={90} height={90} className="rounded-full bg-cover" priority />
 							)}
 						</div>
 
@@ -201,7 +227,29 @@ export default function FeedDetail() {
 				</div>
 
 				{/* 내키식 라인 */}
-				<div>내키식 라인</div>
+				<div className="space-y-2 ">
+					<h1>내키식 라인</h1>
+					<button className="rounded bg-blue-500">내키식 생성</button>
+					{userPlantList ? (
+						userPlantList.length < 0 ? (
+							<div>빈 userPlant</div>
+						) : (
+							<div className="flex flex-row space-x-4">
+								{userPlantList.map((userPlant) => (
+									<div key={userPlant.userPlantId}>
+										<Image src="/images/noProfile.png" alt="사용자 식물" width={70} height={70} priority />
+										<div>{userPlant.plantNickname}</div>
+										<div>내키식 수정</div>
+										<div>내키식 닉네임 수정</div>
+										<div>내키식 삭제</div>
+									</div>
+								))}
+							</div>
+						)
+					) : (
+						<div>아직 생성하지않았음</div>
+					)}
+				</div>
 
 				{/* 관찰일지 라인 */}
 				<div>관찰일지 라인</div>
