@@ -86,7 +86,7 @@ export default function DiaryDetail() {
             <li>내용 : {diary.data.content}</li>
             <li>좋아요 : {diary.data.likeCount}</li>
           </ul>
-          <Link href={`update/${diaryId}`}>
+          <Link href={`/update/${diaryId}`}>
             <button>수정</button>
           </Link>
           <button onClick={checkDeleteDiary}>삭제</button>

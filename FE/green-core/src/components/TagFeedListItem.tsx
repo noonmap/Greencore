@@ -13,7 +13,7 @@ export default function TagFeedListItem(props: { tagFeed: TagFeedType }) {
         <div>{tagFeed.feedId || <Skeleton />} </div>
         <div>{tagFeed.feedCode || <Skeleton />}</div>
         <div>
-          <Link href={tagFeed.feedCode == 'FEED_DIARY' ? `diary/${tagFeed.feedId}` : `post/${tagFeed.feedId}`}>
+          <Link href={tagFeed.feedCode == 'FEED_DIARY' ? `/diary/${tagFeed.feedId}` : `/post/${tagFeed.feedId}`}>
             {tagFeed.imagePath ? <img src={tagFeed.imagePath} width={300} height={300} alt='' /> : <Skeleton width={300} height={300} />}
           </Link>
         </div>
