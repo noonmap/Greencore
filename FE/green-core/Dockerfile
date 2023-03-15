@@ -6,7 +6,7 @@ WORKDIR /FE/green-core
 
 # 앱 종속성 설치
 COPY package*.json ./
-RUN npm install
+RUN npm install 
 
 # 앱 소스 추가
 COPY . .
