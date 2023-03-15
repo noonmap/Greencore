@@ -7,17 +7,21 @@ import com.chicochico.domain.user.dto.PasswordRequestDto;
 import com.chicochico.domain.user.dto.RegisterRequestDto;
 import com.chicochico.domain.user.dto.UserPlantRequestDto;
 import com.chicochico.domain.user.dto.UserPlantSimpleRequestDto;
+import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Log4j2
@@ -80,11 +84,24 @@ public class UserService {
 
 
 	/**
-	 * 비밀번호를 확인합니다 (회원정보 조회)
+	 * 현재 비밀번호를 확인합니다 (회원정보 조회)
 	 *
 	 * @param passwordRequestDto 비밀번호 (password)
+	 * @return ResultDto.ofSuccess(): 비밀번호 일치, ResultDto.ofFail(): 비밀번호 불일치
 	 */
-	public void checkPassword(PasswordRequestDto passwordRequestDto) {
+	public ResultDto<Boolean> checkPassword(PasswordRequestDto passwordRequestDto) {
+
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserDetails userDetails = (UserDetails) principal;
+
+		String password = userDetails.getPassword();
+
+		if (!passwordEncoder.matches(passwordRequestDto.getPassword(), password)) {
+			//			throw new CustomException(PASSWORD_NOT_MATCH);
+			return ResultDto.ofFail();
+		}
+
+		return ResultDto.ofSuccess();
 	}
 
 
@@ -92,8 +109,36 @@ public class UserService {
 	 * 비밀번호를 수정합니다 (회원정보 수정)
 	 *
 	 * @param passwordRequestDto 새 비밀번호 (newPassword)
+	 * @return ResultDto.ofSuccess(): 비밀번호 수정 성공, ResultDto.ofFail(): 비밀번호 수정 실패
 	 */
-	public void modifyPassword(PasswordRequestDto passwordRequestDto) {
+	public ResultDto<Boolean> modifyPassword(PasswordRequestDto passwordRequestDto) {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserDetails userDetails = (UserDetails) principal;
+
+		String userId = userDetails.getUsername();
+		String password = userDetails.getPassword();
+
+		log.info("[modifyPassword] 변경 후 {}, 현재비번 {}", passwordRequestDto.getPassword(), password);
+		if (passwordEncoder.matches(passwordRequestDto.getPassword(), password)) {
+			//			throw new CustomException(PASSWORD_NOT_MATCH);
+			log.info("[modifyPassword] 변경 전 후 동일 => 실패 ");
+			return ResultDto.ofFail();
+		}
+
+		Optional<UserEntity> selectedUser = userRepository.findById(Long.parseLong(userId));
+		log.info("[modifyPassword] 유저가져오기");
+
+		if (selectedUser.isEmpty()) {
+			log.info("[modifyPassword] 빈 유저 => 실패");
+			return ResultDto.ofFail();
+		}
+
+		UserEntity user = selectedUser.get();
+		user.updatePassword(passwordEncoder.encode(passwordRequestDto.getPassword()));
+		log.info("[modifyPassword] 유저 정보 변경완료");
+		userRepository.save(user);
+
+		return ResultDto.ofSuccess();
 	}
 
 

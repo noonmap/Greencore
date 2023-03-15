@@ -8,12 +8,14 @@ import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
+@Log4j2
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -54,12 +56,22 @@ public class UserController {
 	}
 
 
+	@PostMapping(value = "/password")
+	@ApiOperation(value = "현재 비밀번호를 확인합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> checkPassword(@RequestBody PasswordRequestDto passwordRequestDto) {
+		log.info("[User 인증 /user/password] 비밀번호 확인시작");
+		ResultDto<Boolean> resultDto = userService.checkPassword(passwordRequestDto);
+
+		return ResponseEntity.ok().body(resultDto);
+	}
+
+
 	@PutMapping("/password")
 	@ApiOperation(value = "비밀번호를 수정합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> modifyPassword(@RequestBody PasswordRequestDto passwordRequestDto) {
-		userService.modifyPassword(passwordRequestDto);
+		ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		return ResponseEntity.ok().body(resultDto);
 	}
 
 

@@ -5,6 +5,7 @@ import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.dto.ResultEnum;
 import com.chicochico.common.service.AuthService;
+import com.chicochico.domain.user.dto.PasswordRequestDto;
 import com.chicochico.domain.user.dto.RegisterRequestDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
@@ -16,9 +17,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -172,6 +179,156 @@ public class UserServiceTest {
 
 		// when
 		ResultDto<Boolean> resultDto = userService.checkEmail(testEmail);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+	}
+
+
+	@BeforeEach
+	void setUp() {
+		UserDetails user = createUserDetails();
+
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
+	}
+
+
+	private UserDetails createUserDetails() {
+		return new UserDetails() {
+			@Override
+			public Collection<? extends GrantedAuthority> getAuthorities() {
+				return null;
+			}
+
+
+			@Override
+			public String getPassword() {
+				return testPassword;
+			}
+
+
+			@Override
+			public String getUsername() {
+				return "1";
+			}
+
+
+			@Override
+			public boolean isAccountNonExpired() {
+				return true;
+			}
+
+
+			@Override
+			public boolean isAccountNonLocked() {
+				return true;
+			}
+
+
+			@Override
+			public boolean isCredentialsNonExpired() {
+				return true;
+			}
+
+
+			@Override
+			public boolean isEnabled() {
+				return true;
+			}
+		};
+	}
+
+
+	//	@WithMockUser(username = "test", password = "1234")
+	//	@WithMockCustomUser(username = "test")
+	@Test
+	@DisplayName("비밀번호확인 - 실패")
+	void checkPasswordTest_비밀번호확인실패() {
+		// given
+		Optional<UserEntity> givenNullUser = Optional.empty();
+		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(givenNullUser);
+
+		PasswordRequestDto passwordRequestDto = new PasswordRequestDto(testPassword);
+		Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(false);
+
+		// when
+		ResultDto<Boolean> resultDto = userService.checkPassword(passwordRequestDto);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+	}
+
+
+	@Test
+	@DisplayName("비밀번호확인 - 성공")
+	void checkPasswordTest_비밀번호확인성공() {
+		// given
+		Optional<UserEntity> givenNullUser = Optional.empty();
+		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(givenNullUser);
+
+		PasswordRequestDto passwordRequestDto = new PasswordRequestDto(testPassword);
+		Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(true);
+
+		// when
+		ResultDto<Boolean> resultDto = userService.checkPassword(passwordRequestDto);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+	}
+
+
+	@Test
+	@DisplayName("비밀번호수정 - 실패 (변경 전 후 비번 동일)")
+	void modifyPasswordTest_비밀번호수정실패_비번동일() {
+		// given
+		Optional<UserEntity> givenNullUser = Optional.empty();
+		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(givenNullUser);
+
+		PasswordRequestDto passwordRequestDto = new PasswordRequestDto(testPassword);
+		Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(true);
+
+		// when
+		ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+	}
+
+
+	@Test
+	@DisplayName("비밀번호수정 - 실패 (사용자 없음)")
+	void modifyPasswordTest_비밀번호수정실패_사용자없음() {
+		// given
+		PasswordRequestDto passwordRequestDto = new PasswordRequestDto("12345");
+		Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(false);
+
+		Optional<UserEntity> givenNullUser = Optional.empty();
+		Mockito.when(userRepository.findById(1L)).thenReturn(givenNullUser);
+		// when
+		ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+	}
+
+
+	@Test
+	@DisplayName("비밀번호수정 - 성공")
+	void modifyPasswordTest_비밀번호수정성공() {
+		// given
+		PasswordRequestDto passwordRequestDto = new PasswordRequestDto("12345");
+		Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(false);
+
+		Optional<UserEntity> givenNullUser = Optional.of(user);
+		Mockito.when(userRepository.findById(1L)).thenReturn(givenNullUser);
+		// when
+		ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
 
 		// then
 		Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
