@@ -19,21 +19,21 @@ import java.time.LocalDateTime;
 
 
 @MappedSuperclass
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @SuperBuilder
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class) // 이게 있어야 하위 클래스에서 createdAt, updatedAt가 자동 생성이 됨
 public abstract class CommonEntity {
 
 	@CreatedDate
 	@Column(updatable = false, nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-	private LocalDateTime createdAt;
+	public LocalDateTime createdAt;
 
 	@LastModifiedDate
 	@Column(nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-	private LocalDateTime updatedAt;
+	public LocalDateTime updatedAt;
 
 }
