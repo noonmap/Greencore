@@ -2,7 +2,7 @@
 FROM node:18.12.1
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /var/jenkins_home/workspace/greencore/FE/green-core
 
 # Copy the package.json and package-lock.json files
 COPY package*.json ./
