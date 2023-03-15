@@ -1,7 +1,6 @@
 package com.chicochico.common.service;
 
 
-import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
@@ -39,7 +38,7 @@ public class AuthTokenProvider {
 
 
 	@Autowired
-	public AuthTokenProvider(UserRepository userRepository, @Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService) {
+	public AuthTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService) {
 		this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 		objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 		this.customUserDetailsService = customUserDetailsService;
