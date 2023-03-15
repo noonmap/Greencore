@@ -1,7 +1,6 @@
 package com.chicochico.feed;
 
 
-import com.chicochico.common.code.FeedType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
@@ -47,7 +46,6 @@ public class FeedServiceTest {
 			.content("diary content")
 			.imagePath(DEFAULT_IMAGE_PATH)
 			.likeCount(0)
-			.feedCode(FeedType.FEED_DIARY)
 			.isDeleted(IsDeletedType.N)
 			.build();
 	}
@@ -65,7 +63,6 @@ public class FeedServiceTest {
 			.content("diary content")
 			.imagePath(DEFAULT_IMAGE_PATH)
 			.likeCount(0)
-			.feedCode(FeedType.FEED_DIARY)
 			.isDeleted(IsDeletedType.N)
 			.diarySet(new DiarySetEntity())
 			.observationDate(LocalDate.now())
