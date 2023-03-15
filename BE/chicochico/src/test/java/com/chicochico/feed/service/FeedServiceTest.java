@@ -6,6 +6,8 @@ import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.entity.PostEntity;
 import com.chicochico.domain.feed.repository.FeedRepository;
+import com.chicochico.domain.feed.repository.FeedTagRepository;
+import com.chicochico.domain.feed.repository.TagRepository;
 import com.chicochico.domain.feed.service.FeedService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -133,9 +135,32 @@ public class FeedServiceTest extends FeedServiceTestHelper {
 			// 이건 UserService에서 팔로우 리스트를 검증해야 함
 		}
 
+	}
+
+	@Nested
+	@DisplayName("태그로 검색한 피드 조회 테스트")
+	class TagFeedListTest {
+
+		@Mock
+		private TagRepository tagRepository;
+
+		@Mock
+		private FeedTagRepository feedTagRepository;
+
 
 		@Test
+		@DisplayName("삭제된 피드 목록이 조회 안되는지 확인")
+		public void 삭제된피드목록조회X() {
+			// given
+			
+			Assertions.assertThat(false).isTrue();
+		}
 
+
+		@Test
+		@DisplayName("태그로 검색한 목록 조회 성공")
+		public void 태그피드목록조회성공() {
+			Assertions.assertThat(false).isTrue();
 		}
 
 	}

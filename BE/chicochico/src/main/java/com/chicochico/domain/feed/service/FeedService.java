@@ -3,7 +3,11 @@ package com.chicochico.domain.feed.service;
 
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.domain.feed.entity.FeedEntity;
+import com.chicochico.domain.feed.entity.FeedTagEntity;
+import com.chicochico.domain.feed.entity.TagEntity;
 import com.chicochico.domain.feed.repository.FeedRepository;
+import com.chicochico.domain.feed.repository.FeedTagRepository;
+import com.chicochico.domain.feed.repository.TagRepository;
 import com.chicochico.domain.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +26,8 @@ public class FeedService {
 
 	private final FeedRepository feedRepository;
 
+	private final FeedTagRepository feedTagRepository;
+	private final TagRepository tagRepository;
 
 
 	/**
@@ -67,8 +73,14 @@ public class FeedService {
 	 * @return 피드 조회 페이지
 	 */
 	public Page<FeedEntity> getFeedListByTag(String tag, Pageable pageable) {
-
-		return Page.empty();
+		// 태그를 가진 feed찾기
+		List<TagEntity> tagList = tagRepository.findByContentContainingIgnoreCase(tag);
+		if (tagList.isEmpty()) return Page.empty();
+		List<FeedTagEntity> feedTagList = feedTagRepository.findByTag(tagList);
+		if (feedTagList.isEmpty()) return Page.empty();
+		List<FeedEntity> feedList = feedTagList.stream().map(ft -> ft.getFeed()).collect(Collectors.toList());
+		Page<FeedEntity> feedPage = new PageImpl<>(feedList, pageable, feedList.size());
+		return feedPage;
 	}
 
 

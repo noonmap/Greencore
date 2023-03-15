@@ -44,6 +44,11 @@ public class FeedRepositoryTest {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	TagRepository tagRepository;
+	@Autowired
+	FeedTagRepository feedTagRepository;
+
 	private UserEntity userEntity;
 	private UserPlantEntity userPlantEntity;
 	private DiarySetEntity diarySetEntity;
@@ -130,6 +135,31 @@ public class FeedRepositoryTest {
 		Assertions.assertTrue(result.toList().contains(diary1)); // 조회되었는지 확인
 		Assertions.assertFalse(result.toList().contains(diary2)); // 조회X인지 확인
 		Assertions.assertTrue(result.toList().contains(diary3)); // 조회되었는지 확인
+	}
+
+
+	@Test
+	@DisplayName("여러 태그에 대해 feedTag를 한번에 조회")
+	public void FeedTagINQueryTest() {
+		// given
+		TagEntity tag1 = tagRepository.save(TagEntity.builder().content("tag1").build());
+		TagEntity tag2 = tagRepository.save(TagEntity.builder().content("tag2").build()); // 이건 조회하지 않음
+		TagEntity tag3 = tagRepository.save(TagEntity.builder().content("tag3").build());
+		UserEntity user1 = userRepository.save(doUserEntity());
+		DiaryEntity diary1 = diaryRepository.save(doDiaryEntity(user1));
+		FeedTagEntity ft1 = feedTagRepository.save(FeedTagEntity.builder().tag(tag1).feed(diary1).build());
+		FeedTagEntity ft2 = feedTagRepository.save(FeedTagEntity.builder().tag(tag2).feed(diary1).build());
+		FeedTagEntity ft3 = feedTagRepository.save(FeedTagEntity.builder().tag(tag3).feed(diary1).build());
+		List<TagEntity> tagList = List.of(tag1, tag3);
+
+		// when
+		List<FeedTagEntity> result = feedTagRepository.findByTag(tagList); // tag1, tag3이 포함된 feed
+
+		// then
+		Assertions.assertTrue(result.size() == 2); // tag1, tag3만 포함되었는지 확인
+		Assertions.assertTrue(result.contains(ft1));
+		Assertions.assertFalse(result.contains(ft2));
+		Assertions.assertTrue(result.contains(ft3));
 	}
 
 }
