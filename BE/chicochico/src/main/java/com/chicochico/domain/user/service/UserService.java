@@ -1,6 +1,7 @@
 package com.chicochico.domain.user.service;
 
 
+import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.user.dto.PasswordRequestDto;
 import com.chicochico.domain.user.dto.RegisterRequestDto;
@@ -54,8 +55,27 @@ public class UserService {
 	 * 닉네임 중복을 확인합니다
 	 *
 	 * @param nickname 유저 닉네임
+	 * @return ResultDto.ofSuccess(): 닉네임 중복 아님, ResultDto.ofFail(): 닉네임 중복
 	 */
-	public void checkNickname(String nickname) {
+	public ResultDto<Boolean> checkNickname(String nickname) {
+		if (userRepository.findByNickname(nickname).isPresent()) {
+			return ResultDto.ofFail();
+		}
+		return ResultDto.ofSuccess();
+	}
+
+
+	/**
+	 * 이메일 중복을 확인합니다.
+	 *
+	 * @param email 이메일
+	 * @return ResultDto.ofSuccess(): 이메일 중복 아님, ResultDto.ofFail(): 이메일 중복
+	 */
+	public ResultDto<Boolean> checkEmail(String email) {
+		if (userRepository.findByEmail(email).isPresent()) {
+			return ResultDto.ofFail();
+		}
+		return ResultDto.ofSuccess();
 	}
 
 

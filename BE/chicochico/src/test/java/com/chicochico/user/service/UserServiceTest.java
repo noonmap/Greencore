@@ -2,6 +2,8 @@ package com.chicochico.user.service;
 
 
 import com.chicochico.common.code.IsDeletedType;
+import com.chicochico.common.dto.ResultDto;
+import com.chicochico.common.dto.ResultEnum;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.user.dto.RegisterRequestDto;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -110,6 +112,70 @@ public class UserServiceTest {
 			userService.createUser(new RegisterRequestDto(testEmail, testNickname, testPassword));
 		}).doesNotThrowAnyException();
 
+	}
+
+
+	@Test
+	@DisplayName("닉네임 중복 - 중복")
+	void checkNicknameTest_닉네임중복() {
+		// given
+		Mockito.when(userRepository.findByNickname(testNickname)).thenReturn(Optional.of(user));
+
+		// when
+		ResultDto<Boolean> resultDto = userService.checkNickname(testNickname);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+	}
+
+
+	@Test
+	@DisplayName("닉네임 중복 - 중복아님 통과")
+	void checkNicknameTest_닉네임중복아님() {
+		// given
+		Optional<UserEntity> givenNullUser = Optional.empty();
+		Mockito.when(userRepository.findByNickname(testNickname)).thenReturn(givenNullUser);
+
+		// when
+		ResultDto<Boolean> resultDto = userService.checkNickname(testNickname);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+
+	}
+
+
+	@Test
+	@DisplayName("이메일 중복 - 중복")
+	void checkEmailTest_이메일중복() {
+		// given
+		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(Optional.of(user));
+
+		// when
+		ResultDto<Boolean> resultDto = userService.checkEmail(testEmail);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+
+	}
+
+
+	@Test
+	@DisplayName("이메일 중복 - 중복아님 통과")
+	void checkEmailTest_이메일중복아님() {
+		// given
+		Optional<UserEntity> givenNullUser = Optional.empty();
+		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(givenNullUser);
+
+		// when
+		ResultDto<Boolean> resultDto = userService.checkEmail(testEmail);
+
+		// then
+		Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
+		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
 	}
 
 }

@@ -39,18 +39,18 @@ public class UserController {
 	@GetMapping("/{nickname}")
 	@ApiOperation(value = "닉네임 중복확인을 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> checkNickname(@PathVariable("nickname") String nickname) {
-		userService.checkNickname(nickname);
+		ResultDto<Boolean> resultDto = userService.checkNickname(nickname);
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		return ResponseEntity.ok().body(resultDto);
 	}
 
 
-	@PostMapping("/password")
-	@ApiOperation(value = "현재 비밀번호를 확인합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> checkPassword(@RequestBody PasswordRequestDto passwordRequestDto) {
-		userService.checkPassword(passwordRequestDto);
+	@GetMapping("/email/{email}")
+	@ApiOperation(value = "이메일 중복확인을 합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> checkEmail(@PathVariable("email") String email) {
+		ResultDto<Boolean> resultDto = userService.checkEmail(email);
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		return ResponseEntity.ok().body(resultDto);
 	}
 
 
