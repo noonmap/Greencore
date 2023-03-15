@@ -21,7 +21,7 @@ FROM nginx:latest
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # 빌드된 앱 추가
-COPY --from=build /app/out /usr/share/nginx/html
+COPY --from=build /FE/green-core/out /usr/share/nginx/html
 
 # 80번 포트 열기
 EXPOSE 80
