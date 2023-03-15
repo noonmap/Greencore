@@ -6,6 +6,7 @@ import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.feed.entity.BookmarkEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -13,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,13 +57,16 @@ public class UserEntity extends CommonEntity implements UserDetails {
 	private IsDeletedType isDeleted;
 
 	@OneToMany(mappedBy = "user")
-	private List<BookmarkEntity> bookmarkList;
+	@Builder.Default
+	private List<BookmarkEntity> bookmarkList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "follower")
-	private List<FollowEntity> followerList;
+	@Builder.Default
+	private List<FollowEntity> followerList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "following")
-	private List<FollowEntity> followingList;
+	@Builder.Default
+	private List<FollowEntity> followingList = new ArrayList<>();
 
 
 	public void updatePassword(String password) {
