@@ -1,10 +1,10 @@
 package com.chicochico.feed;
 
 
-import com.chicochico.common.code.FeedType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
+import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.repository.DiaryRepository;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
 import com.chicochico.domain.feed.repository.FeedRepository;
@@ -14,11 +14,13 @@ import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.repository.UserPlantRepository;
 import com.chicochico.domain.user.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,6 +29,7 @@ import java.time.LocalDate;
 
 
 @DataJpaTest
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // h2 db가 아닌 실제 db를 사용하고 싶을 때
 @ActiveProfiles("test")
 public class FeedRepositoryTest {
 
@@ -99,9 +102,8 @@ public class FeedRepositoryTest {
 		return DiaryEntity.builder()
 			.user(user)
 			.content("diary content")
-			//			.imagePath(DEFAULT_IMAGE_PATH)
+			.imagePath(DEFAULT_IMAGE_PATH)
 			.likeCount(0)
-			.feedCode(FeedType.FEED_DIARY)
 			.isDeleted(IsDeletedType.N)
 			.observationDate(LocalDate.now())
 			.diarySet(diarySetEntity)
@@ -117,29 +119,20 @@ public class FeedRepositoryTest {
 		UserEntity user1 = userRepository.save(doUserEntity());
 		UserEntity user2 = userRepository.save(doUserEntity());
 		UserEntity user3 = userRepository.save(doUserEntity());
-		Long[] userIds = new Long[] { user1.getId(), user3.getId() }; // 1번, 3번 user의 피드만 조회
-		//		DiaryEntity feed1 = diaryRepository.save(DiaryEntity.builder()
-		//			.user(user1)
-		//			.content("diary content")
-		//			//			.imagePath(DEFAULT_IMAGE_PATH)
-		//			.likeCount(0)
-		//			.feedCode(FeedType.FEED_DIARY)
-		//			.isDeleted(IsDeletedType.N)
-		//			.observationDate(LocalDate.now())
-		//			.diarySet(diarySetEntity)
-		//			.build());
-		//		DiaryEntity feed2 = diaryRepository.save(doDiaryEntity(user2));
-		//		DiaryEntity feed3 = diaryRepository.save(doDiaryEntity(user3));
-		//
-		//		// when
-		//		Page<FeedEntity> result = feedRepository.findByUserIn(userIds, pageable);
-		//
-		//		// then
-		//		// id=2가 빠졌는지 확인
-		//		Assertions.assertTrue(result.toList().size() == 2);
-		//		Assertions.assertTrue(result.toList().contains(feed1));
-		//		Assertions.assertFalse(result.toList().contains(feed2));
-		//		Assertions.assertTrue(result.toList().contains(feed3));
+		UserEntity[] userIds = new UserEntity[] { user1, user3 }; // 1번, 3번 user의 피드만 조회
+		DiaryEntity diary1 = diaryRepository.save(doDiaryEntity(user1));
+		DiaryEntity diary2 = diaryRepository.save(doDiaryEntity(user2)); // 이건 2번 user의 피드이므로 조회되면 안된다.
+		DiaryEntity diary3 = diaryRepository.save(doDiaryEntity(user3));
+
+		// when
+		Page<FeedEntity> result = feedRepository.findByUserIn(userIds, pageable);
+
+		// then
+		// id=2가 빠졌는지 확인
+		Assertions.assertTrue(result.toList().size() == 2); // diary1, diary3 두 개만 있는지 확인
+		Assertions.assertTrue(result.toList().contains(diary1)); // 조회되었는지 확인
+		Assertions.assertFalse(result.toList().contains(diary2)); // 조회X인지 확인
+		Assertions.assertTrue(result.toList().contains(diary3)); // 조회되었는지 확인
 	}
 
 }

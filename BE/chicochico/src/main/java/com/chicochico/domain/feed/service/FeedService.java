@@ -65,9 +65,9 @@ public class FeedService {
 		// 팔로우하고 있는 유저들
 		List<UserEntity> followingUserList = getFollowingList(userId);
 		// 팔로우하고 있는 유저들의 Id
-		Long[] followingUserIds = (Long[]) followingUserList.stream().map(u -> u.getId()).toArray();
+		//		Long[] followingUserIds = (Long[]) followingUserList.stream().map(u -> u.getId()).toArray();
 		// 팔로우하고 있는 유저들의 피드
-		Page<FeedEntity> feedList = feedRepository.findByUserIn(followingUserIds, pageable);
+		Page<FeedEntity> feedList = feedRepository.findByUserIn((UserEntity[]) followingUserList.toArray(), pageable);
 
 		return feedList;
 	}
