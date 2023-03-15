@@ -118,16 +118,16 @@ public class FeedRepositoryTest {
 		UserEntity user2 = userRepository.save(doUserEntity());
 		UserEntity user3 = userRepository.save(doUserEntity());
 		Long[] userIds = new Long[] { user1.getId(), user3.getId() }; // 1번, 3번 user의 피드만 조회
-		DiaryEntity feed1 = diaryRepository.save(DiaryEntity.builder()
-			.user(user1)
-			.content("diary content")
-			//			.imagePath(DEFAULT_IMAGE_PATH)
-			.likeCount(0)
-			.feedCode(FeedType.FEED_DIARY)
-			.isDeleted(IsDeletedType.N)
-			.observationDate(LocalDate.now())
-			.diarySet(diarySetEntity)
-			.build());
+		//		DiaryEntity feed1 = diaryRepository.save(DiaryEntity.builder()
+		//			.user(user1)
+		//			.content("diary content")
+		//			//			.imagePath(DEFAULT_IMAGE_PATH)
+		//			.likeCount(0)
+		//			.feedCode(FeedType.FEED_DIARY)
+		//			.isDeleted(IsDeletedType.N)
+		//			.observationDate(LocalDate.now())
+		//			.diarySet(diarySetEntity)
+		//			.build());
 		//		DiaryEntity feed2 = diaryRepository.save(doDiaryEntity(user2));
 		//		DiaryEntity feed3 = diaryRepository.save(doDiaryEntity(user3));
 		//
