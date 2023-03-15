@@ -29,7 +29,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
         <div className={`${styles.helpTip} flex `}>
           <div id='userInfo'>
             {feed.user.profileImagePath ? (
-              <Image className='mb-3' src={feed.user.profileImagePath} alt='로고' width='30' height='30'></Image>
+              <img className='mb-3' src={feed.user.profileImagePath} alt='로고' width='30' height='30'></img>
             ) : (
               <Skeleton width={30} height={30} />
             )}
@@ -43,7 +43,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
             <br />
             <span>팔로잉 여부 : {feed.user.isFollowed ? <i className='fa-solid fa-heart'></i> : 'false'}</span>
           </div>
-          <Image className='mb-3' src={feed.user.profileImagePath} alt='로고' width='30' height='30'></Image>
+          <img className='mb-3' src={feed.user.profileImagePath} alt='로고' width='30' height='30'></img>
           <span>{feed.user.nickname || <Skeleton />}</span>
         </div>
         <div>feedCode : {feed.feedCode || <Skeleton />}</div>
@@ -51,7 +51,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
         <div>feedId : {feed.feedId || <Skeleton />}</div>
         <div>내용 : {feed.content || <Skeleton />}</div>
         <div>
-          <Link href={feed.feedCode == 'FEED_DIARY' ? `diary/${feed.feedId}` : `post/${feed.feedId}`}>
+          <Link href={feed.feedCode == 'FEED_DIARY' ? `/diary/${feed.feedId}` : `/post/${feed.feedId}`}>
             {feed.imagePath ? (
               <img
                 className='inline-block'

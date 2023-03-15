@@ -5,5 +5,3 @@ const nextConfig = {
 	},
 	reactStrictMode: false // useEffect twice
 };
-
-module.exports = nextConfig;

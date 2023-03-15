@@ -24,7 +24,7 @@ export default function diary() {
 
   return (
     <AppLayout>
-      <Link href={'diary/create'}>
+      <Link href={'/diary/create'}>
         <button className='bg-blue-500 rounded ml-6'>일지 생성</button>
       </Link>
       <div className='mx-auto max-w-7xl p-6 lg:px-8'>
