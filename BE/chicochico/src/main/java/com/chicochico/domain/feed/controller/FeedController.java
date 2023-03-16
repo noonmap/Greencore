@@ -3,8 +3,8 @@ package com.chicochico.domain.feed.controller;
 
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.service.AuthService;
-import com.chicochico.domain.feed.dto.FeedResponseDto;
-import com.chicochico.domain.feed.dto.FeedSimpleResponseDto;
+import com.chicochico.domain.feed.dto.response.FeedResponseDto;
+import com.chicochico.domain.feed.dto.response.FeedSimpleResponseDto;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.user.entity.FollowEntity;

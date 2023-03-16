@@ -1,7 +1,7 @@
 package com.chicochico.domain.feed.service;
 
 
-import com.chicochico.domain.feed.dto.DiaryRequestDto;
+import com.chicochico.domain.feed.dto.request.DiaryRequestDto;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.repository.DiaryRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.chicochico.domain.schedule.service;
 
 
-import com.chicochico.domain.schedule.dto.ScheduleRequestDto;
+import com.chicochico.domain.schedule.dto.request.ScheduleRequestDto;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;

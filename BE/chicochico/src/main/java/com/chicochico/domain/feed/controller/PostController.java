@@ -2,9 +2,9 @@ package com.chicochico.domain.feed.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.feed.dto.PostRequestDto;
-import com.chicochico.domain.feed.dto.PostResponseDto;
-import com.chicochico.domain.feed.dto.PostSimpleResponseDto;
+import com.chicochico.domain.feed.dto.request.PostRequestDto;
+import com.chicochico.domain.feed.dto.response.PostResponseDto;
+import com.chicochico.domain.feed.dto.response.PostSimpleResponseDto;
 import com.chicochico.domain.feed.entity.PostEntity;
 import com.chicochico.domain.feed.service.PostService;
 import io.swagger.annotations.Api;
