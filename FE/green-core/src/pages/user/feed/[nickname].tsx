@@ -1,19 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
+import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-
-import { getProfile } from '@/core/user/userAPI';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import Skeleton from 'react-loading-skeleton';
 import { useForm } from 'react-hook-form';
+
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { getProfile, getUserPlantList, deleteUserPlant } from '@/core/user/userAPI';
+import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
+import Skeleton from 'react-loading-skeleton';
 
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
-import { File } from 'buffer';
-import Link from 'next/link';
-import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
+import AppModal from '@/components/common/AppModal';
+import UserPlantModal from '@/components/common/UserPlantModal';
 
 type ProfileType = {
   followerCount: number;
@@ -22,6 +24,14 @@ type ProfileType = {
   isFollowed: boolean;
   nickname: string;
   profileImagePath: string;
+};
+
+type UserPlantType = {
+  plantId: number;
+  plantImagePath: string;
+  plantName: string;
+  plantNickname: string;
+  userPlantId: number;
 };
 
 type StateType = {
@@ -40,18 +50,29 @@ export default function FeedDetail() {
   const { nickname } = router.query;
   const myNickname = useAppSelector((state) => state.common.userInfo?.nickname);
 
-  const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
+  const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [uploadProfileImage] = getValues(['uploadProfileImage']);
 
-  const [userProfile, setUserProfile] = useState<ProfileType>();
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
+  const [userProfile, setUserProfile] = useState<ProfileType>();
+  const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>();
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
+  const [isEditPopUp, setIsEditPopUp] = useState(true);
+  const [isOpenUserPlantCreateModal, setIsOpenUserPlantCreateModal] = useState(false);
+  const [isOpenUserPlantUpdateModal, setIsOpenUserPlantUpdateModal] = useState(false);
+  const [isOpenUserPlantDeleteModal, setIsOpenUserPlantDeleteModal] = useState(false);
+  const [userPlantId, setUserPlantId] = useState(null);
+  const [userPlantNickname, setUserPlantNickname] = useState('');
 
-  const getUserProfile = useCallback(async () => {
+  function checkSameUser() {
+    if (myNickname == nickname) setIsSameUser(true);
+  }
+
+  const fetchUserProfile = useCallback(async () => {
     const { data } = await getProfile(nickname);
     setUserProfile(data);
 
-    const profileRef = ref(storage, `${myNickname}/profileImage`);
+    const profileRef = ref(storage, `${nickname}/profileImage`);
 
     getDownloadURL(profileRef)
       .then((downloadURL) => {
@@ -72,12 +93,17 @@ export default function FeedDetail() {
       });
   }, [nickname]);
 
-  function checkSameUser() {
-    if (myNickname == nickname) setIsSameUser(true);
-  }
+  const fetchUserPlantList = useCallback(async () => {
+    try {
+      const { data } = await getUserPlantList(nickname);
+      setUserPlantList(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [nickname]);
 
   function handleImageExploerOpen() {
-    const profileImageInput: any = document.querySelector(`.profileImageInput`);
+    const profileImageInput: HTMLElement = document.querySelector(`.profileImageInput`);
     profileImageInput.click();
   }
 
@@ -137,19 +163,68 @@ export default function FeedDetail() {
     console.log(data);
   }
 
+  function handleisEditToggle() {
+    setIsEditPopUp(!isEditPopUp);
+  }
+
+  function handleUserPlantNicknameUpdate(userPlantId: number, plantNickname: string) {
+    setUserPlantId(userPlantId);
+    setUserPlantNickname(plantNickname);
+    setIsOpenUserPlantUpdateModal(true);
+  }
+
+  function handleUserPlantDeleteOpen(userPlantId: number) {
+    setUserPlantId(userPlantId);
+    setIsOpenUserPlantDeleteModal(true);
+  }
+
+  async function handleUserPlantDelete() {
+    try {
+      const { data } = await deleteUserPlant(userPlantId);
+      setIsOpenUserPlantDeleteModal(false);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      setIsOpenUserPlantDeleteModal(false);
+    }
+  }
+
   useEffect(() => {
     if (!router.isReady) return;
-    getUserProfile();
+    console.log(router.query);
+
     checkSameUser();
+    fetchUserProfile();
+    fetchUserPlantList();
     watch();
 
     handleProfileImageUpdate();
     return () => {};
-  }, [nickname, isSameUser, uploadProfileImage]);
+  }, [nickname, uploadProfileImage]); // 해당 변수가 업데이트 되면 한번 더 불러짐
 
   return (
     <AppLayout>
-      <h1>User Feed</h1>
+      <h1>프로필 라인</h1>
+
+      <UserPlantModal
+        isOpen={isOpenUserPlantCreateModal}
+        create
+        title={'내식물 생성'}
+        handleModalClose={() => setIsOpenUserPlantCreateModal(false)}
+      />
+      <UserPlantModal
+        isOpen={isOpenUserPlantUpdateModal}
+        update
+        userPlantId={userPlantId}
+        userPlantNickname={userPlantNickname}
+        title={'내식물 정보 수정'}
+        handleModalClose={() => setIsOpenUserPlantUpdateModal(false)}
+      />
+      <AppModal
+        isOpen={isOpenUserPlantDeleteModal}
+        handleModalConfirm={handleUserPlantDelete}
+        handleModalClose={() => setIsOpenUserPlantDeleteModal(false)}
+      />
 
       <div className='space-y-2 '>
         {/* 프로필 라인 */}
@@ -159,15 +234,18 @@ export default function FeedDetail() {
             <div onClick={handleImageExploerOpen}>
               {userProfileImagePath ? (
                 (
-                  <img
+                  <Image
                     src={userProfileImagePath}
                     alt='사용자 프로필 이미지'
-                    className='rounded-full w-20 h-20 bg-cover'
+                    width={90}
+                    height={90}
+                    className='rounded-full bg-cover'
                     onClick={handleProfileImageUpdate}
+                    priority
                   />
                 ) || <Skeleton width={90} height={90} circle />
               ) : (
-                <img src='/images/noProfile.png' alt='사용자 프로필 이미지' className='rounded-full w-20 h-20 bg-cover' />
+                <Image src='/images/noProfile.png' alt='사용자 프로필 이미지' width={90} height={90} className='rounded-full bg-cover' priority />
               )}
             </div>
 
@@ -201,7 +279,38 @@ export default function FeedDetail() {
         </div>
 
         {/* 내키식 라인 */}
-        <div>내키식 라인</div>
+        <div className='space-y-2 '>
+          <h1>내키식 라인</h1>
+          <button className='rounded bg-blue-500' onClick={() => setIsOpenUserPlantCreateModal(true)}>
+            내키식 생성
+          </button>
+          {userPlantList ? (
+            userPlantList.length < 0 ? (
+              <div>빈 userPlant</div>
+            ) : (
+              <div className='flex flex-row space-x-4'>
+                {userPlantList.map((userPlant) => (
+                  <div key={userPlant.userPlantId}>
+                    <Image src='/images/noProfile.png' alt='사용자 식물' width={70} height={70} priority />
+                    <div>{userPlant.plantNickname}</div>
+                    <span className='material-symbols-outlined' onClick={handleisEditToggle}>
+                      more_vert
+                    </span>
+
+                    {isEditPopUp ? (
+                      <div>
+                        <div onClick={() => handleUserPlantNicknameUpdate(userPlant.userPlantId, userPlant.plantNickname)}>내키식 닉네임 수정</div>
+                        <div onClick={() => handleUserPlantDeleteOpen(userPlant.userPlantId)}>내키식 삭제</div>
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )
+          ) : (
+            <div>아직 생성하지않았음</div>
+          )}
+        </div>
 
         {/* 관찰일지 라인 */}
         <div>관찰일지 라인</div>
