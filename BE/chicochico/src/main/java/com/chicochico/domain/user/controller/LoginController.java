@@ -55,7 +55,16 @@ public class LoginController {
 
 	@DeleteMapping("/logout")
 	@ApiOperation(value = "로그아웃합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> logout(@RequestHeader Map<String, Object> logoutRequestHeader) {
+	public ResponseEntity<ResultDto<Boolean>> logout(@RequestHeader Map<String, String> logoutRequestHeader) {
+		loginService.deleteAccessToken(logoutRequestHeader);
+
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	}
+
+
+	@GetMapping("/logout/redirect")
+	@ApiOperation(value = "로그아웃합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> logoutPost(@RequestHeader Map<String, String> logoutRequestHeader) {
 		loginService.deleteAccessToken(logoutRequestHeader);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());

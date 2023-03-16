@@ -7,14 +7,19 @@ import com.chicochico.domain.user.dto.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.chicochico.exception.ErrorCode.PASSWORD_NOT_MATCH;
 import static com.chicochico.exception.ErrorCode.USER_NOT_FOUND;
@@ -28,6 +33,7 @@ public class LoginService {
 	private final AuthTokenProvider authTokenProvider;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final RedisTemplate<String, String> redisTemplate;
 
 
 	/**
@@ -63,6 +69,9 @@ public class LoginService {
 		String refreshToken = authTokenProvider.createRefreshToken(user.get().getId(), user.get().getNickname());
 		authTokenProvider.setHeaderAccessToken(response, accessToken);
 		authTokenProvider.setHeaderRefreshToken(response, refreshToken);
+		
+		// refresh token Redis에 저장 
+		redisTemplate.opsForValue().set("RT:" + user.get().getId(), refreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
 
 		return ProfileSimpleResponseDto.fromEntity(user.get());
 	}
@@ -98,7 +107,43 @@ public class LoginService {
 	 *
 	 * @param logoutRequestHeader 엑세스 토큰
 	 */
-	public void deleteAccessToken(Map<String, Object> logoutRequestHeader) {
+	public void deleteAccessToken(Map<String, String> logoutRequestHeader) {
+
+		if (!logoutRequestHeader.containsKey("authorization")) {
+			throw new CustomException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
+		}
+
+		String bearerToken = logoutRequestHeader.get("authorization");
+
+		// 1. Access Token 검증
+		String accessToken;
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			accessToken = bearerToken.substring(7);
+		} else {
+			throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
+		}
+
+		if (!authTokenProvider.validate(accessToken)) {
+			throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
+		}
+
+		// 2. Access Token 에서 User id 을 가져옵니다.
+		Long userId = authTokenProvider.getUserId(accessToken);
+
+		// 3. Redis 에서 해당 User id 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
+		if (redisTemplate.opsForValue().get("RT:" + userId) != null) {
+			// Refresh Token 삭제
+			redisTemplate.delete("RT:" + userId);
+		}
+
+		// 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
+		Long expiration = authTokenProvider.getExpiration(accessToken);
+		redisTemplate.opsForValue()
+			.set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+		SecurityContextHolder.clearContext();
+
+		//		return response.success("로그아웃 되었습니다.");
+
 	}
 
 }
