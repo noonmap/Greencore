@@ -1,4 +1,4 @@
-package com.chicochico.feed.service;
+package com.chicochico.feed;
 
 
 import com.chicochico.common.code.IsDeletedType;
@@ -10,7 +10,7 @@ import com.chicochico.domain.user.entity.UserEntity;
 import java.time.LocalDate;
 
 
-public abstract class FeedServiceTestHelper {
+public abstract class FeedTestHelper {
 
 	private final String DEFAULT_IMAGE_PATH = "/image/default.png";
 

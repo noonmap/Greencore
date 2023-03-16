@@ -13,6 +13,7 @@ import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
+import com.chicochico.feed.FeedTestHelper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class FeedServiceTest extends FeedServiceTestHelper {
+public class FeedTest extends FeedTestHelper {
 
 	@Mock
 	private AuthService authService;

@@ -7,10 +7,7 @@ import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.entity.FeedTagEntity;
 import com.chicochico.domain.feed.entity.LikeEntity;
 import com.chicochico.domain.feed.entity.TagEntity;
-import com.chicochico.domain.feed.repository.FeedRepository;
-import com.chicochico.domain.feed.repository.FeedTagRepository;
-import com.chicochico.domain.feed.repository.LikeRepository;
-import com.chicochico.domain.feed.repository.TagRepository;
+import com.chicochico.domain.feed.repository.*;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -39,6 +37,35 @@ public class FeedService {
 	private final AuthService authService;
 
 	private final LikeRepository likeRepository;
+
+	private final CommentRepository commentRepository;
+
+
+	/**
+	 * 피드 이미 좋아요 했는지 체크
+	 *
+	 * @param feedId
+	 * @return
+	 */
+	public Boolean isLikedFeed(Long feedId) {
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
+		Optional<LikeEntity> like = likeRepository.findByUserAndFeed(user, feed);
+		return (like.isEmpty() == false);
+	}
+
+
+	/**
+	 * 피드에 있는 댓글 개수 구함
+	 *
+	 * @param feedId
+	 * @return
+	 */
+	public Integer getCommentCount(Long feedId) {
+		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
+		return commentRepository.countByFeed(feed);
+	}
 
 
 	/**

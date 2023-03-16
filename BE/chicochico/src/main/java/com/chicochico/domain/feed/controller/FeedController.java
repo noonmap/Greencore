@@ -45,9 +45,8 @@ public class FeedController {
 	@ApiOperation(value = "피드 추천 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(Pageable pageable) {
 		Page<FeedEntity> feedEntityPage = feedService.getFeedList(pageable);
-		// TODO : entity page -> dto page 변환 추가
-
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount);
+		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 
 
