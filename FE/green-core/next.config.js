@@ -4,6 +4,8 @@ const nextConfig = {
   images: {
     domains: ['firebasestorage.googleapis.com'],
   },
+  // basePath: '',
+  // assetPrefix: './',
 };
 
 module.exports = nextConfig;

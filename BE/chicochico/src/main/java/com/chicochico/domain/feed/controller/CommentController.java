@@ -2,8 +2,8 @@ package com.chicochico.domain.feed.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.feed.dto.CommentRequestDto;
-import com.chicochico.domain.feed.dto.CommentResponseDto;
+import com.chicochico.domain.feed.dto.request.CommentRequestDto;
+import com.chicochico.domain.feed.dto.response.CommentResponseDto;
 import com.chicochico.domain.feed.entity.CommentEntity;
 import com.chicochico.domain.feed.service.CommentService;
 import io.swagger.annotations.Api;
@@ -37,7 +37,7 @@ public class CommentController {
 
 	@PostMapping("/{feedId}/comment")
 	@ApiOperation(value = "해당 피드에 댓글을 생성합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> createComment(@PathVariable Long feedId, @RequestBody	CommentRequestDto commentRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> createComment(@PathVariable Long feedId, @RequestBody CommentRequestDto commentRequestDto) {
 		service.createComment(feedId, commentRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
@@ -53,7 +53,7 @@ public class CommentController {
 
 	@DeleteMapping("/{feedId}/comment/comment/{commentId}")
 	@ApiOperation(value = "해당 댓글을 삭제합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> deleteComment(@PathVariable Long feedId,	@PathVariable Long commentId) {
+	public ResponseEntity<ResultDto<Boolean>> deleteComment(@PathVariable Long feedId, @PathVariable Long commentId) {
 		service.deleteComment(commentId);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}

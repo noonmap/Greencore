@@ -1,7 +1,7 @@
 package com.chicochico.domain.user.service;
 
 
-import com.chicochico.domain.user.dto.LoginRequestDto;
+import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

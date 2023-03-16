@@ -1,7 +1,7 @@
 package com.chicochico.domain.feed.service;
 
 
-import com.chicochico.domain.feed.dto.CommentRequestDto;
+import com.chicochico.domain.feed.dto.request.CommentRequestDto;
 import com.chicochico.domain.feed.entity.CommentEntity;
 import com.chicochico.domain.feed.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.chicochico.domain.alert.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.alert.dto.AlertResponseDto;
+import com.chicochico.domain.alert.dto.response.AlertResponseDto;
 import com.chicochico.domain.alert.entity.AlertEntity;
 import com.chicochico.domain.alert.service.AlertService;
 import io.swagger.annotations.Api;

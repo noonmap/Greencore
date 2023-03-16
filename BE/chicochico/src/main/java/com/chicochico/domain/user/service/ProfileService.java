@@ -1,7 +1,7 @@
 package com.chicochico.domain.user.service;
 
 
-import com.chicochico.domain.user.dto.ProfileRequestDto;
+import com.chicochico.domain.user.dto.request.ProfileRequestDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

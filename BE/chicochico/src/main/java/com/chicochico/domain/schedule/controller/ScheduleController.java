@@ -2,8 +2,8 @@ package com.chicochico.domain.schedule.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.schedule.dto.ScheduleRequestDto;
-import com.chicochico.domain.schedule.dto.ScheduleResponseDto;
+import com.chicochico.domain.schedule.dto.request.ScheduleRequestDto;
+import com.chicochico.domain.schedule.dto.response.ScheduleResponseDto;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.schedule.service.ScheduleService;
 import io.swagger.annotations.Api;
