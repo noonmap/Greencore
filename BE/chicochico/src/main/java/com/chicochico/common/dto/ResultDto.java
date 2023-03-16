@@ -1,19 +1,20 @@
 package com.chicochico.common.dto;
 
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResultDto<T> {
-	private final T data;
-	private final ResultEnum resultCode;
+
+	private T data;
+	private ResultEnum resultCode;
+
 
 	public static <T> ResultDto<T> of(T data, ResultEnum result) {
 		return new ResultDto<>(data, result);
@@ -33,4 +34,5 @@ public class ResultDto<T> {
 	public static ResultDto<Boolean> ofFail() {
 		return new ResultDto<>(Boolean.FALSE, ResultEnum.FAIL);
 	}
+
 }

@@ -190,10 +190,10 @@ public class FeedRepositoryTest {
 		TagEntity tag3 = tagRepository.save(TagEntity.builder().content("search_tag").build()); // 검색O
 
 		// when
-		List<TagEntity> result = tagRepository.findByContentContainingIgnoreCase("Search"); // tag1, tag3이 포함된 feed
+		List<TagEntity> result = tagRepository.findByContentContainingIgnoreCase("Search"); // tag3이 포함된 feed
 
 		// then
-		Assertions.assertTrue(result.size() == 2); // tag1, tag3만 포함되었는지 확인
+		Assertions.assertTrue(result.size() == 1); // tag3만 포함되었는지 확인
 		Assertions.assertFalse(result.contains(tag1));
 		Assertions.assertTrue(result.contains(tag3));
 	}

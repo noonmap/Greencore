@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class FeedTest extends FeedTestHelper {
+public class FeedServiceTest extends FeedTestHelper {
 
 	@Mock
 	private AuthService authService;

@@ -10,6 +10,7 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 
 @Data
 @Builder
-public class FeedResponseDto {
+public class FeedResponseDto implements Serializable {
 
 	private ProfileResponseDto user;
 
