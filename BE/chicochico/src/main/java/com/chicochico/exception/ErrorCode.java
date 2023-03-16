@@ -40,6 +40,9 @@ public enum ErrorCode {
 	ALERT_NOT_FOUND(NOT_FOUND, "해당 알림이 존재하지 않습니다."),
 	FEED_NOT_FOUND(NOT_FOUND, "피드가 존재하지 않습니다."),
 	FEED_LIKE_NOT_FOUND(NOT_FOUND, "피드 좋아요가 존재하지 않습니다."),
+	POST_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다."),
+	DIARY_NOT_FOUND(NOT_FOUND, "일지가 존재하지 않습니다."),
+	DIARY_SET_NOT_FOUND(NOT_FOUND, "관찰 일지가 존재하지 않습니다."),
 	;
 
 	private final HttpStatus httpStatus;
