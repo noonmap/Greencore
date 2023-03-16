@@ -1,7 +1,6 @@
 package com.chicochico.domain.user.service;
 
 
-import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
@@ -38,10 +37,56 @@ public class LoginService {
 
 
 	/**
+	 * 엑세스 토큰을 재발급합니다
+	 *
+	 * @param loginRequestHeader 엑세스 토큰
+	 * @param response           엑세스 토큰을 담을 response
+	 */
+	public void createAccessToken(Map<String, String> loginRequestHeader, HttpServletResponse response) {
+
+		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
+		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
+		log.info("[createToken] 0");
+		// 1. Refresh Token 검증
+		if (!authTokenProvider.validate(loginRequestRefreshToken)) {
+			// Refresh Token 정보가 유효하지 않습니다.
+			throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
+		}
+
+		// 2. AccessToken에서 UserId와 UserNickname 가져옵니다.
+		Long userId = authTokenProvider.getUserId(accessToken);
+		String userNickname = authTokenProvider.getUserNickname(accessToken);
+
+		log.info("[createToken] 1");
+		// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
+		String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
+		log.info("[createToken] 2");
+		if (!StringUtils.hasText(refreshToken) || !refreshToken.equals(loginRequestRefreshToken)) {
+			// Refresh Token 정보가 일치하지 않습니다.
+			log.info("[createToken] 3");
+			throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
+		}
+		log.info("[createToken] 4");
+
+		// 4. 새로운 토큰 생성
+		String newAccessToken = authTokenProvider.createAccessToken(userId, userNickname);
+		String newRefreshToken = authTokenProvider.createRefreshToken(userId, userNickname);
+		authTokenProvider.setHeaderAccessToken(response, newAccessToken);
+		authTokenProvider.setHeaderRefreshToken(response, newRefreshToken);
+
+		// 5. RefreshToken Redis 업데이트
+		redisTemplate.opsForValue()
+			.set("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
+
+	}
+
+
+	/**
 	 * 로그인을 수행합니다
 	 *
 	 * @param loginRequestDto 이메일과 비밀번호 (email, password)
 	 * @param response        엑세스 토큰을 담을 response
+	 * @return 간단한 로그인 유저 프로필
 	 */
 	public ProfileSimpleResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
 
@@ -71,7 +116,7 @@ public class LoginService {
 		authTokenProvider.setHeaderAccessToken(response, accessToken);
 		authTokenProvider.setHeaderRefreshToken(response, refreshToken);
 
-		// refresh token Redis에 저장 
+		// refresh token Redis에 저장
 		redisTemplate.opsForValue().set("RT:" + user.get().getId(), refreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
 
 		return ProfileSimpleResponseDto.fromEntity(user.get());
@@ -89,40 +134,14 @@ public class LoginService {
 
 
 	/**
-	 * 엑세스 토큰을 재발급합니다
-	 *
-	 * @param loginRequestHeader 엑세스 토큰
-	 * @param response           엑세스 토큰을 담을 response
-	 */
-	public void createAccessToken(Map<String, Object> loginRequestHeader, HttpServletResponse response) {
-		// 어세스, 리프레시 토큰 발급 및 헤더 설정 (아래는 진행 예시)
-		//	String accessToken = jwtTokenProvider.createAccessToken(member.getEmail(), member.getRoles());
-		//	String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail(), member.getRoles());
-		//	jwtTokenProvider.setHeaderAccessToken(response, accessToken);
-		//	jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
-	}
-
-
-	/**
 	 * 로그아웃합니다 (엑세스 토큰 삭제)
 	 *
 	 * @param logoutRequestHeader 엑세스 토큰
 	 */
-	public ResultDto<Boolean> deleteAccessToken(Map<String, String> logoutRequestHeader) {
-
-		if (!logoutRequestHeader.containsKey("authorization")) {
-			throw new CustomException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
-		}
-
-		String bearerToken = logoutRequestHeader.get("authorization");
+	public void deleteAccessToken(Map<String, String> logoutRequestHeader) {
 
 		// 1. Access Token 검증
-		String accessToken;
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-			accessToken = bearerToken.substring(7);
-		} else {
-			throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
-		}
+		String accessToken = extractAccessToken(getHeader(logoutRequestHeader, "authorization"));
 
 		if (!authTokenProvider.validate(accessToken)) {
 			throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
@@ -143,7 +162,24 @@ public class LoginService {
 			.set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 		SecurityContextHolder.clearContext();
 
-		return ResultDto.ofSuccess();
+	}
+
+
+	private String getHeader(Map<String, String> headers, String key) {
+		String value = headers.get(key);
+		if (!StringUtils.hasText(value)) {
+			ErrorCode errorCode = key.equals("authorization") ? ErrorCode.ACCESS_TOKEN_NOT_FOUND : ErrorCode.REFRESH_TOKEN_NOT_FOUND;
+			throw new CustomException(errorCode);
+		}
+		return value;
+	}
+
+
+	private String extractAccessToken(String authorizationHeader) {
+		if (!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
+			throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
+		}
+		return authorizationHeader.substring(7);
 	}
 
 }

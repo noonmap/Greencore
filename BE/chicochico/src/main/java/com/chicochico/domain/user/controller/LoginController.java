@@ -46,28 +46,19 @@ public class LoginController {
 
 	@PostMapping("/refresh")
 	@ApiOperation(value = "엑세스 토큰을 재발급합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, Object> loginRequestHeader, HttpServletResponse response) {
+	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response) {
 		loginService.createAccessToken(loginRequestHeader, response);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
 
 
-	@DeleteMapping("/logout")
-	@ApiOperation(value = "로그아웃합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> logout(@RequestHeader Map<String, String> logoutRequestHeader) {
-		ResultDto<Boolean> resultDto = loginService.deleteAccessToken(logoutRequestHeader);
-
-		return ResponseEntity.ok().body(resultDto);
-	}
-
-
 	@GetMapping("/logout/redirect")
 	@ApiOperation(value = "로그아웃합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> logoutPost(@RequestHeader Map<String, String> logoutRequestHeader) {
-		ResultDto<Boolean> resultDto = loginService.deleteAccessToken(logoutRequestHeader);
+		loginService.deleteAccessToken(logoutRequestHeader);
 
-		return ResponseEntity.ok().body(resultDto);
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
 
 }

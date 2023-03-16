@@ -31,8 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +42,13 @@ class LoginServiceTest {
 	private final String testNickname = "test";
 	private final String testEmail = "test@naver.com";
 	private final String testPassword = "1234";
+
+	private final String testRefreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJuaWNrbmFtZVwiOlwidGVzdFwiLFwidG9rZW5UeXBlXCI6XCJSRUZSRVNIXCIsXCJ1c2VySWRcIjpcIjFcIn0iLCJpYXQiOjE2Nzg5NTE3ODksImV4cCI6MTY3OTAzODE4OX0.CnUn6AXfK5dX-GSq5YNq800klyK7zhgyKI6g1zqFt2o";
+
+	private final String testBearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJuaWNrbmFtZVwiOlwidGVzdFwiLFwidG9rZW5UeXBlXCI6XCJBQ0NFU1NcIixcInVzZXJJZFwiOlwiMVwifSIsImlhdCI6MTY3ODg3NTkyOSwiZXhwIjoxNjc4ODc3NzI5fQ.T4R1WRTLR3RhN8T_Vr0nX_WH2rnFly35SYHnETZVTiY";
+
+	private final String REFRESHHEADERKEY = "x-refresh-token";
+	private final String ACCESSHEADERKEY = "authorization";
 	HttpServletResponse httpServletResponse = new MockHttpServletResponse();
 	@Mock
 	private PasswordEncoder passwordEncoder;
@@ -69,9 +75,9 @@ class LoginServiceTest {
 		Mockito.when(userRepository.findByEmail(loginRequestDto.getEmail())).thenReturn(givenUser);
 
 		// when
-		CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
-			loginService.login(loginRequestDto, httpServletResponse);
-		});
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.login(loginRequestDto, httpServletResponse)
+		);
 
 		// then
 		Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
@@ -95,24 +101,12 @@ class LoginServiceTest {
 		Mockito.when(passwordEncoder.matches(loginRequestDto.getPassword(), givenUser.get().getPassword())).thenReturn(false);
 
 		// when
-		CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
-			loginService.login(loginRequestDto, httpServletResponse);
-		});
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.login(loginRequestDto, httpServletResponse)
+		);
 
 		// then
 		Assertions.assertEquals(ErrorCode.PASSWORD_NOT_MATCH, customException.getErrorCode());
-	}
-
-
-	@Disabled
-	@Test
-	void githubLogin() {
-	}
-
-
-	@Disabled
-	@Test
-	void createAccessToken() {
 	}
 
 
@@ -123,9 +117,9 @@ class LoginServiceTest {
 		Map<String, String> logoutRequestHeader = new HashMap<>();
 
 		// when
-		CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
-			loginService.deleteAccessToken(logoutRequestHeader);
-		});
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.deleteAccessToken(logoutRequestHeader)
+		);
 
 		// then
 		Assertions.assertEquals(ErrorCode.ACCESS_TOKEN_NOT_FOUND, customException.getErrorCode());
@@ -137,18 +131,132 @@ class LoginServiceTest {
 	void deleteAccessTokenTest_로그아웃실패_ACCESS_TOKEN_ERROR() {
 		// given
 		Map<String, String> logoutRequestHeader = new HashMap<>();
-		String bearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJuaWNrbmFtZVwiOlwidGVzdFwiLFwidG9rZW5UeXBlXCI6XCJBQ0NFU1NcIixcInVzZXJJZFwiOlwiMVwifSIsImlhdCI6MTY3ODg3NTkyOSwiZXhwIjoxNjc4ODc3NzI5fQ.T4R1WRTLR3RhN8T_Vr0nX_WH2rnFly35SYHnETZVTiY";
-		logoutRequestHeader.put("authorization", bearerToken);
+		logoutRequestHeader.put(ACCESSHEADERKEY, testBearerToken);
 
-		Mockito.when(authTokenProvider.validate(bearerToken.substring(7))).thenReturn(false);
+		Mockito.when(authTokenProvider.validate(testBearerToken.substring(7))).thenReturn(false);
 
 		// when
-		CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
-			loginService.deleteAccessToken(logoutRequestHeader);
-		});
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.deleteAccessToken(logoutRequestHeader)
+		);
 
 		// then
 		Assertions.assertEquals(ErrorCode.ACCESS_TOKEN_ERROR, customException.getErrorCode());
+	}
+
+
+	@Test
+	@DisplayName("엑세스토큰 재발급 - 실패 (헤더에 refreshToken 없음)")
+	void createAccessTokenTest_엑세스토큰재발급실패_REFRESH_TOKEN_NOT_FOUND() {
+		// given
+		Map<String, String> loginRequestHeader = new HashMap<>();
+
+		// when
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+		);
+
+		// then
+		Assertions.assertEquals(ErrorCode.REFRESH_TOKEN_NOT_FOUND, customException.getErrorCode());
+	}
+
+
+	@Test
+	@DisplayName("엑세스토큰 재발급 - 실패 (헤더에 accessToken 없음)")
+	void createAccessTokenTest_엑세스토큰재발급실패_ACCESS_TOKEN_NOT_FOUND() {
+		// given
+		Map<String, String> loginRequestHeader = new HashMap<>();
+
+		loginRequestHeader.put(REFRESHHEADERKEY, testRefreshToken);
+
+		// when
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+		);
+
+		// then
+		Assertions.assertEquals(ErrorCode.ACCESS_TOKEN_NOT_FOUND, customException.getErrorCode());
+	}
+
+
+	@Test
+	@DisplayName("엑세스토큰 재발급 - 실패 (Refresh Token 정보가 유효X)")
+	void createAccessTokenTest_엑세스토큰재발급실패_REFRESH_TOKEN_ERROR() {
+		// given
+		Map<String, String> loginRequestHeader = new HashMap<>();
+
+		loginRequestHeader.put(REFRESHHEADERKEY, testRefreshToken);
+		loginRequestHeader.put(ACCESSHEADERKEY, testBearerToken);
+
+		Mockito.when(authTokenProvider.validate(testRefreshToken)).thenReturn(false);
+
+		// when
+		CustomException customException = Assertions.assertThrows(CustomException.class, () -> loginService.createAccessToken(loginRequestHeader, httpServletResponse));
+
+		// then
+		Assertions.assertEquals(ErrorCode.REFRESH_TOKEN_ERROR, customException.getErrorCode());
+	}
+
+
+	@Test
+	@DisplayName("엑세스토큰 재발급 - 실패 (Redis에 Refresh Token정보와 불일치)")
+	void createAccessTokenTest_엑세스토큰재발급실패_REFRESH_TOKEN_ERROR_Redis불일치() {
+		// given
+		Map<String, String> loginRequestHeader = new HashMap<>();
+
+		loginRequestHeader.put(REFRESHHEADERKEY, testRefreshToken);
+		loginRequestHeader.put(ACCESSHEADERKEY, testBearerToken);
+
+		Long userId = 123L;
+
+		Mockito.when(authTokenProvider.validate(testRefreshToken)).thenReturn(true);
+		Mockito.when(authTokenProvider.getUserId(testBearerToken.substring(7))).thenReturn(userId);
+		Mockito.when(authTokenProvider.getUserNickname(testBearerToken.substring(7))).thenReturn("userNickname");
+
+		Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+		Mockito.when(valueOperations.get("RT:" + userId)).thenReturn("");
+
+		// when
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+		);
+
+		// then
+		Assertions.assertEquals(ErrorCode.REFRESH_TOKEN_ERROR, customException.getErrorCode());
+	}
+
+
+	// TODO
+	@Test
+	@DisplayName("엑세스토큰 재발급 - 성공")
+	void createAccessTokenTest_엑세스토큰재발급성공() {
+		// given
+		Map<String, String> loginRequestHeader = new HashMap<>();
+
+		loginRequestHeader.put(REFRESHHEADERKEY, testRefreshToken);
+		loginRequestHeader.put(ACCESSHEADERKEY, testBearerToken);
+
+		Long userId = 123L;
+
+		Mockito.when(authTokenProvider.validate(testRefreshToken)).thenReturn(true);
+		Mockito.when(authTokenProvider.getUserId(testBearerToken.substring(7))).thenReturn(userId);
+		Mockito.when(authTokenProvider.getUserNickname(testBearerToken.substring(7))).thenReturn(testNickname);
+
+		Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+		Mockito.when(valueOperations.get("RT:" + userId)).thenReturn(testRefreshToken);
+
+		Mockito.when(authTokenProvider.createAccessToken(userId, testNickname)).thenReturn("newAccessToken");
+		Mockito.when(authTokenProvider.createRefreshToken(userId, testNickname)).thenReturn("newRefreshToken");
+		Mockito.when(authTokenProvider.getExpiration(testRefreshToken)).thenReturn(1000L);
+
+		// when
+		assertThatCode(() ->
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+		).doesNotThrowAnyException();
+
+		// then
+		verify(valueOperations, times(1)).set("RT:" + userId, "newRefreshToken", 1000L, TimeUnit.MILLISECONDS);
+
 	}
 
 
@@ -187,11 +295,11 @@ class LoginServiceTest {
 			// mock PasswordEncoder
 			Mockito.when(passwordEncoder.matches(loginRequestDto.getPassword(), givenUser.get().getPassword())).thenReturn(true);
 
+			String accessToken = testBearerToken.substring(7);
 			// mock AuthTokenProvider
-			String accessToken = "access_token";
-			String refreshToken = "refresh_token";
-			when(authTokenProvider.createAccessToken(user.getId(), user.getNickname())).thenReturn(accessToken);
-			when(authTokenProvider.createRefreshToken(user.getId(), user.getNickname())).thenReturn(refreshToken);
+			Mockito.when(authTokenProvider.createAccessToken(user.getId(), user.getNickname())).thenReturn(accessToken);
+			Mockito.when(authTokenProvider.createRefreshToken(user.getId(), user.getNickname())).thenReturn(testRefreshToken);
+			Mockito.when(authTokenProvider.getExpiration(testRefreshToken)).thenReturn(1000L);
 
 			// when
 			ProfileSimpleResponseDto profileSimpleResponseDto = loginService.login(loginRequestDto, httpServletResponse);
@@ -207,7 +315,9 @@ class LoginServiceTest {
 			verify(authTokenProvider).createAccessToken(user.getId(), user.getNickname());
 			verify(authTokenProvider).createRefreshToken(user.getId(), user.getNickname());
 			verify(authTokenProvider).setHeaderAccessToken(httpServletResponse, accessToken);
-			verify(authTokenProvider).setHeaderRefreshToken(httpServletResponse, refreshToken);
+			verify(authTokenProvider).setHeaderRefreshToken(httpServletResponse, testRefreshToken);
+
+			verify(valueOperations, times(1)).set("RT:" + user.getId(), testRefreshToken, 1000L, TimeUnit.MILLISECONDS);
 
 		}
 
@@ -219,15 +329,15 @@ class LoginServiceTest {
 			String accessToken = "valid_access_token";
 			Long userId = 123L;
 			Map<String, String> logoutRequestHeader = new HashMap<>();
-			logoutRequestHeader.put("authorization", "Bearer " + accessToken);
+			logoutRequestHeader.put(ACCESSHEADERKEY, "Bearer " + accessToken);
 			when(authTokenProvider.validate(accessToken)).thenReturn(true);
 			when(authTokenProvider.getUserId(accessToken)).thenReturn(userId);
 			when(redisTemplate.opsForValue().get("RT:" + userId)).thenReturn("valid_refresh_token");
 
 			// when // then
-			assertThatCode(() -> {
-				loginService.deleteAccessToken(logoutRequestHeader);
-			}).doesNotThrowAnyException();
+			assertThatCode(() ->
+				loginService.deleteAccessToken(logoutRequestHeader)
+			).doesNotThrowAnyException();
 
 		}
 

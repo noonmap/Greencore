@@ -86,14 +86,10 @@ public class UserController {
 	@DeleteMapping
 	@ApiOperation(value = "회원탈퇴를 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteUser(@RequestHeader Map<String, String> logoutRequestHeader) {
-		ResultDto<Boolean> resultDtoDeleteAccessToken = loginService.deleteAccessToken(logoutRequestHeader);
+		loginService.deleteAccessToken(logoutRequestHeader);
 		ResultDto<Boolean> resultDtoDeleteUser = userService.deleteUser();
 
-		if (resultDtoDeleteAccessToken.equals(ResultDto.ofSuccess()) && resultDtoDeleteUser.equals(ResultDto.ofSuccess())) {
-			return ResponseEntity.ok().body(ResultDto.ofSuccess());
-		}
-		
-		return ResponseEntity.ok().body(ResultDto.ofFail());
+		return ResponseEntity.ok().body(resultDtoDeleteUser);
 	}
 
 
