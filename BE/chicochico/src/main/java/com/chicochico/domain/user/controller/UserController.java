@@ -8,6 +8,7 @@ import com.chicochico.domain.user.dto.request.UserPlantRequestDto;
 import com.chicochico.domain.user.dto.request.UserPlantSimpleRequestDto;
 import com.chicochico.domain.user.dto.response.UserPlantResponseDto;
 import com.chicochico.domain.user.entity.UserPlantEntity;
+import com.chicochico.domain.user.service.LoginService;
 import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Log4j2
@@ -27,6 +29,8 @@ import java.util.List;
 public class UserController {
 
 	private final UserService userService;
+
+	private final LoginService loginService;
 
 	/*
 	 * 유저 인증 관련
@@ -81,10 +85,15 @@ public class UserController {
 
 	@DeleteMapping
 	@ApiOperation(value = "회원탈퇴를 합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> deleteUser() {
-		userService.deleteUser();
+	public ResponseEntity<ResultDto<Boolean>> deleteUser(@RequestHeader Map<String, String> logoutRequestHeader) {
+		ResultDto<Boolean> resultDtoDeleteAccessToken = loginService.deleteAccessToken(logoutRequestHeader);
+		ResultDto<Boolean> resultDtoDeleteUser = userService.deleteUser();
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		if (resultDtoDeleteAccessToken.equals(ResultDto.ofSuccess()) && resultDtoDeleteUser.equals(ResultDto.ofSuccess())) {
+			return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		}
+		
+		return ResponseEntity.ok().body(ResultDto.ofFail());
 	}
 
 

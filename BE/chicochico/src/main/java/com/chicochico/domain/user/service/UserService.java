@@ -1,6 +1,7 @@
 package com.chicochico.domain.user.service;
 
 
+import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.user.dto.request.PasswordRequestDto;
@@ -145,7 +146,18 @@ public class UserService {
 	/**
 	 * 회원정보를 삭제합니다 (회원탈퇴)
 	 */
-	public void deleteUser() {
+	public ResultDto<Boolean> deleteUser() {
+		
+		Long userId = authService.getUserId();
+		Optional<UserEntity> selectedUser = userRepository.findById(userId);
+		if (selectedUser.isEmpty()) {
+			return ResultDto.ofFail();
+		}
+
+		UserEntity user = selectedUser.get();
+		user.updateIsDeletedType(IsDeletedType.Y);
+		userRepository.save(user);
+		return ResultDto.ofSuccess();
 	}
 
 

@@ -224,7 +224,7 @@ class LoginServiceTest {
 			when(authTokenProvider.getUserId(accessToken)).thenReturn(userId);
 			when(redisTemplate.opsForValue().get("RT:" + userId)).thenReturn("valid_refresh_token");
 
-			/// when // then
+			// when // then
 			assertThatCode(() -> {
 				loginService.deleteAccessToken(logoutRequestHeader);
 			}).doesNotThrowAnyException();

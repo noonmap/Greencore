@@ -1,6 +1,7 @@
 package com.chicochico.domain.user.service;
 
 
+import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
@@ -107,7 +108,7 @@ public class LoginService {
 	 *
 	 * @param logoutRequestHeader 엑세스 토큰
 	 */
-	public void deleteAccessToken(Map<String, String> logoutRequestHeader) {
+	public ResultDto<Boolean> deleteAccessToken(Map<String, String> logoutRequestHeader) {
 
 		if (!logoutRequestHeader.containsKey("authorization")) {
 			throw new CustomException(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
@@ -142,8 +143,7 @@ public class LoginService {
 			.set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 		SecurityContextHolder.clearContext();
 
-		//		return response.success("로그아웃 되었습니다.");
-
+		return ResultDto.ofSuccess();
 	}
 
 }
