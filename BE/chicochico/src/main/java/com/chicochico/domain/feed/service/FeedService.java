@@ -2,13 +2,19 @@ package com.chicochico.domain.feed.service;
 
 
 import com.chicochico.common.code.IsDeletedType;
+import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.entity.FeedTagEntity;
+import com.chicochico.domain.feed.entity.LikeEntity;
 import com.chicochico.domain.feed.entity.TagEntity;
 import com.chicochico.domain.feed.repository.FeedRepository;
 import com.chicochico.domain.feed.repository.FeedTagRepository;
+import com.chicochico.domain.feed.repository.LikeRepository;
 import com.chicochico.domain.feed.repository.TagRepository;
 import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.domain.user.repository.UserRepository;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,6 +35,11 @@ public class FeedService {
 	private final FeedTagRepository feedTagRepository;
 	private final TagRepository tagRepository;
 
+	private final UserRepository userRepository;
+	private final AuthService authService;
+
+	private final LikeRepository likeRepository;
+
 
 	/**
 	 * 추천 피드를 조회합니다.
@@ -45,6 +56,15 @@ public class FeedService {
 
 	private Page<FeedEntity> getUnDeletedFeedPage(Page<FeedEntity> feedPage, Pageable pageable) {
 		List<FeedEntity> feedList = new ArrayList<>(feedPage.toList());
+		// 삭제된 피드 삭제
+		feedList.removeIf(feed -> feed.getIsDeleted().equals(IsDeletedType.Y));
+		Page<FeedEntity> noDeletedFeedPage = new PageImpl<>(feedList, pageable, feedList.size());
+		return noDeletedFeedPage;
+	}
+
+
+	private Page<FeedEntity> getUnDeletedFeedPage(List<FeedEntity> _feedList, Pageable pageable) {
+		List<FeedEntity> feedList = new ArrayList<>(_feedList); // 입력 list는 unmodifidable list라서 한번 복사를 거쳐줘야한다.
 		// 삭제된 피드 삭제
 		feedList.removeIf(feed -> feed.getIsDeleted().equals(IsDeletedType.Y));
 		Page<FeedEntity> noDeletedFeedPage = new PageImpl<>(feedList, pageable, feedList.size());
@@ -79,7 +99,7 @@ public class FeedService {
 		List<FeedTagEntity> feedTagList = feedTagRepository.findByTag(tagList);
 		if (feedTagList.isEmpty()) return Page.empty();
 		List<FeedEntity> feedList = feedTagList.stream().map(ft -> ft.getFeed()).collect(Collectors.toList());
-		Page<FeedEntity> feedPage = new PageImpl<>(feedList, pageable, feedList.size());
+		Page<FeedEntity> feedPage = getUnDeletedFeedPage(feedList, pageable);
 		return feedPage;
 	}
 
@@ -90,6 +110,14 @@ public class FeedService {
 	 * @param feedId 좋아요 추가할 피드
 	 */
 	public void createFeedLike(Long feedId) {
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
+		if (likeRepository.findByUserAndFeed(user, feed).isEmpty() == false) {
+			throw new CustomException(ErrorCode.FEED_LIKE_DUPLICATE);
+		}
+		LikeEntity like = LikeEntity.builder().feed(feed).user(user).build();
+		likeRepository.save(like);
 	}
 
 
@@ -99,6 +127,11 @@ public class FeedService {
 	 * @param feedId 좋아요 취소할 피드
 	 */
 	public void deleteFeedLike(Long feedId) {
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
+		LikeEntity like = likeRepository.findByUserAndFeed(user, feed).orElseThrow(() -> new CustomException(ErrorCode.FEED_LIKE_NOT_FOUND));
+		likeRepository.delete(like);
 	}
 
 }

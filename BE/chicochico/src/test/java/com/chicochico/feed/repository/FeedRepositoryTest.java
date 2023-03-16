@@ -115,7 +115,7 @@ public class FeedRepositoryTest {
 
 	@Test
 	@DisplayName("여러 유저가 쓴 피드 조회 테스트")
-	public void INQueryTest() {
+	public void 유저를통한피드조회테스트() {
 		// given
 		Pageable pageable = PageRequest.of(0, 10);
 		UserEntity user1 = userRepository.save(doUserEntity());
@@ -139,7 +139,7 @@ public class FeedRepositoryTest {
 
 
 	@Test
-	@DisplayName("여러 태그에 대해 feedTag를 한번에 조회")
+	@DisplayName("여러 태그 리스트가 주어졌을 때, 리스트에 포함된 태그르 가지고 있는 feedTag를 한번에 조회")
 	public void FeedTagINQueryTest() {
 		// given
 		TagEntity tag1 = tagRepository.save(TagEntity.builder().content("tag1").build());
@@ -160,6 +160,42 @@ public class FeedRepositoryTest {
 		Assertions.assertTrue(result.contains(ft1));
 		Assertions.assertFalse(result.contains(ft2));
 		Assertions.assertTrue(result.contains(ft3));
+	}
+
+
+	@Test
+	@DisplayName("태그 대소문자 안 가리고 검색되는지 테스트")
+	public void 태그대소문자구분X테스트() {
+		// given
+		TagEntity tag1 = tagRepository.save(TagEntity.builder().content("tag11").build());
+		TagEntity tag2 = tagRepository.save(TagEntity.builder().content("tag12").build()); // 이건 조회하지 않음
+		TagEntity tag3 = tagRepository.save(TagEntity.builder().content("tag21").build());
+
+		// when
+		List<TagEntity> result = tagRepository.findByContentContainingIgnoreCase("Tag"); // tag1, tag3이 포함된 feed
+
+		// then
+		Assertions.assertTrue(result.size() == 3); // tag1, tag3만 포함되었는지 확인
+		Assertions.assertTrue(result.contains(tag1));
+		Assertions.assertTrue(result.contains(tag2));
+		Assertions.assertTrue(result.contains(tag3));
+	}
+
+
+	@Test
+	@DisplayName("태그 미포함한 피드 검색 안되는지 테스트")
+	public void 태그미포함한피드X테스트() {
+		// given
+		TagEntity tag1 = tagRepository.save(TagEntity.builder().content("tag").build()); // 검색X
+		TagEntity tag3 = tagRepository.save(TagEntity.builder().content("search_tag").build()); // 검색O
+
+		// when
+		List<TagEntity> result = tagRepository.findByContentContainingIgnoreCase("Search"); // tag1, tag3이 포함된 feed
+
+		// then
+		Assertions.assertTrue(result.size() == 2); // tag1, tag3만 포함되었는지 확인
+		Assertions.assertFalse(result.contains(tag1));
+		Assertions.assertTrue(result.contains(tag3));
 	}
 
 }
