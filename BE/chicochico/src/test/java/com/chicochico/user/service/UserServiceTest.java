@@ -2,8 +2,6 @@ package com.chicochico.user.service;
 
 
 import com.chicochico.common.code.IsDeletedType;
-import com.chicochico.common.dto.ResultDto;
-import com.chicochico.common.dto.ResultEnum;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.user.dto.request.PasswordRequestDto;
 import com.chicochico.domain.user.dto.request.RegisterRequestDto;
@@ -30,6 +28,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
+import static org.mockito.Mockito.times;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -80,7 +79,6 @@ public class UserServiceTest {
 
 		// then
 		Assertions.assertEquals(customException.getErrorCode(), ErrorCode.DUPLICATE_RESOURCE);
-		//		assertThatThrownBy(() -> userService.createUser(new RegisterRequestDto(testEmail, testNickname, testPassword))).isInstanceOf(CustomException.class);
 
 	}
 
@@ -102,7 +100,6 @@ public class UserServiceTest {
 
 		// then
 		Assertions.assertEquals(customException.getErrorCode(), ErrorCode.DUPLICATE_RESOURCE);
-		//		assertThatThrownBy(() -> userService.createUser(new RegisterRequestDto(testEmail, testNickname, testPassword))).isInstanceOf(CustomException.class);
 
 	}
 
@@ -132,11 +129,10 @@ public class UserServiceTest {
 		Mockito.when(userRepository.findByNickname(testNickname)).thenReturn(Optional.of(user));
 
 		// when
-		ResultDto<Boolean> resultDto = userService.checkNickname(testNickname);
+		Boolean checkNickname = userService.checkNickname(testNickname);
 
 		// then
-		Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
-		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+		Assertions.assertEquals(checkNickname, Boolean.FALSE);
 	}
 
 
@@ -148,11 +144,10 @@ public class UserServiceTest {
 		Mockito.when(userRepository.findByNickname(testNickname)).thenReturn(givenNullUser);
 
 		// when
-		ResultDto<Boolean> resultDto = userService.checkNickname(testNickname);
+		Boolean checkNickname = userService.checkNickname(testNickname);
 
 		// then
-		Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
-		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+		Assertions.assertEquals(checkNickname, Boolean.TRUE);
 
 	}
 
@@ -164,11 +159,10 @@ public class UserServiceTest {
 		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(Optional.of(user));
 
 		// when
-		ResultDto<Boolean> resultDto = userService.checkEmail(testEmail);
+		Boolean checkEmail = userService.checkEmail(testEmail);
 
 		// then
-		Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
-		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+		Assertions.assertEquals(checkEmail, Boolean.FALSE);
 
 	}
 
@@ -181,11 +175,10 @@ public class UserServiceTest {
 		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(givenNullUser);
 
 		// when
-		ResultDto<Boolean> resultDto = userService.checkEmail(testEmail);
+		Boolean checkEmail = userService.checkEmail(testEmail);
 
 		// then
-		Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
-		Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+		Assertions.assertEquals(checkEmail, Boolean.TRUE);
 	}
 
 
@@ -261,11 +254,10 @@ public class UserServiceTest {
 			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(false);
 
 			// when
-			ResultDto<Boolean> resultDto = userService.checkPassword(passwordRequestDto);
+			Boolean checkPassword = userService.checkPassword(passwordRequestDto);
 
 			// then
-			Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
-			Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+			Assertions.assertEquals(checkPassword, Boolean.FALSE);
 		}
 
 
@@ -277,11 +269,10 @@ public class UserServiceTest {
 			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(true);
 
 			// when
-			ResultDto<Boolean> resultDto = userService.checkPassword(passwordRequestDto);
+			Boolean checkPassword = userService.checkPassword(passwordRequestDto);
 
 			// then
-			Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
-			Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+			Assertions.assertEquals(checkPassword, Boolean.TRUE);
 		}
 
 
@@ -293,11 +284,12 @@ public class UserServiceTest {
 			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(true);
 
 			// when
-			ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
+			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+				userService.modifyPassword(passwordRequestDto);
+			});
 
 			// then
-			Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
-			Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+			Assertions.assertEquals(customException.getErrorCode(), ErrorCode.DUPLICATE_RESOURCE);
 		}
 
 
@@ -310,12 +302,14 @@ public class UserServiceTest {
 
 			Optional<UserEntity> givenNullUser = Optional.empty();
 			Mockito.when(userRepository.findById(1L)).thenReturn(givenNullUser);
+
 			// when
-			ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
+			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+				userService.modifyPassword(passwordRequestDto);
+			});
 
 			// then
-			Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
-			Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+			Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
 		}
 
 
@@ -328,13 +322,16 @@ public class UserServiceTest {
 
 			Optional<UserEntity> givenNullUser = Optional.of(user);
 			Mockito.when(userRepository.findById(1L)).thenReturn(givenNullUser);
+
 			// when
-			ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
+			userService.modifyPassword(passwordRequestDto);
 
 			// then
 			Assertions.assertNotEquals(user.getPassword(), testEncodePassword);
-			Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
-			Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+
+			Mockito.verify(userRepository, times(1)).findById(1L);
+			Assertions.assertNotEquals(user.getPassword(), testEncodePassword);
+			Mockito.verify(userRepository, times(1)).save(user);
 		}
 
 
@@ -346,11 +343,12 @@ public class UserServiceTest {
 			Mockito.when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
 			// when
-			ResultDto<Boolean> resultDto = userService.deleteUser();
+			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+				userService.deleteUser();
+			});
 
 			// then
-			Assertions.assertEquals(resultDto.getData(), Boolean.FALSE);
-			Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.FAIL);
+			Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
 		}
 
 
@@ -367,12 +365,11 @@ public class UserServiceTest {
 			Mockito.when(userRepository.save(user)).thenReturn(user);
 
 			// when
-			ResultDto<Boolean> resultDto = userService.deleteUser();
+			userService.deleteUser();
 
 			// then
 			Assertions.assertEquals(user.getIsDeleted(), IsDeletedType.Y);
-			Assertions.assertEquals(resultDto.getData(), Boolean.TRUE);
-			Assertions.assertEquals(resultDto.getResultCode(), ResultEnum.SUCCESS);
+			Mockito.verify(userRepository, times(1)).save(user);
 
 		}
 

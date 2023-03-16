@@ -28,7 +28,6 @@ public class LoginController {
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인합니다.", notes = "")
 	public ResponseEntity<ResultDto<ProfileSimpleResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-		log.info("[Login Controller] login {}" + loginRequestDto);
 		ProfileSimpleResponseDto profileSimpleResponseDto = loginService.login(loginRequestDto, response);
 
 		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDto));

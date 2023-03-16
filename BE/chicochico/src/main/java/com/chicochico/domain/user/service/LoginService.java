@@ -47,7 +47,7 @@ public class LoginService {
 
 		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
 		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
-		log.info("[createToken] 0");
+
 		// 1. Refresh Token 검증
 		if (!authTokenProvider.validate(loginRequestRefreshToken)) {
 			// Refresh Token 정보가 유효하지 않습니다.
@@ -58,16 +58,12 @@ public class LoginService {
 		Long userId = authTokenProvider.getUserId(accessToken);
 		String userNickname = authTokenProvider.getUserNickname(accessToken);
 
-		log.info("[createToken] 1");
 		// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
 		String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
-		log.info("[createToken] 2");
 		if (!StringUtils.hasText(refreshToken) || !refreshToken.equals(loginRequestRefreshToken)) {
 			// Refresh Token 정보가 일치하지 않습니다.
-			log.info("[createToken] 3");
 			throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
 		}
-		log.info("[createToken] 4");
 
 		// 4. 새로운 토큰 생성
 		String newAccessToken = authTokenProvider.createAccessToken(userId, userNickname);
@@ -98,8 +94,6 @@ public class LoginService {
 			// 유저가 존재하지 않을 때 혹은 탈퇴한 유저 일때 error 발생
 			throw new CustomException(USER_NOT_FOUND);
 		}
-
-		log.info("[login] email : {}", user.get().getEmail());
 
 		log.info("[login] 비밀번호 비교 수행");
 		// 비밀번호 체크

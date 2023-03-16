@@ -49,37 +49,36 @@ public class UserController {
 	@GetMapping("/{nickname}")
 	@ApiOperation(value = "닉네임 중복확인을 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> checkNickname(@PathVariable("nickname") String nickname) {
-		ResultDto<Boolean> resultDto = userService.checkNickname(nickname);
+		Boolean checkNickname = userService.checkNickname(nickname);
 
-		return ResponseEntity.ok().body(resultDto);
+		return ResponseEntity.ok().body(ResultDto.of(checkNickname));
 	}
 
 
 	@GetMapping("/email/{email}")
 	@ApiOperation(value = "이메일 중복확인을 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> checkEmail(@PathVariable("email") String email) {
-		ResultDto<Boolean> resultDto = userService.checkEmail(email);
+		Boolean checkEmail = userService.checkEmail(email);
 
-		return ResponseEntity.ok().body(resultDto);
+		return ResponseEntity.ok().body(ResultDto.of(checkEmail));
 	}
 
 
 	@PostMapping(value = "/password")
 	@ApiOperation(value = "현재 비밀번호를 확인합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> checkPassword(@RequestBody PasswordRequestDto passwordRequestDto) {
-		log.info("[User 인증 /user/password] 비밀번호 확인시작");
-		ResultDto<Boolean> resultDto = userService.checkPassword(passwordRequestDto);
+		Boolean checkPassword = userService.checkPassword(passwordRequestDto);
 
-		return ResponseEntity.ok().body(resultDto);
+		return ResponseEntity.ok().body(ResultDto.of(checkPassword));
 	}
 
 
 	@PutMapping("/password")
 	@ApiOperation(value = "비밀번호를 수정합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> modifyPassword(@RequestBody PasswordRequestDto passwordRequestDto) {
-		ResultDto<Boolean> resultDto = userService.modifyPassword(passwordRequestDto);
+		userService.modifyPassword(passwordRequestDto);
 
-		return ResponseEntity.ok().body(resultDto);
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
 
 
@@ -87,11 +86,11 @@ public class UserController {
 	@ApiOperation(value = "회원탈퇴를 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteUser(@RequestHeader Map<String, String> logoutRequestHeader) {
 		loginService.deleteAccessToken(logoutRequestHeader);
-		ResultDto<Boolean> resultDtoDeleteUser = userService.deleteUser();
+		userService.deleteUser();
 
 		// TODO 탈퇴 로직 구현시 (팔로우, 팔로잉 목록, 피드 등 유저 연관 삭제 로직 추가)
 
-		return ResponseEntity.ok().body(resultDtoDeleteUser);
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
 
 
