@@ -17,6 +17,7 @@ public enum ErrorCode {
 	DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
 	MISMATCH_REQUEST(BAD_REQUEST, "데이터 간 의미가 어긋납니다 (예: 공통코드와 대응되는 데이터)"),
 
+	FEED_LIKE_DUPLICATE(CONFLICT, "피드 좋아요가 이미 추가되었습니다."),
 	/* 400 BAD REQUEST : 잘못된 요청. 입력된 데이터에 문제가 있음 */
 	PASSWORD_NOT_MATCH(BAD_REQUEST, "패스워드가 일치하지 않습니다."),
 	// 필요한 거 넣기
@@ -37,7 +38,9 @@ public enum ErrorCode {
 	ENTITY_NOT_FOUND(NOT_FOUND, "엔티티가 존재하지 않습니다."),
 	USER_NOT_FOUND(NOT_FOUND, "대상이 존재하지 않습니다."),
 	ALERT_NOT_FOUND(NOT_FOUND, "해당 알림이 존재하지 않습니다."),
-	FEED_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다.");
+	FEED_NOT_FOUND(NOT_FOUND, "피드가 존재하지 않습니다."),
+	FEED_LIKE_NOT_FOUND(NOT_FOUND, "피드 좋아요가 존재하지 않습니다."),
+	;
 
 	private final HttpStatus httpStatus;
 	private final String message;

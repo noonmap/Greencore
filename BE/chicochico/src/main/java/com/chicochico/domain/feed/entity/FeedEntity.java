@@ -1,7 +1,6 @@
 package com.chicochico.domain.feed.entity;
 
 
-import com.chicochico.common.code.FeedType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -38,10 +37,6 @@ public class FeedEntity extends CommonEntity {
 
 	@Column(nullable = false)
 	private Integer likeCount;
-
-	@Column(name = "feed_code", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private FeedType feedCode;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
