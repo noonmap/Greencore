@@ -2,17 +2,28 @@ package com.chicochico.domain.feed.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
+import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.feed.dto.response.FeedResponseDto;
 import com.chicochico.domain.feed.dto.response.FeedSimpleResponseDto;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.service.FeedService;
+import com.chicochico.domain.user.entity.FollowEntity;
+import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.domain.user.repository.UserRepository;
+import com.chicochico.domain.user.service.FollowService;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -23,24 +34,37 @@ public class FeedController {
 
 	private final FeedService feedService;
 
+	private final AuthService authService;
+
+	private final FollowService followService;
+
+	// TODO : 나중에 followService 수정되고 나면 지울것
+	private final UserRepository userRepository;
+
 
 	@GetMapping
 	@ApiOperation(value = "피드 추천 목록을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(Pageable pageable) {
+	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(@PageableDefault Pageable pageable) {
 		Page<FeedEntity> feedEntityPage = feedService.getFeedList(pageable);
-		// TODO : entity page -> dto page 변환 추가
-
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount);
+		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 
 
 	@GetMapping("/follow")
 	@ApiOperation(value = "팔로우한 사람의 최신 피드 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedListByFollowUser(Pageable pageable) {
-		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(pageable);
-		// TODO : entity page -> dto page 변환 추가
+		// TODO : followService에서 그냥 List<UserEntity>를 반환하도록 변경
+		String nickname = authService.getUserNickname();
+		List<FollowEntity> followingList = followService.getFollowingList(nickname);
+		List<UserEntity> followingUser = followingList.stream()
+			.map(fe -> userRepository.findById(
+				fe.getFollowing().getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
+			.collect(Collectors.toList());
 
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingUser, pageable);
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount);
+		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 
 
@@ -48,9 +72,8 @@ public class FeedController {
 	@ApiOperation(value = "태그로 피드를 검색한 결과를 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedSimpleResponseDto>>> getFeedList(@RequestParam("search") String tag, Pageable pageable) {
 		Page<FeedEntity> feedEntityPage = feedService.getFeedListByTag(tag, pageable);
-		// TODO : entity page -> dto page 변환 추가
-
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		Page<FeedSimpleResponseDto> feedResponseDtoPage = FeedSimpleResponseDto.fromEnityPage(feedEntityPage);
+		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 
 

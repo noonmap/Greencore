@@ -58,6 +58,7 @@ public class UserEntity extends CommonEntity {
 	private List<FollowEntity> followerList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "following")
+	@Builder.Default
 	private List<FollowEntity> followingList = new ArrayList<>();
 
 }

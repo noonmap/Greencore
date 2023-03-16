@@ -14,14 +14,38 @@ spring:
   config:
     activate:
       on-profile: test
+  #  # MySQL로 테스트하고 싶을때
+  #    sql:
+  #      init:
+  #        mode: never
+  #        schema-locations: classpath:schema.sql
+  #        data-locations: classpath:data.sql
+
   # H2 Setting Info (H2 Console에 접속하기 위한 설정정보 입력)
   h2:
     console:
       enabled: true  # H2 Console을 사용할지 여부 (H2 Console은 H2 Database를 UI로 제공해주는 기능)
       path: /h2-console  # H2 Console의 Path
-  # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
+
+  #  # MySQL로 테스트하고 싶을때
+  #   JPA for auto reload
+  #    jpa:
+  #      show-sql: false
+  #      hibernate:
+  #        ddl-auto: create
+  #        naming:
+  #          # camelCase -> snake_case
+  #          implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  #          physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+
   datasource:
+    # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
     driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
     url: jdbc:h2:~/test  # H2 접속 정보
     username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
-    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+    password: # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+#    # MySQL로 테스트하고 싶을때
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/chicochico?autoReconnect=true&useUnicode=true&characterEncoding=utf-8
+#    username: root
+#    password: 1234

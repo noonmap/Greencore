@@ -1,4 +1,4 @@
-package com.chicochico.feed;
+package com.chicochico.feed.service;
 
 
 import org.junit.jupiter.api.DisplayName;
