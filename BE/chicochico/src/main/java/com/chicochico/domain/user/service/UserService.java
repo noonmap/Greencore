@@ -3,10 +3,10 @@ package com.chicochico.domain.user.service;
 
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.service.AuthService;
-import com.chicochico.domain.user.dto.PasswordRequestDto;
-import com.chicochico.domain.user.dto.RegisterRequestDto;
-import com.chicochico.domain.user.dto.UserPlantRequestDto;
-import com.chicochico.domain.user.dto.UserPlantSimpleRequestDto;
+import com.chicochico.domain.user.dto.request.PasswordRequestDto;
+import com.chicochico.domain.user.dto.request.RegisterRequestDto;
+import com.chicochico.domain.user.dto.request.UserPlantRequestDto;
+import com.chicochico.domain.user.dto.request.UserPlantSimpleRequestDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.repository.UserRepository;

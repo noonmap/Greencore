@@ -2,8 +2,8 @@ package com.chicochico.domain.user.service;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
-import com.chicochico.domain.user.dto.LoginRequestDto;
-import com.chicochico.domain.user.dto.ProfileSimpleResponseDto;
+import com.chicochico.domain.user.dto.request.LoginRequestDto;
+import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
@@ -69,7 +69,7 @@ public class LoginService {
 		String refreshToken = authTokenProvider.createRefreshToken(user.get().getId(), user.get().getNickname());
 		authTokenProvider.setHeaderAccessToken(response, accessToken);
 		authTokenProvider.setHeaderRefreshToken(response, refreshToken);
-		
+
 		// refresh token Redis에 저장 
 		redisTemplate.opsForValue().set("RT:" + user.get().getId(), refreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
 

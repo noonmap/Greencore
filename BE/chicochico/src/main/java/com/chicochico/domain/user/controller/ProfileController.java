@@ -2,9 +2,9 @@ package com.chicochico.domain.user.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.user.dto.ProfileRequestDto;
-import com.chicochico.domain.user.dto.ProfileResponseDto;
-import com.chicochico.domain.user.dto.ProfileSimpleResponseDto;
+import com.chicochico.domain.user.dto.request.ProfileRequestDto;
+import com.chicochico.domain.user.dto.response.ProfileResponseDto;
+import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.service.ProfileService;
 import io.swagger.annotations.Api;

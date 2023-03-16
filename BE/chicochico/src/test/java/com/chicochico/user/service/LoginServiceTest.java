@@ -2,8 +2,8 @@ package com.chicochico.user.service;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
-import com.chicochico.domain.user.dto.LoginRequestDto;
-import com.chicochico.domain.user.dto.ProfileSimpleResponseDto;
+import com.chicochico.domain.user.dto.request.LoginRequestDto;
+import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.domain.user.service.LoginService;

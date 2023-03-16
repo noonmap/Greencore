@@ -2,7 +2,11 @@ package com.chicochico.domain.user.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.user.dto.*;
+import com.chicochico.domain.user.dto.request.PasswordRequestDto;
+import com.chicochico.domain.user.dto.request.RegisterRequestDto;
+import com.chicochico.domain.user.dto.request.UserPlantRequestDto;
+import com.chicochico.domain.user.dto.request.UserPlantSimpleRequestDto;
+import com.chicochico.domain.user.dto.response.UserPlantResponseDto;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;

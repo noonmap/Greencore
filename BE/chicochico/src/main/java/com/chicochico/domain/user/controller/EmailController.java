@@ -2,8 +2,8 @@ package com.chicochico.domain.user.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.user.dto.AuthCodeRequestDto;
-import com.chicochico.domain.user.dto.EmailRequestDto;
+import com.chicochico.domain.user.dto.request.AuthCodeRequestDto;
+import com.chicochico.domain.user.dto.request.EmailRequestDto;
 import com.chicochico.domain.user.service.EmailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
