@@ -2,7 +2,7 @@ package com.chicochico.domain.user.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.user.dto.LoginRequestDto;
+import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

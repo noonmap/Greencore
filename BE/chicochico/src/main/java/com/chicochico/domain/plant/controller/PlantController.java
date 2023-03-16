@@ -2,9 +2,9 @@ package com.chicochico.domain.plant.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.plant.dto.PlantDocResponseDto;
-import com.chicochico.domain.plant.dto.PlantResponseDto;
-import com.chicochico.domain.plant.dto.PlantWithImageResponseDto;
+import com.chicochico.domain.plant.dto.response.PlantDocResponseDto;
+import com.chicochico.domain.plant.dto.response.PlantResponseDto;
+import com.chicochico.domain.plant.dto.response.PlantWithImageResponseDto;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import com.chicochico.domain.plant.service.PlantService;
 import io.swagger.annotations.Api;

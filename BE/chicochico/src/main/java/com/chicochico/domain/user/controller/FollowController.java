@@ -2,7 +2,7 @@ package com.chicochico.domain.user.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
-import com.chicochico.domain.user.dto.FollowResponseDto;
+import com.chicochico.domain.user.dto.response.FollowResponseDto;
 import com.chicochico.domain.user.entity.FollowEntity;
 import com.chicochico.domain.user.service.FollowService;
 import io.swagger.annotations.Api;
@@ -59,7 +59,7 @@ public class FollowController {
 		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoList));
 	}
 
-	
+
 	@DeleteMapping("/follower/{nickname}")
 	@ApiOperation(value = "팔로워를 삭제합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteFollower(@PathVariable("nickname") String nickname) {
