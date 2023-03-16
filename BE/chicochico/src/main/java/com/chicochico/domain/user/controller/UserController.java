@@ -89,6 +89,8 @@ public class UserController {
 		loginService.deleteAccessToken(logoutRequestHeader);
 		ResultDto<Boolean> resultDtoDeleteUser = userService.deleteUser();
 
+		// TODO 탈퇴 로직 구현시 (팔로우, 팔로잉 목록, 피드 등 유저 연관 삭제 로직 추가)
+
 		return ResponseEntity.ok().body(resultDtoDeleteUser);
 	}
 

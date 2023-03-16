@@ -1,6 +1,7 @@
 package com.chicochico.user.service;
 
 
+import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
@@ -81,8 +82,24 @@ class LoginServiceTest {
 
 		// then
 		Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
-		//		assertThatThrownBy(() -> loginService.login(new LoginRequestDto("123", "1234"), httpServletResponse)).isInstanceOf(CustomException.class);
+	}
 
+
+	@Test
+	@DisplayName("로그인 - 유저가 존재 하지 않음 (탈퇴한 유저)")
+	void loginTest_로그인실패탈퇴한유저() {
+		// given
+		Optional<UserEntity> givenUser = Optional.of(UserEntity.builder().isDeleted(IsDeletedType.Y).build());
+		LoginRequestDto loginRequestDto = new LoginRequestDto("123", "1234");
+		Mockito.when(userRepository.findByEmail(loginRequestDto.getEmail())).thenReturn(givenUser);
+
+		// when
+		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
+			loginService.login(loginRequestDto, httpServletResponse)
+		);
+
+		// then
+		Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
 	}
 
 
@@ -92,7 +109,7 @@ class LoginServiceTest {
 		// given
 		Optional<UserEntity> givenUser = Optional.of(UserEntity.builder().email(testEmail)
 			.password("$2a$10$RSCiBg7XpDF.64K24OpIFeXh9QJItoKbGMjy73u9v82JyUSbF.pim")
-			.nickname(testNickname).build());
+			.nickname(testNickname).isDeleted(IsDeletedType.N).build());
 		Mockito.when(userRepository.findByEmail(testEmail)).thenReturn(givenUser);
 		LOGGER.info("[로그인 - 실패] {}", userRepository.findByEmail(testEmail));
 
@@ -284,6 +301,7 @@ class LoginServiceTest {
 				.email(email)
 				.password("encoded_password")
 				.nickname("test")
+				.isDeleted(IsDeletedType.N)
 				.build();
 			Optional<UserEntity> givenUser = Optional.of(user);
 

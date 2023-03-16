@@ -1,6 +1,7 @@
 package com.chicochico.domain.user.service;
 
 
+import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
@@ -93,8 +94,8 @@ public class LoginService {
 		// 유저 존재 확인
 		Optional<UserEntity> user = userRepository.findByEmail(loginRequestDto.getEmail());
 
-		if (user.isEmpty()) {
-			// 유저가 존재하지 않을 때 error 발생
+		if (user.isEmpty() || user.get().getIsDeleted().equals(IsDeletedType.Y)) {
+			// 유저가 존재하지 않을 때 혹은 탈퇴한 유저 일때 error 발생
 			throw new CustomException(USER_NOT_FOUND);
 		}
 
