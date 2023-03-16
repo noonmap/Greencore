@@ -46,5 +46,7 @@
   "CreateDiaryFail": "일지 생성에 실패하셨습니다 ❌",
 
   "UpdateDiarySuccess": "일지가 수정되었습니다 ✅",
-  "UpdateDiaryFail": "일지 수정에 실패하셨습니다 ❌"
+  "UpdateDiaryFail": "일지 수정에 실패하셨습니다 ❌",
+
+  "SearchByPlantName": "식물 조회에 실패하셨습니다 ❌"
 }
