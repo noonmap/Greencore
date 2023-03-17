@@ -24,7 +24,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurity {
 
 	private final AuthTokenProvider tokenProvider;
-	private final RedisTemplate redisTemplate;
+	private final RedisTemplate<String, String> redisTemplate;
+
+	private final JwtExceptionFilter jwtExceptionFilter;
 
 
 	@Bean
@@ -62,7 +64,7 @@ public class SpringSecurity {
 
 			// JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate));
+			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate, jwtExceptionFilter));
 
 		http
 			.logout()

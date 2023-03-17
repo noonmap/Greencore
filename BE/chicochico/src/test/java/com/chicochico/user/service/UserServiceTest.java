@@ -247,11 +247,35 @@ public class UserServiceTest {
 
 
 		@Test
-		@DisplayName("비밀번호확인 - 실패")
-		void checkPasswordTest_비밀번호확인실패() {
+		@DisplayName("비밀번호확인 - 실패:사용자없음")
+		void checkPasswordTest_비밀번호확인실패_사용자없음() {
 			// given
+			Long userId = 1L;
+			Mockito.when(authService.getUserId()).thenReturn(userId);
+			Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
 			PasswordRequestDto passwordRequestDto = new PasswordRequestDto(testPassword);
-			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(false);
+
+			// when
+			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+				userService.checkPassword(passwordRequestDto);
+			});
+
+			// then
+			Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
+		}
+
+
+		@Test
+		@DisplayName("비밀번호확인 - 불일치")
+		void checkPasswordTest_비밀번호확인불일치() {
+			// given
+			Long userId = 1L;
+			Mockito.when(authService.getUserId()).thenReturn(userId);
+			Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+			PasswordRequestDto passwordRequestDto = new PasswordRequestDto(testPassword);
+			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), user.getPassword())).thenReturn(false);
 
 			// when
 			Boolean checkPassword = userService.checkPassword(passwordRequestDto);
@@ -265,8 +289,12 @@ public class UserServiceTest {
 		@DisplayName("비밀번호확인 - 성공")
 		void checkPasswordTest_비밀번호확인성공() {
 			// given
+			Long userId = 1L;
+			Mockito.when(authService.getUserId()).thenReturn(userId);
+			Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
 			PasswordRequestDto passwordRequestDto = new PasswordRequestDto(testPassword);
-			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(true);
+			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), user.getPassword())).thenReturn(true);
 
 			// when
 			Boolean checkPassword = userService.checkPassword(passwordRequestDto);
@@ -280,8 +308,12 @@ public class UserServiceTest {
 		@DisplayName("비밀번호수정 - 실패 (변경 전 후 비번 동일)")
 		void modifyPasswordTest_비밀번호수정실패_비번동일() {
 			// given
+			Long userId = user.getId();
+			Mockito.when(authService.getUserId()).thenReturn(userId);
+			Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
 			PasswordRequestDto passwordRequestDto = new PasswordRequestDto(testPassword);
-			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(true);
+			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), user.getPassword())).thenReturn(true);
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -297,11 +329,11 @@ public class UserServiceTest {
 		@DisplayName("비밀번호수정 - 실패 (사용자 없음)")
 		void modifyPasswordTest_비밀번호수정실패_사용자없음() {
 			// given
-			PasswordRequestDto passwordRequestDto = new PasswordRequestDto("12345");
-			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(false);
+			Long userId = 1L;
+			Mockito.when(authService.getUserId()).thenReturn(userId);
+			Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-			Optional<UserEntity> givenNullUser = Optional.empty();
-			Mockito.when(userRepository.findById(1L)).thenReturn(givenNullUser);
+			PasswordRequestDto passwordRequestDto = new PasswordRequestDto("12345");
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -317,8 +349,12 @@ public class UserServiceTest {
 		@DisplayName("비밀번호수정 - 성공")
 		void modifyPasswordTest_비밀번호수정성공() {
 			// given
+			Long userId = user.getId();
+			Mockito.when(authService.getUserId()).thenReturn(userId);
+			Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
 			PasswordRequestDto passwordRequestDto = new PasswordRequestDto("12345");
-			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), testPassword)).thenReturn(false);
+			Mockito.when(passwordEncoder.matches(passwordRequestDto.getPassword(), user.getPassword())).thenReturn(false);
 
 			Optional<UserEntity> givenNullUser = Optional.of(user);
 			Mockito.when(userRepository.findById(1L)).thenReturn(givenNullUser);

@@ -14,8 +14,6 @@ import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,13 +82,10 @@ public class UserService {
 	 * @return TRUE: 비밀번호 일치, FALSE: 비밀번호 불일치
 	 */
 	public Boolean checkPassword(PasswordRequestDto passwordRequestDto) {
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		UserDetails userDetails = (UserDetails) principal;
-
-		String password = userDetails.getPassword();
-
-		return passwordEncoder.matches(passwordRequestDto.getPassword(), password);
+		return passwordEncoder.matches(passwordRequestDto.getPassword(), user.getPassword());
 	}
 
 
@@ -101,24 +96,15 @@ public class UserService {
 	 * @return TRUE: 비밀번호 수정 성공, FALSE: 비밀번호 수정 실패
 	 */
 	public void modifyPassword(PasswordRequestDto passwordRequestDto) {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		UserDetails userDetails = (UserDetails) principal;
-
-		String userId = userDetails.getUsername();
-		String password = userDetails.getPassword();
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		String password = user.getPassword();
 
 		// 현재 비밀번호와 이전 비밀번호가 일치
 		if (passwordEncoder.matches(passwordRequestDto.getPassword(), password)) {
 			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 		}
-
-		Optional<UserEntity> selectedUser = userRepository.findById(Long.parseLong(userId));
-
-		if (selectedUser.isEmpty()) {
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		}
-
-		UserEntity user = selectedUser.get();
+		
 		user.updatePassword(passwordEncoder.encode(passwordRequestDto.getPassword()));
 		userRepository.save(user);
 	}

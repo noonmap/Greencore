@@ -12,7 +12,6 @@ import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -155,7 +154,6 @@ public class LoginService {
 		Long expiration = authTokenProvider.getExpiration(accessToken);
 		redisTemplate.opsForValue()
 			.set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
-		SecurityContextHolder.clearContext();
 
 	}
 

@@ -30,11 +30,11 @@ public class AuthTokenProvider {
 	private final String secretKey;
 
 	private final CustomUserDetailsService customUserDetailsService;
+	private final ObjectMapper objectMapper;
 	@Value("${jwt.expire.access}")
 	private Long accessExpiry; // 토큰 만료일
 	@Value("${jwt.expire.refresh}")
 	private Long refreshExpiry; // 토큰 만료일
-	private ObjectMapper objectMapper;
 
 
 	@Autowired
@@ -178,10 +178,7 @@ public class AuthTokenProvider {
 	 * SecurityContextHolder에 저장할 Authentication 객체 생성.
 	 */
 	public UsernamePasswordAuthenticationToken getAuthentication(String token) {
-		//		Optional<UserEntity> user = userRepository.findById(this.getUserId(token));
-
 		UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserId(token).toString());
-		//		if (user.isEmpty()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		log.info("getAuthentication: {}, token: {}", userDetails.getUsername(), token);
 		return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
 	}
@@ -217,7 +214,7 @@ public class AuthTokenProvider {
 
 
 	private enum TokenType {
-		ACCESS, REFRESH;
+		ACCESS, REFRESH
 	}
 
 }
