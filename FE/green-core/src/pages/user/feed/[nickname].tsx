@@ -64,9 +64,13 @@ export default function FeedDetail() {
   const [userPlantId, setUserPlantId] = useState(null);
   const [userPlantNickname, setUserPlantNickname] = useState('');
 
-  function checkSameUser() {
+  const [userPlantPage, setUserPlantPage] = useState(0);
+  const [userPlantSize, setUserPlantSize] = useState(2);
+  const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(8);
+
+  const checkSameUser = useCallback(() => {
     if (myNickname == nickname) setIsSameUser(true);
-  }
+  }, [myNickname, nickname]);
 
   const fetchUserProfile = useCallback(async () => {
     const { data } = await getProfile(nickname);
@@ -95,12 +99,32 @@ export default function FeedDetail() {
 
   const fetchUserPlantList = useCallback(async () => {
     try {
-      const { data } = await getUserPlantList(nickname);
-      setUserPlantList(data);
+      const params = { page: userPlantPage, size: userPlantSize };
+      const { data } = await getUserPlantList(nickname, params);
+
+      // FIXME: 확인
+      let temp = data.slice(userPlantPage, userPlantPage + userPlantSize);
+      setUserPlantList(temp);
     } catch (error) {
       console.error(error);
     }
-  }, [nickname]);
+  }, [nickname, userPlantPage, userPlantSize]);
+
+  async function nextPage() {
+    let page = userPlantPage + userPlantSize;
+    if (page >= userPlantListTotalCount) return;
+
+    setUserPlantPage(page);
+    await fetchUserPlantList();
+  }
+
+  async function prevPage() {
+    let page = userPlantPage - userPlantSize;
+    if (page < 0) return;
+
+    setUserPlantPage(page);
+    await fetchUserPlantList();
+  }
 
   function handleImageExploerOpen() {
     const profileImageInput: HTMLElement = document.querySelector(`.profileImageInput`);
@@ -191,7 +215,7 @@ export default function FeedDetail() {
 
   useEffect(() => {
     if (!router.isReady) return;
-    console.log(router.query);
+    // console.log(router.query);
 
     checkSameUser();
     fetchUserProfile();
@@ -200,7 +224,7 @@ export default function FeedDetail() {
 
     handleProfileImageUpdate();
     return () => {};
-  }, [nickname, uploadProfileImage]); // 해당 변수가 업데이트 되면 한번 더 불러짐
+  }, [nickname, uploadProfileImage, userPlantPage, userPlantSize]); // 해당 변수가 업데이트 되면 한번 더 불러짐
 
   return (
     <AppLayout>
@@ -289,6 +313,10 @@ export default function FeedDetail() {
               <div>빈 userPlant</div>
             ) : (
               <div className='flex flex-row space-x-4'>
+                <button className='bg-blue-500 rounded' onClick={prevPage}>
+                  이전
+                </button>
+
                 {userPlantList.map((userPlant) => (
                   <div key={userPlant.userPlantId}>
                     <Image src='/images/noProfile.png' alt='사용자 식물' width={70} height={70} priority />
@@ -305,6 +333,10 @@ export default function FeedDetail() {
                     ) : null}
                   </div>
                 ))}
+
+                <button className='bg-blue-500 rounded' onClick={nextPage}>
+                  다음
+                </button>
               </div>
             )
           ) : (
