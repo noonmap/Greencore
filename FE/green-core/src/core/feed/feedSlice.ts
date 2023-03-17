@@ -8,6 +8,7 @@ interface FeedState {
   isStoped: boolean;
   page: number;
 
+  // 검색용
   tagFeedList: Array<TagFeedType>;
   isStopedAtTag: boolean;
   pageAtTag: number;
@@ -19,6 +20,7 @@ const initialState: FeedState = {
   isStoped: false,
   page: 0,
 
+  // 검색용
   tagFeedList: [],
   isStopedAtTag: false,
   pageAtTag: 0,

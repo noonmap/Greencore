@@ -28,6 +28,11 @@ export type ProfileType = {
 };
 
 export type UserPlantType = {
-  plantId?: number;
+  userPlantId?: number;
   plantNickname: string;
+};
+
+export type searchUserType = {
+  nickname: number;
+  profileImage: string;
 };

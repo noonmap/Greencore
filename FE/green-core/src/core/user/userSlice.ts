@@ -1,16 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { searchUserType } from './userType';
 import * as userAPI from './userAPI';
 
 interface UserState {
   isAuthenticated: boolean;
   isOAuth: boolean;
   accessToken: string | null;
+
+  // 검색용
+  searchUserList: Array<searchUserType>;
+  isStopedAtUser: boolean;
+  pageAtUser: number;
 }
 
 const initialState: UserState = {
   isAuthenticated: false,
   isOAuth: false,
   accessToken: null,
+
+  // 검색용
+  searchUserList: [],
+  isStopedAtUser: false,
+  pageAtUser: 0,
 };
 
 const userSlice = createSlice({
@@ -61,6 +72,20 @@ const userSlice = createSlice({
       .addCase(userAPI.deleteUser.fulfilled, (state) => {
         state.isAuthenticated = false;
         state.accessToken = null;
+      })
+      .addCase(userAPI.searchByUser.fulfilled, (state, action) => {
+        if (action.payload.length === 0) {
+          state.isStopedAtUser = true;
+        }
+        state.pageAtUser = 1;
+        state.searchUserList = action.payload;
+      })
+      .addCase(userAPI.searchByUserMore.fulfilled, (state, action) => {
+        if (action.payload.length === 0) {
+          state.isStopedAtUser = true;
+        }
+        state.pageAtUser = state.pageAtUser + 1;
+        state.searchUserList = [...state.searchUserList, ...action.payload];
       });
   },
 });

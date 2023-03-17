@@ -6,6 +6,7 @@ import { initFeedList } from '@/core/feed/feedSlice';
 import styles from '@/styles/feed.module.scss';
 import FeedListItem from '@/components/FeedListItem';
 import TagFeedListItem from '@/components/TagFeedListItem';
+import SearchComponent from '@/components/SearchComponent';
 
 export default function feed() {
   const dispatch = useAppDispatch();
@@ -194,21 +195,7 @@ export default function feed() {
               </div>
             </div>
             <div>
-              <div className={`${styles.search} w-full`}>
-                <input type='text' placeholder='태그를 입력하세요' onKeyUp={handleKeyUp} />
-                <img src='https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png' />
-              </div>
-              {tagFeedList.length == 0 ? (
-                <div>궁금한 식물을 검색해보세요</div>
-              ) : (
-                <div className={`overflow-auto`} style={{ height: '700px' }}>
-                  {tagFeedList.map((tagFeed) => (
-                    <TagFeedListItem key={tagFeed.feedId} tagFeed={tagFeed}></TagFeedListItem>
-                  ))}
-                  <div ref={setTargetAtTag} />
-                  <div className={`p-5`}></div>
-                </div>
-              )}
+              <SearchComponent></SearchComponent>
             </div>
           </div>
         </>
