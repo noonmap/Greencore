@@ -62,7 +62,21 @@ public class PostServiceTest {
 
 		@Test
 		@DisplayName("Not Null인 필드가 비어있는 경우")
+		public void test1() {
+
+		}
+
+
+		@Test
+		@DisplayName("이미지가 제대로 저장되었는지 확인")
 		public void test2() {
+
+		}
+
+
+		@Test
+		@DisplayName("태그들이 제대로 연결되었는지 확인")
+		public void test3() {
 
 		}
 
@@ -99,6 +113,13 @@ public class PostServiceTest {
 	class 삭제 {
 
 		@Test
+		@DisplayName("작성자가 다른 경우")
+		public void test1() {
+
+		}
+
+
+		@Test
 		@DisplayName("게시글이 존재하지 않는 경우")
 		public void test2() {
 
@@ -108,6 +129,34 @@ public class PostServiceTest {
 		@Test
 		@DisplayName("이미 삭제된 게시글인 경우 비정상 요청임")
 		public void test3() {
+
+		}
+
+
+		@Test
+		@DisplayName("연결된 이미지 삭제 성공")
+		public void test4() {
+
+		}
+
+
+		@Test
+		@DisplayName("연결된 태그 삭제 성공")
+		public void test5() {
+
+		}
+
+
+		@Test
+		@DisplayName("연결된 댓글 삭제 성공")
+		public void test6() {
+
+		}
+
+
+		@Test
+		@DisplayName("연결된 좋아요 삭제 성공")
+		public void test7() {
 
 		}
 
