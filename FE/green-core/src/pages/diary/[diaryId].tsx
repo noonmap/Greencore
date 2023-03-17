@@ -9,14 +9,17 @@ import http from '@/lib/http.js';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import Link from 'next/link';
+import { useInput } from '@/core/hooks';
+import FeedCommentList from '@/components/FeedCommentList';
 
 // const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const fetcher = (url: string) => http.get(url).then((res) => res.data);
 
 export default function DiaryDetail() {
   const router = useRouter();
-  const diaryId = router.query.diaryId; // string
+  const diaryId = Number(router.query.diaryId); // number
   const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
+  const [text, onChangeText] = useInput('');
 
   // 삭제 확인
   const checkDeleteDiary = () => {
@@ -86,11 +89,12 @@ export default function DiaryDetail() {
             <li>내용 : {diary.data.content}</li>
             <li>좋아요 : {diary.data.likeCount}</li>
           </ul>
-          <Link href={`/update/${diaryId}`}>
+          <Link href={`update/${diaryId}`}>
             <button>수정</button>
           </Link>
           <button onClick={checkDeleteDiary}>삭제</button>
           <button onClick={handleGoBack}>뒤로</button>
+          <div>{!Number.isNaN(diaryId) && <FeedCommentList feedId={diaryId} />}</div>
         </div>
       )}
     </AppLayout>

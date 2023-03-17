@@ -401,7 +401,7 @@ export const getUserPlant = async (nickname: string, userPlatId: string) => {
 // 키우는 식물 생성
 export const createUserPlant = async (payload: UserPlantType) => {
   const { data } = await http.post(`/user/plant`, payload);
-  return data;
+  return data.data;
 };
 
 // 키우는 식물 삭제
@@ -418,8 +418,36 @@ export const updateUserPlant = async (userPlantId: number, payload: UserPlantTyp
 
 // 사용자 검색
 export const searchByUser = createAsyncThunk('searchByUser', async (params: SearchType) => {
-  const { data } = await http.get(`/profile`, { params });
-  return data;
+  try {
+    const { data } = await http.get(`/profile`, { params });
+
+    return data.data;
+  } catch (error) {
+    Toastify({
+      text: message.SearchFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
+});
+
+// 사용자 추가 검색
+export const searchByUserMore = createAsyncThunk('searchByUserMore', async (params: SearchType) => {
+  try {
+    const { data } = await http.get(`/profile`, { params });
+
+    return data.data;
+  } catch (error) {
+    Toastify({
+      text: message.SearchFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
 });
 
 // 나와 같은 식물을 키우는 사람들 조회

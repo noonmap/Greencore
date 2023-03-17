@@ -1,3 +1,4 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import http from '@/lib/http';
 import { IndexType, SearchType } from './plantType';
 
@@ -6,10 +7,10 @@ import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 
 // 식물 이름 검색
-export const searchByPlantName = async (params: SearchType) => {
+export const searchByPlantName = createAsyncThunk('searchByPlantName', async (params: SearchType) => {
   try {
     const { data } = await http.get(`/plant`, { params });
-    return data;
+    return data.data;
   } catch (error) {
     Toastify({
       text: message.SearchByPlantName,
@@ -19,7 +20,22 @@ export const searchByPlantName = async (params: SearchType) => {
       style: toastifyCSS.fail,
     }).showToast();
   }
-};
+});
+// 식물 이름 추가 검색
+export const searchByPlantNameMore = createAsyncThunk('searchByPlantNameMore', async (params: SearchType) => {
+  try {
+    const { data } = await http.get(`/plant`, { params });
+    return data.data;
+  } catch (error) {
+    Toastify({
+      text: message.SearchByPlantName,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
+});
 
 // 식물 이름 검색 (내키식 생성 시)
 export const searchByPlantNameAndUser = async (params: SearchType) => {

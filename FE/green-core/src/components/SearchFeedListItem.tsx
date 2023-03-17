@@ -4,7 +4,7 @@ import Skeleton from 'react-loading-skeleton';
 import { TagFeedType } from '../core/feed/feedType';
 import styles from '@/styles/feed.module.scss';
 
-export default function TagFeedListItem(props: { tagFeed: TagFeedType }) {
+export default function SearchFedListItem(props: { tagFeed: TagFeedType }) {
   const tagFeed = props.tagFeed;
 
   return (

@@ -31,3 +31,8 @@ export type UserPlantType = {
   userPlantId?: number;
   plantNickname: string;
 };
+
+export type SearchUserType = {
+  nickname: number;
+  profileImagePath: string;
+};
