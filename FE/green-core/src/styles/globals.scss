@@ -109,7 +109,8 @@ button {
 }
 
 .modalWrap {
-  width: 35%;
+  max-width: 35%;
+  min-width: 350px;
   min-height: 200px;
   background-color: white;
   border: 1px rgba(0, 0, 0, 0.3) solid;

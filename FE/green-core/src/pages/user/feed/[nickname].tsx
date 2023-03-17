@@ -16,6 +16,8 @@ import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 import AppModal from '@/components/common/AppModal';
 import UserPlantModal from '@/components/common/UserPlantModal';
+import DiaryModal from '@/components/common/DiaryModal';
+import { getDiarySetList } from '@/core/diarySet/diarySetAPI';
 
 type ProfileType = {
   followerCount: number;
@@ -56,17 +58,25 @@ export default function FeedDetail() {
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<ProfileType>();
   const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>();
+  const [userPlantListAll, setUserPlantListAll] = useState<Array<UserPlantType>>();
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
   const [isEditPopUp, setIsEditPopUp] = useState(true);
   const [isOpenUserPlantCreateModal, setIsOpenUserPlantCreateModal] = useState(false);
   const [isOpenUserPlantUpdateModal, setIsOpenUserPlantUpdateModal] = useState(false);
   const [isOpenUserPlantDeleteModal, setIsOpenUserPlantDeleteModal] = useState(false);
+  const [isOpenDiaryCreateModal, setIsOpenDiaryCreateModal] = useState(false);
   const [userPlantId, setUserPlantId] = useState(null);
   const [userPlantNickname, setUserPlantNickname] = useState('');
 
   const [userPlantPage, setUserPlantPage] = useState(0);
   const [userPlantSize, setUserPlantSize] = useState(2);
   const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(8);
+
+  const [diarySetPage, setDiarySetPage] = useState(0);
+  const [diarySetSize, setDiarySetSize] = useState(2);
+  const [diarySetListTotalCount, setDiarySetListTotalCount] = useState(8);
+
+  const [diarySetList, setDiarySetList] = useState([]);
 
   const checkSameUser = useCallback(() => {
     if (myNickname == nickname) setIsSameUser(true);
@@ -109,6 +119,55 @@ export default function FeedDetail() {
       console.error(error);
     }
   }, [nickname, userPlantPage, userPlantSize]);
+
+  async function fetchUserPlantListAll() {
+    try {
+      const params = { page: 0, size: userPlantListTotalCount };
+      const { data } = await getUserPlantList(nickname, params);
+      setUserPlantListAll(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const fetchDiarySetList = useCallback(async () => {
+    try {
+      const params = { page: diarySetPage, size: diarySetSize };
+      // const { data } = await getDiarySetList(nickname, params);
+      // console.log(data);
+
+      const data = [
+        {
+          diarySetId: 1,
+          imagePath: 'image1/jpg',
+          bookmarkCount: 32,
+          isBookmarked: false,
+          diaryCount: 10,
+          title: '제목1',
+        },
+        {
+          diarySetId: 2,
+          imagePath: 'image1/jpg',
+          bookmarkCount: 32,
+          isBookmarked: false,
+          diaryCount: 10,
+          title: '제목2',
+        },
+        {
+          diarySetId: 3,
+          imagePath: 'image1/jpg',
+          bookmarkCount: 32,
+          isBookmarked: false,
+          diaryCount: 10,
+          title: '제목3',
+        },
+      ];
+
+      setDiarySetList(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [nickname, diarySetPage, diarySetSize]);
 
   async function nextPage() {
     let page = userPlantPage + userPlantSize;
@@ -220,11 +279,13 @@ export default function FeedDetail() {
     checkSameUser();
     fetchUserProfile();
     fetchUserPlantList();
+    fetchUserPlantListAll();
+    fetchDiarySetList();
     watch();
 
     handleProfileImageUpdate();
     return () => {};
-  }, [nickname, uploadProfileImage, userPlantPage, userPlantSize]); // 해당 변수가 업데이트 되면 한번 더 불러짐
+  }, [nickname, uploadProfileImage, userPlantPage, userPlantSize, diarySetPage, diarySetSize]); // 해당 변수가 업데이트 되면 한번 더 불러짐
 
   return (
     <AppLayout>
@@ -246,9 +307,12 @@ export default function FeedDetail() {
       />
       <AppModal
         isOpen={isOpenUserPlantDeleteModal}
-        handleModalConfirm={handleUserPlantDelete}
         handleModalClose={() => setIsOpenUserPlantDeleteModal(false)}
+        handleModalConfirm={handleUserPlantDelete}
       />
+
+      {/* FIXME: 만약 내키식을 생성하지 않았다면 해당 모달이 뜨지않고 다른 알람 모달이 뜨도록 */}
+      <DiaryModal isOpen={isOpenDiaryCreateModal} userPlantList={userPlantListAll} handleModalClose={() => setIsOpenDiaryCreateModal(false)} />
 
       <div className='space-y-2 '>
         {/* 프로필 라인 */}
@@ -345,7 +409,30 @@ export default function FeedDetail() {
         </div>
 
         {/* 관찰일지 라인 */}
-        <div>관찰일지 라인</div>
+        <div>
+          <h1>관찰일지 라인</h1>
+
+          <button className='bg-blue-500 rounded' onClick={() => setIsOpenDiaryCreateModal(true)}>
+            관찰일지 생성
+          </button>
+
+          <div className='flex'>
+            <button className='bg-blue-500 rounded'>이전</button>
+
+            {diarySetList.map((d) => (
+              <div key={d.diarySetId}>
+                <Image src={'/images/noProfile.png'} priority width={100} height={100} alt='관찰일지 썸네일' />
+                <div>제목: {d.title}</div>
+                <div>북마크 카운트: {d.bookmardCount}</div>
+                <div>북마크 토글: {d.isBookmarked}</div>
+                <span className='material-symbols-outlined'>bookmark</span>
+                <div>일지 카운트: {d.diaryCount}</div>
+              </div>
+            ))}
+
+            <button className='bg-blue-500 rounded'>다음</button>
+          </div>
+        </div>
 
         {/* 포스트 라인 */}
         <div>포스트 라인</div>
