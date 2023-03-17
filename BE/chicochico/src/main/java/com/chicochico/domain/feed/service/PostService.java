@@ -3,7 +3,7 @@ package com.chicochico.domain.feed.service;
 
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
-import com.chicochico.common.service.ImageFileUtil;
+import com.chicochico.common.service.FileService;
 import com.chicochico.domain.feed.dto.request.PostRequestDto;
 import com.chicochico.domain.feed.entity.PostEntity;
 import com.chicochico.domain.feed.repository.PostRepository;
@@ -32,7 +32,7 @@ public class PostService {
 
 	private final AuthService authService;
 
-	private final ImageFileUtil imageFileUtil;
+	private final FileService fileService;
 
 	private final FeedService feedService;
 
@@ -90,7 +90,7 @@ public class PostService {
 
 		// 이미지 저장
 		MultipartFile image = postRequestDto.getImage();
-		String savedPath = imageFileUtil.storeImageFile(image, FeedService.IMAGE_FILE_SUB_DIR);
+		String savedPath = fileService.storeImageFile(image, FeedService.IMAGE_FILE_SUB_DIR);
 
 		// PostEntity 저장
 		PostEntity post = PostEntity.builder()
@@ -126,14 +126,14 @@ public class PostService {
 
 		// 기존 연결된 이미지 삭제 -> 이것도 isDelected처럼 남겨야 할 것 같은데.. 고민
 		String originImagePath = originPost.getImagePath();
-		imageFileUtil.deleteImageFile(originImagePath);
+		fileService.deleteImageFile(originImagePath);
 
 		// 기존 tag 연결 삭제
 		feedService.deleteConnectedTags(originPost);
 
 		// 새로운 이미지 저장
 		MultipartFile multipartFile = postRequestDto.getImage();
-		String newImagePath = imageFileUtil.storeImageFile(multipartFile, FeedService.IMAGE_FILE_SUB_DIR);
+		String newImagePath = fileService.storeImageFile(multipartFile, FeedService.IMAGE_FILE_SUB_DIR);
 
 		// PostEntity 수정한 내용 저장
 		PostEntity newPost = PostEntity.builder()

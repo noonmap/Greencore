@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 @Service
-public class ImageFileUtil {
+public class FileService {
 
 	@Value("${file.dir}")
 	private String fileDir;

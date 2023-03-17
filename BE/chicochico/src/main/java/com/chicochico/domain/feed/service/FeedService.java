@@ -3,7 +3,7 @@ package com.chicochico.domain.feed.service;
 
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
-import com.chicochico.common.service.ImageFileUtil;
+import com.chicochico.common.service.FileService;
 import com.chicochico.domain.feed.entity.*;
 import com.chicochico.domain.feed.repository.*;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -36,7 +36,7 @@ public class FeedService {
 	private final LikeRepository likeRepository;
 	private final CommentRepository commentRepository;
 
-	private final ImageFileUtil imageFileUtil;
+	private final FileService fileService;
 
 
 	/**
@@ -283,7 +283,7 @@ public class FeedService {
 	public void deleteConnectedComponents(FeedEntity feed) {
 		// 이미지 삭제 --> 지금은 영구 삭제
 		String imagePath = feed.getImagePath();
-		imageFileUtil.deleteImageFile(imagePath);
+		fileService.deleteImageFile(imagePath);
 
 		// 연결된 tag 삭제 --> 영구 삭제
 		deleteConnectedTags(feed);
