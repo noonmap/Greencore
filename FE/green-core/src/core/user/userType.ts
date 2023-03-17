@@ -32,7 +32,7 @@ export type UserPlantType = {
   plantNickname: string;
 };
 
-export type searchUserType = {
+export type SearchUserType = {
   nickname: number;
-  profileImage: string;
+  profileImagePath: string;
 };

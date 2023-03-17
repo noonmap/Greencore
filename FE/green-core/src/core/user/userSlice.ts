@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { searchUserType } from './userType';
+import { SearchUserType } from './userType';
 import * as userAPI from './userAPI';
 
 interface UserState {
@@ -8,7 +8,7 @@ interface UserState {
   accessToken: string | null;
 
   // 검색용
-  searchUserList: Array<searchUserType>;
+  searchUserList: Array<SearchUserType>;
   isStopedAtUser: boolean;
   pageAtUser: number;
 }

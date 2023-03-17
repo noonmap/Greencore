@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getTagFeedList, getTagFeedListMore } from '@/core/feed/feedAPI';
 import { searchByUser, searchByUserMore } from '@/core/user/userAPI';
+import { searchByPlantName, searchByPlantNameMore } from '@/core/plant/plantAPI';
 import styles from '@/styles/feed.module.scss';
 import SearchFedListItem from '@/components/SearchFeedListItem';
 import SearchUserListItem from '@/components/SearchUserListItem';
+import SearchPlantListItem from '@/components/SearchPlantListItem';
 
 export default function SearchComponent() {
   const dispatch = useAppDispatch();
@@ -32,6 +34,15 @@ export default function SearchComponent() {
   const [sizeAtUser, setSizeAtUser] = useState<number>(10);
   const [targetAtUser, setTargetAtUser] = useState(null); // 관찰 대상 target
   const [isLoadedAtUser, setIsLoadedAtUser] = useState(true); // 데이터 로딩 상태
+
+  // -------------------------- 식물 검색 변수 -----------------------------
+  const searchPlantList = useAppSelector((state) => state.plant.searchPlantList);
+  const isStopedAtPlant = useAppSelector((state) => state.plant.isStopedAtPlant);
+  const pageAtPlant = useAppSelector((state) => state.plant.pageAtPlant);
+
+  const [sizeAtPlant, setSizeAtPlant] = useState<number>(10);
+  const [targetAtPlant, setTargetAtPlant] = useState(null); // 관찰 대상 target
+  const [isLoadedAtPlant, setIsLoadedAtPlant] = useState(true); // 데이터 로딩 상태
 
   // -------------------------- 태그 -------------------------------
 
@@ -90,6 +101,65 @@ export default function SearchComponent() {
     };
     await dispatch(getTagFeedListMore(params));
     setIsLoadedAtTag(false);
+  }
+
+  // -------------------------- 프로필 -------------------------------
+
+  function searchPlant(search: string) {
+    const params = {
+      search: search,
+      page: 0,
+      size: sizeAtPlant,
+    };
+    dispatch(searchByPlantName(params));
+    setIsLoadedAtPlant(false);
+  }
+
+  // 타겟 설정
+  useEffect(() => {
+    let observerAtPlant;
+    if (targetAtPlant && !isStopedAtPlant && inputData) {
+      setTimeout(() => {
+        observerAtPlant = new IntersectionObserver(onIntersectAtPlant, {
+          threshold: 1, // 배열의 요소가 100% 보여질때마다 콜백을 실행
+        });
+        observerAtPlant.observe(targetAtPlant);
+      }, 100);
+    }
+    return () => observerAtPlant && observerAtPlant.disconnect();
+  }, [targetAtPlant, isLoadedAtPlant]);
+
+  // 타겟을 만났을 때 실행하는 로직
+  const onIntersectAtPlant = async ([entryAtPlant]: any, observer2: any) => {
+    if (entryAtPlant.isIntersecting && !isLoadedAtPlant) {
+      observer2.unobserve(entryAtPlant.target); // 관찰 멈춤
+      getMoreItemAtPlant(); // isLoaded를 바꿈
+      observer2.observe(entryAtPlant.target); // 관찰 재시작
+    }
+  };
+
+  // 추가 데이터 요청
+  const getMoreItemAtPlant = () => {
+    setIsLoadedAtPlant(true);
+  };
+
+  // isLoadedAtTag 가 변할 때 실행
+  useEffect(() => {
+    if (inputData !== '' && isLoadedAtPlant) {
+      fetchPlantList();
+    }
+    return () => {};
+  }, [isLoadedAtPlant]);
+
+  // 추가 데이터 요청하기
+  async function fetchPlantList() {
+    const params = {
+      search: inputData,
+      page: pageAtPlant,
+      size: sizeAtPlant,
+    };
+    await dispatch(searchByPlantNameMore(params));
+    setIsLoadedAtPlant(false);
   }
 
   // -------------------------- 프로필 -------------------------------
@@ -190,6 +260,7 @@ export default function SearchComponent() {
         // 닉네임 검색
       } else if (searchType === 'plant') {
         // 식물이름 검색
+        searchPlant(event.target.value);
       }
     }
   }
@@ -233,8 +304,16 @@ export default function SearchComponent() {
             <div className={`p-5`}></div>
           </div>
         )
+      ) : searchPlantList.length === 0 ? (
+        <div>조회된 식물이 없습니다</div>
       ) : (
-        <div></div>
+        <div className={`overflow-auto`} style={{ height: '700px' }}>
+          {searchPlantList.map((plant) => (
+            <SearchPlantListItem key={plant.plantId} searchPlant={plant}></SearchPlantListItem>
+          ))}
+          <div ref={setTargetAtPlant} />
+          <div className={`p-5`}></div>
+        </div>
       )}
     </>
   );

@@ -9,3 +9,9 @@ export type IndexType = {
   page?: number;
   size?: number;
 };
+
+export type SearchPlantType = {
+  plantId: number;
+  imagePath: string;
+  plantName: string;
+};
