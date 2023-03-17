@@ -1,6 +1,7 @@
 package com.chicochico.domain.schedule.entity;
 
 
+import com.chicochico.common.code.IsCompletedType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.ScheduleType;
 import com.chicochico.common.entity.CommonEntity;
@@ -41,9 +42,10 @@ public class ScheduleEntity extends CommonEntity {
 	private LocalDate date;
 
 	private String content;
-
+	
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Boolean isCompleted;
+	private IsCompletedType isCompleted;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)

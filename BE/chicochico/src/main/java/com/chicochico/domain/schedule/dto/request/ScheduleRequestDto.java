@@ -1,6 +1,7 @@
 package com.chicochico.domain.schedule.dto.request;
 
 
+import com.chicochico.common.code.IsCompletedType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.ScheduleType;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
@@ -31,7 +32,7 @@ public class ScheduleRequestDto {
 			.content(content)
 			.userPlant(userPlant)
 			.user(user)
-			.isCompleted(false)
+			.isCompleted(IsCompletedType.N)
 			.isDeleted(IsDeletedType.N)
 			.build();
 	}

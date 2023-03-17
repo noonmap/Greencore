@@ -1,6 +1,7 @@
 package com.chicochico.domain.schedule.dto.response;
 
 
+import com.chicochico.common.code.IsCompletedType;
 import com.chicochico.common.code.ScheduleType;
 import com.chicochico.domain.plant.dto.response.PlantOnScheduleResponseDto;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
@@ -22,7 +23,7 @@ public class ScheduleResponseDto {
 	private Long scheduleId;
 	private LocalDate scheduleDate;
 	private ScheduleType scheduleCode;
-	private Boolean isCompleted;
+	private IsCompletedType isCompleted;
 	private PlantOnScheduleResponseDto plant;
 
 

@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Long> {
 
-	List<ScheduleEntity> findAllByUserAndBetweenDateAndDate(UserEntity user, LocalDate localDatest, LocalDate localDateEd);
+	List<ScheduleEntity> findAllByDateBetweenAndUser(LocalDate localDateSt, LocalDate localDateEd, UserEntity user);
 
 }

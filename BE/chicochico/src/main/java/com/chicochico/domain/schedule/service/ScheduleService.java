@@ -1,6 +1,7 @@
 package com.chicochico.domain.schedule.service;
 
 
+import com.chicochico.common.code.IsCompletedType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.schedule.dto.request.ScheduleRequestDto;
@@ -44,7 +45,7 @@ public class ScheduleService {
 		LocalDate localdateSt = LocalDate.of(year, month, 1);
 		LocalDate localdateEd = LocalDate.of(year, month, localdateSt.lengthOfMonth());
 
-		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByUserAndBetweenDateAndDate(user, localdateSt, localdateEd);
+		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUser(localdateSt, localdateEd, user);
 		return scheduleList;
 	}
 
@@ -64,12 +65,14 @@ public class ScheduleService {
 		LocalDate localdateSt = LocalDate.of(year, month, day);
 		LocalDate localdateEd = localdateSt.plusDays(7);
 
-		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByUserAndBetweenDateAndDate(user, localdateSt, localdateEd);
+		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUser(localdateSt, localdateEd, user);
 		return scheduleList;
 	}
 
 
 	/**
+	 * 일정을 생성합니다.
+	 *
 	 * @param scheduleRequestDto
 	 */
 	public void createSchedule(ScheduleRequestDto scheduleRequestDto) {
@@ -82,6 +85,8 @@ public class ScheduleService {
 
 
 	/**
+	 * 일정을 수정합니다.
+	 *
 	 * @param scheduleId
 	 * @param scheduleRequestDto
 	 */
@@ -92,7 +97,7 @@ public class ScheduleService {
 		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
 		if (user.equals(scheduleEntity.getUser())) {
-			ScheduleEntity.builder()
+			ScheduleEntity schedule = ScheduleEntity.builder()
 				.id(scheduleId)
 				.userPlant(userPlant)
 				.user(user)
@@ -101,6 +106,7 @@ public class ScheduleService {
 				.date(scheduleRequestDto.getScheduleDate())
 				.isCompleted(scheduleEntity.getIsCompleted())
 				.build();
+			scheduleRepository.save(schedule);
 		} else {
 			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
@@ -109,44 +115,53 @@ public class ScheduleService {
 
 
 	/**
+	 * 일정을 삭제합니다.
+	 *
 	 * @param scheduleId
 	 */
 	public void deleteSchedule(Long scheduleId) {
-		ScheduleEntity scheduleEntity = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
-		if (user.equals(scheduleEntity.getUser())) {
-			scheduleEntity.setIsDeleted(IsDeletedType.Y);
+		if (user.equals(schedule.getUser())) {
+			schedule.setIsDeleted(IsDeletedType.Y);
+			scheduleRepository.save(schedule);
 		}
 
 	}
 
 
 	/**
+	 * 일정 상태를 완료로 바꿉니다.
+	 *
 	 * @param scheduleId
 	 */
 	public void completeSchedule(Long scheduleId) {
-		ScheduleEntity scheduleEntity = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
-		if (user.equals(scheduleEntity.getUser()) && scheduleEntity.getIsDeleted().equals(IsDeletedType.N)) {
-			scheduleEntity.setIsCompleted(true);
+		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
+			schedule.setIsCompleted(IsCompletedType.Y);
+			scheduleRepository.save(schedule);
 		}
 	}
 
 
 	/**
+	 * 일정 상태를 미완료로 바꿉니다.
+	 *
 	 * @param scheduleId
 	 */
 	public void incompleteSchedule(Long scheduleId) {
-		ScheduleEntity scheduleEntity = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
-		if (user.equals(scheduleEntity.getUser()) && scheduleEntity.getIsDeleted().equals(IsDeletedType.N)) {
-			scheduleEntity.setIsCompleted(false);
+		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
+			schedule.setIsCompleted(IsCompletedType.N);
+			scheduleRepository.save(schedule);
 		}
 	}
 
