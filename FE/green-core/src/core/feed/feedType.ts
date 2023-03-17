@@ -29,3 +29,35 @@ export type TagFeedType = {
   imagePath?: string;
   content: string;
 };
+
+// 댓글 리스트 조회 타입
+export type getCommentListType = {
+  feedId: number;
+  page: number;
+  size: number;
+};
+
+// 댓글 생성 타입
+export type createCommentType = {
+  feedId: number;
+  payload: {
+    content: string;
+    mentionNickname: Array<string>;
+  };
+};
+
+// 댓글 수정 타입
+export type updateCommentType = {
+  feedId: number;
+  commentId: number;
+  payload: {
+    content: string;
+    mentionNickname: Array<string>;
+  };
+};
+
+// 댓글 삭제 타입
+export type deleteCommentType = {
+  feedId: number;
+  commentId: number;
+};
