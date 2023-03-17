@@ -10,12 +10,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
       data: [
         {
           nickname: `닉네임 ${page * 2 + 1}`,
-          profileImage: 'images/noProfile.png',
+          profileImagePath: 'images/noProfile.png',
         },
 
         {
           nickname: `닉네임 ${page * 2 + 2}`,
-          profileImage: 'images/noProfile.png',
+          profileImagePath: 'images/noProfile.png',
         },
       ],
     });
