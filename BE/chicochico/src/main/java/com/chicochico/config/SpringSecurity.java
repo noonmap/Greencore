@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSe
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -24,6 +25,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurity {
 
 	private final AuthTokenProvider tokenProvider;
+	private final RedisTemplate<String, String> redisTemplate;
+
+	private final JwtExceptionFilter jwtExceptionFilter;
 
 
 	@Bean
@@ -68,13 +72,19 @@ public class SpringSecurity {
 			// 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
 			.and()
 			.authorizeRequests()
-			.antMatchers("/login/**", "/logout", "/user").permitAll()
+			.antMatchers("/login/**", "/user", "/user/{nickname}", "/user/email/{email}", "/refresh", "/mail/**").permitAll()
 			.antMatchers("/swagger-resources/**", "/swagger-ui", "/swagger-ui/**").permitAll()
 			.anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 
 			// JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider));
+			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate, jwtExceptionFilter));
+
+		http
+			.logout()
+			.logoutUrl("/logout") // 로그아웃 요청 처리를 위한 URL 설정
+			.logoutSuccessUrl("/logout/redirect") // 로그아웃 성공 후 리다이렉트될 URL 설정
+			.invalidateHttpSession(true); // 세션 무효화 여부 설정
 
 		return http.build();
 	}
