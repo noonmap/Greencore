@@ -3,9 +3,7 @@ import AppLayout from '@/layout/AppLayout';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getFeedList, getFollowFeedList, getTagFeedList, getTagFeedListMore } from '@/core/feed/feedAPI';
 import { initFeedList } from '@/core/feed/feedSlice';
-import styles from '@/styles/feed.module.scss';
 import FeedListItem from '@/components/FeedListItem';
-import TagFeedListItem from '@/components/TagFeedListItem';
 import SearchComponent from '@/components/SearchComponent';
 
 export default function feed() {
