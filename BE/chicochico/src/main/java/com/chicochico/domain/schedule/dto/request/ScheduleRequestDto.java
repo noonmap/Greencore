@@ -7,6 +7,7 @@ import com.chicochico.common.code.ScheduleType;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 /**
  * 스케줄 생성, 수정 요청
  */
+@Builder
 @Data
 public class ScheduleRequestDto {
 
