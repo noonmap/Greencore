@@ -7,6 +7,8 @@ import FeedListItem from '@/components/FeedListItem';
 import SearchComponent from '@/components/SearchComponent';
 
 export default function feed() {
+  console.log(process.env.NODE_ENV);
+  console.log(process.env.APP_SERVER_URL);
   const dispatch = useAppDispatch();
   // 피드 조회
   const isLoading = useAppSelector((state) => state.feed.isLoading);
