@@ -11,7 +11,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     // res.status(400).json({ result: 'FAIL', data: null });
     // console.log(req.query.page);
     // console.log(req.query.size);
-
+    console.log('44444444444444444');
     const page = Number(req.query.page);
 
     if (page >= 10) {
