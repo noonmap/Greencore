@@ -41,8 +41,11 @@ const feedSlice = createSlice({
   extraReducers(builder) {
     builder
       // 추천 피드 조회
-      .addCase(getFeedList.pending, (state) => {})
+      .addCase(getFeedList.pending, (state) => {
+        console.log('요청 보냄');
+      })
       .addCase(getFeedList.fulfilled, (state, action) => {
+        console.log('요청 종료');
         if (action.payload.length === 0) {
           state.isStoped = true;
         }
