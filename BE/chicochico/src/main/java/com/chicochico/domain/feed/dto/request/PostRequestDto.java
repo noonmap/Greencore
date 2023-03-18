@@ -1,18 +1,23 @@
 package com.chicochico.domain.feed.dto.request;
 
 
-import com.chicochico.domain.feed.entity.PostEntity;
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 /**
  * 포스트 생성, 수정 요청
  */
 @Data
+@Builder
 public class PostRequestDto {
 
-	public PostEntity toEntity() {
-		return (PostEntity) new Object();
-	}
+	private String content;
+	private MultipartFile image;
 
+	private List<String> tags;
+	
 }

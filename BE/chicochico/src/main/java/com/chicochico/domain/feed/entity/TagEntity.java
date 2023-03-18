@@ -24,4 +24,18 @@ public class TagEntity extends CommonEntity {
 
 	@Column(nullable = false)
 	private String content;
+
+	@Column(nullable = false)
+	private Integer count;
+
+
+	public void increaseCount() {
+		this.count++;
+	}
+
+
+	public void decreaseCount() {
+		this.count--;
+	}
+
 }
