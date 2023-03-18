@@ -9,8 +9,11 @@ import { FeedDataType } from './feedType';
 
 // 추천 피드 리스트 조회
 export const getFeedList = createAsyncThunk('getFeedList', async (params: FeedDataType) => {
+  console.log('1111111111111');
   try {
+    console.log('2222222222222');
     const { data } = await http.get('/feed', { params });
+    console.log('3333333333333');
 
     return data.data;
   } catch (error) {
