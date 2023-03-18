@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final AuthTokenProvider authTokenProvider;
+	//	private final AuthTokenProvider authTokenProvider;
 
 
 	public Long getUserId() {

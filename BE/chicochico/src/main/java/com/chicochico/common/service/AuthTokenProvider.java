@@ -1,8 +1,7 @@
 package com.chicochico.common.service;
 
 
-import com.chicochico.domain.user.entity.UserEntity;
-import com.chicochico.domain.user.repository.UserRepository;
+import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,30 +12,36 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Log4j2
 @Component
 public class AuthTokenProvider {
 
+	@Value("${jwt.secret}")
 	private final String secretKey;
-	private final UserRepository userRepository;
+
+	private final CustomUserDetailsService customUserDetailsService;
+	private final ObjectMapper objectMapper;
 	@Value("${jwt.expire.access}")
-	private String accessExpiry; // 토큰 만료일
+	private Long accessExpiry; // 토큰 만료일
 	@Value("${jwt.expire.refresh}")
-	private String refreshExpiry; // 토큰 만료일
-	private ObjectMapper objectMapper;
+	private Long refreshExpiry; // 토큰 만료일
 
 
 	@Autowired
-	public AuthTokenProvider(UserRepository userRepository, @Value("${jwt.secret}") String secretKey) {
+	public AuthTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService) {
 		this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 		objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-		this.userRepository = userRepository;
+		this.customUserDetailsService = customUserDetailsService;
 	}
 
 
@@ -59,7 +64,7 @@ public class AuthTokenProvider {
 
 		// 토큰 발행일, 만료일 설정
 		Date issuedDate = new Date();
-		String expiryTime = tokenType.equals(TokenType.ACCESS) ? accessExpiry : refreshExpiry;
+		Long expiryTime = tokenType.equals(TokenType.ACCESS) ? accessExpiry : refreshExpiry;
 		Date expiryDate = new Date(issuedDate.getTime() + expiryTime);
 
 		return Jwts.builder()
@@ -172,15 +177,44 @@ public class AuthTokenProvider {
 	 * 사용자가 DB에 저장되어있는 유효한 사용자인지 인증 후,
 	 * SecurityContextHolder에 저장할 Authentication 객체 생성.
 	 */
-	public Authentication getAuthentication(String token) {
-		Optional<UserEntity> user = userRepository.findById(this.getUserId(token));
-		if (user.isEmpty()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		return new UsernamePasswordAuthenticationToken(user.get(), token);
+	public UsernamePasswordAuthenticationToken getAuthentication(String token) {
+		UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserId(token).toString());
+		log.info("getAuthentication: {}, token: {}", userDetails.getUsername(), token);
+		return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+	}
+
+
+	/**
+	 * 엑세스 토큰 헤더 설정
+	 */
+	public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+		response.setHeader("authorization", accessToken);
+	}
+
+
+	/**
+	 * 리프레시 토큰 헤더 설정
+	 */
+	public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+		response.setHeader("X-Refresh-Token", refreshToken);
+	}
+
+
+	/**
+	 * JWT 토큰의 만료시간
+	 */
+	public Long getExpiration(String accessToken) {
+
+		Date expiration = Jwts.parser().setSigningKey(secretKey)
+			.parseClaimsJws(accessToken).getBody().getExpiration();
+
+		long now = new Date().getTime();
+		return expiration.getTime() - now;
 	}
 
 
 	private enum TokenType {
-		ACCESS, REFRESH;
+		ACCESS, REFRESH
 	}
 
 }

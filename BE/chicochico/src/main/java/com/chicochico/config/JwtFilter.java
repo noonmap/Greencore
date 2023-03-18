@@ -2,9 +2,13 @@ package com.chicochico.config;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
+@Log4j2
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -22,23 +27,32 @@ public class JwtFilter extends OncePerRequestFilter {
 	public static final String BEARER_PREFIX = "Bearer ";
 
 	private final AuthTokenProvider tokenProvider;
+	private final RedisTemplate redisTemplate;
 
 
 	// 실제 필터링 로직은 doFilterInternal 에 들어감
 	// JWT 토큰의 인증 정보를 현재 쓰레드의 SecurityContext 에 저장하는 역할 수행
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-
 		// 1. Request Header 에서 토큰을 꺼냄
 		String token = resolveToken(request);
 
 		// 2. validateToken 으로 토큰 유효성 검사
 		// 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
-		if (StringUtils.hasText(token) && tokenProvider.validate(token)) {
-			Authentication authentication = tokenProvider.getAuthentication(token);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
+		if (StringUtils.hasText(token)) {
+			if (!tokenProvider.validate(token))
+				throw new JwtException("accessToken 유효하지 않음");
 
+			// 3. Redis에 해당 accessToken 로그아웃 여부 확인
+			String isLogout = (String) redisTemplate.opsForValue().get(token);
+			if (ObjectUtils.isEmpty(isLogout)) {
+				Authentication authentication = tokenProvider.getAuthentication(token);
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			} else {
+				throw new JwtException("로그아웃 된 accessToken 유효하지 않음");
+			}
+
+		}
 		filterChain.doFilter(request, response);
 	}
 
