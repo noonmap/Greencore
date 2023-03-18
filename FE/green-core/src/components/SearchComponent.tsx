@@ -103,7 +103,7 @@ export default function SearchComponent() {
     setIsLoadedAtTag(false);
   }
 
-  // -------------------------- 프로필 -------------------------------
+  // -------------------------- 식물 -------------------------------
 
   function searchPlant(search: string) {
     const params = {

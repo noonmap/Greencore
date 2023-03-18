@@ -103,70 +103,70 @@ export default function feed() {
 
   // -------------------------- 태그 -------------------------------
 
-  // 태그 검색
-  function handleKeyUp(event) {
-    if (event.key === 'Enter') {
-      setInputData(event.target.value);
-      searchInputValue(event.target.value);
-    }
-  }
+  // // 태그 검색
+  // function handleKeyUp(event) {
+  //   if (event.key === 'Enter') {
+  //     setInputData(event.target.value);
+  //     searchInputValue(event.target.value);
+  //   }
+  // }
 
-  function searchInputValue(search: string) {
-    const params = {
-      search: search,
-      page: 0,
-      size: sizeAtTag,
-    };
-    dispatch(getTagFeedList(params));
-    setIsLoadedAtTag(false);
-  }
+  // function searchInputValue(search: string) {
+  //   const params = {
+  //     search: search,
+  //     page: 0,
+  //     size: sizeAtTag,
+  //   };
+  //   dispatch(getTagFeedList(params));
+  //   setIsLoadedAtTag(false);
+  // }
 
-  // 타겟 설정
-  useEffect(() => {
-    let observer2;
-    if (targetAtTag && !isStopedAtTag && inputData) {
-      setTimeout(() => {
-        observer2 = new IntersectionObserver(onIntersect2, {
-          threshold: 1, // 배열의 요소가 100% 보여질때마다 콜백을 실행
-        });
-        observer2.observe(targetAtTag);
-      }, 100);
-    }
-    return () => observer2 && observer2.disconnect();
-  }, [targetAtTag, isLoadedAtTag]);
+  // // 타겟 설정
+  // useEffect(() => {
+  //   let observer2;
+  //   if (targetAtTag && !isStopedAtTag && inputData) {
+  //     setTimeout(() => {
+  //       observer2 = new IntersectionObserver(onIntersect2, {
+  //         threshold: 1, // 배열의 요소가 100% 보여질때마다 콜백을 실행
+  //       });
+  //       observer2.observe(targetAtTag);
+  //     }, 100);
+  //   }
+  //   return () => observer2 && observer2.disconnect();
+  // }, [targetAtTag, isLoadedAtTag]);
 
-  // 타겟을 만났을 때 실행하는 로직
-  const onIntersect2 = async ([entry2]: any, observer2: any) => {
-    if (entry2.isIntersecting && !isLoadedAtTag) {
-      observer2.unobserve(entry2.target); // 관찰 멈춤
-      getMoreItem2(); // isLoaded를 바꿈
-      observer2.observe(entry2.target); // 관찰 재시작
-    }
-  };
+  // // 타겟을 만났을 때 실행하는 로직
+  // const onIntersect2 = async ([entry2]: any, observer2: any) => {
+  //   if (entry2.isIntersecting && !isLoadedAtTag) {
+  //     observer2.unobserve(entry2.target); // 관찰 멈춤
+  //     getMoreItem2(); // isLoaded를 바꿈
+  //     observer2.observe(entry2.target); // 관찰 재시작
+  //   }
+  // };
 
-  // 추가 데이터 요청
-  const getMoreItem2 = () => {
-    setIsLoadedAtTag(true);
-  };
+  // // 추가 데이터 요청
+  // const getMoreItem2 = () => {
+  //   setIsLoadedAtTag(true);
+  // };
 
-  // isLoadedAtTag 가 변할 때 실행
-  useEffect(() => {
-    if (inputData !== '' && isLoadedAtTag) {
-      fetchTagFeedList();
-    }
-    return () => {};
-  }, [isLoadedAtTag]);
+  // // isLoadedAtTag 가 변할 때 실행
+  // useEffect(() => {
+  //   if (inputData !== '' && isLoadedAtTag) {
+  //     fetchTagFeedList();
+  //   }
+  //   return () => {};
+  // }, [isLoadedAtTag]);
 
-  // 추가 데이터 요청하기
-  async function fetchTagFeedList() {
-    const params = {
-      search: inputData,
-      page: pageAtTag,
-      size: sizeAtTag,
-    };
-    await dispatch(getTagFeedListMore(params));
-    setIsLoadedAtTag(false);
-  }
+  // // 추가 데이터 요청하기
+  // async function fetchTagFeedList() {
+  //   const params = {
+  //     search: inputData,
+  //     page: pageAtTag,
+  //     size: sizeAtTag,
+  //   };
+  //   await dispatch(getTagFeedListMore(params));
+  //   setIsLoadedAtTag(false);
+  // }
 
   // ----------------------------------------------------------------
 
