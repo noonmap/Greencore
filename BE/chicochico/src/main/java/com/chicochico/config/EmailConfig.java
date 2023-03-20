@@ -1,6 +1,7 @@
 package com.chicochico.config;
 
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 
+@Log4j2
 @Configuration
 public class EmailConfig {
 
@@ -43,7 +45,7 @@ public class EmailConfig {
 		properties.setProperty("mail.smtp.auth", "true"); // smtp 인증
 		properties.setProperty("mail.smtp.starttls.enable", "true"); // smtp starttls 사용
 		properties.setProperty("mail.debug", "true"); // 디버그 사용
-		properties.setProperty("mail.smtp.ssl.trust", "smtp.mailplug.co.kr"); // ssl 인증 서버 주소
+		properties.setProperty("mail.smtp.ssl.trust", "smtp.naver.com"); // ssl 인증 서버 주소
 		properties.setProperty("mail.smtp.ssl.enable", "true"); // ssl 사용
 		return properties;
 	}

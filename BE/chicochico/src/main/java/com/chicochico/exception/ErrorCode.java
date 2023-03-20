@@ -49,7 +49,7 @@ public enum ErrorCode {
 
 	/* 500 INTERNAL_SERVER_ERROR : 서버 오류 - 정말 필요한 거 외엔 되도록 쓰지 않는 걸 권장*/
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드를 실패하였습니다."),
-	;
+	EMAIL_SEND_FAIL(INTERNAL_SERVER_ERROR, "이메일 전송에 실패하였습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String message;
