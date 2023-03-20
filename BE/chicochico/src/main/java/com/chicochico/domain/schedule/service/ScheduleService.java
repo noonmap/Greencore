@@ -43,8 +43,9 @@ public class ScheduleService {
 
 		//year+month=>localdate
 		//해당 월의 첫날부터 끝날까지 (between의 경우 마지막은 포함 안됨)
+		//1일부터 해당 월에 있는 날만큼 더하면 됨
 		LocalDate localdateSt = LocalDate.of(year, month, 1);
-		LocalDate localdateEd = LocalDate.of(year, month, localdateSt.lengthOfMonth());
+		LocalDate localdateEd = localdateSt.plusDays(localdateSt.lengthOfMonth());
 
 		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUser(localdateSt, localdateEd, user);
 
@@ -65,7 +66,7 @@ public class ScheduleService {
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
 		//year+month=>localdate
-		//해당 요일부터 다다음날까지 일정보여줌(between의 경우 마지막은 포함 안됨)
+		//해당 요일부터 다다다음날까지 일정보여줌(between의 경우 마지막은 포함 안됨)
 		LocalDate localdateSt = LocalDate.of(year, month, day);
 		LocalDate localdateEd = localdateSt.plusDays(3);
 
@@ -102,6 +103,7 @@ public class ScheduleService {
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		//사용자가 키우고 있는 식물 중 하나
 		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
@@ -118,6 +120,7 @@ public class ScheduleService {
 			//수정본 저장
 			scheduleRepository.save(schedule);
 		} else {
+			//access 불가 오류
 			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
 
@@ -136,8 +139,12 @@ public class ScheduleService {
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
 		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
+			//삭제로 상태 변경
 			schedule.setIsDeleted(IsDeletedType.Y);
 			scheduleRepository.save(schedule);
+		} else {
+			//access 불가 오류
+			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
 
 	}
@@ -155,8 +162,12 @@ public class ScheduleService {
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
 		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
+			//일정 완료로 상태 변경
 			schedule.setIsCompleted(IsCompletedType.Y);
 			scheduleRepository.save(schedule);
+		} else {
+			//access 불가 오류
+			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
 	}
 
@@ -173,8 +184,12 @@ public class ScheduleService {
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
 		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
+			// 일정 완료 취소로 상태 변경
 			schedule.setIsCompleted(IsCompletedType.N);
 			scheduleRepository.save(schedule);
+		} else {
+			//access 불가 오류
+			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
 	}
 
