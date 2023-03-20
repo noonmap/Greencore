@@ -133,6 +133,7 @@ public class CommentService {
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ACCESS_TOKEN_NOT_FOUND));
 		if (user.equals(comment.getUser())) {
 			comment.setIsDeleted();
+			commentRepository.save(comment);
 		} else {
 			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
