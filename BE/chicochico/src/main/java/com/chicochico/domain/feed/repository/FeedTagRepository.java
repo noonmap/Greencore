@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface FeedTagRepository extends JpaRepository<FeedTagEntity, Long> {
@@ -18,5 +19,7 @@ public interface FeedTagRepository extends JpaRepository<FeedTagEntity, Long> {
 	List<FeedTagEntity> findByTag(List<TagEntity> tagList);
 
 	List<FeedTagEntity> findByFeed(FeedEntity feed);
+
+	Optional<FeedTagEntity> findByTagAndFeed(TagEntity tag, FeedEntity feed);
 
 }

@@ -37,8 +37,18 @@ public class CommentEntity extends CommonEntity {
 
 	private Long mentionUserId; // 역정규화(?). FK로 엮지 않았음
 
-
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private IsDeletedType isDeleted;
+
+
+	public void setIsDeleted() {
+		this.isDeleted = IsDeletedType.Y;
+	}
+
+
+	public void setIsNotDeleted() {
+		this.isDeleted = IsDeletedType.N;
+	}
+
 }
