@@ -104,7 +104,7 @@ public class ScheduleService {
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//사용자가 키우고 있는 식물 중 하나
-		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
 		if (user.equals(scheduleEntity.getUser()) && scheduleEntity.getIsDeleted().equals(IsDeletedType.N)) {
