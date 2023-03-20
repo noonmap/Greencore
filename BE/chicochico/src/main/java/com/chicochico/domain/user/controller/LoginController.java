@@ -3,10 +3,12 @@ package com.chicochico.domain.user.controller;
 
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
+import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @Api(tags = "유저 로그인 API")
@@ -24,10 +27,10 @@ public class LoginController {
 
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-		loginService.login(loginRequestDto, response);
+	public ResponseEntity<ResultDto<ProfileSimpleResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+		ProfileSimpleResponseDto profileSimpleResponseDto = loginService.login(loginRequestDto, response);
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDto));
 	}
 
 
@@ -41,17 +44,17 @@ public class LoginController {
 
 
 	@PostMapping("/refresh")
-	@ApiOperation(value = "엑세스 토큰을 발급합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, Object> loginRequestHeader, HttpServletResponse response) {
+	@ApiOperation(value = "엑세스 토큰을 재발급합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response) {
 		loginService.createAccessToken(loginRequestHeader, response);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
 
 
-	@DeleteMapping("/logout")
+	@GetMapping("/logout/redirect")
 	@ApiOperation(value = "로그아웃합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> logout(@RequestHeader Map<String, Object> logoutRequestHeader) {
+	public ResponseEntity<ResultDto<Boolean>> logoutPost(@RequestHeader Map<String, String> logoutRequestHeader) {
 		loginService.deleteAccessToken(logoutRequestHeader);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());

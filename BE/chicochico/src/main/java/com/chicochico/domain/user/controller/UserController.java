@@ -8,16 +8,20 @@ import com.chicochico.domain.user.dto.request.UserPlantRequestDto;
 import com.chicochico.domain.user.dto.request.UserPlantSimpleRequestDto;
 import com.chicochico.domain.user.dto.response.UserPlantResponseDto;
 import com.chicochico.domain.user.entity.UserPlantEntity;
+import com.chicochico.domain.user.service.LoginService;
 import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
+@Log4j2
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -25,6 +29,8 @@ import java.util.List;
 public class UserController {
 
 	private final UserService userService;
+
+	private final LoginService loginService;
 
 	/*
 	 * 유저 인증 관련
@@ -43,18 +49,27 @@ public class UserController {
 	@GetMapping("/{nickname}")
 	@ApiOperation(value = "닉네임 중복확인을 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> checkNickname(@PathVariable("nickname") String nickname) {
-		userService.checkNickname(nickname);
+		Boolean checkNickname = userService.checkNickname(nickname);
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		return ResponseEntity.ok().body(ResultDto.of(checkNickname));
 	}
 
 
-	@PostMapping("/password")
+	@GetMapping("/email/{email}")
+	@ApiOperation(value = "이메일 중복확인을 합니다.", notes = "")
+	public ResponseEntity<ResultDto<Boolean>> checkEmail(@PathVariable("email") String email) {
+		Boolean checkEmail = userService.checkEmail(email);
+
+		return ResponseEntity.ok().body(ResultDto.of(checkEmail));
+	}
+
+
+	@PostMapping(value = "/password")
 	@ApiOperation(value = "현재 비밀번호를 확인합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> checkPassword(@RequestBody PasswordRequestDto passwordRequestDto) {
-		userService.checkPassword(passwordRequestDto);
+		Boolean checkPassword = userService.checkPassword(passwordRequestDto);
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		return ResponseEntity.ok().body(ResultDto.of(checkPassword));
 	}
 
 
@@ -69,8 +84,11 @@ public class UserController {
 
 	@DeleteMapping
 	@ApiOperation(value = "회원탈퇴를 합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> deleteUser() {
+	public ResponseEntity<ResultDto<Boolean>> deleteUser(@RequestHeader Map<String, String> logoutRequestHeader) {
+		loginService.deleteAccessToken(logoutRequestHeader);
 		userService.deleteUser();
+
+		// TODO 탈퇴 로직 구현시 (팔로우, 팔로잉 목록, 피드 등 유저 연관 삭제 로직 추가)
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}

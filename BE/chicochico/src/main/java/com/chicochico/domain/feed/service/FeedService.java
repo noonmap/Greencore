@@ -3,10 +3,8 @@ package com.chicochico.domain.feed.service;
 
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
-import com.chicochico.domain.feed.entity.FeedEntity;
-import com.chicochico.domain.feed.entity.FeedTagEntity;
-import com.chicochico.domain.feed.entity.LikeEntity;
-import com.chicochico.domain.feed.entity.TagEntity;
+import com.chicochico.common.service.FileService;
+import com.chicochico.domain.feed.entity.*;
 import com.chicochico.domain.feed.repository.*;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
@@ -28,17 +26,71 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FeedService {
 
-	private final FeedRepository feedRepository;
+	static public final String IMAGE_FILE_SUB_DIR = "feed";
 
+	private final FeedRepository feedRepository;
 	private final FeedTagRepository feedTagRepository;
 	private final TagRepository tagRepository;
-
 	private final UserRepository userRepository;
 	private final AuthService authService;
-
 	private final LikeRepository likeRepository;
-
 	private final CommentRepository commentRepository;
+
+	private final FileService fileService;
+
+
+	/**
+	 * tag가 이미 존재하면 기존의 tag를 반환, 존재하지 않으면 생성 후 반환
+	 * tag는 소문자로 변환 후 저장함
+	 *
+	 * @param content
+	 * @return
+	 */
+	private TagEntity createTag(String content) {
+		Optional<TagEntity> tag = tagRepository.findByContentIgnoreCase(content);
+		if (tag.isPresent()) return tag.get();
+		// 소문자로 변환 후 저장함
+		TagEntity newTag = TagEntity.builder().content(content.toLowerCase()).count(0).build();
+		return tagRepository.save(newTag);
+	}
+
+
+	/**
+	 * FeedTagEntity를 생성하고 feed-tag를 연결.
+	 * 이미 FeedTagEntity가 존재하면 새로 생성하지 않음.
+	 *
+	 * @param tag
+	 */
+	private void connectTag(TagEntity tag, FeedEntity feed) {
+		// 존재하는지 확인
+		Optional<FeedTagEntity> feedTag = feedTagRepository.findByTagAndFeed(tag, feed);
+		if (feedTag.isEmpty()) { // 존재하지 않으면 새로 생성
+			FeedTagEntity newFeedTag = FeedTagEntity.builder()
+				.tag(tag)
+				.feed(feed)
+				.build();
+			feedTagRepository.save(newFeedTag);
+			// tag 사용 카운트 증가
+			tag.increaseCount();
+			tagRepository.save(tag);
+		}
+	}
+
+
+	/**
+	 * tag 내용 리스트를 받아서, feed와 연결시킴.
+	 * tag 리스트 null & empty 체크를 포함함.
+	 *
+	 * @param tags
+	 * @param feed
+	 */
+	public void createAndConnectTags(List<String> tags, FeedEntity feed) {
+		if (tags == null || tags.isEmpty()) return;
+		for (String tagContent : tags) {
+			TagEntity tag = createTag(tagContent);
+			connectTag(tag, feed);
+		}
+	}
 
 
 	/**
@@ -81,6 +133,13 @@ public class FeedService {
 	}
 
 
+	/**
+	 * feedPage에서 삭제되지 않은(IsDeletedType.N인) 피드 페이지를 얻음
+	 *
+	 * @param feedPage
+	 * @param pageable
+	 * @return
+	 */
 	private Page<FeedEntity> getUnDeletedFeedPage(Page<FeedEntity> feedPage, Pageable pageable) {
 		List<FeedEntity> feedList = new ArrayList<>(feedPage.toList());
 		// 삭제된 피드 삭제
@@ -90,6 +149,13 @@ public class FeedService {
 	}
 
 
+	/**
+	 * feedList에서 삭제되지 않은(IsDeletedType.N인) 피드 페이지를 얻음
+	 *
+	 * @param _feedList
+	 * @param pageable
+	 * @return
+	 */
 	private Page<FeedEntity> getUnDeletedFeedPage(List<FeedEntity> _feedList, Pageable pageable) {
 		List<FeedEntity> feedList = new ArrayList<>(_feedList); // 입력 list는 unmodifidable list라서 한번 복사를 거쳐줘야한다.
 		// 삭제된 피드 삭제
@@ -149,7 +215,7 @@ public class FeedService {
 
 
 	/**
-	 * 피드 좋아요 취소
+	 * 피드 좋아요 1개 취소
 	 *
 	 * @param feedId 좋아요 취소할 피드
 	 */
@@ -159,6 +225,74 @@ public class FeedService {
 		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
 		LikeEntity like = likeRepository.findByUserAndFeed(user, feed).orElseThrow(() -> new CustomException(ErrorCode.FEED_LIKE_NOT_FOUND));
 		likeRepository.delete(like);
+	}
+
+
+	/**
+	 * 피드에 연결된 태그와의 연결점을 모두 삭제
+	 *
+	 * @param feed
+	 */
+	public void deleteConnectedTags(FeedEntity feed) {
+		// 연결된 Feed-tag 리스트 조회
+		List<FeedTagEntity> feedTagList = feedTagRepository.findByFeed(feed);
+		if (feedTagList.isEmpty()) return;
+
+		// feed-tag 삭제 & tag의 count가 0이 되면 tag도 삭제
+		for (FeedTagEntity feedTag : feedTagList) {
+			TagEntity tag = feedTag.getTag();
+			feedTagRepository.delete(feedTag);
+
+			tag.decreaseCount();
+			if (tag.getCount() <= 0) tagRepository.delete(tag);
+			else tagRepository.save(tag);
+		}
+	}
+
+
+	/**
+	 * 피드에 연결된 모든 댓글을 삭제
+	 *
+	 * @param feed
+	 */
+	public void deleteConnectedComment(FeedEntity feed) {
+		List<CommentEntity> commentList = commentRepository.findByFeed(feed);
+		for (CommentEntity comment : commentList) {
+			comment.setIsDeleted();
+		}
+		commentRepository.saveAll(commentList);
+	}
+
+
+	/**
+	 * 피드에 연결된 모든 좋아요를 삭제
+	 *
+	 * @param feed
+	 */
+	public void deleteConnectedLike(FeedEntity feed) {
+		List<LikeEntity> likeList = likeRepository.findByFeed(feed);
+		likeRepository.deleteAll(likeList);
+	}
+
+
+	/**
+	 * 피드에 연결된 모든 요소(이미지, 태그, 댓글, 좋아요)를 삭제
+	 *
+	 * @param feed
+	 */
+	public void deleteConnectedComponents(FeedEntity feed) {
+		// 이미지 삭제 --> 지금은 영구 삭제
+		String imagePath = feed.getImagePath();
+		fileService.deleteImageFile(imagePath);
+
+		// 연결된 tag 삭제 --> 영구 삭제
+		deleteConnectedTags(feed);
+
+		// 연결된 comment 삭제 --> isDeleted
+		deleteConnectedComment(feed);
+
+		// 연결된 좋아요 삭제 --> 영구 삭제
+		deleteConnectedLike(feed);
 	}
 
 }

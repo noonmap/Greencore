@@ -5,8 +5,8 @@ import com.chicochico.common.code.FeedType;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.user.dto.response.ProfileResponseDto;
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 
 @Data
-@Builder
+@SuperBuilder
 public class FeedResponseDto implements Serializable {
 
 	private ProfileResponseDto user;
