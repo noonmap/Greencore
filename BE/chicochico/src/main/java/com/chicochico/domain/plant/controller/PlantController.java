@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,37 +31,51 @@ public class PlantController {
 
 	@GetMapping
 	@ApiOperation(value = "홈화면에서 식물이름을 검색합니다.", notes = "")
-	public ResponseEntity<ResultDto<Page<PlantWithImageResponseDto>>> getPlantWithImageList(@RequestParam("search") String search, Pageable pageable) {
+	public ResponseEntity<ResultDto<Page<PlantWithImageResponseDto>>> getPlantWithImageList(@RequestParam("search") String search,
+		@PageableDefault(size = 12, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantWithImageList(search, pageable);
-		// TODO : entity page -> dto page 변환 추가
+		Page<PlantWithImageResponseDto> plantWithImageResponseDtoPage = PlantWithImageResponseDto.fromEnityPage(plantList, pageable);
 
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		return ResponseEntity.ok().body(ResultDto.of(plantWithImageResponseDtoPage));
+	}
+
+
+	@GetMapping("/user")
+	@ApiOperation(value = "내가 키우는 식물 추가를 위해 식물이름을 검색합니다.", notes = "")
+	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantListAtMyPage(@RequestParam("search") String search,
+		@PageableDefault(size = 12, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<PlantEntity> plantList = plantService.getPlantListAtMyPage(search, pageable);
+		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList, pageable);
+
+		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
 
 
 	@GetMapping(value = "/docs", params = { "search" })
 	@ApiOperation(value = "도감페이지에서 식물이름을 검색합니다.", notes = "")
-	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantList(@RequestParam("search") String search, Pageable pageable) {
+	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantList(@RequestParam("search") String search,
+		@PageableDefault(size = 12, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantList(search, pageable);
-		// TODO : entity page -> dto page 변환 추가
+		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList, pageable);
 
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
 
 
 	@GetMapping(value = "/docs", params = { "index" })
 	@ApiOperation(value = "식물 도감 목록을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantListByIndex(@RequestParam("index") String index, Pageable pageable) {
+	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantListByIndex(@RequestParam("index") String index,
+		@PageableDefault(size = 12, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantListByIndex(index, pageable);
-		// TODO : entity page -> dto page 변환 추가
+		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList, pageable);
 
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
 
 
 	@GetMapping("/docs/{plantId}")
 	@ApiOperation(value = "식물 도감에서 상세 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<PlantDocResponseDto>> getPlant(@PathVariable("plantId") String plantId) {
+	public ResponseEntity<ResultDto<PlantDocResponseDto>> getPlant(@PathVariable("plantId") Long plantId) {
 		PlantEntity plant = plantService.getPlant(plantId);
 		PlantDocResponseDto plantDocResponseDto = PlantDocResponseDto.fromEntity(plant);
 
