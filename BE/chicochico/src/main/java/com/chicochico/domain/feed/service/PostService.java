@@ -170,7 +170,8 @@ public class PostService {
 		feedService.deleteConnectedComponents(post);
 
 		// post 삭제
-		postRepository.delete(post);
+		post.setIsDeleted(IsDeletedType.Y);
+		postRepository.save(post);
 	}
 
 }
