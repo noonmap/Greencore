@@ -63,4 +63,10 @@ public class PlantEntity {
 	// 생장형 (ex, "growthType":"모름")
 	private String growthType;
 
+	@Column(nullable = false)
+	private String imagePath;
+	
+	@Column(nullable = false)
+	private Integer userCount;
+
 }
