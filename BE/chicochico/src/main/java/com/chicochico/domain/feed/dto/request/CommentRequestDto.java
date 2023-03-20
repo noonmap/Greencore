@@ -30,4 +30,37 @@ public class CommentRequestDto {
 			.build();
 	}
 
+
+	public CommentEntity toEntity(FeedEntity feed, UserEntity user) {
+		return CommentEntity.builder()
+			.content(content)
+			.feed(feed)
+			.user(user)
+			.isDeleted(IsDeletedType.N)
+			.build();
+	}
+
+
+	public CommentEntity toEntity(Long commentId, FeedEntity feed, UserEntity user, Long mentionUserID) {
+		return CommentEntity.builder()
+			.id(commentId)
+			.content(content)
+			.feed(feed)
+			.user(user)
+			.mentionUserId(mentionUserID)
+			.isDeleted(IsDeletedType.N)
+			.build();
+	}
+
+
+	public CommentEntity toEntity(Long commentId, FeedEntity feed, UserEntity user) {
+		return CommentEntity.builder()
+			.id(commentId)
+			.content(content)
+			.feed(feed)
+			.user(user)
+			.isDeleted(IsDeletedType.N)
+			.build();
+	}
+
 }
