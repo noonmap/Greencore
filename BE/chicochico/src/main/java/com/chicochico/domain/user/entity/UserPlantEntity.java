@@ -42,4 +42,14 @@ public class UserPlantEntity extends CommonEntity {
 	@Column(nullable = false)
 	private IsDeletedType isDeleted;
 
+
+	public void setPlantNickname(String plantNickname) {
+		this.plantNickname = plantNickname;
+	}
+
+
+	public void setIsDeleted(IsDeletedType isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
 }
