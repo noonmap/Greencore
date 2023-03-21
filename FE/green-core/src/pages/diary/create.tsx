@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
-import Toastify from 'toastify-js';
-import toastifyCSS from '@/assets/toastify.json';
-import message from '@/assets/message.json';
 import { useRouter } from 'next/router';
 import http from '@/lib/http';
 import { useForm } from 'react-hook-form';
+import { createDiary } from '@/core/diary/diaryAPI';
+import { useAppDispatch } from '@/core/hooks';
 
 export default function creatediary() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [preview, setPreview] = useState<any>('');
   const [tagList, setTagList] = useState<Array<string>>([]);
 
+  // react-hook-form 설정
   type StateType = {
     diarysetId: number;
     content: string;
@@ -38,7 +39,7 @@ export default function creatediary() {
   }, []);
 
   // 태그 입력
-  const handleOnChangeTagItem = (e) => {
+  const handleOnChangeTagItem = (e: any) => {
     if ((tagItem.length !== 0 && e.key === 'Enter') || e.key === ' ') {
       handleChangeTagList();
     }
@@ -84,27 +85,9 @@ export default function creatediary() {
   const handleCreateDiary = async (e: any) => {
     e.preventDefault();
     const payload = { diarysetId, content, opservationDate, image, tags: tagList };
+    const requestData = { router, payload };
     try {
-      console.log(payload);
-      const { data } = await http.post(`/diaryset/${diarysetId}`, payload);
-      if (data.result === 'SUCCESS') {
-        router.push('/diary');
-        Toastify({
-          text: message.CreateDiarySuccess,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.success,
-        }).showToast();
-      } else {
-        Toastify({
-          text: message.CreateDiaryFail,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.fail,
-        }).showToast();
-      }
+      dispatch(createDiary(requestData));
     } catch (err) {
       console.log(err);
     }

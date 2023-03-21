@@ -1,13 +1,12 @@
-import http from '@/lib/http';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Toastify from 'toastify-js';
-import toastifyCSS from '@/assets/toastify.json';
-import message from '@/assets/message.json';
+import { useAppDispatch } from '@/core/hooks';
+import { deleteComment, updateComment } from '@/core/feed/feedAPI';
 
-export default function FeedCommentItem({ comment, feedId, deleteComment }) {
+export default function FeedCommentItem({ comment, feedId, deleteCommentList }) {
   const [isUpdated, setIsUpdated] = useState(false);
+  const dispatch = useAppDispatch();
 
   // react-hook-form 설정
   type StateType = {
@@ -28,7 +27,7 @@ export default function FeedCommentItem({ comment, feedId, deleteComment }) {
   });
 
   // 댓글 수정 토글
-  const handleUpdateComment = (e: any) => {
+  const handleUpdateCommentToggle = (e: any) => {
     e.preventDefault();
     setIsUpdated((prev) => !prev);
   };
@@ -36,35 +35,18 @@ export default function FeedCommentItem({ comment, feedId, deleteComment }) {
   // 댓글 수정 확인
   const checkUpdateComment = () => {
     if (window.confirm('수정하시겠습니까?')) {
-      updateComment();
+      handleUpdateComment();
     }
   };
 
   // 댓글 수정
-  const updateComment = async () => {
+  const handleUpdateComment = async () => {
     const mentionRegex = /@[^\s@#]+/g;
     const mentionNickname = content.match(mentionRegex) || [];
 
     const payload = { content, mentionNickname };
-    console.log(payload);
-    const { data } = await http.put(`/feed/${feedId}/comment/${comment.commentId}`, payload);
-    if (data.result === 'SUCCESS') {
-      Toastify({
-        text: message.UpdateCommentSuccess,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
-    } else {
-      Toastify({
-        text: message.UpdateCommentFail,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.fail,
-      }).showToast();
-    }
+    const requestData = { feedId: Number(feedId), commentId: Number(comment.commentId), payload };
+    const data = await dispatch(updateComment(requestData));
     setIsUpdated((prev) => !prev);
   };
 
@@ -77,31 +59,19 @@ export default function FeedCommentItem({ comment, feedId, deleteComment }) {
 
   // 댓글 삭제
   const handleDeleteComment = async () => {
-    const { data } = await http.delete(`/feed/${feedId}/comment/${comment.commentId}`);
-    if (data.result === 'SUCCESS') {
-      deleteComment(comment.commentId);
-      Toastify({
-        text: message.DeleteCommentSuccess,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
-    } else {
-      Toastify({
-        text: message.DeleteCommentFail,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.fail,
-      }).showToast();
+    const requestData = { feedId: Number(feedId), commentId: Number(comment.commentId) };
+    const data = await dispatch(deleteComment(requestData));
+    if (data.payload.result === 'SUCCESS') {
+      deleteCommentList(comment.commentId);
     }
   };
 
   return (
     <div key={comment.commentId} style={{ display: 'flex', marginBlock: '16px' }}>
       <div>
-        <img src={comment.user.profileImagePath} alt='프로필사진' style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+        <Link href={`/user/feed/${comment.user.nickname}`}>
+          <img src={comment.user.profileImagePath} alt='프로필사진' style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+        </Link>
       </div>
       {isUpdated ? (
         <div>
@@ -109,7 +79,9 @@ export default function FeedCommentItem({ comment, feedId, deleteComment }) {
         </div>
       ) : (
         <div>
-          <div>{comment.user.nickname}</div>
+          <div>
+            <Link href={`/user/feed/${comment.user.nickname}`}>{comment.user.nickname}</Link>
+          </div>
           <div>
             {content.split(/(@[^\s@#]+)/g).map((v: string, index: number) => {
               if (v.match(/@[^\s@#]+/g)) {
@@ -128,8 +100,9 @@ export default function FeedCommentItem({ comment, feedId, deleteComment }) {
               );
             })}
           </div>
-          <div>{comment.createdAt.slice(0, 10)}</div>
-          <div>{comment.createdAt.slice(11, 16)}</div>
+          <div>
+            {comment.createdAt.slice(0, 10)} {comment.createdAt.slice(11, 16)}
+          </div>
         </div>
       )}
       {isUpdated ? (
@@ -137,13 +110,13 @@ export default function FeedCommentItem({ comment, feedId, deleteComment }) {
           <button style={{ paddingInline: '4px' }} onClick={checkUpdateComment}>
             수정
           </button>
-          <button style={{ paddingInline: '4px' }} onClick={handleUpdateComment}>
+          <button style={{ paddingInline: '4px' }} onClick={handleUpdateCommentToggle}>
             취소
           </button>
         </div>
       ) : (
         <div>
-          <button style={{ paddingInline: '4px' }} onClick={handleUpdateComment}>
+          <button style={{ paddingInline: '4px' }} onClick={handleUpdateCommentToggle}>
             수정
           </button>
           <button style={{ paddingInline: '4px' }} onClick={checkDeleteComment}>
