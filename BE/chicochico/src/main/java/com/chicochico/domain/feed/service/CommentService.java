@@ -57,7 +57,7 @@ public class CommentService {
 		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 사용자
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ACCESS_TOKEN_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		//멘션 사용자 찾기
 		if (commentRequestDto.getMentionNickname() != null && !commentRequestDto.getMentionNickname().equals("")) {
 			String nickname = commentRequestDto.getMentionNickname();
@@ -82,7 +82,7 @@ public class CommentService {
 		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 사용자
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ACCESS_TOKEN_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		if (user.equals(comment.getUser())) {
 
@@ -130,7 +130,7 @@ public class CommentService {
 		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 사용자
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ACCESS_TOKEN_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		if (user.equals(comment.getUser())) {
 			comment.setIsDeleted();
 			commentRepository.save(comment);
