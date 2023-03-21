@@ -1,9 +1,14 @@
 package com.chicochico.domain.schedule.dto.response;
 
 
+import com.chicochico.common.code.IsCompletedType;
+import com.chicochico.common.code.ScheduleType;
+import com.chicochico.domain.plant.dto.response.PlantOnScheduleResponseDto;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
+import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +17,38 @@ import java.util.List;
  * 스케줄 조회 응답
  */
 @Data
+@Builder
 public class ScheduleResponseDto {
 
+	private Long scheduleId;
+	private LocalDate scheduleDate;
+	private ScheduleType scheduleCode;
+	private IsCompletedType isCompleted;
+	private PlantOnScheduleResponseDto plant;
+
+
 	public static ScheduleResponseDto fromEntityMonth(ScheduleEntity scheduleEntity) {
-		return new ScheduleResponseDto();
+		PlantOnScheduleResponseDto plant = PlantOnScheduleResponseDto.fromEntity(scheduleEntity.getUserPlant());
+
+		ScheduleResponseDto scheduleResponseDto = ScheduleResponseDto.builder()
+			.scheduleId(scheduleEntity.getId())
+			.scheduleDate(scheduleEntity.getDate())
+			.scheduleCode(scheduleEntity.getScheduleCode())
+			.plant(plant).build();
+		return scheduleResponseDto;
 	}
 
 
 	public static ScheduleResponseDto fromEntityWeek(ScheduleEntity scheduleEntity) {
-		return new ScheduleResponseDto();
+		PlantOnScheduleResponseDto plant = PlantOnScheduleResponseDto.fromEntity(scheduleEntity.getUserPlant());
+
+		ScheduleResponseDto scheduleResponseDto = ScheduleResponseDto.builder()
+			.scheduleId(scheduleEntity.getId())
+			.scheduleDate(scheduleEntity.getDate())
+			.scheduleCode(scheduleEntity.getScheduleCode())
+			.isCompleted(scheduleEntity.getIsCompleted())
+			.plant(plant).build();
+		return scheduleResponseDto;
 	}
 
 
