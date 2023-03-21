@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/layout/AppLayout';
-import { getPlantList } from '@/core/plant/plantAPI';
+import { getPlantList, getPlantListByIndex, getPlant } from '@/core/plant/plantAPI';
+import { SearchPlantType, SearchPlantDetailType } from '@/core/plant/plantType';
 import Pagination from 'react-js-pagination';
 import styles from './plantDocs.module.scss';
 
 export default function plantDocs() {
   const [inputData, setInputData] = useState<string>(''); // 인풋데이터
 
+  // 리스트 조회
   const [page, setPage] = useState<number>(1);
   const [totalItemCount, setTotalItemCount] = useState<number>(0);
   const [size, setSize] = useState<number>(5);
-  const [plantDocsList, setPlantDocsList] = useState<Array<any>>([]);
+  const [plantDocsList, setPlantDocsList] = useState<Array<SearchPlantType>>([]);
+
+  // 디테일 조회
+  const [plantDocsDetailList, setPlantDocsDetailList] = useState<Array<SearchPlantDetailType>>([]);
+  const [isDetailSearched, setIsDetailSearched] = useState<boolean>(false);
 
   // 웹 훅
   useEffect(() => {
@@ -28,8 +34,8 @@ export default function plantDocs() {
 
     try {
       const { data } = await getPlantList(params);
-      setPlantDocsList(data.plantList);
-      setTotalItemCount(data.totalItemCount);
+      setPlantDocsList(data.content);
+      setTotalItemCount(data.totalElements);
     } catch (error) {
       console.log(error);
     }
@@ -50,8 +56,15 @@ export default function plantDocs() {
   };
 
   // 식물도감 클릭
-  const getDetail = (page) => {
-    setPage(page);
+  const getDetail = async (plantId) => {
+    setIsDetailSearched(true);
+    try {
+      const { data } = await getPlant(plantId);
+      // console.log(data);
+      setPlantDocsDetailList(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
   // ----------------------------------------------------------------
 
@@ -73,7 +86,7 @@ export default function plantDocs() {
               <>
                 {plantDocsList.map((plantDocs) => (
                   <div key={plantDocs.plantId} className={`bg-green-300 p-5 my-2`}>
-                    <div onClick={getDetail}>{plantDocs.plantName}</div>
+                    <div onClick={() => getDetail(plantDocs.plantId)}>{plantDocs.plantName}</div>
                   </div>
                 ))}
                 <div className={`${styles.pagination}`}>
@@ -92,10 +105,23 @@ export default function plantDocs() {
           </div>
           <div className={`overflow-auto`} style={{ height: '700px' }}>
             <h1>상세조회</h1>
-            <div className={`bg-green-300`}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores accusamus cumque modi sint consequatur ratione, unde a deleniti!
-              Blanditiis hic unde, illo doloremque exercitationem voluptates ullam esse ipsam? Obcaecati, neque.
-            </div>
+
+            {!isDetailSearched ? (
+              <div className={`bg-green-300 p-5 my-2`}>검색전입니다 요기는 인기식물이 들어갈 자리에오</div>
+            ) : plantDocsList.length === 0 ? (
+              <div className={`p-5`}>조회된게 없어요</div>
+            ) : (
+              <>
+                {plantDocsDetailList.map((plantDocsDetail) => (
+                  <div key={plantDocsDetail.plantName} className={`bg-green-300 p-5 my-2`}>
+                    <div>
+                      <img className='mb-3' src={plantDocsDetail.imagePath} alt='image' width='300' height='300'></img>
+                    </div>
+                    <div>{plantDocsDetail.plantName}</div>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </div>
       </>

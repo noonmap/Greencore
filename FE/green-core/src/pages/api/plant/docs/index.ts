@@ -9,8 +9,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
       res.status(200).json({
         result: 'SUCCESS',
         data: {
-          totalItemCount: 50,
-          plantList: [
+          totalElements: 50,
+          content: [
             {
               plantId: 1,
               plantName: '파',
@@ -38,8 +38,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
       res.status(200).json({
         result: 'SUCCESS',
         data: {
-          totalItemCount: 50,
-          plantList: [
+          totalElements: 50,
+          content: [
             {
               plantId: 6,
               plantName: '팽이버섯',
