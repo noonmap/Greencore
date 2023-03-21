@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
 
+	List<FollowEntity> findAllByFollowerAndFollowingNicknameStartingWith(UserEntity user, String str);
 	Optional<FollowEntity> findByFollowerAndFollowing(UserEntity follower, UserEntity following);
 
 	boolean existsByFollowerIdAndFollowingId(Long follower_id, Long following_id);
