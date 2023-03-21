@@ -57,8 +57,8 @@ public class FollowServiceTest {
 		@DisplayName("로그인한 유저가 존재하지 않는 경우")
 		public void createFollowingTest_WhenUserNotFound_ThrowsCustomException() {
 			// given
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(new UserEntity()));
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(new UserEntity()));
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -75,10 +75,10 @@ public class FollowServiceTest {
 		@DisplayName("팔로우를 신청받은 유저가 존재하지 않는 경우 (탈퇴 포함)")
 		public void createFollowingTest_WhenFollowerNotFound_ThrowsCustomException2() {
 			// given
-			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
+			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
 
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(
 				Optional.empty());
 
@@ -96,13 +96,13 @@ public class FollowServiceTest {
 		@DisplayName("이미 팔로우 하고 있는 경우 (팔로잉 상태)")
 		public void createFollowingTest_이미팔로우하고있는경우_ThrowsCustomException() {
 			// given
-			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
-			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).nickname(NICKNAME).build();
+			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
+			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).nickname(NICKNAME).build();
 
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(follower));
+				IsDeletedType.N)).thenReturn(Optional.of(following));
 			when(followRepository.existsByFollowerIdAndFollowingId(FOLLOWER_ID,
 				FOLLOWING_ID)).thenReturn(true);
 
@@ -124,12 +124,10 @@ public class FollowServiceTest {
 			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
 			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
 
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
-			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(follower));
-			when(followRepository.existsByFollowerIdAndFollowingId(follower.getId(),
-				following.getId())).thenReturn(false);
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(following));
+			when(followRepository.existsByFollowerIdAndFollowingId(follower.getId(), following.getId())).thenReturn(false);
 
 			FollowEntity follow = FollowEntity.builder().follower(follower).following(following)
 				.build();
@@ -288,8 +286,8 @@ public class FollowServiceTest {
 		@DisplayName("로그인한 유저가 존재하지 않는 경우")
 		public void deleteFollowingTest_WhenUserNotFound_ThrowsCustomException() {
 			// given
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(new UserEntity()));
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(new UserEntity()));
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -305,10 +303,10 @@ public class FollowServiceTest {
 		@DisplayName("내가 팔로잉한 유저가 존재하지 않는 경우 (탈퇴 포함)")
 		public void deleteFollowingTest_WhenFollowerNotFound_ThrowsCustomException2() {
 			// given
-			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
+			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
 
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(
 				Optional.empty());
 
@@ -329,12 +327,10 @@ public class FollowServiceTest {
 			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
 			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).nickname(NICKNAME).build();
 
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
-			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(follower));
-			when(followRepository.findByFollowerAndFollowing(follower,
-				following)).thenReturn(Optional.empty());
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(following));
+			when(followRepository.findByFollowerAndFollowing(follower, following)).thenReturn(Optional.empty());
 
 			// then
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -355,12 +351,10 @@ public class FollowServiceTest {
 			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
 			FollowEntity follow = FollowEntity.builder().follower(follower).following(following)
 				.build();
-			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
-			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(follower));
-			when(followRepository.findByFollowerAndFollowing(follower,
-				following)).thenReturn(Optional.of(follow));
+			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
+			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(following));
+			when(followRepository.findByFollowerAndFollowing(follower, following)).thenReturn(Optional.of(follow));
 
 			// when
 			assertThatCode(() -> {
@@ -368,7 +362,7 @@ public class FollowServiceTest {
 			}).doesNotThrowAnyException();
 
 			// then
-			Mockito.verify(followRepository, times(1)).delete(refEq(follow));
+			Mockito.verify(followRepository, times(1)).delete(follow);
 		}
 
 	}
@@ -381,15 +375,14 @@ public class FollowServiceTest {
 		@DisplayName("로그인한 유저가 존재하지 않는 경우")
 		public void deleteFollowerTest_WhenUserNotFound_ThrowsCustomException() {
 			// given
-			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
-			when(userRepository.findById(FOLLOWER_ID)).thenReturn(
+			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
+			when(userRepository.findById(FOLLOWING_ID)).thenReturn(
 				Optional.of(new UserEntity()));
 
 			// when
-			CustomException customException = Assertions.assertThrows(CustomException.class,
-				() -> {
-					followService.deleteFollower(NICKNAME);
-				});
+			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+				followService.deleteFollower(NICKNAME);
+			});
 
 			// then
 			Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
@@ -400,10 +393,10 @@ public class FollowServiceTest {
 		@DisplayName("내를 팔로잉한 유저가 존재하지 않는 경우 (탈퇴 포함)")
 		public void deleteFollowerTest_WhenFollowerNotFound_ThrowsCustomException2() {
 			// given
-			UserEntity following = UserEntity.builder().id(FOLLOWER_ID).build();
+			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
 
-			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
-			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(following));
+			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
+			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
 			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(
 				Optional.empty());
 
@@ -425,18 +418,15 @@ public class FollowServiceTest {
 			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).nickname(NICKNAME).build();
 			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
 
-			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
-			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
-			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(following));
-			when(followRepository.findByFollowerAndFollowing(follower,
-				following)).thenReturn(Optional.empty());
+			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
+			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
+			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(follower));
+			when(followRepository.findByFollowerAndFollowing(follower, following)).thenReturn(Optional.empty());
 
 			// then
-			CustomException customException = Assertions.assertThrows(CustomException.class,
-				() -> {
-					followService.deleteFollower(NICKNAME);
-				});
+			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+				followService.deleteFollower(NICKNAME);
+			});
 
 			// then
 			Assertions.assertEquals(customException.getErrorCode(), ErrorCode.ENTITY_NOT_FOUND);
@@ -452,10 +442,9 @@ public class FollowServiceTest {
 			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
 			FollowEntity follow = FollowEntity.builder().follower(follower).following(following)
 				.build();
-			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
-			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
-			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(following));
+			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
+			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
+			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(follower));
 			when(followRepository.findByFollowerAndFollowing(follower,
 				following)).thenReturn(Optional.of(follow));
 
@@ -465,7 +454,7 @@ public class FollowServiceTest {
 			}).doesNotThrowAnyException();
 
 			// then
-			Mockito.verify(followRepository, times(1)).delete(refEq(follow));
+			Mockito.verify(followRepository, times(1)).delete(follow);
 		}
 
 	}
