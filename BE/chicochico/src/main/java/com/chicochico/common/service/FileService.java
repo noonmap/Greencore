@@ -27,10 +27,9 @@ public class FileService {
 		// 소문자로 바꿔서 테스트
 		String lowerExtension = extension.toLowerCase();
 		for (String test : imageExtensions) {
-			if (lowerExtension.equals(test)) continue;
-			return false;
+			if (lowerExtension.equals(test)) return true;
 		}
-		return true;
+		return false;
 	}
 
 
@@ -48,9 +47,13 @@ public class FileService {
 		if (!fileDirFile.exists()) {
 			fileDirFile.mkdir();
 		}
+		File fileSubDirFile = new File(fileDir + File.separator + subFileDir);
+		if (!fileSubDirFile.exists()) {
+			fileSubDirFile.mkdir();
+		}
 
 		// 파일이 비어있는지 확인
-		if (file.isEmpty()) throw new CustomException(ErrorCode.FILE_IS_EMPTY);
+		if (file == null || file.isEmpty()) throw new CustomException(ErrorCode.FILE_IS_EMPTY);
 
 		// 원래 파일 이름 추출
 		String origName = file.getOriginalFilename();
