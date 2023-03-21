@@ -49,8 +49,8 @@ public class EmailService {
 		// 인증 이메일 보내기
 		String code = sendSimpleMessage(emailRequestDto, MESSAGE_EMAIL);
 
-		// 유효시간 1분으로 Redis에 저장 (key, value, duration)
-		redisService.setDataExpire(code, emailRequestDto.getEmail(), 60 * 1L);
+		// 유효시간 30분으로 Redis에 저장 (key, value, duration)
+		redisService.setDataExpire(code, emailRequestDto.getEmail(), 60 * 30L);
 
 	}
 
