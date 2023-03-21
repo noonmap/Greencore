@@ -7,7 +7,6 @@ import com.chicochico.domain.feed.dto.response.FeedResponseDto;
 import com.chicochico.domain.feed.dto.response.FeedSimpleResponseDto;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.service.FeedService;
-import com.chicochico.domain.user.entity.FollowEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.domain.user.service.FollowService;
@@ -56,10 +55,10 @@ public class FeedController {
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedListByFollowUser(Pageable pageable) {
 		// TODO : followService에서 그냥 List<UserEntity>를 반환하도록 변경
 		String nickname = authService.getUserNickname();
-		List<FollowEntity> followingList = followService.getFollowingList(nickname);
+		List<UserEntity> followingList = followService.getFollowingList(nickname);
 		List<UserEntity> followingUser = followingList.stream()
 			.map(fe -> userRepository.findById(
-				fe.getFollowing().getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
+				fe.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
 			.collect(Collectors.toList());
 
 		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingUser, pageable);
