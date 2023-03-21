@@ -4,6 +4,7 @@ package com.chicochico.domain.feed.dto.request;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -22,9 +23,10 @@ public class DiarySetRequestDto {
 
 	private Long userPlantId;
 	private MultipartFile image;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate startDate;
 	private String title;
-	
+
 
 	public DiarySetEntity toEntity() {
 		return (DiarySetEntity) new Object();
