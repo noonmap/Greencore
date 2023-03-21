@@ -4,6 +4,7 @@ package com.chicochico.domain.user.service;
 import com.chicochico.common.service.RedisService;
 import com.chicochico.domain.user.dto.request.AuthCodeRequestDto;
 import com.chicochico.domain.user.dto.request.EmailRequestDto;
+import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -26,6 +28,7 @@ import java.util.Random;
 public class EmailService {
 
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 	private final JavaMailSender emailSender;// Bean 등록해둔 MailConfig 를 emailsender 라는 이름으로 autowired
 
 	private final RedisService redisService;
@@ -41,11 +44,14 @@ public class EmailService {
 	 *
 	 * @param emailRequestDto 이메일(email)
 	 */
-	public String sendVerificationEmail(EmailRequestDto emailRequestDto) {
-		String code = null;
+	public void sendVerificationEmail(EmailRequestDto emailRequestDto) {
 		log.info("[sendVerificationEmail] {}", emailRequestDto.getEmail());
-		code = sendSimpleMessage(emailRequestDto, MESSAGE_EMAIL);
-		return code;
+		// 인증 이메일 보내기
+		String code = sendSimpleMessage(emailRequestDto, MESSAGE_EMAIL);
+
+		// 유효시간 1분으로 Redis에 저장 (key, value, duration)
+		redisService.setDataExpire(code, emailRequestDto.getEmail(), 60 * 1L);
+
 	}
 
 
@@ -71,6 +77,18 @@ public class EmailService {
 	 * @param emailRequestDto 이메일(email)
 	 */
 	public void sendTemporaryPassword(EmailRequestDto emailRequestDto) {
+
+		// email이 존재하는 지 확인
+		UserEntity user = userRepository.findByEmail(emailRequestDto.getEmail()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		// 임시 비밀번호를 포함한 메일 발송
+		String temporaryPassword = sendSimpleMessage(emailRequestDto, MESSAGE_PASSWORD);
+
+		// 임시 비밀번호로 변경
+		user.setPassword(passwordEncoder.encode(temporaryPassword));
+
+		// 저장
+		userRepository.save(user);
 	}
 
 
@@ -157,9 +175,6 @@ public class EmailService {
 		MimeMessage message = null; // 메일 발송
 		try {
 			message = createMessage(emailRequestDto.getEmail(), type);
-			if (type.equals(MESSAGE_EMAIL)) redisService.setDataExpire(MESSAGE_EMAIL + " " + ePw, emailRequestDto.getEmail(), 60 * 1L); // 유효시간 1분으로 Redis에 저장 (key, value, duration)
-			//			else if (type.equals(MESSAGE_PASSWORD))
-			//				redisService.setDataExpire(MESSAGE_PASSWORD + " " + ePw, emailRequestDto.getEmail(), 60 * 60 * 1L); // 유효시간 1시간으로 Redis에 저장 (key, value, duration)
 			emailSender.send(message);
 		} catch (MessagingException | UnsupportedEncodingException e) {
 			throw new CustomException(ErrorCode.EMAIL_SEND_FAIL);
