@@ -6,7 +6,7 @@ import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 
-import { SearchType } from '@/core/common/commonType';
+import { PageType, SearchType } from '@/core/common/commonType';
 import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType } from './userType';
 
 // 회원가입
@@ -227,7 +227,6 @@ export const logOut = createAsyncThunk('logOut', async (accessToken: string) => 
   try {
     const headers = {
       authorization: accessToken,
-      'x-refresh-token': cookies.getCookieToken(),
     };
 
     const { data } = await http.delete('/logout', { headers });
@@ -387,8 +386,8 @@ export const updateProfileImage = createAsyncThunk('updateProfileImage', async (
 });
 
 // 키우는 식물 리스트 조회
-export const getUserPlantList = async (nickname: string | string[]) => {
-  const { data } = await http.get(`/user/plant/${nickname}`);
+export const getUserPlantList = async (nickname: string | string[], params: PageType) => {
+  const { data } = await http.get(`/user/plant/${nickname}`, { params });
   return data;
 };
 
