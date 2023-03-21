@@ -35,7 +35,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
           {
             commentId: 3 * page + 1,
             user: {
-              nickname: ' 주효정',
+              nickname: ' 주여정',
               profileImagePath: 'http://placekitten.com/200/300',
               introduction: '1%의 사나이',
               followingCount: 200,
