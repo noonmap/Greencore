@@ -25,7 +25,7 @@ public class CommentMentionResponseDto {
 	}
 
 
-	public List<CommentMentionResponseDto> fromEntityList(List<FollowEntity> followList) {
+	public static List<CommentMentionResponseDto> fromEntityList(List<FollowEntity> followList) {
 		List<CommentMentionResponseDto> result;
 		result = followList.stream().map(CommentMentionResponseDto::fromEntity).collect(Collectors.toList());
 		return result;
