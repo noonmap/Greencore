@@ -32,6 +32,11 @@ public class UserService {
 	private final AuthService authService;
 
 
+	public UserEntity getUserByNickname(String nickname) {
+		return userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	}
+
+
 	/**
 	 * 회원을 생성합니다 (회원가입)
 	 *

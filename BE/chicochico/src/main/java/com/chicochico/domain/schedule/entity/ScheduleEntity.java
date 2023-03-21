@@ -1,15 +1,13 @@
 package com.chicochico.domain.schedule.entity;
 
 
+import com.chicochico.common.code.IsCompletedType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.ScheduleType;
 import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,6 +15,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -43,9 +42,13 @@ public class ScheduleEntity extends CommonEntity {
 	private LocalDate date;
 
 	private String content;
-
-	@Column(nullable = false)
+	
 	@Enumerated(EnumType.STRING)
-	private IsDeletedType isCompleted;
+	@Column(nullable = false)
+	private IsCompletedType isCompleted;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private IsDeletedType isDeleted;
 
 }

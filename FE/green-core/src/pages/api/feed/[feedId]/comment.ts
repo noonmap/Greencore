@@ -28,14 +28,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
               followerCount: 10,
               isFollowed: false,
             },
-            content: `${3 * page}번째 댓글 @문동은 @주효정`,
+            content: `${3 * page}번째 댓글 @문동은 @주여정`,
             mentionNickname: '',
             createdAt: '2023-03-01T07:00:00',
           },
           {
             commentId: 3 * page + 1,
             user: {
-              nickname: ' 주효정',
+              nickname: ' 주여정',
               profileImagePath: 'http://placekitten.com/200/300',
               introduction: '1%의 사나이',
               followingCount: 200,

@@ -34,6 +34,7 @@ export default function AppHeader() {
       <div className='flex space-x-4'>
         <h2 className='font-bold'>형규</h2>
         <Link href='/diary'>일지</Link>
+        <Link href='/post'>포스트</Link>
       </div>
     </div>
   );

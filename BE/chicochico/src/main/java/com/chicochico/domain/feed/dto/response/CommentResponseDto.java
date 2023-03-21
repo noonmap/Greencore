@@ -42,9 +42,8 @@ public class CommentResponseDto {
 
 	public static Page<CommentResponseDto> fromEnityPage(Page<CommentEntity> commentEntityPage,
 		Pageable pageable) {
-		return new PageImpl<>(
-			commentEntityPage.stream().map(CommentResponseDto::fromEntity).collect(
-				Collectors.toList()));
+		List<CommentResponseDto> result = commentEntityPage.stream().map(CommentResponseDto::fromEntity).collect(Collectors.toList());
+		return new PageImpl<>(result, pageable, result.size());
 	}
 
 }
