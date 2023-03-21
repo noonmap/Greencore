@@ -7,6 +7,8 @@ import com.chicochico.domain.feed.dto.response.DiarySetResponseDto;
 import com.chicochico.domain.feed.dto.response.DiarySetSimpleResponseDto;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import com.chicochico.domain.feed.service.DiarySetService;
+import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +28,10 @@ public class DiarySetController {
 
 	private final DiarySetService diarySetService;
 
+	private final UserService userService;
 
-	@GetMapping("/{nickname}") // notion의 API docs를 참고해서 url 매핑을 해준다.
+
+	@GetMapping("/{nickname}/list") // notion의 API docs를 참고해서 url 매핑을 해준다.
 	@ApiOperation(value = "관찰 일지 목록을 조회합니다.", notes = "") // Swagger 문서에 들어갈 API 설명을 적음. (notes는 부가 상세 설명임. optional함)
 	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetList(@PathVariable("nickname") String nickname, Pageable pageable) { // notion의 API docs를 참고해서 response, request를 적음.
 		/*
@@ -39,14 +43,15 @@ public class DiarySetController {
 		 * 3. 그럼 service 클래스에 메소드 구현체가 자동으로 생성된다!
 		 * */
 		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname, pageable);
-		// entity page -> dto page 변환
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		UserEntity user = userService.getUserByNickname(nickname);
+		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, user, diarySetService::isBookmarked);
+		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
 	}
 
 
 	@PostMapping("/")
 	@ApiOperation(value = "관찰 일지를 생성합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> createDiarySet(@RequestPart("diarySet") DiarySetRequestDto diarySetRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> createDiarySet(DiarySetRequestDto diarySetRequestDto) {
 		diarySetService.createDiarySet(diarySetRequestDto);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
@@ -55,7 +60,7 @@ public class DiarySetController {
 
 	@PutMapping("/{diarySetId}")
 	@ApiOperation(value = "관찰 일지를 수정합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> modifyDiarySet(@PathVariable("diarySetId") Long diarySetId, @RequestPart("diarySet") DiarySetRequestDto diarySetRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> modifyDiarySet(@PathVariable("diarySetId") Long diarySetId, DiarySetRequestDto diarySetRequestDto) {
 		diarySetService.modifyDiarySet(diarySetId, diarySetRequestDto);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
@@ -75,8 +80,9 @@ public class DiarySetController {
 	@ApiOperation(value = "유저가 북마크한 관찰 일지 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("nickname") String nickname, Pageable pageable) {
 		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(nickname, pageable);
-		// entity page -> dto page 변환
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		UserEntity user = userService.getUserByNickname(nickname);
+		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, user, diarySetService::isBookmarked);
+		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
 	}
 
 

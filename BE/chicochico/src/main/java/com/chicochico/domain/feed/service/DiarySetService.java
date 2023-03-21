@@ -247,11 +247,19 @@ public class DiarySetService {
 
 			// 유저의 북마크 리스트에서 삭제
 			user.getBookmarkList().remove(bookmarkEntity.get());
-			
+
 			// 관찰 일지에서 북마크 카운드 감소
 			diarySet.decreaseBookmarkCount();
 			diarySetRepository.save(diarySet);
 		}
+	}
+
+
+	public boolean isBookmarked(UserEntity userId, DiarySetEntity diarySetId) {
+		// 북마크 있는지 확인
+		Optional<BookmarkEntity> bookmark = bookmarkRepository.findByDiarySetAndUser(diarySetId, userId);
+		if (bookmark.isPresent()) return true;
+		return false;
 	}
 
 }
