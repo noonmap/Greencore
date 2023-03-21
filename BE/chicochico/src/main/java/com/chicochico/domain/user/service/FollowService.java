@@ -42,7 +42,7 @@ public class FollowService {
 	public void createFollowing(String nickname) {
 		Long userId = authService.getUserId(); // 로그인 유저 & 팔로우를 신청한 유저
 		UserEntity follower = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeletedEquals(nickname, IsDeletedType.N); // 팔로우 신청 받은 유저
+		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N); // 팔로우 신청 받은 유저
 
 		if (following.isEmpty()) {
 			throw new CustomException(ErrorCode.USER_NOT_FOUND); // 팔로우를 신청 받은 유저가 존재 하지 않음 (OR 탈퇴한 유저임)
@@ -74,7 +74,7 @@ public class FollowService {
 	 */
 	public List<UserEntity> getFollowingList(String nickname) {
 
-		Optional<UserEntity> follower = userRepository.findByNicknameAndIsDeletedEquals(nickname, IsDeletedType.N); // 피드 주인
+		Optional<UserEntity> follower = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N); // 피드 주인
 
 		if (follower.isEmpty()) { // 피드 주인이 존재 하지 않음
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -99,7 +99,7 @@ public class FollowService {
 	public void deleteFollowing(String nickname) {
 		Long userId = authService.getUserId(); // 로그인 유저 & 팔로우를 신청한 유저
 		UserEntity follower = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeletedEquals(nickname, IsDeletedType.N); // 내가 팔로잉한 유저
+		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N); // 내가 팔로잉한 유저
 
 		if (following.isEmpty()) { // 내가 팔로잉한 유저가 존재하지 않음
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -131,7 +131,7 @@ public class FollowService {
 	 * @return 피드 주인의 팔로워 목록
 	 */
 	public List<UserEntity> getFollowerList(String nickname) {
-		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeletedEquals(nickname, IsDeletedType.N); // 피드 주인
+		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N); // 피드 주인
 
 		if (following.isEmpty()) { // 피드 주인이 존재 하지 않음
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -156,7 +156,7 @@ public class FollowService {
 		Long userId = authService.getUserId(); // 로그인 유저 & 팔로우를 신청받은 유저
 		UserEntity following = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		Optional<UserEntity> follower = userRepository.findByNicknameAndIsDeletedEquals(nickname,
+		Optional<UserEntity> follower = userRepository.findByNicknameAndIsDeleted(nickname,
 			IsDeletedType.N); // 나를 팔로잉한 유저
 
 		if (follower.isEmpty()) { // 나를 팔로잉한 유저가 존재하지 않음
