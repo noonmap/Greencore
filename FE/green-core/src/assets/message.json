@@ -59,5 +59,14 @@
   "UpdateCommentFail": "댓글 수정에 실패하셨습니다 ❌",
 
   "DeleteCommentSuccess": "댓글이 삭제되었습니다 ✅",
-  "DeleteCommentFail": "댓글 삭제에 실패하셨습니다 ❌"
+  "DeleteCommentFail": "댓글 삭제에 실패하셨습니다 ❌",
+
+  "CreatePostSuccess": "게시글이 생성되었습니다 ✅",
+  "CreatePostFail": "게시글 생성에 실패하셨습니다 ❌",
+
+  "UpdatePostSuccess": "게시글이 수정되었습니다 ✅",
+  "UpdatePostFail": "게시글 수정에 실패하셨습니다 ❌",
+
+  "DeletePostSuccess": "게시글이 삭제되었습니다 ✅",
+  "DeletePostFail": "게시글 삭제에 실패하셨습니다 ❌"
 }

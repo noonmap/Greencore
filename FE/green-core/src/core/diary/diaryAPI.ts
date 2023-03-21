@@ -29,7 +29,7 @@ export const createDiary = createAsyncThunk('createDiary', async (requestData: C
         stopOnFocus: true,
         style: toastifyCSS.success,
       }).showToast();
-      router.push(`/diary`);
+      router.push(`/diary/${data.data.diaryId}`);
     } else {
       Toastify({
         text: message.CreateDiaryFail,

@@ -39,7 +39,7 @@ export default function DiaryDetail() {
 
   // 뒤로가기
   const handleGoBack = () => {
-    router.back();
+    router.push(`/diary`);
   };
 
   return (
@@ -75,7 +75,7 @@ export default function DiaryDetail() {
             <button>수정</button>
           </Link>
           <button onClick={checkDeleteDiary}>삭제</button>
-          <button onClick={handleGoBack}>뒤로</button>
+          <button onClick={handleGoBack}>목록</button>
           <div>{!Number.isNaN(diaryId) && <FeedCommentList feedId={diaryId} />}</div>
         </div>
       )}
