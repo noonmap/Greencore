@@ -144,6 +144,8 @@ export default function follow() {
             ))
           : null}
       </div>
+
+      <div>더보기?</div>
     </FollowLayout>
   );
 }
