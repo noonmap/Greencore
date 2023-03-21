@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 // firebase
 import firebaseConfig from '~/config/firebaseConfig.json';
 import { initializeApp } from 'firebase/app';

@@ -34,15 +34,15 @@ export default function diary() {
           })
         ) : (
           <div>
-            <div>제목 : {diarySet.title}</div>
+            <div>제목 : {diarySet?.title}</div>
             <div style={{ display: 'flex' }}>
-              <img src={diarySet.user.profileImagePath} style={{ borderRadius: '100%', width: '50px', height: '50px' }} />
-              <div>식집사 : {diarySet.user.nickname}</div>
+              <img src={diarySet?.user?.profileImagePath} style={{ borderRadius: '100%', width: '50px', height: '50px' }} />
+              <div>식집사 : {diarySet?.user?.nickname}</div>
             </div>
-            <div>관찰 시작 : {diarySet.startDate}</div>
+            <div>관찰 시작 : {diarySet?.startDate}</div>
             <div>
               {diaryList.map((diary) => (
-                <DiaryListItem key={diary.diaryId} diary={diary} />
+                <DiaryListItem key={diary?.diaryId} diary={diary} />
               ))}
             </div>
           </div>

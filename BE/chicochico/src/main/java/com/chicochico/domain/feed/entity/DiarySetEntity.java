@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "diary_set") // snake_case로 설정
 public class DiarySetEntity extends CommonEntity {
 	// createdAt, updatedAt은 CommonEntity에 들어있으므로 포함하지 않아도 됨.
@@ -60,6 +61,7 @@ public class DiarySetEntity extends CommonEntity {
 	private IsDeletedType isDeleted;
 
 	// OneToMany는 관찰일기처럼 관찰일기에서 일기 목록을 조회하는게 효율적인 경우 추가한다. (optional)
+	@Builder.Default
 	@OneToMany(mappedBy = "diarySet") // 연관 관계 엔티티의 매핑되는 필드 이름을 적어줌
 	private List<DiaryEntity> diaryList = new ArrayList<>();
 
