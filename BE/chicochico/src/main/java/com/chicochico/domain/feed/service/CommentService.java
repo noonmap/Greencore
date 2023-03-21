@@ -8,7 +8,9 @@ import com.chicochico.domain.feed.entity.CommentEntity;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.repository.CommentRepository;
 import com.chicochico.domain.feed.repository.FeedRepository;
+import com.chicochico.domain.user.entity.FollowEntity;
 import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.domain.user.repository.FollowRepository;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
@@ -18,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class CommentService {
 	private final CommentRepository commentRepository;
 	private final FeedRepository feedRepository;
 	private final UserRepository userRepository;
+	private final FollowRepository followRepository;
 
 	private AuthService authService;
 
@@ -46,6 +51,23 @@ public class CommentService {
 	}
 
 
+	public List<FollowEntity> getMentionUserList(String nickname) {
+		//현재 사용자
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		List<FollowEntity> mention = followRepository.findAllByFollowerAndFollowingNicknameStartingWith(user, nickname);
+
+		return mention;
+	}
+
+
+	public FollowEntity getMentionUser(Long followId) {
+		FollowEntity following = followRepository.findById(followId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		return following;
+	}
+
+
 	/**
 	 * 해당 피드의 댓글을 생성합니다.
 	 *
@@ -60,10 +82,9 @@ public class CommentService {
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		//멘션 사용자 찾기
 		if (commentRequestDto.getMentionNickname() != null && !commentRequestDto.getMentionNickname().equals("")) {
-			String nickname = commentRequestDto.getMentionNickname();
-			Long mentionId = userRepository.findByNickname(nickname).get().getId();
+
 			//댓글 등록
-			commentRepository.save(commentRequestDto.toEntity(feed, user, mentionId));
+			//commentRepository.save(commentRequestDto.toEntity(feed, user, mentionId));
 		}
 		//멘션 없는 경우 댓글 등록
 		//		commentRepository.save(commentRequestDto.toEntity(feed, user));
