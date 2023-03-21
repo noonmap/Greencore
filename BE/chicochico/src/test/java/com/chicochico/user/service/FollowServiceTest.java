@@ -79,8 +79,7 @@ public class FollowServiceTest {
 
 			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
 			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
-			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(
-				Optional.empty());
+			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(Optional.empty());
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -101,10 +100,8 @@ public class FollowServiceTest {
 
 			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
 			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
-			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(following));
-			when(followRepository.existsByFollowerIdAndFollowingId(FOLLOWER_ID,
-				FOLLOWING_ID)).thenReturn(true);
+			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(following));
+			when(followRepository.existsByFollowerIdAndFollowingId(FOLLOWER_ID, FOLLOWING_ID)).thenReturn(true);
 
 			// then
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -129,8 +126,7 @@ public class FollowServiceTest {
 			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(following));
 			when(followRepository.existsByFollowerIdAndFollowingId(follower.getId(), following.getId())).thenReturn(false);
 
-			FollowEntity follow = FollowEntity.builder().follower(follower).following(following)
-				.build();
+			FollowEntity follow = FollowEntity.builder().follower(follower).following(following).build();
 
 			// when
 			assertThatCode(() -> {
@@ -152,8 +148,7 @@ public class FollowServiceTest {
 		public void getFollowingListTest_피드주인없음_ThrowsCustomException() {
 			// given
 			String nickname = "nonexistent_user";
-			when(userRepository.findByNicknameAndIsDeletedEquals(nickname,
-				IsDeletedType.N)).thenReturn(Optional.empty()); // 피드 주인)
+			when(userRepository.findByNicknameAndIsDeletedEquals(nickname, IsDeletedType.N)).thenReturn(Optional.empty()); // 피드 주인)
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -169,10 +164,8 @@ public class FollowServiceTest {
 		@DisplayName("성공 - 피드 주인의 following List가 비어있는 경우")
 		public void getFollowingListTest_성공_followingList비어있음() {
 			// given
-			UserEntity user = UserEntity.builder().id(FOLLOWER_ID).nickname(FEED_OWNER_NICKNAME)
-				.build();
-			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
+			UserEntity user = UserEntity.builder().id(FOLLOWER_ID).nickname(FEED_OWNER_NICKNAME).build();
+			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 
 			List<FollowEntity> followList = new ArrayList<>();
 			when(followRepository.findByFollower(user)).thenReturn(Optional.of(followList));
@@ -189,16 +182,14 @@ public class FollowServiceTest {
 		@DisplayName("성공 - 피드 주인의 following List가 비어있지 않은 경우")
 		public void getFollowingListTest_성공_followingList비어있지않음() {
 			// given
-			UserEntity user = UserEntity.builder().id(FOLLOWER_ID).nickname(FEED_OWNER_NICKNAME)
-				.build();
+			UserEntity user = UserEntity.builder().id(FOLLOWER_ID).nickname(FEED_OWNER_NICKNAME).build();
 			UserEntity following1 = UserEntity.builder().id(2L).nickname("following1").build();
 			UserEntity following2 = UserEntity.builder().id(3L).nickname("following2").build();
 			List<FollowEntity> followList = Arrays.asList(
 				FollowEntity.builder().follower(user).following(following1).build(),
 				FollowEntity.builder().follower(user).following(following2).build()
 			);
-			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
+			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 			when(followRepository.findByFollower(user)).thenReturn(Optional.of(followList));
 
 			// when
@@ -219,8 +210,7 @@ public class FollowServiceTest {
 		public void getFollowerListTest_피드주인없음_ThrowsCustomException() {
 			// given
 			String nickname = "nonexistent_user";
-			when(userRepository.findByNicknameAndIsDeletedEquals(nickname,
-				IsDeletedType.N)).thenReturn(Optional.empty()); // 피드 주인)
+			when(userRepository.findByNicknameAndIsDeletedEquals(nickname, IsDeletedType.N)).thenReturn(Optional.empty()); // 피드 주인)
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -236,10 +226,8 @@ public class FollowServiceTest {
 		@DisplayName("피드 주인의 follower List가 비어있는 경우")
 		public void getFollowerListTest_성공_followerList비어있음() {
 			// given
-			UserEntity user = UserEntity.builder().id(FOLLOWING_ID).nickname(FEED_OWNER_NICKNAME)
-				.build();
-			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
+			UserEntity user = UserEntity.builder().id(FOLLOWING_ID).nickname(FEED_OWNER_NICKNAME).build();
+			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 
 			List<FollowEntity> followList = new ArrayList<>();
 			when(followRepository.findByFollowing(user)).thenReturn(Optional.of(followList));
@@ -256,8 +244,7 @@ public class FollowServiceTest {
 		@DisplayName("성공 - 피드 주인의 follower List가 비어있지 않은 경우")
 		public void getFollowerListTest_성공_followerList비어있지않음() {
 			// given
-			UserEntity user = UserEntity.builder().id(FOLLOWING_ID).nickname(FEED_OWNER_NICKNAME)
-				.build();
+			UserEntity user = UserEntity.builder().id(FOLLOWING_ID).nickname(FEED_OWNER_NICKNAME).build();
 			UserEntity follower1 = UserEntity.builder().id(3L).nickname("follower1").build();
 			UserEntity follower2 = UserEntity.builder().id(4L).nickname("follower2").build();
 			List<FollowEntity> followList = Arrays.asList(
@@ -265,8 +252,7 @@ public class FollowServiceTest {
 				FollowEntity.builder().follower(follower2).following(user).build()
 			);
 			System.out.println(followList);
-			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME,
-				IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
+			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 			when(followRepository.findByFollowing(user)).thenReturn(Optional.of(followList));
 
 			// when
@@ -307,8 +293,7 @@ public class FollowServiceTest {
 
 			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
 			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
-			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(
-				Optional.empty());
+			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(Optional.empty());
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -349,8 +334,7 @@ public class FollowServiceTest {
 			// given
 			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
 			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
-			FollowEntity follow = FollowEntity.builder().follower(follower).following(following)
-				.build();
+			FollowEntity follow = FollowEntity.builder().follower(follower).following(following).build();
 			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
 			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(following));
@@ -376,8 +360,7 @@ public class FollowServiceTest {
 		public void deleteFollowerTest_WhenUserNotFound_ThrowsCustomException() {
 			// given
 			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
-			when(userRepository.findById(FOLLOWING_ID)).thenReturn(
-				Optional.of(new UserEntity()));
+			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(new UserEntity()));
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
@@ -397,14 +380,12 @@ public class FollowServiceTest {
 
 			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
 			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
-			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(
-				Optional.empty());
+			when(userRepository.findByNicknameAndIsDeletedEquals(any(), any())).thenReturn(Optional.empty());
 
 			// when
-			CustomException customException = Assertions.assertThrows(CustomException.class,
-				() -> {
-					followService.deleteFollower(NICKNAME);
-				});
+			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
+				followService.deleteFollower(NICKNAME);
+			});
 
 			// then
 			Assertions.assertEquals(customException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
@@ -440,13 +421,11 @@ public class FollowServiceTest {
 			// given
 			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
 			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
-			FollowEntity follow = FollowEntity.builder().follower(follower).following(following)
-				.build();
+			FollowEntity follow = FollowEntity.builder().follower(follower).following(following).build();
 			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
 			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));
 			when(userRepository.findByNicknameAndIsDeletedEquals(NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(follower));
-			when(followRepository.findByFollowerAndFollowing(follower,
-				following)).thenReturn(Optional.of(follow));
+			when(followRepository.findByFollowerAndFollowing(follower, following)).thenReturn(Optional.of(follow));
 
 			// when
 			assertThatCode(() -> {

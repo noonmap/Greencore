@@ -98,10 +98,8 @@ public class FollowService {
 	@Transactional
 	public void deleteFollowing(String nickname) {
 		Long userId = authService.getUserId(); // 로그인 유저 & 팔로우를 신청한 유저
-		UserEntity follower = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeletedEquals(nickname,
-			IsDeletedType.N); // 내가 팔로잉한 유저
+		UserEntity follower = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeletedEquals(nickname, IsDeletedType.N); // 내가 팔로잉한 유저
 
 		if (following.isEmpty()) { // 내가 팔로잉한 유저가 존재하지 않음
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
