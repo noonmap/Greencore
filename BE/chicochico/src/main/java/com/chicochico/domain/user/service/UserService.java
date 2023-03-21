@@ -32,6 +32,11 @@ public class UserService {
 	private final AuthService authService;
 
 
+	public UserEntity getUserByNickname(String nickname) {
+		return userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	}
+
+
 	/**
 	 * 회원을 생성합니다 (회원가입)
 	 *
@@ -104,7 +109,7 @@ public class UserService {
 		if (passwordEncoder.matches(passwordRequestDto.getPassword(), password)) {
 			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 		}
-		
+
 		user.updatePassword(passwordEncoder.encode(passwordRequestDto.getPassword()));
 		userRepository.save(user);
 	}
