@@ -118,8 +118,8 @@ public class FollowServiceTest {
 		@DisplayName("팔로우 성공 (팔로잉 생성 성공)")
 		public void createFollowingTest_성공() {
 			// given
-			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
-			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
+			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).followingCount(0).followerCount(0).build();
+			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).followingCount(0).followerCount(0).build();
 
 			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
 			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
@@ -168,7 +168,7 @@ public class FollowServiceTest {
 			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 
 			List<FollowEntity> followList = new ArrayList<>();
-			when(followRepository.findByFollower(user)).thenReturn(Optional.of(followList));
+			when(followRepository.findByFollower(user)).thenReturn(followList);
 
 			// when
 			List<UserEntity> followingList = followService.getFollowingList(FEED_OWNER_NICKNAME);
@@ -190,7 +190,7 @@ public class FollowServiceTest {
 				FollowEntity.builder().follower(user).following(following2).build()
 			);
 			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
-			when(followRepository.findByFollower(user)).thenReturn(Optional.of(followList));
+			when(followRepository.findByFollower(user)).thenReturn(followList);
 
 			// when
 			List<UserEntity> followingList = followService.getFollowingList(user.getNickname());
@@ -230,7 +230,7 @@ public class FollowServiceTest {
 			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 
 			List<FollowEntity> followList = new ArrayList<>();
-			when(followRepository.findByFollowing(user)).thenReturn(Optional.of(followList));
+			when(followRepository.findByFollowing(user)).thenReturn(followList);
 
 			// when
 			List<UserEntity> followingList = followService.getFollowerList(FEED_OWNER_NICKNAME);
@@ -253,7 +253,7 @@ public class FollowServiceTest {
 			);
 			System.out.println(followList);
 			when(userRepository.findByNicknameAndIsDeletedEquals(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
-			when(followRepository.findByFollowing(user)).thenReturn(Optional.of(followList));
+			when(followRepository.findByFollowing(user)).thenReturn(followList);
 
 			// when
 			List<UserEntity> followerList = followService.getFollowerList(user.getNickname());
@@ -332,8 +332,8 @@ public class FollowServiceTest {
 		@DisplayName("팔로우 삭제 성공")
 		public void deleteFollowingTest_성공() {
 			// given
-			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
-			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
+			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).followingCount(0).followerCount(0).build();
+			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).followingCount(0).followerCount(0).build();
 			FollowEntity follow = FollowEntity.builder().follower(follower).following(following).build();
 			when(authService.getUserId()).thenReturn(FOLLOWER_ID);
 			when(userRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
@@ -419,8 +419,8 @@ public class FollowServiceTest {
 		@DisplayName("팔로우 삭제 성공")
 		public void deleteFollowerTest_성공() {
 			// given
-			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).build();
-			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).build();
+			UserEntity following = UserEntity.builder().id(FOLLOWING_ID).followingCount(0).followerCount(0).build();
+			UserEntity follower = UserEntity.builder().id(FOLLOWER_ID).followingCount(0).followerCount(0).build();
 			FollowEntity follow = FollowEntity.builder().follower(follower).following(following).build();
 			when(authService.getUserId()).thenReturn(FOLLOWING_ID);
 			when(userRepository.findById(FOLLOWING_ID)).thenReturn(Optional.of(following));

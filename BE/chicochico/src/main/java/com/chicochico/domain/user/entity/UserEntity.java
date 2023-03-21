@@ -79,6 +79,26 @@ public class UserEntity extends CommonEntity implements UserDetails {
 	}
 
 
+	public void increaseFollowingCount() {
+		this.followingCount++;
+	}
+
+
+	public void decreaseFollowingCount() {
+		this.followingCount--;
+	}
+
+
+	public void increaseFollowerCount() {
+		this.followerCount++;
+	}
+
+
+	public void decreaseFollowerCount() {
+		this.followerCount--;
+	}
+
+
 	@PrePersist
 	public void prePersist() {
 		this.profileImagePath = this.profileImagePath == null ? "default_profileImagePath" : this.profileImagePath;

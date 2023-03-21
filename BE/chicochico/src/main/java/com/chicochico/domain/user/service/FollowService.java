@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +57,12 @@ public class FollowService {
 		// 안하고 있다면 팔로우 하기
 		FollowEntity follow = FollowEntity.builder().follower(follower).following(following.get()).build();
 		followRepository.save(follow);
+
+		// 내 followingCount, 상대 followerCount ++해주기
+		follower.increaseFollowingCount();
+		following.get().increaseFollowerCount();
+		userRepository.save(follower);
+		userRepository.save(following.get());
 	}
 
 
@@ -76,14 +81,9 @@ public class FollowService {
 		}
 
 		// 피드 주인이 follower 인 List 조회
-		Optional<List<FollowEntity>> followList = followRepository.findByFollower(follower.get());
+		List<FollowEntity> followList = followRepository.findByFollower(follower.get());
 
-		if (followList.isEmpty()) {
-			return new ArrayList<>(); // 피드주인의 following 리스트가 비어있을 때
-		}
-
-		List<UserEntity> followingList = followList.get().stream().map(FollowEntity::getFollowing)
-			.collect(Collectors.toList());
+		List<UserEntity> followingList = followList.stream().map(FollowEntity::getFollowing).collect(Collectors.toList());
 
 		return followingList;
 
@@ -115,6 +115,12 @@ public class FollowService {
 		// 팔로잉 삭제
 		followRepository.delete(follow.get());
 
+		// 내 followingCount, 상대 followerCount --해주기
+		follower.decreaseFollowingCount();
+		following.get().decreaseFollowerCount();
+		userRepository.save(follower);
+		userRepository.save(following.get());
+
 	}
 
 
@@ -132,14 +138,9 @@ public class FollowService {
 		}
 
 		// 피드 주인이 following 인 List 조회
-		Optional<List<FollowEntity>> followList = followRepository.findByFollowing(following.get());
+		List<FollowEntity> followList = followRepository.findByFollowing(following.get());
 
-		if (followList.isEmpty()) {
-			return new ArrayList<>(); // 피드주인의 follower 리스트가 비어있을 때
-		}
-
-		List<UserEntity> followerList = followList.get().stream().map(FollowEntity::getFollower)
-			.collect(Collectors.toList());
+		List<UserEntity> followerList = followList.stream().map(FollowEntity::getFollower).collect(Collectors.toList());
 
 		return followerList;
 	}
@@ -171,6 +172,12 @@ public class FollowService {
 
 		// 팔로잉 삭제
 		followRepository.delete(follow.get());
+
+		// 내 followerCount와 상대의 followgingCount를 --해주기
+		following.decreaseFollowerCount();
+		follower.get().decreaseFollowingCount();
+		userRepository.save(following);
+		userRepository.save(follower.get());
 
 	}
 
