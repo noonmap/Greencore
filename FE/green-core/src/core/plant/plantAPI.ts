@@ -62,7 +62,7 @@ export const getTopPlantList = async () => {
 // 식물 도감 이름 리스트 조회
 export const getPlantList = async (params: SearchType) => {
   try {
-    const { data } = await http.get(`/plant/dacs`, { params });
+    const { data } = await http.get(`/plant/docs`, { params });
     return data;
   } catch (error) {
     Toastify({
@@ -78,7 +78,7 @@ export const getPlantList = async (params: SearchType) => {
 // 식물 도감 리스트 조회
 export const getPlantListByIndex = async (params: IndexType) => {
   try {
-    const { data } = await http.get(`/plant/dacs`, { params });
+    const { data } = await http.get(`/plant/docs`, { params });
     return data;
   } catch (error) {
     Toastify({
@@ -93,6 +93,6 @@ export const getPlantListByIndex = async (params: IndexType) => {
 
 // 식물 도감 상세 조회
 export const getPlant = async (plantId: number) => {
-  const { data } = await http.get(`/plant/dacs/${plantId}`);
+  const { data } = await http.get(`/plant/docs/${plantId}`);
   return data;
 };
