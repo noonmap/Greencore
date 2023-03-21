@@ -227,7 +227,6 @@ export const logOut = createAsyncThunk('logOut', async (accessToken: string) => 
   try {
     const headers = {
       authorization: accessToken,
-      'x-refresh-token': cookies.getCookieToken(),
     };
 
     const { data } = await http.delete('/logout', { headers });

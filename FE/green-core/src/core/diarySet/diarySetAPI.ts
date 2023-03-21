@@ -24,17 +24,17 @@ export const getDiarySetList = async (nickname: string | string[], params: PageT
 };
 
 // 관찰일지 수정
-export const updateDiarySet = async (diarysetId: string) => {
+export const updateDiarySet = async (diarySetId: number, payload: DiarySetType) => {
   try {
-    const { data } = await http.put(`/diaryset/${diarysetId}`);
+    const { data } = await http.put(`/diaryset/${diarySetId}`, payload);
     return data;
   } catch (error) {}
 };
 
 // 관찰일지 삭제
-export const deleteDiarySet = async (diarysetId: string) => {
+export const deleteDiarySet = async (diarySetId: number) => {
   try {
-    const { data } = await http.delete(`/diaryset/${diarysetId}`);
+    const { data } = await http.delete(`/diaryset/${diarySetId}`);
     return data;
   } catch (error) {}
 };
@@ -56,17 +56,17 @@ export const getTopDiarySet = async () => {
 };
 
 // 관찰일지 북마크
-export const createBookmark = async (diarysetId: number) => {
+export const createBookmark = async (diarySetId: number) => {
   try {
-    const { data } = await http.post(`/diaryset/${diarysetId}/bookmark`);
+    const { data } = await http.post(`/diaryset/${diarySetId}/bookmark`);
     return data;
   } catch (error) {}
 };
 
 // 관찰일지 북마크 취소
-export const deleteBookmark = async (diarysetId: number) => {
+export const deleteBookmark = async (diarySetId: number) => {
   try {
-    const { data } = await http.delete(`/diaryset/${diarysetId}/bookmark`);
+    const { data } = await http.delete(`/diaryset/${diarySetId}/bookmark`);
     return data;
   } catch (error) {}
 };
