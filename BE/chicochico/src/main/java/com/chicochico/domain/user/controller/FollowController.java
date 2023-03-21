@@ -3,7 +3,7 @@ package com.chicochico.domain.user.controller;
 
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.domain.user.dto.response.FollowResponseDto;
-import com.chicochico.domain.user.entity.FollowEntity;
+import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.service.FollowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +34,7 @@ public class FollowController {
 	@GetMapping("/following/{nickname}")
 	@ApiOperation(value = "팔로잉 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<FollowResponseDto>>> getFollowingList(@PathVariable("nickname") String nickname) {
-		List<FollowEntity> followList = followService.getFollowingList(nickname);
+		List<UserEntity> followList = followService.getFollowingList(nickname);
 		List<FollowResponseDto> followResponseDtoList = FollowResponseDto.fromEnityList(followList);
 
 		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoList));
@@ -53,7 +53,7 @@ public class FollowController {
 	@GetMapping("/follower/{nickname}")
 	@ApiOperation(value = "팔로워 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<FollowResponseDto>>> getFollowerList(@PathVariable("nickname") String nickname) {
-		List<FollowEntity> followList = followService.getFollowerList(nickname);
+		List<UserEntity> followList = followService.getFollowerList(nickname);
 		List<FollowResponseDto> followResponseDtoList = FollowResponseDto.fromEnityList(followList);
 
 		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoList));
