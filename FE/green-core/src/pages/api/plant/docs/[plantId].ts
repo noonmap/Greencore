@@ -7,12 +7,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
       result: 'SUCCESS',
       data: [
         {
-          plantId: 1,
-          plantName: '방울토마토',
+          imagePath: 'image/jpg',
+          plantName: '식물이름',
         },
         {
-          plantId: 2,
-          plantName: '찰토마토',
+          imagePath: 'image2/jpg',
+          plantName: '식물이름2',
         },
       ],
     });
