@@ -109,6 +109,33 @@ public class FeedService {
 
 
 	/**
+	 * 피드에 연결된 태그의 리스트를 조회
+	 *
+	 * @param feedId
+	 * @return
+	 */
+	public List<TagEntity> getTagList(Long feedId) {
+		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
+		List<FeedTagEntity> feedTagList = feedTagRepository.findByFeed(feed);
+		List<TagEntity> tagList = feedTagList.stream().map(FeedTagEntity::getTag).collect(Collectors.toList());
+		return tagList;
+	}
+
+
+	/**
+	 * 피드에 연결된 태그들의 내용 리스트를 조회
+	 *
+	 * @param feedId
+	 * @return
+	 */
+	public List<String> getTagContentList(Long feedId) {
+		List<TagEntity> tagList = getTagList(feedId);
+		List<String> tagContentList = tagList.stream().map(TagEntity::getContent).collect(Collectors.toList());
+		return tagContentList;
+	}
+
+
+	/**
 	 * 피드에 있는 댓글 개수 구함
 	 *
 	 * @param feedId
