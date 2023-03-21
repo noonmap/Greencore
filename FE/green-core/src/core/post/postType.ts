@@ -20,3 +20,9 @@ export type UpdatePostType = {
     tags: Array<string>;
   };
 };
+
+// 포스트 삭제 타입
+export type DeletePostType = {
+  router: NextRouter;
+  postId: number;
+};

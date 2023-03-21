@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import Skeleton from 'react-loading-skeleton';
 import http from '@/lib/http';
@@ -9,15 +9,39 @@ import FeedCommentList from '@/components/FeedCommentList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
-import UserInfo from '@/components/common/UserInfo';
 import styles from '@/components/common/UserInfo.module.scss';
+import { useAppDispatch } from '@/core/hooks';
+import { deletePost } from '@/core/post/postAPI';
 
 const fetcher = (url: string) => http.get(url).then((res) => res.data);
 
 export default function PostDetail() {
   const router = useRouter();
-  const postId = router.query.postId;
+  const dispatch = useAppDispatch();
+  const postId = Number(router.query.postId);
   const { data: post, error, isLoading: hasPost } = useSWR(`/post/${postId}`, fetcher);
+  const [isOpen, setIsOpen] = useState(false);
+
+  // 수정, 삭제 드롭다운
+  const handleToggle = (e: any) => {
+    e.preventDefault();
+    setIsOpen((prev) => !prev);
+  };
+
+  // 포스트 삭제 확인
+  const checkDeletePost = (e: any) => {
+    e.preventDefault();
+    if (window.confirm('삭제하시겠습니까?')) {
+      handleDeletePost();
+    }
+  };
+
+  // 포스트 삭제
+  const handleDeletePost = () => {
+    const requestData = { router, postId };
+    dispatch(deletePost(requestData));
+  };
+
   return (
     <AppLayout>
       <div style={{ display: 'flex' }}>
@@ -88,18 +112,24 @@ export default function PostDetail() {
           </div>
         )}
         {!hasPost ? (
-          <div>
-            <FontAwesomeIcon icon={faEllipsisVertical} style={{ margin: '8px' }} />
-          </div>
+          <ul>
+            <div onClick={handleToggle} style={{ cursor: 'pointer' }}>
+              <FontAwesomeIcon icon={faEllipsisVertical} style={{ margin: '8px' }} />
+            </div>
+            {isOpen && (
+              <>
+                <Link href={`/post/update/${postId}`}>
+                  <li>수정</li>
+                </Link>
+                <li onClick={checkDeletePost} style={{ cursor: 'pointer' }}>
+                  삭제
+                </li>
+              </>
+            )}
+          </ul>
         ) : (
           <Skeleton />
         )}
-      </div>
-      <div>
-        <Link href={`/post/update/${postId}`}>
-          <button>수정</button>
-        </Link>
-        <button>삭제</button>
       </div>
       <FeedCommentList />
     </AppLayout>
