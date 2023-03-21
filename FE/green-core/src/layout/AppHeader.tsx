@@ -29,6 +29,7 @@ export default function AppHeader() {
         <h2 className='font-bold'>승태</h2>
         <Link href='/alert'>알림</Link>
         <Link href='/feed'>피드</Link>
+        <Link href='/plantDocs'>식물 검색</Link>
       </div>
 
       <div className='flex space-x-4'>
