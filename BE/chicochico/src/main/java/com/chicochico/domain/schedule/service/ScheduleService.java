@@ -39,7 +39,7 @@ public class ScheduleService {
 	 */
 	public List<ScheduleEntity> getMonthSchedule(Integer year, Integer month) {
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//year+month=>localdate
 		//해당 월의 첫날부터 끝날까지 (between의 경우 마지막은 포함 안됨)
@@ -63,7 +63,7 @@ public class ScheduleService {
 	 */
 	public List<ScheduleEntity> getWeekSchedule(Integer year, Integer month, Integer day) {
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//year+month=>localdate
 		//해당 요일부터 다다다음날까지 일정보여줌(between의 경우 마지막은 포함 안됨)
@@ -83,7 +83,7 @@ public class ScheduleService {
 	public void createSchedule(ScheduleRequestDto scheduleRequestDto) {
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		//사용자가 키우는 식물 중 하나
 		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//일정 등록
@@ -102,7 +102,7 @@ public class ScheduleService {
 		ScheduleEntity scheduleEntity = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		//사용자가 키우고 있는 식물 중 하나
 		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -135,7 +135,7 @@ public class ScheduleService {
 	public void deleteSchedule(Long scheduleId) {
 		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
 		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
@@ -158,7 +158,7 @@ public class ScheduleService {
 	public void completeSchedule(Long scheduleId) {
 		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
 		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
@@ -180,7 +180,7 @@ public class ScheduleService {
 	public void incompleteSchedule(Long scheduleId) {
 		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//해당 일정의 작성자와 현재 로그인 돼있는 사용자가 같을 경우 && 삭제되지 않은 경우
 		if (user.equals(schedule.getUser()) && schedule.getIsDeleted().equals(IsDeletedType.N)) {
