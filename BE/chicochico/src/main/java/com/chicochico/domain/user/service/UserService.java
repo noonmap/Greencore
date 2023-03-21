@@ -110,7 +110,7 @@ public class UserService {
 			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 		}
 
-		user.updatePassword(passwordEncoder.encode(passwordRequestDto.getPassword()));
+		user.setPassword(passwordEncoder.encode(passwordRequestDto.getPassword()));
 		userRepository.save(user);
 	}
 
@@ -127,7 +127,7 @@ public class UserService {
 		}
 
 		UserEntity user = selectedUser.get();
-		user.updateIsDeletedType(IsDeletedType.Y);
+		user.setIsDeleted(IsDeletedType.Y);
 		userRepository.save(user);
 	}
 
