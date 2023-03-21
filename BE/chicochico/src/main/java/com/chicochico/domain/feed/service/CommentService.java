@@ -46,7 +46,7 @@ public class CommentService {
 	 */
 	public Page<CommentEntity> getCommentList(Long feedId, Pageable pageable) {
 		// 피드 찾기
-		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
 		// comment page 형식으로 가지고 오기
 		Page<CommentEntity> commentEntityPage = commentRepository.findByFeedAndIsDeleted(feed, pageable, IsDeletedType.N);
 		return commentEntityPage;
@@ -93,7 +93,7 @@ public class CommentService {
 	 */
 	public void createComment(Long feedId, CommentRequestDto commentRequestDto) {
 		//피드 찾기
-		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
 		//현재 사용자
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -103,6 +103,12 @@ public class CommentService {
 			Long mentionId = mentionUser.getFollowing().getId();
 			//댓글 등록
 			commentRepository.save(commentRequestDto.toEntity(feed, user, mentionId));
+
+			//피드에 댓글 수 증가
+			Integer commnetCount = feed.getCommentCount();
+			feed.setCommentCount(commnetCount + 1);
+			feedRepository.save(feed);
+
 		} else {
 			//멘션 사용자를 지정하지 않는 경우
 			commentRepository.save(commentRequestDto.toEntity(feed, user));
@@ -133,7 +139,7 @@ public class CommentService {
 			if (commentRequestDto.getMentionNickname() != null && !commentRequestDto.getMentionNickname().equals("")) {
 				String nickname = commentRequestDto.getMentionNickname();
 				Long mentionId = userRepository.findByNickname(nickname).get().getId();
-				//댓글 등록
+				//댓글 수정
 				CommentEntity newComment = commentRequestDto.toEntity(commentId, feed, user, mentionId);
 				commentRepository.save(newComment);
 
@@ -157,14 +163,22 @@ public class CommentService {
 	 */
 	@Transactional
 	public void deleteComment(Long commentId) {
-		//피드 찾기
+		//댓글
 		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		//피드 찾기
+		FeedEntity feed = feedRepository.findById(comment.getFeed().getId()).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
+		//피드에 댓글 수 감소
+		Integer commnetCount = feed.getCommentCount();
 		//현재 사용자
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
 		if (user.equals(comment.getUser())) {
 			comment.setIsDeleted();
 			commentRepository.save(comment);
+
+			feed.setCommentCount(commnetCount - 1);
+			feedRepository.save(feed);
 		} else {
 			throw new CustomException(ErrorCode.NO_ACCESS);
 		}

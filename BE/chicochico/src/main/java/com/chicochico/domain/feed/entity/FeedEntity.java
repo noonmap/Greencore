@@ -42,9 +42,17 @@ public class FeedEntity extends CommonEntity {
 	@Enumerated(EnumType.STRING)
 	private IsDeletedType isDeleted;
 
+	@Column(nullable = false)
+	private Integer commentCount;
+
 
 	public void setIsDeleted(IsDeletedType isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+
+
+	public void setCommentCount(Integer commentCount) {
+		this.commentCount = commentCount;
 	}
 
 }
