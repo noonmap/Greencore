@@ -9,6 +9,9 @@ import com.chicochico.domain.user.entity.UserPlantEntity;
  */
 public class UserPlantSimpleRequestDto {
 
+	private String plantNickname;
+
+
 	public UserPlantEntity toEntity() {
 		return (UserPlantEntity) new Object();
 	}
