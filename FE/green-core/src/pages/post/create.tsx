@@ -1,37 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
-import { useRouter } from 'next/router';
-import http from '@/lib/http';
-import { useForm } from 'react-hook-form';
-import { createDiary } from '@/core/diary/diaryAPI';
 import { useAppDispatch } from '@/core/hooks';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { createPost } from '@/core/post/postAPI';
 
-export default function creatediary() {
-  const router = useRouter();
+export default function post() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [preview, setPreview] = useState<any>('');
   const [tagList, setTagList] = useState<Array<string>>([]);
 
   // react-hook-form 설정
   type StateType = {
-    diarysetId: number;
     content: string;
-    opservationDate: string;
     image: Object;
     tagItem: string;
   };
-
   const initialState: StateType = {
-    diarysetId: 0,
     content: '',
-    opservationDate: new Date().toISOString().substring(0, 10),
     image: null,
     tagItem: '',
   };
 
   const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
-  const [diarysetId, content, opservationDate, image, tagItem] = getValues(['diarysetId', 'content', 'opservationDate', 'image', 'tagItem']);
+  const [content, image, tagItem] = getValues(['content', 'image', 'tagItem']);
 
   useEffect(() => {
     watch();
@@ -65,7 +59,7 @@ export default function creatediary() {
   };
 
   // 이미지 미리보기
-  const handlerPreview = (e: any) => {
+  const handlePreview = (e: any) => {
     const fileReader = new FileReader();
     if (e.target.files.length) {
       fileReader.readAsDataURL(e.target.files[0]);
@@ -77,18 +71,18 @@ export default function creatediary() {
     }
   };
 
-  // 뒤로가기
+  // 포스트 작성 취소
   const handleGoBack = () => {
     router.back();
   };
 
-  // 일지 생성
-  const handleCreateDiary = async (e: any) => {
+  // 포스트 생성
+  const handleCreatePost = async (e: any) => {
     e.preventDefault();
-    const payload = { diarysetId, content, opservationDate, image, tags: tagList };
+    const payload = { content, image, tags: tagList };
     const requestData = { router, payload };
     try {
-      dispatch(createDiary(requestData));
+      dispatch(createPost(requestData));
     } catch (err) {
       console.log(err);
     }
@@ -98,32 +92,22 @@ export default function creatediary() {
     <AppLayout>
       <div>
         <div>
-          <select {...register('diarysetId')} defaultValue={getValues('diarysetId')}>
-            <option value={0}>내키식 종류들</option>
-            <option value={1}>선인장</option>
-          </select>
-        </div>
-        <div>
           <label htmlFor='image'>
             <img src={preview} alt='이미지를 등록해주세요' style={{ cursor: 'pointer' }} />
           </label>
           <input
-            required
             type='file'
             accept='image/*'
             {...(register('image'),
             {
-              onChange(event) {
+              onChange(event: any) {
                 setValue('image', event.target.files);
-                handlerPreview(event);
+                handlePreview(event);
               },
             })}
             id='image'
             style={{ display: 'none' }}
           />
-        </div>
-        <div>
-          <input required type='date' defaultValue={opservationDate} {...register('opservationDate')} />
         </div>
         <div>
           <div style={{ display: 'flex' }}>
@@ -148,9 +132,9 @@ export default function creatediary() {
           </div>
         </div>
         <div>
-          <textarea required cols={50} rows={10} {...register('content')} placeholder='내용' />
+          <textarea rows={10} cols={50} {...register('content')} />
         </div>
-        <button onClick={handleCreateDiary}>일지 생성</button>
+        <button onClick={handleCreatePost}>작성</button>
         <button onClick={handleGoBack}>취소</button>
       </div>
     </AppLayout>

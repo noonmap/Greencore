@@ -7,7 +7,7 @@ export type Data = {
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method === 'POST') {
-    res.status(200).json({ result: 'SUCCESS', data: null });
+    res.status(200).json({ result: 'SUCCESS', data: { diaryId: 0 } });
   } else if (req.method === 'GET') {
     res.status(200).json({
       result: 'SUCCESS',

@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import Toastify from 'toastify-js';
-import toastifyCSS from '@/assets/toastify.json';
-import message from '@/assets/message.json';
 import useSWR from 'swr';
 import http from '@/lib/http';
+import { useAppDispatch } from '@/core/hooks';
+import { updateDiary } from '@/core/diary/diaryAPI';
 
 const fetcher = (url: string) => http.get(url).then((res) => res.data);
 
 export default function updatediary() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [preview, setPreview] = useState<any>('');
   const [tagList, setTagList] = useState<Array<string>>([]);
-  const diaryId = router.query.diaryId; // string
+  const diaryId = Number(router.query.diaryId);
   const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
 
   type StateType = {
@@ -98,31 +98,9 @@ export default function updatediary() {
   // 일지 수정
   const handleUpdateDiary = async (e: any) => {
     e.preventDefault();
-    const payload = { diarysetId, content, opservationDate, image, tags: tagList };
-    try {
-      console.log(payload);
-      const { data } = await http.put(`/diary/${diaryId}`, payload);
-      if (data.result === 'SUCCESS') {
-        router.push('/diary');
-        Toastify({
-          text: message.UpdateDiarySuccess,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.success,
-        }).showToast();
-      } else {
-        Toastify({
-          text: message.UpdateDiaryFail,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.fail,
-        }).showToast();
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    const payload = { diarysetId, diaryId, content, opservationDate, image, tags: tagList };
+    const requestData = { router, payload };
+    dispatch(updateDiary(requestData));
   };
 
   return (

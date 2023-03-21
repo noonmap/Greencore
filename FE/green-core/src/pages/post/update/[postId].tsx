@@ -1,37 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
-import { useRouter } from 'next/router';
-import http from '@/lib/http';
 import { useForm } from 'react-hook-form';
-import { createDiary } from '@/core/diary/diaryAPI';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
+import http from '@/lib/http';
 import { useAppDispatch } from '@/core/hooks';
+import { updatePost } from '@/core/post/postAPI';
 
-export default function creatediary() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
+const fetcher = (url: string) => http.get(url).then((res) => res.data);
+
+export default function updatepost() {
   const [preview, setPreview] = useState<any>('');
   const [tagList, setTagList] = useState<Array<string>>([]);
+  const router = useRouter();
+  const postId = Number(router.query.postId);
+  const dispatch = useAppDispatch();
+  const { data: post, error, isLoading: hasPost } = useSWR(`/post/${postId}`, fetcher);
 
-  // react-hook-form 설정
   type StateType = {
-    diarysetId: number;
     content: string;
-    opservationDate: string;
     image: Object;
     tagItem: string;
   };
 
   const initialState: StateType = {
-    diarysetId: 0,
     content: '',
-    opservationDate: new Date().toISOString().substring(0, 10),
     image: null,
     tagItem: '',
   };
 
   const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
-  const [diarysetId, content, opservationDate, image, tagItem] = getValues(['diarysetId', 'content', 'opservationDate', 'image', 'tagItem']);
+  const [content, image, tagItem] = getValues(['content', 'image', 'tagItem']);
+
+  useEffect(() => {
+    if (!hasPost) {
+      setPreview(post.data.imagePath);
+      setTagList(post.data.tags);
+      setValue('content', post.data.content);
+    }
+  }, [hasPost]);
 
   useEffect(() => {
     watch();
@@ -40,7 +48,6 @@ export default function creatediary() {
 
   // 태그 입력
   const handleOnChangeTagItem = (e: any) => {
-    e.preventDefault();
     if ((tagItem.length !== 0 && e.key === 'Enter') || e.key === ' ') {
       handleChangeTagList();
     }
@@ -82,27 +89,17 @@ export default function creatediary() {
     router.back();
   };
 
-  // 일지 생성
-  const handleCreateDiary = async (e: any) => {
+  // 포스트 수정
+  const handleUpdatePost = async (e: any) => {
     e.preventDefault();
-    const payload = { diarysetId, content, opservationDate, image, tags: tagList };
-    const requestData = { router, payload };
-    try {
-      dispatch(createDiary(requestData));
-    } catch (err) {
-      console.log(err);
-    }
+    const payload = { content, image, tags: tagList };
+    const requestData = { router, payload, postId };
+    dispatch(updatePost(requestData));
   };
 
   return (
     <AppLayout>
       <div>
-        <div>
-          <select {...register('diarysetId')} defaultValue={getValues('diarysetId')}>
-            <option value={0}>내키식 종류들</option>
-            <option value={1}>선인장</option>
-          </select>
-        </div>
         <div>
           <label htmlFor='image'>
             <img src={preview} alt='이미지를 등록해주세요' style={{ cursor: 'pointer' }} />
@@ -123,14 +120,11 @@ export default function creatediary() {
           />
         </div>
         <div>
-          <input required type='date' defaultValue={opservationDate} {...register('opservationDate')} />
-        </div>
-        <div>
           <div style={{ display: 'flex' }}>
-            {tagList.map((tagItem, index) => {
+            {tagList.map((item, index) => {
               return (
                 <div key={index} style={{ display: 'flex' }}>
-                  <div style={{}}>{tagItem}</div>
+                  <div>{item}</div>
                   <button onClick={handleDeleteTagItem} style={{ paddingInline: '4px' }}>
                     X
                   </button>
@@ -150,7 +144,7 @@ export default function creatediary() {
         <div>
           <textarea required cols={50} rows={10} {...register('content')} placeholder='내용' />
         </div>
-        <button onClick={handleCreateDiary}>일지 생성</button>
+        <button onClick={handleUpdatePost}>게시글 수정</button>
         <button onClick={handleGoBack}>취소</button>
       </div>
     </AppLayout>
