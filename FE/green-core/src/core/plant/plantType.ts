@@ -15,3 +15,9 @@ export type SearchPlantType = {
   imagePath: string;
   plantName: string;
 };
+
+export type SearchPlantDetailType = {
+  plantId: number;
+  imagePath: string;
+  plantName: string;
+};

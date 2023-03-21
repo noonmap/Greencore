@@ -7,11 +7,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
       result: 'SUCCESS',
       data: [
         {
-          imagePath: 'image/jpg',
+          imagePath: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQibOttes-EN0PTc4GfRPXVjJg336bWMTqerw&usqp=CAU',
           plantName: '식물이름',
         },
         {
-          imagePath: 'image2/jpg',
+          imagePath: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQibOttes-EN0PTc4GfRPXVjJg336bWMTqerw&usqp=CAU',
           plantName: '식물이름2',
         },
       ],
