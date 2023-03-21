@@ -73,8 +73,8 @@ public class DiarySetController {
 
 	@GetMapping("/{nickname}/bookmark")
 	@ApiOperation(value = "유저가 북마크한 관찰 일지 목록을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("diarySetId") Long diarySetId, Pageable pageable) {
-		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(diarySetId, pageable);
+	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("nickname") String nickname, Pageable pageable) {
+		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(nickname, pageable);
 		// entity page -> dto page 변환
 		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
 	}

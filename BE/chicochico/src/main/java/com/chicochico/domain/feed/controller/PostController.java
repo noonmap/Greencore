@@ -6,6 +6,7 @@ import com.chicochico.domain.feed.dto.request.PostRequestDto;
 import com.chicochico.domain.feed.dto.response.PostResponseDto;
 import com.chicochico.domain.feed.dto.response.PostSimpleResponseDto;
 import com.chicochico.domain.feed.entity.PostEntity;
+import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.feed.service.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,13 +25,15 @@ public class PostController {
 
 	private final PostService postService;
 
+	private final FeedService feedService;
 
-	@GetMapping(value = "/{nickname}")
+
+	@GetMapping(value = "/list/{nickname}")
 	@ApiOperation(value = "게시글 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<PostSimpleResponseDto>>> getPostList(@PathVariable("nickname") String nickname, Pageable pageable) {
 		Page<PostEntity> postPage = postService.getPostList(nickname, pageable);
-		// entity page -> dto page 변경
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		Page<PostSimpleResponseDto> postSimpleResponseDtoPage = PostSimpleResponseDto.fromEntityPage(postPage, feedService::getCommentCount);
+		return ResponseEntity.ok().body(ResultDto.of(postSimpleResponseDtoPage));
 	}
 
 
@@ -38,14 +41,14 @@ public class PostController {
 	@ApiOperation(value = "게시글 상세 내용을 조회합니다.")
 	public ResponseEntity<ResultDto<PostResponseDto>> getPost(@PathVariable("postId") Long postId) {
 		PostEntity post = postService.getPost(postId);
-		PostResponseDto postResponseDto = PostResponseDto.fromEntity(post);
+		PostResponseDto postResponseDto = PostResponseDto.fromEntity(post, feedService::getCommentCount, feedService::getTagContentList);
 		return ResponseEntity.ok().body(ResultDto.of(postResponseDto));
 	}
 
 
 	@PostMapping
 	@ApiOperation(value = "게시글을 생성합니다.")
-	public ResponseEntity<ResultDto<Boolean>> createPost(@RequestPart PostRequestDto postRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> createPost(PostRequestDto postRequestDto) {
 		postService.createPost(postRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
@@ -53,7 +56,7 @@ public class PostController {
 
 	@PutMapping("/{postId}")
 	@ApiOperation(value = "게시글을 수정합니다.")
-	public ResponseEntity<ResultDto<Boolean>> modifyPost(@PathVariable("postId") Long postId, @RequestPart PostRequestDto postRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> modifyPost(@PathVariable("postId") Long postId, PostRequestDto postRequestDto) {
 		postService.modifyPost(postId, postRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}

@@ -122,7 +122,7 @@ public class PostService {
 		// 작성자와 현재 유저 같은 사람인지 확인
 		Long userId = authService.getUserId();
 		UserEntity writer = originPost.getUser();
-		if (writer.getId() != userId) throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
+		if (writer.getId() != userId) throw new CustomException(ErrorCode.NO_ACCESS);
 
 		// 기존 연결된 이미지 삭제 -> 이것도 isDelected처럼 남겨야 할 것 같은데.. 고민
 		String originImagePath = originPost.getImagePath();
@@ -164,13 +164,14 @@ public class PostService {
 		// 작성자와 현재 유저 같은 사람인지 확인
 		Long userId = authService.getUserId();
 		UserEntity writer = post.getUser();
-		if (writer.getId() != userId) throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
+		if (writer.getId() != userId) throw new CustomException(ErrorCode.NO_ACCESS);
 
 		// feed(post)와 연결된 요소들 일괄 삭제 (이미지, 태그, 댓글, 좋아요)
 		feedService.deleteConnectedComponents(post);
 
 		// post 삭제
-		postRepository.delete(post);
+		post.setIsDeleted(IsDeletedType.Y);
+		postRepository.save(post);
 	}
 
 }

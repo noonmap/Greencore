@@ -2,12 +2,29 @@ package com.chicochico.domain.feed.dto.request;
 
 
 import com.chicochico.domain.feed.entity.DiarySetEntity;
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 
 /**
  * 관찰 일지 생성 요청
+ * userPlantId : Long
+ * image: MultipartFile,
+ * startDate": LocalDate,
+ * title: String,
  */
+@Data
+@Builder
 public class DiarySetRequestDto {
+
+	private Long userPlantId;
+	private MultipartFile image;
+	private LocalDate startDate;
+	private String title;
+	
 
 	public DiarySetEntity toEntity() {
 		return (DiarySetEntity) new Object();
