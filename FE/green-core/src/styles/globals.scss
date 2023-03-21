@@ -123,3 +123,7 @@ button {
   display: flex;
   flex-direction: column;
 }
+
+button[aria-current='page'] {
+  background-color: red;
+}

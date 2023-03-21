@@ -13,19 +13,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
         {
           nickname: 'temp',
           profileImagePath: '/public/images/profile.png',
-          introduction: '안녕하세요 test11 입니다',
+          introduction: '안녕하세요 test1 입니다',
           isFollowed: true, // 내가 팔로우한 여부
         },
         {
           nickname: 'test22',
           profileImagePath: '/public/images/profile.png',
-          introduction: '안녕하세요 test22 입니다',
+          introduction: '안녕하세요 test2 입니다',
           isFollowed: true, // 내가 팔로우한 여부
         },
         {
           nickname: '식집사입니다만',
           profileImagePath: '/public/images/profile.png',
-          introduction: '안녕하세요 test33 입니다',
+          introduction: '안녕하세요 test3 입니다',
           isFollowed: true, // 내가 팔로우한 여부
         },
       ],

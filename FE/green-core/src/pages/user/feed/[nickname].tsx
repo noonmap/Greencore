@@ -96,7 +96,7 @@ export default function FeedDetail() {
 
   const [postList, setPostList] = useState([]);
   const [postListTotalCount, setPostListTotalCount] = useState(3);
-  const [postPage, setPostPage] = useState(1);
+  const [postPage, setPostPage] = useState(0);
 
   const checkSameUser = useCallback(() => {
     if (myNickname == nickname) setIsSameUser(true);
@@ -638,7 +638,7 @@ export default function FeedDetail() {
                 ) : null}
 
                 <Image src={'/images/noProfile.png'} priority width={100} height={100} alt='관찰일지 썸네일' />
-                <div>제목: {d.title}</div>
+                <Link href={`/diary/${d.diarySetId}`}>제목: {d.title}</Link>
                 <div>북마크 카운트: {d.bookmarkCount}</div>
                 <div>북마크 토글: {d.isBookmarked}</div>
                 <span className='material-symbols-outlined'>bookmark</span>
@@ -663,7 +663,7 @@ export default function FeedDetail() {
           {postList.map((p) => (
             <div className='flex space-x-2' key={p.postId}>
               <input type='checkbox' value={p.postId} {...register('checkedPostList')} />
-              <div>{p.content}</div>
+              <Link href={`/post/${p.postId}`}>{p.content}</Link>
               <div>commentCount {p.commentCount}</div>
               <div>likeCount {p.likeCount}</div>
               <div>{p.fetchPostList}</div>
@@ -672,10 +672,6 @@ export default function FeedDetail() {
               </span>
             </div>
           ))}
-
-          <button className='bg-blue-500 rounded' onClick={handleIsOpenSelectedPostDelete}>
-            더보기
-          </button>
 
           <ReactPaginate
             pageCount={postListTotalCount}

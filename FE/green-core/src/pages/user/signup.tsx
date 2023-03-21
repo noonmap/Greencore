@@ -3,6 +3,8 @@ import AppLayout from '@/layout/AppLayout';
 import { useForm } from 'react-hook-form';
 import { signUp, checkEmail, checkNickname, checkAuthCode } from '~/src/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
+import { getStorage, ref, uploadBytes, uploadString } from 'firebase/storage';
+import { readFile } from 'fs';
 
 type StateType = {
   email: string;
@@ -27,6 +29,8 @@ const initialState: StateType = {
 };
 
 export default function signup() {
+  const storage = getStorage();
+
   const {
     register,
     formState: { errors },
@@ -78,12 +82,13 @@ export default function signup() {
   }
 
   async function handleSignUp(e: React.SyntheticEvent<EventTarget>) {
-    // e.preventDefault();
-
     try {
       if (checkVaildSignUp()) {
         const payload = { email, password, nickname };
         const { data } = await signUp(payload);
+
+        if (data) handleSetUserProfile();
+
         console.log(data);
       } else checkInputFormToast();
     } catch (err) {
@@ -140,6 +145,16 @@ export default function signup() {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async function handleSetUserProfile() {
+    const res = await fetch('/images/noProfile.png');
+    const blob = await res.blob();
+    const file = new File([blob], 'noProfile', { type: 'image/png' });
+
+    const profileRef = ref(storage, `${nickname}/profileImage`);
+
+    uploadBytes(profileRef, file, { contentType: 'image/png' }).then(() => {});
   }
 
   return (
