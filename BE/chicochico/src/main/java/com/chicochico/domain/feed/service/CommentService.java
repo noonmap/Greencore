@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -59,13 +60,14 @@ public class CommentService {
 	 * @param nickname
 	 * @return
 	 */
-	public List<FollowEntity> getMentionUserList(String nickname) {
+	public List<UserEntity> getMentionUserList(String nickname) {
 		//현재 사용자
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//사용자가 팔로우하는 유저 중 해당 글자로 시작하는 nickname
-		List<FollowEntity> mentionUserList = followRepository.findAllByFollowerAndFollowingNicknameStartingWith(user, nickname);
+		List<UserEntity> mentionUserList = followRepository.findAllByFollowerAndFollowingNicknameStartingWith(user, nickname)
+			.stream().map(FollowEntity::getFollowing).collect(Collectors.toList());
 
 		return mentionUserList;
 	}
@@ -74,14 +76,12 @@ public class CommentService {
 	/**
 	 * mention할 유저 선택합니다.
 	 *
-	 * @param followId
+	 * @param userId
 	 * @return
 	 */
-	public FollowEntity getMentionUser(Long followId) {
-		FollowEntity following = followRepository.findById(followId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		//db에 저장할 때 사용할 것 (mentionId 추출)
-		mentionUser = following;
-		return following;
+	public UserEntity getMentionUser(Long userId) {
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		return user;
 	}
 
 
@@ -100,7 +100,7 @@ public class CommentService {
 		//멘션 사용자 찾기
 		if (commentRequestDto.getMentionNickname() != null && !commentRequestDto.getMentionNickname().equals("")) {
 			//mention 할 사람 찾기
-			Long mentionId = mentionUser.getFollowing().getId();
+			Long mentionId = userRepository.findByNickname(commentRequestDto.getMentionNickname()).get().getId();
 			//댓글 등록
 			commentRepository.save(commentRequestDto.toEntity(feed, user, mentionId));
 

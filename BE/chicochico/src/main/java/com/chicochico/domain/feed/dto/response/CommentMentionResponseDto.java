@@ -1,7 +1,7 @@
 package com.chicochico.domain.feed.dto.response;
 
 
-import com.chicochico.domain.user.entity.FollowEntity;
+import com.chicochico.domain.user.entity.UserEntity;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,17 +17,17 @@ public class CommentMentionResponseDto {
 	private String nickname;
 
 
-	public static CommentMentionResponseDto fromEntity(FollowEntity follow) {
+	public static CommentMentionResponseDto fromEntity(UserEntity user) {
 		return CommentMentionResponseDto.builder()
-			.userId(follow.getFollowing().getId())
-			.nickname(follow.getFollowing().getNickname())
+			.userId(user.getId())
+			.nickname(user.getNickname())
 			.build();
 	}
 
 
-	public static List<CommentMentionResponseDto> fromEntityList(List<FollowEntity> followList) {
+	public static List<CommentMentionResponseDto> fromEntityList(List<UserEntity> userList) {
 		List<CommentMentionResponseDto> result;
-		result = followList.stream().map(CommentMentionResponseDto::fromEntity).collect(Collectors.toList());
+		result = userList.stream().map(CommentMentionResponseDto::fromEntity).collect(Collectors.toList());
 		return result;
 	}
 
