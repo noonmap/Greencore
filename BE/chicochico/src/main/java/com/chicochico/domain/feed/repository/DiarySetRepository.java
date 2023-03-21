@@ -8,9 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 
 public interface DiarySetRepository extends JpaRepository<DiarySetEntity, Long> { // <Entity 객체, ID 타입>
 
 	Page<DiarySetEntity> findByUserAndIsDeleted(UserEntity user, IsDeletedType isDeletedType, Pageable pageable);
+
+	Optional<DiarySetEntity> findByIdAndIsDeleted(Long id, IsDeletedType isDeletedType);
 
 }

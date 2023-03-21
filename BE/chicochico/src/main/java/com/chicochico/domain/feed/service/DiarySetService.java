@@ -5,7 +5,9 @@ import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.FileService;
 import com.chicochico.domain.feed.dto.request.DiarySetRequestDto;
+import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
+import com.chicochico.domain.feed.repository.DiaryRepository;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
@@ -28,6 +30,7 @@ import java.util.List;
 public class DiarySetService {
 
 	private final DiarySetRepository diarySetRepository;
+	private final DiaryRepository diaryRepository;
 	private final UserRepository userRepository;
 	private final AuthService authService;
 	private final FileService fileService;
@@ -89,7 +92,35 @@ public class DiarySetService {
 	 * @param diarySetRequestDto 수정할 관찰일지 내용
 	 */
 	public void modifyDiarySet(Long diarySetId, DiarySetRequestDto diarySetRequestDto) {
+		// 삭제된 관찰일지인지 확인
+		DiarySetEntity originDiarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
 
+		// 작성자와 현재 유저 같은 사람인지 확인
+		Long userId = authService.getUserId();
+		UserEntity writer = originDiarySet.getUser();
+		if (writer.getId() != userId) throw new CustomException(ErrorCode.NO_ACCESS)
+
+		// 기존 저장된 이미지 삭제 (일지는 건들지 않음)
+		String originImagePath = originDiarySet.getImagePath();
+		fileService.deleteImageFile(originImagePath);
+
+		// 새로운 이미지 저장
+		MultipartFile multipartFile = diarySetRequestDto.getImage();
+		String newImagePath = fileService.storeImageFile(multipartFile, FeedService.IMAGE_FILE_SUB_DIR);
+
+		// (내키식은 수정할 수 없다)
+
+		// DiarySetEntity 수정한 내용 저장
+		DiarySetEntity newDiarySet = DiarySetEntity.builder()
+			.id(originDiarySet.getId())
+			.user(originDiarySet.getUser())
+			.userPlant(originDiarySet.getUserPlant())
+			.imagePath(newImagePath)
+			.diaryCount(originDiarySet.getDiaryCount())
+			.title(diarySetRequestDto.getTitle())
+			.isDeleted(originDiarySet.getIsDeleted())
+			.build();
+		diarySetRepository.save(newDiarySet);
 	}
 
 
@@ -99,6 +130,18 @@ public class DiarySetService {
 	 * @param diarySetId 관찰 일지 ID
 	 */
 	public void deleteDiarySet(Long diarySetId) {
+		// 삭제된 관찰일지인지 확인
+		DiarySetEntity originDiarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
+
+		// 연결된 일지들을 삭제
+		List<DiaryEntity> diaryList = diaryRepository.findByDiarySetAndIsDeleted(originDiarySet, IsDeletedType.N);
+		for (DiaryEntity diary : diaryList) {
+		}
+		// 이미지 삭제
+		String originImagePath = originDiarySet.getImagePath();
+		fileService.deleteImageFile(originImagePath);
+
+		// 연결된 북마크 삭제
 	}
 
 
