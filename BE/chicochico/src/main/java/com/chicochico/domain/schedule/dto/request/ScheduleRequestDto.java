@@ -27,13 +27,12 @@ public class ScheduleRequestDto {
 
 
 	public ScheduleEntity toEntity(UserPlantEntity userPlant, UserEntity user) {
-
 		return ScheduleEntity.builder()
 			.date(scheduleDate)
 			.userPlant(userPlant)
 			.content(content)
-			.userPlant(userPlant)
 			.user(user)
+			.scheduleCode(scheduleCode)
 			.isCompleted(IsCompletedType.N)
 			.isDeleted(IsDeletedType.N)
 			.build();
