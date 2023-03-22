@@ -2,15 +2,33 @@ package com.chicochico.domain.user.dto.request;
 
 
 import com.chicochico.domain.user.entity.UserEntity;
+import lombok.Builder;
+import lombok.Data;
 
 
 /**
  * 유저 프로필 정보 생성, 수정 요청
  */
+@Data
+@Builder
 public class ProfileRequestDto {
 
-	public UserEntity toEntity() {
-		return (UserEntity) new Object();
+	private String nickname;
+	private String introduction;
+
+
+	public UserEntity toEntity(UserEntity user) {
+		return UserEntity.builder()
+			.id(user.getId())
+			.email(user.getEmail())
+			.password(user.getPassword())
+			.nickname(nickname)
+			.profileImagePath(user.getProfileImagePath())
+			.introduction(introduction)
+			.followerCount(user.getFollowerCount())
+			.followingCount(user.getFollowingCount())
+			.isDeleted(user.getIsDeleted())
+			.build();
 	}
 
 }
