@@ -19,10 +19,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -149,10 +151,11 @@ public class FollowServiceTest {
 			// given
 			String nickname = "nonexistent_user";
 			when(userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N)).thenReturn(Optional.empty()); // 피드 주인)
+			Pageable pageable = PageRequest.of(0, 10);
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
-				followService.getFollowingList(nickname);
+				followService.getFollowingList(nickname, pageable);
 			});
 
 			// then
@@ -167,14 +170,15 @@ public class FollowServiceTest {
 			UserEntity user = UserEntity.builder().id(FOLLOWER_ID).nickname(FEED_OWNER_NICKNAME).build();
 			when(userRepository.findByNicknameAndIsDeleted(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 
-			List<FollowEntity> followList = new ArrayList<>();
-			when(followRepository.findByFollower(user)).thenReturn(followList);
+			Page<FollowEntity> followList = Page.empty();
+			Pageable pageable = PageRequest.of(0, 10);
+			when(followRepository.findByFollower(user, pageable)).thenReturn(followList);
 
 			// when
-			List<UserEntity> followingList = followService.getFollowingList(FEED_OWNER_NICKNAME);
+			Page<UserEntity> followingPage = followService.getFollowingList(FEED_OWNER_NICKNAME, pageable);
 
 			// then
-			assertThat(followingList).isEmpty();
+			assertThat(followingPage).isEmpty();
 		}
 
 
@@ -185,18 +189,21 @@ public class FollowServiceTest {
 			UserEntity user = UserEntity.builder().id(FOLLOWER_ID).nickname(FEED_OWNER_NICKNAME).build();
 			UserEntity following1 = UserEntity.builder().id(2L).nickname("following1").build();
 			UserEntity following2 = UserEntity.builder().id(3L).nickname("following2").build();
-			List<FollowEntity> followList = Arrays.asList(
+			Pageable pageable = PageRequest.of(0, 10);
+			Page<FollowEntity> followPage = new PageImpl<>(Arrays.asList(
 				FollowEntity.builder().follower(user).following(following1).build(),
 				FollowEntity.builder().follower(user).following(following2).build()
-			);
+			), pageable, 2);
+			// PageImpl 생성자의 (리스트, pageable 객체, 전체 데이터의 크기)
+
 			when(userRepository.findByNicknameAndIsDeleted(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
-			when(followRepository.findByFollower(user)).thenReturn(followList);
+			when(followRepository.findByFollower(user, pageable)).thenReturn(followPage);
 
 			// when
-			List<UserEntity> followingList = followService.getFollowingList(user.getNickname());
+			Page<UserEntity> followingPage = followService.getFollowingList(user.getNickname(), pageable);
 
 			// then
-			assertThat(followingList).containsExactlyInAnyOrder(following1, following2);
+			assertThat(followingPage).containsExactlyInAnyOrder(following1, following2);
 		}
 
 	}
@@ -211,10 +218,11 @@ public class FollowServiceTest {
 			// given
 			String nickname = "nonexistent_user";
 			when(userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N)).thenReturn(Optional.empty()); // 피드 주인)
+			Pageable pageable = PageRequest.of(0, 10);
 
 			// when
 			CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
-				followService.getFollowerList(nickname);
+				followService.getFollowerList(nickname, pageable);
 			});
 
 			// then
@@ -229,14 +237,14 @@ public class FollowServiceTest {
 			UserEntity user = UserEntity.builder().id(FOLLOWING_ID).nickname(FEED_OWNER_NICKNAME).build();
 			when(userRepository.findByNicknameAndIsDeleted(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
 
-			List<FollowEntity> followList = new ArrayList<>();
-			when(followRepository.findByFollowing(user)).thenReturn(followList);
+			Pageable pageable = PageRequest.of(0, 10);
+			when(followRepository.findByFollowing(user, pageable)).thenReturn(Page.empty());
 
 			// when
-			List<UserEntity> followingList = followService.getFollowerList(FEED_OWNER_NICKNAME);
+			Page<UserEntity> followingPage = followService.getFollowerList(FEED_OWNER_NICKNAME, pageable);
 
 			// then
-			assertThat(followingList).isEmpty();
+			assertThat(followingPage).isEmpty();
 		}
 
 
@@ -247,19 +255,21 @@ public class FollowServiceTest {
 			UserEntity user = UserEntity.builder().id(FOLLOWING_ID).nickname(FEED_OWNER_NICKNAME).build();
 			UserEntity follower1 = UserEntity.builder().id(3L).nickname("follower1").build();
 			UserEntity follower2 = UserEntity.builder().id(4L).nickname("follower2").build();
-			List<FollowEntity> followList = Arrays.asList(
+
+			Pageable pageable = PageRequest.of(0, 10);
+			Page<FollowEntity> followPage = new PageImpl<>(Arrays.asList(
 				FollowEntity.builder().follower(follower1).following(user).build(),
 				FollowEntity.builder().follower(follower2).following(user).build()
-			);
-			System.out.println(followList);
+			), pageable, 2);
+			// PageImpl 생성자의 (리스트, pageable 객체, 전체 데이터의 크기)
 			when(userRepository.findByNicknameAndIsDeleted(FEED_OWNER_NICKNAME, IsDeletedType.N)).thenReturn(Optional.of(user)); // 피드 주인
-			when(followRepository.findByFollowing(user)).thenReturn(followList);
+			when(followRepository.findByFollowing(user, pageable)).thenReturn(followPage);
 
 			// when
-			List<UserEntity> followerList = followService.getFollowerList(user.getNickname());
+			Page<UserEntity> followerPage = followService.getFollowerList(user.getNickname(), pageable);
 
 			// then
-			assertThat(followerList).containsExactlyInAnyOrder(follower1, follower2);
+			assertThat(followerPage).containsExactlyInAnyOrder(follower1, follower2);
 		}
 
 	}
