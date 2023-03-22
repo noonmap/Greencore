@@ -12,14 +12,19 @@ import Pagination from 'react-js-pagination';
 import styles from './plantDocs.module.scss';
 
 export default function plantDocs() {
-  const [inputData, setInputData] = useState<string>(''); // 인풋데이터
-
   // 인기식물, 인기 관찰일지, 나와 같은 식물을 키우는 사람들
   const [topPlantList, setTopPlantList] = useState<Array<PlantType>>([]);
   const [topDiarySetList, setTopDiarySetList] = useState<Array<SearchDiarySetType>>([]);
   const [samePlantUserList, setSamePlantUserList] = useState<Array<SearchUserType>>([]);
 
-  // 식물도감 이름 리스트 조회
+  // 식물도감 리스트 인덱스 검색
+  const indexList = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [pageAtindex, setPageAtindex] = useState<number>(1);
+  const [sizeAtindex, setSizeAtindex] = useState<number>(5);
+
+  // 식물도감 이름 리스트 검색
+  const [inputData, setInputData] = useState<string>(''); // 인풋데이터
   const [page, setPage] = useState<number>(1);
   const [totalItemCount, setTotalItemCount] = useState<number>(0);
   const [size, setSize] = useState<number>(5);
@@ -66,6 +71,51 @@ export default function plantDocs() {
     }
   }
 
+  // ----------------------------------- index 데이터 -----------------------------------
+
+  // 웹 훅
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      fetchPlantListByIndex(1);
+    }
+  }, [selectedIndex]);
+
+  // 웹 훅
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      fetchPlantListByIndex(pageAtindex);
+    }
+  }, [pageAtindex]);
+
+  // 식물도감 리스트 index 버튼 클릭
+  function handleIndexBtnCLick(e) {
+    const search = e.target.innerText;
+    const data = indexList.findIndex((index) => {
+      return index === search;
+    });
+    setSelectedIndex(data);
+  }
+
+  // 식물도감 리스트 index 검색
+  async function fetchPlantListByIndex(page: number) {
+    try {
+      const params = {
+        index: indexList[selectedIndex],
+        page: page,
+        size: sizeAtindex,
+      };
+      const { data } = await getPlantListByIndex(params);
+      setPlantDocsList(data.content);
+      setTotalItemCount(data.totalElements);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // 페이지네이션 클릭
+  const handlePageAtindexChange = (pageAtindex) => {
+    setPageAtindex(pageAtindex);
+  };
   // ----------------------------------- 검색 데이터 -----------------------------------
 
   // 웹 훅
@@ -91,11 +141,11 @@ export default function plantDocs() {
     }
   }
 
-  // 검색
+  // 검색창 Enter 입력
   async function handleKeyUp(event) {
     if (event.key === 'Enter') {
       setInputData(event.target.value);
-
+      setSelectedIndex(null);
       fetchPlantList();
     }
   }
@@ -125,6 +175,18 @@ export default function plantDocs() {
         <div className={`grid grid-cols-2 gap-2`}>
           <div className={`overflow-auto`} style={{ height: '700px' }}>
             <h1>식물도감</h1>
+            {/* index 검색 */}
+            <div className={`flex flex-wrap`}>
+              {indexList.map((index) => (
+                <div key={index}>
+                  <button
+                    className={`rounded-full px-3 mr-1 my-1 ${indexList[selectedIndex] === index ? 'bg-green-700 text-white' : 'bg-green-300'}`}
+                    onClick={handleIndexBtnCLick}>
+                    {index}
+                  </button>
+                </div>
+              ))}
+            </div>
             {/* 식물도감 검색 */}
             <div className={`${styles.search} w-full flex`}>
               <input type='text' placeholder={'검색어를 입력하세요'} onKeyUp={handleKeyUp} />
@@ -142,13 +204,14 @@ export default function plantDocs() {
                 ))}
                 <div className={`${styles.pagination}`}>
                   <Pagination
-                    activePage={page}
-                    itemsCountPerPage={size}
+                    activePage={selectedIndex === null ? page : pageAtindex}
+                    itemsCountPerPage={selectedIndex === null ? size : sizeAtindex}
                     totalItemsCount={totalItemCount}
                     pageRangeDisplayed={5}
+                    activeClass={styles.active}
                     prevPageText={'‹'}
                     nextPageText={'›'}
-                    onChange={handlePageChange}
+                    onChange={selectedIndex === null ? handlePageChange : handlePageAtindexChange}
                   />
                 </div>
               </>
