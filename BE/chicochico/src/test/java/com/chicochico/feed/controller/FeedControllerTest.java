@@ -69,7 +69,7 @@ public class FeedControllerTest extends FeedTestHelper {
 
 	protected FeedResponseDto doFeedResponseDto() {
 		return FeedResponseDto.builder()
-			.user(new ProfileResponseDto())
+			.user(ProfileResponseDto.builder().build())
 			.feedCode(FeedType.FEED_POST)
 			.observationDate(LocalDate.now())
 			.feedId(0L)

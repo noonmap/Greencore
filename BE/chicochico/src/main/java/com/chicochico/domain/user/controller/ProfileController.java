@@ -6,6 +6,7 @@ import com.chicochico.domain.user.dto.request.ProfileRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileResponseDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.domain.user.service.FollowService;
 import com.chicochico.domain.user.service.ProfileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,13 +27,14 @@ import java.util.List;
 public class ProfileController {
 
 	private final ProfileService profileService;
+	private final FollowService followService;
 
 
 	@GetMapping("/{nickname}")
 	@ApiOperation(value = "프로필을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<ProfileResponseDto>> getUserProfile(@PathVariable String nickname) {
 		UserEntity userProfile = profileService.getUserProfile(nickname);
-		ProfileResponseDto profileResponseDto = ProfileResponseDto.fromEntity(userProfile);
+		ProfileResponseDto profileResponseDto = ProfileResponseDto.fromEntity(userProfile, followService::isFollowed);
 
 		return ResponseEntity.ok().body(ResultDto.of(profileResponseDto));
 	}
@@ -60,9 +62,9 @@ public class ProfileController {
 	@ApiOperation(value = "사용자를 검색합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<ProfileSimpleResponseDto>>> getUserProfileList(@RequestParam("search") String search, Pageable pageable) {
 		Page<UserEntity> userProfileList = profileService.getUserProfileList(search, pageable);
-		// TODO : entity page -> dto page 변환 추가
+		Page<ProfileSimpleResponseDto> profileSimpleResponseDtoPage = ProfileSimpleResponseDto.fromEnityPage(userProfileList, pageable);
 
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDtoPage));
 	}
 
 

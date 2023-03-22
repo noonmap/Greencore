@@ -28,9 +28,9 @@ public class PostResponseDto {
 	private LocalDateTime createdAt;
 
 
-	public static PostResponseDto fromEntity(PostEntity post, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList) {
+	public static PostResponseDto fromEntity(PostEntity post, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed) {
 		return PostResponseDto.builder()
-			.user(ProfileResponseDto.fromEntity(post.getUser()))
+			.user(ProfileResponseDto.fromEntity(post.getUser(), isFollowed))
 			.postId(post.getId())
 			.content(post.getContent())
 			.imagePath(post.getImagePath())
@@ -42,19 +42,20 @@ public class PostResponseDto {
 	}
 
 
-	public static List<PostResponseDto> fromEnityList(List<PostEntity> postList, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList) {
+	public static List<PostResponseDto> fromEnityList(List<PostEntity> postList, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList,
+		Function<Long, Boolean> isFollowed) {
 		List<PostResponseDto> result = new ArrayList<>();
 		for (PostEntity post : postList) {
-			PostResponseDto xxResponseDto = PostResponseDto.fromEntity(post, getCommentCount, getTagsList);
+			PostResponseDto xxResponseDto = PostResponseDto.fromEntity(post, getCommentCount, getTagsList, isFollowed);
 			result.add(xxResponseDto);
 		}
 		return result;
 	}
 
 
-	public static Page<PostResponseDto> fromEntityPage(Page<PostEntity> page, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList) {
+	public static Page<PostResponseDto> fromEntityPage(Page<PostEntity> page, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed) {
 		List<PostEntity> postList = new ArrayList<>(page.toList());
-		List<PostResponseDto> postResponseDtoList = PostResponseDto.fromEnityList(postList, getCommentCount, getTagsList);
+		List<PostResponseDto> postResponseDtoList = PostResponseDto.fromEnityList(postList, getCommentCount, getTagsList, isFollowed);
 		Page<PostResponseDto> result = new PageImpl<>(postResponseDtoList, page.getPageable(), postResponseDtoList.size());
 		return result;
 	}

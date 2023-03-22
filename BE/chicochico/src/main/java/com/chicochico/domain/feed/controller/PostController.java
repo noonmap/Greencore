@@ -8,6 +8,7 @@ import com.chicochico.domain.feed.dto.response.PostSimpleResponseDto;
 import com.chicochico.domain.feed.entity.PostEntity;
 import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.feed.service.PostService;
+import com.chicochico.domain.user.service.FollowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ public class PostController {
 
 	private final FeedService feedService;
 
+	private final FollowService followService;
+
 
 	@GetMapping(value = "/list/{nickname}")
 	@ApiOperation(value = "게시글 목록을 조회합니다.", notes = "")
@@ -41,7 +44,7 @@ public class PostController {
 	@ApiOperation(value = "게시글 상세 내용을 조회합니다.")
 	public ResponseEntity<ResultDto<PostResponseDto>> getPost(@PathVariable("postId") Long postId) {
 		PostEntity post = postService.getPost(postId);
-		PostResponseDto postResponseDto = PostResponseDto.fromEntity(post, feedService::getCommentCount, feedService::getTagContentList);
+		PostResponseDto postResponseDto = PostResponseDto.fromEntity(post, feedService::getCommentCount, feedService::getTagContentList, followService::isFollowed);
 		return ResponseEntity.ok().body(ResultDto.of(postResponseDto));
 	}
 
