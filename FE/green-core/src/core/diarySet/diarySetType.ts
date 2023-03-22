@@ -4,3 +4,10 @@ export type DiarySetType = {
   startDate: string;
   title: string;
 };
+
+export type SearchDiarySetType = {
+  diarySetId: number;
+  startDate: string;
+  imagePath: string;
+  title: string;
+};
