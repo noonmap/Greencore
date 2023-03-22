@@ -32,8 +32,8 @@ public class ScheduleRequestDto {
 			.date(scheduleDate)
 			.userPlant(userPlant)
 			.content(content)
-			.userPlant(userPlant)
 			.user(user)
+			.scheduleCode(scheduleCode)
 			.isCompleted(IsCompletedType.N)
 			.isDeleted(IsDeletedType.N)
 			.build();
