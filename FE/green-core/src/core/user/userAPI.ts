@@ -450,7 +450,7 @@ export const searchByUserMore = createAsyncThunk('searchByUserMore', async (para
 });
 
 // 나와 같은 식물을 키우는 사람들 조회
-export const getSamePlantUserList = createAsyncThunk('getSamePlantUserList', async () => {
+export const getSamePlantUserList = async () => {
   const { data } = await http.get(`/profile/plant`);
   return data;
-});
+};

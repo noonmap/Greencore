@@ -5,13 +5,29 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
   if (req.method === 'GET') {
     res.status(200).json({
       result: 'SUCCESS',
-      data: {
-        nickname: 'test',
-        profileImagePath: '/public/images/profile.png',
-        introduction: '안녕하세요 test 입니다',
-        followingCount: 111,
-        followerCount: 222,
-      },
+      data: [
+        {
+          nickname: 'rst',
+          profileImagePath: '/images/noProfile.png',
+          // introduction: '안녕하세요 test 입니다',
+          // followingCount: 111,
+          // followerCount: 222,
+        },
+        {
+          nickname: 'jcw',
+          profileImagePath: '/images/noProfile.png',
+          // introduction: '안녕하세요 test 입니다',
+          // followingCount: 111,
+          // followerCount: 222,
+        },
+        {
+          nickname: 'chk',
+          profileImagePath: '/images/noProfile.png',
+          // introduction: '안녕하세요 test 입니다',
+          // followingCount: 111,
+          // followerCount: 222,
+        },
+      ],
     });
   } else {
     res.status(400).json({ result: 'FAIL', data: null });

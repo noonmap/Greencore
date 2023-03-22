@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SearchPlantType } from './plantType';
+import { PlantType } from './plantType';
 import * as plantAPI from './plantAPI';
 
 interface PlantState {
   // 검색용
-  searchPlantList: Array<SearchPlantType>;
+  searchPlantList: Array<PlantType>;
   isStopedAtPlant: boolean;
   pageAtPlant: number;
 }
