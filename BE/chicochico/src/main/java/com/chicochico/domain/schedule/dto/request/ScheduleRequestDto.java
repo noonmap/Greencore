@@ -27,7 +27,6 @@ public class ScheduleRequestDto {
 
 
 	public ScheduleEntity toEntity(UserPlantEntity userPlant, UserEntity user) {
-
 		return ScheduleEntity.builder()
 			.date(scheduleDate)
 			.userPlant(userPlant)
