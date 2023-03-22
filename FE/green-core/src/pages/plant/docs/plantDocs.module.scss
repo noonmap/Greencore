@@ -1,18 +1,5 @@
-.pagination {
-  // display: flex;
-  // grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
-  // grid-gap: 5px;
-  // list-style: none;
-  // margin: 0;
-  // padding: 0;
-  // justify-content: center;
-  // align-items: center;
-}
-
 .pagination ul {
   display: flex;
-  // grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
-  // grid-gap: 5px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -20,16 +7,19 @@
   align-items: center;
 }
 
+.active {
+  background-color: rgb(21, 128, 61) !important;
+  color: white !important;
+}
+
 .pagination li {
   padding: 5px 10px;
-  border: 1px solid green;
+  // border: 1px solid green;
+  background-color: rgb(134, 239, 172);
+  color: black;
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
-}
-
-.pagination li.active {
-  background-color: green;
 }
 
 .pagination li.disabled {

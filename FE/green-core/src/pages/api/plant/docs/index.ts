@@ -4,6 +4,9 @@ import { PlainResData } from '@/core/common/commonType';
 export default function handler(req: NextApiRequest, res: NextApiResponse<PlainResData>) {
   if (req.method === 'GET') {
     const page = Number(req.query.page);
+    const size = Number(req.query.size);
+    const search = String(req.query.search);
+    const index = String(req.query.index);
 
     if (page % 2 === 0) {
       res.status(200).json({
