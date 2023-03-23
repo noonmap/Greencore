@@ -13,7 +13,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PlainR
       result: 'SUCCESS',
       data: [
         {
-          nickname: `following ${page * 10 + 1}`,
+          nickname: `temp`,
           profileImagePath: '/public/images/profile.png',
           introduction: '안녕하세요 test11 입니다',
           isFollowed: true, // 내가 팔로우한 여부

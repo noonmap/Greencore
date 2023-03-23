@@ -1,27 +1,32 @@
-// @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 @import url('./font/pretendard.css');
 
 :root {
   --max-width: 1100px;
-  --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono', 'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --margin: 0.5rem;
+  --padding-card: 2rem;
+
+  --border-radius: 12px;
+  --border-radius-input: 6px;
+  --border-radius-card: calc(max(1rem, 0.8334vw) * (60 / 16));
 
   --primary-glow: conic-gradient(from 180deg at 50% 50%, #16abff33 0deg, #0885ff33 55deg, #54d6ff33 120deg, #0071ff33 160deg, transparent 360deg);
   --secondary-glow: radial-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
-
-  --tile-start-rgb: 239, 245, 249;
-  --tile-end-rgb: 228, 232, 233;
   --tile-border: conic-gradient(#00000080, #00000040, #00000030, #00000020, #00000010, #00000010, #00000080);
 
-  --callout-rgb: 238, 240, 241;
-  --callout-border-rgb: 172, 175, 176;
-  --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
+  --main-color: #4fc577;
+  --main-light-color: #87d0a0;
+  --second-color: #6ad150;
+  --second-light-color: #8ed67d;
+  --light-color: #d9d9d9;
+  --thin-color: #f0f0f0;
+  --title-color: #121b15;
+  --title-light-color: #68716b;
+  --danger-color: #ca7468;
+  --like-color: #da2b13;
+
+  --text-bold: 700;
+  --text-extra-bold: 800;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -61,6 +66,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   // height: 100vh;
+  color: var(--title-color);
 }
 
 a {
