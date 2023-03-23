@@ -79,6 +79,11 @@ public class UserEntity extends CommonEntity implements UserDetails {
 	}
 
 
+	public void setProfileImagePath(String profileImagePath) {
+		this.profileImagePath = profileImagePath;
+	}
+
+
 	public void increaseFollowingCount() {
 		this.followingCount++;
 	}

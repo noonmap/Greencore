@@ -14,8 +14,7 @@ import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.repository.UserPlantRepository;
 import com.chicochico.domain.user.repository.UserRepository;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -45,102 +44,97 @@ public class ScheduleRepositoryTest {
 	@Autowired
 	PlantRepository plantRepository;
 
-	private UserEntity userEntity;
-	private PlantEntity plantEntity;
-	private UserPlantEntity userPlantEntity;
-	private ScheduleEntity scheduleEntity;
 
-
-	@BeforeEach
-	public void init() {
-		LocalDate localdate1 = LocalDate.of(2023, 4, 1);
-		LocalDate localdate2 = LocalDate.of(2023, 4, 3);
-		LocalDate localdate3 = LocalDate.of(2023, 4, 7);
-		LocalDate localdate4 = LocalDate.of(2023, 4, 21);
-		LocalDate localdate5 = LocalDate.of(2023, 5, 2);
-		userEntity = userRepository.save(UserEntity.builder()
-			.email("email")
+	@Test
+	@DisplayName("Schedule Repository 테스트")
+	public void 일정목록조회테스트() {
+		UserEntity user = userRepository.save(UserEntity.builder()
+			.id(1L).email("email")
 			.password("password")
 			.nickname("nickname")
 			.profileImagePath("path")
 			.introduction("intro")
 			.followingCount(0)
 			.followerCount(0)
-			.isDeleted(IsDeletedType.N)
-			.build());
+			.isDeleted(IsDeletedType.N).build());
 
-		plantEntity = plantRepository.save(PlantEntity.builder()
-			.name("tomato")
-			.build());
+		PlantEntity plant = plantRepository.save(PlantEntity.builder()
+			.name("name")
+			.imagePath("default")
+			.userCount(0).build());
+		UserPlantEntity userPlant = userPlantRepository.save(UserPlantEntity.builder()
+			.id(1L)
+			.user(user)
+			.plant(plant)
+			.plantNickname("nickname")
+			.plantImagePath("default")
+			.isDeleted(IsDeletedType.N).build());
 
-		userPlantEntity = userPlantRepository.save(UserPlantEntity.builder()
-			.user(userEntity)
-			.plant(plantEntity)
-			.plantNickname("cute tomato")
-			.plantImagePath("path")
-			.isDeleted(IsDeletedType.N)
-			.build());
+		LocalDate localdate1 = LocalDate.of(2023, 4, 1);
+		LocalDate localdate2 = LocalDate.of(2023, 4, 3);
+		LocalDate localdate3 = LocalDate.of(2023, 4, 7);
+		LocalDate localdate4 = LocalDate.of(2023, 4, 30);
+		LocalDate localdate5 = LocalDate.of(2023, 5, 2);
+		LocalDate localdate6 = LocalDate.of(2023, 5, 1);
+		LocalDate localdate7 = LocalDate.of(2023, 4, 4);
 
-		scheduleEntity = scheduleRepository.save(ScheduleEntity.builder()
+		ScheduleEntity schedule = ScheduleEntity.builder()
 			.content("content")
+			.userPlant(userPlant)
+			.user(user)
 			.date(localdate1)
-			.isDeleted(IsDeletedType.N)
 			.isCompleted(IsCompletedType.N)
+			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
-			.user(userEntity)
-			.userPlant(userPlantEntity)
-			.build());
-		scheduleEntity = scheduleRepository.save(ScheduleEntity.builder()
+			.build();
+		scheduleRepository.save(schedule);
+		ScheduleEntity schedule1 = ScheduleEntity.builder()
 			.content("content")
+			.userPlant(userPlant)
+			.user(user)
 			.date(localdate2)
-			.isDeleted(IsDeletedType.N)
 			.isCompleted(IsCompletedType.N)
+			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
-			.user(userEntity)
-			.userPlant(userPlantEntity)
-			.build());
-		scheduleEntity = scheduleRepository.save(ScheduleEntity.builder()
+			.build();
+		scheduleRepository.save(schedule1);
+		ScheduleEntity schedule2 = ScheduleEntity.builder()
 			.content("content")
+			.userPlant(userPlant)
+			.user(user)
 			.date(localdate3)
-			.isDeleted(IsDeletedType.N)
 			.isCompleted(IsCompletedType.N)
+			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
-			.user(userEntity)
-			.userPlant(userPlantEntity)
-			.build());
-		scheduleEntity = scheduleRepository.save(ScheduleEntity.builder()
+			.build();
+		scheduleRepository.save(schedule2);
+		ScheduleEntity schedule3 = ScheduleEntity.builder()
 			.content("content")
+			.userPlant(userPlant)
+			.user(user)
 			.date(localdate4)
-			.isDeleted(IsDeletedType.N)
 			.isCompleted(IsCompletedType.N)
+			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
-			.user(userEntity)
-			.userPlant(userPlantEntity)
-			.build());
-		scheduleEntity = scheduleRepository.save(ScheduleEntity.builder()
+			.build();
+		scheduleRepository.save(schedule3);
+		ScheduleEntity schedule4 = ScheduleEntity.builder()
 			.content("content")
+			.userPlant(userPlant)
+			.user(user)
 			.date(localdate5)
-			.isDeleted(IsDeletedType.N)
 			.isCompleted(IsCompletedType.N)
+			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
-			.user(userEntity)
-			.userPlant(userPlantEntity)
-			.build());
-	}
+			.build();
+		scheduleRepository.save(schedule4);
 
+		List<ScheduleEntity> scheduleEntityListMonth = scheduleRepository.findAllByDateBetweenAndUser(localdate1, localdate6, user);
+		List<ScheduleEntity> scheduleEntityListWeek = scheduleRepository.findAllByDateBetweenAndUser(localdate1, localdate7, user);
 
-	@Test
-	@DisplayName("Schedule Repository 테스트")
-	public void 일정목록조회테스트() {
-		LocalDate localdateSt = LocalDate.of(2023, 4, 1);
-		LocalDate localdateEd = LocalDate.of(2023, 4, 30);
-		LocalDate localdateEd1 = LocalDate.of(2023, 4, 8);
-		List<ScheduleEntity> scheduleEntityListMonth = scheduleRepository.findAllByDateBetweenAndUser(localdateSt, localdateEd, userEntity);
-		List<ScheduleEntity> scheduleEntityListWeek = scheduleRepository.findAllByDateBetweenAndUser(localdateSt, localdateEd1, userEntity);
-
-		Assertions.assertThat(scheduleEntityListMonth.size() == 4);
-		Assertions.assertThat(scheduleEntityListWeek.size() == 2);
+		Assertions.assertTrue(scheduleEntityListMonth.size() == 4);
+		Assertions.assertTrue(scheduleEntityListWeek.size() == 2);
 
 	}
-	
+
 }
