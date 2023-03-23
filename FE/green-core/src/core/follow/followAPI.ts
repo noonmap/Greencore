@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import http from '@/lib/http';
+import { scrollType } from '@/core/follow/followType';
 
 // 팔로우하기
 export const updateFollow = async (nickname: string | string[]) => {
@@ -22,7 +23,7 @@ export const deleteFollow = async (nickname: string | string[]) => {
 };
 
 // 팔로잉 리스트 가져오기
-export const getFollowingList = async (nickname: string | string[], params: any) => {
+export const getFollowingList = async (nickname: string | string[], params: scrollType) => {
   try {
     const { data } = await http.get(`/following/${nickname}`, { params });
     return data;
@@ -32,9 +33,9 @@ export const getFollowingList = async (nickname: string | string[], params: any)
 };
 
 // 팔로워 리스트 가져오기
-export const getFollowerList = async (nickname: string | string[]) => {
+export const getFollowerList = async (nickname: string | string[], params: scrollType) => {
   try {
-    const { data } = await http.get(`/follower/${nickname}`);
+    const { data } = await http.get(`/follower/${nickname}`, { params });
     return data;
   } catch (error) {
     console.error(error);
