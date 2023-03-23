@@ -69,4 +69,14 @@ public class PlantEntity {
 	@Column(nullable = false)
 	private Integer userCount;
 
+
+	public void increaseUserCount() {
+		this.userCount++;
+	}
+
+
+	public void decreaseUserCount() {
+		this.userCount--;
+	}
+
 }

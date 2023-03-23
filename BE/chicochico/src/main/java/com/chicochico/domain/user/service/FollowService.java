@@ -10,12 +10,12 @@ import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -72,7 +72,7 @@ public class FollowService {
 	 * @param nickname 피드 주인 nickname
 	 * @return 피드주인의 팔로잉 목록
 	 */
-	public List<UserEntity> getFollowingList(String nickname) {
+	public Page<UserEntity> getFollowingList(String nickname, Pageable pageable) {
 
 		Optional<UserEntity> follower = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N); // 피드 주인
 
@@ -80,12 +80,9 @@ public class FollowService {
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		}
 
-		// 피드 주인이 follower 인 List 조회
-		List<FollowEntity> followList = followRepository.findByFollower(follower.get());
-
-		List<UserEntity> followingList = followList.stream().map(FollowEntity::getFollowing).collect(Collectors.toList());
-
-		return followingList;
+		// 피드 주인이 follower 인 Page 조회
+		Page<FollowEntity> followPage = followRepository.findByFollower(follower.get(), pageable);
+		return followPage.map(FollowEntity::getFollowing);
 
 	}
 
@@ -130,7 +127,7 @@ public class FollowService {
 	 * @param nickname 피드 주인 nickname
 	 * @return 피드 주인의 팔로워 목록
 	 */
-	public List<UserEntity> getFollowerList(String nickname) {
+	public Page<UserEntity> getFollowerList(String nickname, Pageable pageable) {
 		Optional<UserEntity> following = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N); // 피드 주인
 
 		if (following.isEmpty()) { // 피드 주인이 존재 하지 않음
@@ -138,11 +135,8 @@ public class FollowService {
 		}
 
 		// 피드 주인이 following 인 List 조회
-		List<FollowEntity> followList = followRepository.findByFollowing(following.get());
-
-		List<UserEntity> followerList = followList.stream().map(FollowEntity::getFollower).collect(Collectors.toList());
-
-		return followerList;
+		Page<FollowEntity> followPage = followRepository.findByFollowing(following.get(), pageable);
+		return followPage.map(FollowEntity::getFollower);
 	}
 
 
