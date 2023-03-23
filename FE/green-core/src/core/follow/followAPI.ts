@@ -22,9 +22,9 @@ export const deleteFollow = async (nickname: string | string[]) => {
 };
 
 // 팔로잉 리스트 가져오기
-export const getFollowingList = async (nickname: string | string[]) => {
+export const getFollowingList = async (nickname: string | string[], params: any) => {
   try {
-    const { data } = await http.get(`/following/${nickname}`);
+    const { data } = await http.get(`/following/${nickname}`, { params });
     return data;
   } catch (error) {
     console.error(error);
