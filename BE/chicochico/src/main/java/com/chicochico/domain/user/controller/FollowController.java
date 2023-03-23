@@ -8,10 +8,10 @@ import com.chicochico.domain.user.service.FollowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -33,11 +33,11 @@ public class FollowController {
 
 	@GetMapping("/following/{nickname}")
 	@ApiOperation(value = "팔로잉 목록을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<List<FollowResponseDto>>> getFollowingList(@PathVariable("nickname") String nickname) {
-		List<UserEntity> followList = followService.getFollowingList(nickname);
-		List<FollowResponseDto> followResponseDtoList = FollowResponseDto.fromEnityList(followList, followService::isFollowed);
+	public ResponseEntity<ResultDto<Page<FollowResponseDto>>> getFollowingList(@PathVariable("nickname") String nickname, Pageable pageable) {
+		Page<UserEntity> followList = followService.getFollowingList(nickname, pageable);
+		Page<FollowResponseDto> followResponseDtoPage = FollowResponseDto.fromEntityPage(followList, followService::isFollowed);
 
-		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoList));
+		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoPage));
 	}
 
 
@@ -52,11 +52,11 @@ public class FollowController {
 
 	@GetMapping("/follower/{nickname}")
 	@ApiOperation(value = "팔로워 목록을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<List<FollowResponseDto>>> getFollowerList(@PathVariable("nickname") String nickname) {
-		List<UserEntity> followList = followService.getFollowerList(nickname);
-		List<FollowResponseDto> followResponseDtoList = FollowResponseDto.fromEnityList(followList, followService::isFollowed);
+	public ResponseEntity<ResultDto<Page<FollowResponseDto>>> getFollowerList(@PathVariable("nickname") String nickname, Pageable pageable) {
+		Page<UserEntity> followList = followService.getFollowerList(nickname, pageable);
+		Page<FollowResponseDto> followResponseDtoPage = FollowResponseDto.fromEntityPage(followList, followService::isFollowed);
 
-		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoList));
+		return ResponseEntity.ok().body(ResultDto.of(followResponseDtoPage));
 	}
 
 
