@@ -4,6 +4,8 @@ package com.chicochico.domain.user.dto.response;
 import com.chicochico.domain.user.entity.UserEntity;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,14 @@ public class FollowResponseDto {
 			FollowResponseDto xxResponseDto = FollowResponseDto.fromEntity(user, isFollowed);
 			result.add(xxResponseDto);
 		}
+		return result;
+	}
+
+
+	public static Page<FollowResponseDto> fromEntityPage(Page<UserEntity> page, Function<Long, Boolean> isFollowed) {
+		List<UserEntity> userList = new ArrayList<>(page.toList());
+		List<FollowResponseDto> postSimpleResponseDtoList = fromEnityList(userList, isFollowed);
+		Page<FollowResponseDto> result = new PageImpl<>(postSimpleResponseDtoList, page.getPageable(), postSimpleResponseDtoList.size());
 		return result;
 	}
 

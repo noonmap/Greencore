@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
-import { SearchPlantType } from '../core/plant/plantType';
+import { PlantType } from '../core/plant/plantType';
 import styles from '@/styles/feed.module.scss';
 
-export default function SearchPlantListItem(props: { searchPlant: SearchPlantType }) {
+export default function SearchPlantListItem(props: { searchPlant: PlantType }) {
   const searchPlant = props.searchPlant;
 
   return (

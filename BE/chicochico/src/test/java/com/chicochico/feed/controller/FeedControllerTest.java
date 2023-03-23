@@ -9,6 +9,7 @@ import com.chicochico.domain.feed.controller.FeedController;
 import com.chicochico.domain.feed.dto.response.FeedResponseDto;
 import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.user.dto.response.ProfileResponseDto;
+import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.domain.user.service.FollowService;
 import com.chicochico.feed.FeedTestHelper;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -128,6 +130,9 @@ public class FeedControllerTest extends FeedTestHelper {
 			Pageable pageable = PageRequest.of(0, 10);
 			when(feedService.getFeedListByFollowUser(any(List.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(doPostEntity(0L, 0L)), pageable, 1));
 			when(authService.getUserNickname()).thenReturn("test");
+			List<UserEntity> profileList = List.of(new UserEntity());
+			Page<UserEntity> page = new PageImpl<>(profileList, pageable, profileList.size());
+			when(followService.getFollowingList(any(String.class), any(Pageable.class))).thenReturn(page);
 
 			// when
 			ResultActions resultActions = mockMvc.perform(

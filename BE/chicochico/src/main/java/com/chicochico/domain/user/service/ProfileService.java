@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 public class ProfileService {
 
 	static private final String IMAGE_FILE_SUB_DIR = "profile";
+	static private final String DEFAULT_PROFILE_IMAGE_PATH = "default_profileImagePath";
 	private final UserRepository userRepository;
 
 	private final UserPlantRepository userPlantRepository;
@@ -82,7 +83,7 @@ public class ProfileService {
 
 		// 기존 연결된 프로필 이미지 삭제 (default 이미지인지 확인하는 로직 필요)
 		String originImagePath = user.getProfileImagePath();
-		if (!originImagePath.equals("default_profileImagePath")) // TODO 실제 프로필 default 경로 넣기
+		if (!originImagePath.equals(DEFAULT_PROFILE_IMAGE_PATH)) // TODO 실제 프로필 default 경로 넣기
 			fileService.deleteImageFile(originImagePath);
 
 		// 새 프로필 이미지 저장

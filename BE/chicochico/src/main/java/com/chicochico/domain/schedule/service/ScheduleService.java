@@ -115,6 +115,7 @@ public class ScheduleService {
 				.scheduleCode(scheduleRequestDto.getScheduleCode())
 				.content(scheduleRequestDto.getContent())
 				.date(scheduleRequestDto.getScheduleDate())
+				.isDeleted(scheduleEntity.getIsDeleted())
 				.isCompleted(scheduleEntity.getIsCompleted())
 				.build();
 			//수정본 저장

@@ -10,7 +10,7 @@ export type IndexType = {
   size?: number;
 };
 
-export type SearchPlantType = {
+export type PlantType = {
   plantId: number;
   imagePath: string;
   plantName: string;

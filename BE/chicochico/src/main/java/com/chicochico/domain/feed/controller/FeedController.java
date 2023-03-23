@@ -47,7 +47,7 @@ public class FeedController {
 	@ApiOperation(value = "팔로우한 사람의 최신 피드 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedListByFollowUser(Pageable pageable) {
 		String nickname = authService.getUserNickname();
-		List<UserEntity> followingList = followService.getFollowingList(nickname);
+		List<UserEntity> followingList = followService.getFollowingList(nickname, Pageable.unpaged()).getContent();
 
 		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList, pageable);
 		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed);
