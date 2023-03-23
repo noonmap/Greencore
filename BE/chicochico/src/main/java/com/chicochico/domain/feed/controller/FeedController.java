@@ -8,7 +8,6 @@ import com.chicochico.domain.feed.dto.response.FeedSimpleResponseDto;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.user.entity.UserEntity;
-import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.domain.user.service.FollowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,16 +32,13 @@ public class FeedController {
 	private final AuthService authService;
 
 	private final FollowService followService;
-
-	// TODO : 나중에 followService 수정되고 나면 지울것
-	private final UserRepository userRepository;
-
+	
 
 	@GetMapping
 	@ApiOperation(value = "피드 추천 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(@PageableDefault Pageable pageable) {
 		Page<FeedEntity> feedEntityPage = feedService.getFeedList(pageable);
-		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount);
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 
@@ -50,12 +46,11 @@ public class FeedController {
 	@GetMapping("/follow")
 	@ApiOperation(value = "팔로우한 사람의 최신 피드 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedListByFollowUser(Pageable pageable) {
-		// TODO : followService에서 그냥 List<UserEntity>를 반환하도록 변경
 		String nickname = authService.getUserNickname();
 		List<UserEntity> followingList = followService.getFollowingList(nickname, Pageable.unpaged()).getContent();
 
 		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList, pageable);
-		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount);
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 

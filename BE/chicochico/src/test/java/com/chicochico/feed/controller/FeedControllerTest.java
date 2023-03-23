@@ -2,6 +2,7 @@ package com.chicochico.feed.controller;
 
 
 import com.chicochico.common.code.FeedType;
+import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.common.dto.ResultEnum;
 import com.chicochico.common.service.AuthService;
@@ -70,8 +71,20 @@ public class FeedControllerTest extends FeedTestHelper {
 
 
 	protected FeedResponseDto doFeedResponseDto() {
+		UserEntity user = UserEntity.builder()
+			.id(1L)
+			.createdAt(LocalDateTime.now())
+			.updatedAt(LocalDateTime.now())
+			.followerCount(0)
+			.followingCount(0)
+			.profileImagePath("default_profileImagePath")
+			.isDeleted(IsDeletedType.N)
+			.nickname("nickname")
+			.password("encoded_password")
+			.introduction("default_introduction")
+			.build();
 		return FeedResponseDto.builder()
-			.user(new ProfileResponseDto())
+			.user(ProfileResponseDto.fromEntity(user, followService::isFollowed))
 			.feedCode(FeedType.FEED_POST)
 			.observationDate(LocalDate.now())
 			.feedId(0L)
@@ -94,7 +107,7 @@ public class FeedControllerTest extends FeedTestHelper {
 		public void 성공() throws Exception {
 			// given
 			Pageable pageable = PageRequest.of(0, 10);
-			
+
 			// when
 			when(feedService.getFeedList(pageable)).thenReturn(new PageImpl<>(List.of(doPostEntity(0L, 0L)), pageable, 1));
 			when(feedService.isLikedFeed(any(Long.class))).thenReturn(true);

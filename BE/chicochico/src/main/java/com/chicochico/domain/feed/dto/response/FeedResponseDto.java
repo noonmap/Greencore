@@ -36,7 +36,7 @@ public class FeedResponseDto implements Serializable {
 	private LocalDateTime createdAt;
 
 
-	public static FeedResponseDto fromEntity(FeedEntity xx, Boolean isLiked, Integer commentCount) {
+	public static FeedResponseDto fromEntity(FeedEntity xx, Boolean isLiked, Integer commentCount, Function<Long, Boolean> isFollowed) {
 		FeedType feedType;
 		LocalDate observationDate;
 		if (xx instanceof DiaryEntity) {
@@ -49,7 +49,7 @@ public class FeedResponseDto implements Serializable {
 		}
 
 		return FeedResponseDto.builder()
-			.user(ProfileResponseDto.fromEntity(xx.getUser()))
+			.user(ProfileResponseDto.fromEntity(xx.getUser(), isFollowed))
 			.feedCode(feedType)
 			.observationDate(observationDate)
 			.feedId(xx.getId())
@@ -64,19 +64,19 @@ public class FeedResponseDto implements Serializable {
 
 
 	// isLiked, commentCount 때문에 Controller에서 처리
-	public static List<FeedResponseDto> fromEnityList(List<FeedEntity> xxList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount) {
+	public static List<FeedResponseDto> fromEnityList(List<FeedEntity> xxList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
 		List<FeedResponseDto> result = new ArrayList<>();
 		for (FeedEntity xx : xxList) {
-			FeedResponseDto xxResponseDto = FeedResponseDto.fromEntity(xx, isLiked.apply(xx.getId()), getCommentCount.apply(xx.getId()));
+			FeedResponseDto xxResponseDto = FeedResponseDto.fromEntity(xx, isLiked.apply(xx.getId()), getCommentCount.apply(xx.getId()), isFollowed);
 			result.add(xxResponseDto);
 		}
 		return result;
 	}
 
 
-	public static Page<FeedResponseDto> fromEnityPage(Page<FeedEntity> page, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount) {
+	public static Page<FeedResponseDto> fromEnityPage(Page<FeedEntity> page, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
 		List<FeedEntity> feedList = new ArrayList<>(page.toList());
-		List<FeedResponseDto> feedResponseDtoList = fromEnityList(feedList, isLiked, getCommentCount);
+		List<FeedResponseDto> feedResponseDtoList = fromEnityList(feedList, isLiked, getCommentCount, isFollowed);
 		Page<FeedResponseDto> result = new PageImpl<>(feedResponseDtoList, page.getPageable(), feedResponseDtoList.size());
 		return result;
 	}
