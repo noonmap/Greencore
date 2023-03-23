@@ -10,10 +10,10 @@ import com.chicochico.domain.feed.service.DiaryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -26,7 +26,7 @@ public class DiaryController {
 
 	@PostMapping("/diaryset/{diarySetId}")
 	@ApiOperation(value = "해당 관찰일지에 일지를 생성한다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> createDiary(@PathVariable Long diarySetId, @RequestPart DiaryRequestDto diaryRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> createDiary(@PathVariable Long diarySetId, DiaryRequestDto diaryRequestDto) {
 		diaryService.createDiary(diarySetId, diaryRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
@@ -34,10 +34,10 @@ public class DiaryController {
 
 	@GetMapping("/diaryset/{diarySetId}")
 	@ApiOperation(value = "해당 관찰일지의 일지 목록을 조회한다.", notes = "")
-	public ResponseEntity<ResultDto<List<DiarySimpleResponseDto>>> getDiaryList(@PathVariable Long diarySetId) {
-		List<DiaryEntity> diaryEntityList = diaryService.getDiaryList(diarySetId);
-		List<DiarySimpleResponseDto> diarySimpleResponseDtoList = DiarySimpleResponseDto.fromEnityList(diaryEntityList);
-		return ResponseEntity.ok().body(ResultDto.of(diarySimpleResponseDtoList));
+	public ResponseEntity<ResultDto<Page<DiarySimpleResponseDto>>> getDiaryList(@PathVariable Long diarySetId, Pageable pageable) {
+		Page<DiaryEntity> diaryEntityPage = diaryService.getDiaryList(diarySetId, pageable);
+		//		Page<DiarySimpleResponseDto> diarySimpleResponseDtoList = DiarySimpleResponseDto.fromEnityPage(diaryEntityPage);
+		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
 	}
 
 
@@ -52,7 +52,7 @@ public class DiaryController {
 
 	@PutMapping("/diary/{diaryId}")
 	@ApiOperation(value = "해당 일지를 수정한다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> modifyDiary(@PathVariable Long diaryId, @RequestPart DiaryRequestDto diaryRequestDto) {
+	public ResponseEntity<ResultDto<Boolean>> modifyDiary(@PathVariable Long diaryId, DiaryRequestDto diaryRequestDto) {
 		diaryService.modifyDiary(diaryId, diaryRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}

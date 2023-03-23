@@ -23,6 +23,7 @@ public enum ErrorCode {
 	PASSWORD_NOT_MATCH(BAD_REQUEST, "패스워드가 일치하지 않습니다."),
 	FILE_IS_EMPTY(BAD_REQUEST, "업로드 파일이 비어있습니다."),
 	FILE_IS_NOT_IMAGE(BAD_REQUEST, "업로드 파일의 형식이 이미지 파일 확장자가 아닙니다."),
+	DIARY_SET_ADDITION_PROHIBITED(BAD_REQUEST, "해당 관찰 일지는 더이상 일지를 추가할 수 없습니다."),
 
 	/* 401 UNAUTHORIZED : 권한 인증 문제. JWT 토큰과 관련된 에러 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "권한이 허용되지 않은 유저입니다."),

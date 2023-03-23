@@ -23,4 +23,7 @@ public class DiarySimpleResponseDto {
 		return result;
 	}
 
+	//	public static Page<DiarySimpleResponseDto> fromEnityPage(Page<DiaryEntity> diaryEntityPage) {
+	//	}
+
 }
