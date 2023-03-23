@@ -69,10 +69,12 @@ public class FeedService {
 				.tag(tag)
 				.feed(feed)
 				.build();
-			feedTagRepository.save(newFeedTag);
+			newFeedTag = feedTagRepository.save(newFeedTag);
 			// tag 사용 카운트 증가
 			tag.increaseCount();
 			tagRepository.save(tag);
+			// feed의 list에 추가
+			feed.getFeedTagList().add(newFeedTag);
 		}
 	}
 
@@ -116,7 +118,7 @@ public class FeedService {
 	 */
 	public List<TagEntity> getTagList(Long feedId) {
 		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
-		List<FeedTagEntity> feedTagList = feedTagRepository.findByFeed(feed);
+		List<FeedTagEntity> feedTagList = feed.getFeedTagList();
 		List<TagEntity> tagList = feedTagList.stream().map(FeedTagEntity::getTag).collect(Collectors.toList());
 		return tagList;
 	}
