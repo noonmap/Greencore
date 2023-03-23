@@ -34,7 +34,7 @@ public class DiaryController {
 	}
 
 
-	@GetMapping("/diaryset/{diarySetId}")
+	@GetMapping("/diaryset/list/{diarySetId}")
 	@ApiOperation(value = "해당 관찰일지의 일지 목록을 조회한다.", notes = "")
 	public ResponseEntity<ResultDto<Page<DiarySimpleResponseDto>>> getDiaryList(@PathVariable Long diarySetId, Pageable pageable) {
 		Page<DiaryEntity> diaryEntityPage = diaryService.getDiaryList(diarySetId, pageable);

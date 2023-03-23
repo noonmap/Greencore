@@ -69,12 +69,10 @@ public class FeedService {
 				.tag(tag)
 				.feed(feed)
 				.build();
-			newFeedTag = feedTagRepository.save(newFeedTag);
+			feedTagRepository.save(newFeedTag);
 			// tag 사용 카운트 증가
 			tag.increaseCount();
 			tagRepository.save(tag);
-			// feed의 list에 추가
-			feed.getFeedTagList().add(newFeedTag);
 		}
 	}
 
