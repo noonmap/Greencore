@@ -1,19 +1,39 @@
-import { faDroplet } from '@fortawesome/free-solid-svg-icons';
+import { faDroplet, faSeedling, faCut, faFan, faSyringe, faSprayCanSparkles } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
-export default function ScheduleCode({ scheduleCode }) {
+export default function ScheduleCode({ scheduleCode, size }) {
   const items = {
     WATER: (
       <>
-        <FontAwesomeIcon icon={faDroplet} />
+        <FontAwesomeIcon icon={faDroplet} size={size} style={{ color: '#94b9ff' }} />
       </>
     ),
-    REPOT: <div>분갈이</div>,
-    PRUNING: <div>가지치기</div>,
-    NUTRITION: <div>영양관리</div>,
-    VENTILATION: <div>환기하기</div>,
-    SPRAY: <div>분무하기</div>,
+    REPOT: (
+      <>
+        <FontAwesomeIcon icon={faSeedling} size={size} />
+      </>
+    ),
+    PRUNING: (
+      <>
+        <FontAwesomeIcon icon={faCut} size={size} />
+      </>
+    ),
+    NUTRITION: (
+      <>
+        <FontAwesomeIcon icon={faSyringe} size={size} />
+      </>
+    ),
+    VENTILATION: (
+      <>
+        <FontAwesomeIcon icon={faFan} size={size} />
+      </>
+    ),
+    SPRAY: (
+      <>
+        <FontAwesomeIcon icon={faSprayCanSparkles} size={size} />
+      </>
+    ),
   };
   return (
     <div>
