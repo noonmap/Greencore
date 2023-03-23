@@ -72,7 +72,7 @@ public class DiarySetEntity extends CommonEntity {
 
 
 	public void setIsEnabledAddDiary(IsEnabledType isEnabledAddDiary) {
-		this.isEnabledAddDiary = this.isEnabledAddDiary;
+		this.isEnabledAddDiary = isEnabledAddDiary;
 	}
 
 
