@@ -7,6 +7,7 @@ import com.chicochico.domain.feed.dto.response.DiaryResponseDto;
 import com.chicochico.domain.feed.dto.response.DiarySimpleResponseDto;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.service.DiaryService;
+import com.chicochico.domain.feed.service.FeedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class DiaryController {
 
 	private final DiaryService diaryService;
+	private final FeedService feedService;
 
 
 	@PostMapping("/diaryset/{diarySetId}")
@@ -32,12 +34,12 @@ public class DiaryController {
 	}
 
 
-	@GetMapping("/diaryset/{diarySetId}")
+	@GetMapping("/diaryset/list/{diarySetId}")
 	@ApiOperation(value = "해당 관찰일지의 일지 목록을 조회한다.", notes = "")
 	public ResponseEntity<ResultDto<Page<DiarySimpleResponseDto>>> getDiaryList(@PathVariable Long diarySetId, Pageable pageable) {
 		Page<DiaryEntity> diaryEntityPage = diaryService.getDiaryList(diarySetId, pageable);
-		//		Page<DiarySimpleResponseDto> diarySimpleResponseDtoList = DiarySimpleResponseDto.fromEnityPage(diaryEntityPage);
-		return ResponseEntity.ok().body(ResultDto.of(Page.empty()));
+		Page<DiarySimpleResponseDto> diarySimpleResponseDtoList = DiarySimpleResponseDto.fromEnityPage(diaryEntityPage, pageable, feedService::getTagContentList);
+		return ResponseEntity.ok().body(ResultDto.of(diarySimpleResponseDtoList));
 	}
 
 
@@ -45,7 +47,7 @@ public class DiaryController {
 	@ApiOperation(value = "해당 일지를 상세 조회한다.", notes = "")
 	public ResponseEntity<ResultDto<DiaryResponseDto>> getDiary(@PathVariable Long diaryId) {
 		DiaryEntity diary = diaryService.getDiary(diaryId);
-		DiaryResponseDto diaryResponseDto = DiaryResponseDto.fromEntity(diary);
+		DiaryResponseDto diaryResponseDto = DiaryResponseDto.fromEntity(diary, feedService::getTagContentList);
 		return ResponseEntity.ok().body(ResultDto.of(diaryResponseDto));
 	}
 

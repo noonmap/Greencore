@@ -5,11 +5,14 @@ import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -44,6 +47,10 @@ public class FeedEntity extends CommonEntity {
 
 	@Column(nullable = false)
 	private Integer commentCount;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "feed")
+	private List<FeedTagEntity> feedTagList = new ArrayList<>();
 
 
 	public void setIsDeleted(IsDeletedType isDeleted) {
