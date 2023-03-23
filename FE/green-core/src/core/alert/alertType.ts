@@ -7,4 +7,5 @@ export type AlertType = {
 
 export type AlertDataType = {
   page: number;
+  size: number;
 };

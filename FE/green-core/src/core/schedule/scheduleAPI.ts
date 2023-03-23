@@ -15,3 +15,36 @@ export const getMonthList = createAsyncThunk('getMonthList', async (requestData:
     return {};
   }
 });
+
+// 주간 스케줄 받기, {day, month, year}
+export const getWeekList = createAsyncThunk('getWeekList', async (requestData: MonthScheduleType) => {
+  try {
+    const { data } = await http.get(`/schedule?year=${requestData.year}&month=${requestData.month}&day=${requestData.day}`);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
+});
+
+// ToDo 완료, {scheduleId}
+export const CompleteToDo = createAsyncThunk('CompleteToDo', async (requestData: { scheduleId: number }) => {
+  try {
+    const { data } = await http.post(`/schedule/${requestData.scheduleId}/done`);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
+});
+
+// ToDo 취소, {scheduleId}
+export const CancelToDo = createAsyncThunk('CancelToDo', async (requestData: { scheduleId: number }) => {
+  try {
+    const { data } = await http.put(`/schedule/${requestData.scheduleId}/done`);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
+});
