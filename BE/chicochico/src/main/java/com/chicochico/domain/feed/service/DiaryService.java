@@ -101,7 +101,7 @@ public class DiaryService {
 	 */
 	public DiaryEntity getDiary(Long diaryId) {
 		// 일지 조회
-		DiaryEntity diary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		DiaryEntity diary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
 
 		return diary;
 	}
@@ -115,7 +115,7 @@ public class DiaryService {
 	 */
 	public void modifyDiary(Long diaryId, DiaryRequestDto diaryRequestDto) {
 		// 기존 일지 조회
-		DiaryEntity originDiary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		DiaryEntity originDiary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
 
 		// 유저와 작성자 맞는지 확인
 		Long userId = authService.getUserId();
@@ -158,7 +158,7 @@ public class DiaryService {
 	 */
 	public void deleteDiary(Long diaryId) {
 		// 관찰 일지 조회
-		DiaryEntity diary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+		DiaryEntity diary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
 		DiarySetEntity diarySet = diary.getDiarySet();
 
 		// 유저와 작성자 맞는지 확인
