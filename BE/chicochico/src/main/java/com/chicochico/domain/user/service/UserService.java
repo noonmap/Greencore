@@ -4,10 +4,17 @@ package com.chicochico.domain.user.service;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.IsEnabledType;
 import com.chicochico.common.service.AuthService;
+import com.chicochico.domain.alert.entity.AlertEntity;
+import com.chicochico.domain.alert.service.AlertService;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
+import com.chicochico.domain.feed.entity.LikeEntity;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
+import com.chicochico.domain.feed.service.DiarySetService;
+import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import com.chicochico.domain.plant.repository.PlantRepository;
+import com.chicochico.domain.schedule.entity.ScheduleEntity;
+import com.chicochico.domain.schedule.service.ScheduleService;
 import com.chicochico.domain.user.dto.request.PasswordRequestDto;
 import com.chicochico.domain.user.dto.request.RegisterRequestDto;
 import com.chicochico.domain.user.dto.request.UserPlantRequestDto;
@@ -20,6 +27,8 @@ import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +48,12 @@ public class UserService {
 	private final DiarySetRepository diarySetRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthService authService;
+
+	private final DiarySetService diarySetService;
+	private final ScheduleService scheduleService;
+	private final FeedService feedService;
+	private final AlertService alertService;
+	private final FollowService followService;
 
 
 	public UserEntity getUserByNickname(String nickname) {
@@ -136,8 +151,54 @@ public class UserService {
 		if (selectedUser.isEmpty()) {
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		}
-
 		UserEntity user = selectedUser.get();
+
+		// 식물도감, 인증, 공통그룹코드, 댓글 관찰일지, 일지, 게시물, 피드, 피드 태그, 태그 (그대로 두기)
+
+		// 내키식, 스케줄, 관찰일지북마크, 피드 좋아요, 팔로우, 알림 (삭제하기)
+		// 관찰일지 북마크 삭제
+		List<DiarySetEntity> diarySetList = diarySetService.getDiarySetBookmarkList(user.getNickname(), Pageable.unpaged()).getContent();
+		for (DiarySetEntity diarySet : diarySetList) {
+			diarySetService.deleteBookmark(diarySet.getId()); // 북마크 삭제
+		}
+
+		// 스케줄 삭제
+		// 로그인한 유저의 모들 스케줄 목록 불러오기
+		List<ScheduleEntity> scheduleList = scheduleService.getAllScheduleByUser();
+		for (ScheduleEntity schedule : scheduleList) {
+			scheduleService.deleteSchedule(schedule.getId()); // 스케줄 삭제
+		}
+
+		// 내키식 삭제
+		List<UserPlantEntity> userPlantList = getUserPlantList(user.getNickname());
+		for (UserPlantEntity userPlant : userPlantList) {
+			deleteUserPlant(userPlant.getId());
+		}
+
+		// 피드 좋아요 삭제
+		List<LikeEntity> likeList = feedService.getAllLikeByUser();
+		for (LikeEntity like : likeList) {
+			feedService.deleteFeedLike(like.getFeed().getId());
+		}
+
+		// 알림 삭제 TODO 프런트엔드 에서 진행 추후 삭제
+		List<AlertEntity> alertList = alertService.getAlertList(Pageable.unpaged());
+		for (AlertEntity alert : alertList) {
+			alertService.deleteAlert(alert.getId());
+		}
+
+		// 팔로워 삭제
+		Page<UserEntity> followerList = followService.getFollowerList(user.getNickname(), Pageable.unpaged());
+		for (UserEntity follower : followerList) {
+			followService.deleteFollower(follower.getNickname());
+		}
+
+		// 팔로잉 삭제
+		Page<UserEntity> followingList = followService.getFollowingList(user.getNickname(), Pageable.unpaged());
+		for (UserEntity following : followingList) {
+			followService.deleteFollowing(following.getNickname());
+		}
+
 		user.setIsDeleted(IsDeletedType.Y);
 		userRepository.save(user);
 	}
@@ -235,10 +296,6 @@ public class UserService {
 
 		userPlant.setIsDeleted(IsDeletedType.Y);
 		userPlantRepository.save(userPlant);
-
-		// 식물 userCount--
-		userPlant.getPlant().decreaseUserCount();
-		plantRepository.save(userPlant.getPlant());
 
 		// 연결된 관찰일지가 있는지 확인
 		Optional<DiarySetEntity> diarySet = diarySetRepository.findByUserAndUserPlant(userPlant.getUser(), userPlant);

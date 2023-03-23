@@ -322,4 +322,11 @@ public class FeedService {
 		deleteConnectedLike(feed);
 	}
 
+
+	public List<LikeEntity> getAllLikeByUser() {
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		return likeRepository.findByUser(user);
+	}
+
 }

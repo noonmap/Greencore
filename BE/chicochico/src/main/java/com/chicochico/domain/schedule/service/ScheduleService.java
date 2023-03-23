@@ -193,5 +193,21 @@ public class ScheduleService {
 			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
 	}
+	
+
+	/**
+	 * 로그인한 유저의 모든 스케줄 목록을 조회
+	 *
+	 * @return 로그인한 유저의 모든 스케줄 목록
+	 */
+	public List<ScheduleEntity> getAllScheduleByUser() {
+		// 로그인한 유저
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByUser(user);
+
+		return scheduleList;
+	}
 
 }
