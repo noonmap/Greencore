@@ -32,13 +32,11 @@ export default function follow() {
   const [isLoading, setIsLoading] = useState(false);
 
   // ------------------------ 인피니티 스크롤 변수 -----------------------
-  // const alertList = useAppSelector((state) => state.alert.alertList);
   const [isStoped, setIsStoped] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const [target, setTarget] = useState(null); // 관찰 대상 target
   const [isLoaded, setIsLoaded] = useState(true); // 데이터 로딩 상태
-
   // -------------------------------------------------------------------
 
   // 타겟 설정
@@ -100,7 +98,7 @@ export default function follow() {
         page: page,
         size: size,
       };
-      console.log(params);
+      // console.log(params);
       const { data } = await getFollowingList(nickname, params);
 
       for (let i = 0; i < data.length; i++) {
@@ -121,20 +119,21 @@ export default function follow() {
     }
   }
 
-  async function fetchFollowerList() {
-    try {
-      const { data } = await getFollowerList(nickname);
+  // 사용 안하는듯?
+  // async function fetchFollowerList() {
+  //   try {
+  //     const { data } = await getFollowerList(nickname);
 
-      for (let i = 0; i < data.length; i++) {
-        getUserProfile(data[i].nickname);
-        if (i == data.length - 1) setIsLoading(true);
-      }
+  //     for (let i = 0; i < data.length; i++) {
+  //       getUserProfile(data[i].nickname);
+  //       if (i == data.length - 1) setIsLoading(true);
+  //     }
 
-      setFollowerList(data);
-    } catch (error) {
-      // console.error(error);
-    }
-  }
+  //     setFollowerList(data);
+  //   } catch (error) {
+  //     // console.error(error);
+  //   }
+  // }
 
   async function handleSetUserProfile() {
     const res = await fetch('/images/noProfile.png');

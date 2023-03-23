@@ -31,6 +31,50 @@ export default function follow() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // ------------------------ 인피니티 스크롤 변수 -----------------------
+  const [isStoped, setIsStoped] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const [size, setSize] = useState<number>(10);
+  const [target, setTarget] = useState(null); // 관찰 대상 target
+  const [isLoaded, setIsLoaded] = useState(true); // 데이터 로딩 상태
+  // -------------------------------------------------------------------
+  // 타겟 설정
+  useEffect(() => {
+    let observer;
+    if (target && !isStoped) {
+      setTimeout(() => {
+        observer = new IntersectionObserver(onIntersect, {
+          threshold: 1, // 배열의 요소가 100% 보여질때마다 콜백을 실행
+        });
+        observer.observe(target);
+      }, 100);
+    }
+    return () => observer && observer.disconnect();
+  }, [target, isLoaded]);
+
+  // 타겟을 만났을 때 실행하는 로직
+  const onIntersect = async ([entry]: any, observer: any) => {
+    if (entry.isIntersecting && !isLoaded) {
+      observer.unobserve(entry.target); // 관찰 멈춤
+      getMoreItem(); // isLoaded를 바꿈
+      observer.observe(entry.target); // 관찰 재시작
+    }
+  };
+
+  // 추가 데이터 요청
+  const getMoreItem = () => {
+    setIsLoaded(true);
+  };
+
+  // isLoaded 가 변할 때 실행
+  useEffect(() => {
+    if (isLoaded && page !== 0) {
+      fetchFollowerList();
+    }
+    return () => {};
+  }, [isLoaded]);
+
+  // --------------------------------------------------------------------------
   function getUserProfile(nickname) {
     const profileRef = ref(storage, `${nickname}/profileImage`);
 
@@ -45,31 +89,42 @@ export default function follow() {
       });
   }
 
-  async function fetchFollowingList() {
-    try {
-      const { data } = await getFollowingList(nickname);
+  // async function fetchFollowingList() {
+  //   try {
+  //     const { data } = await getFollowingList(nickname, params);
 
-      for (let i = 0; i < data.length; i++) {
-        getUserProfile(data[i].nickname);
-        if (i == data.length - 1) setIsLoading(true);
-      }
+  //     for (let i = 0; i < data.length; i++) {
+  //       getUserProfile(data[i].nickname);
+  //       if (i == data.length - 1) setIsLoading(true);
+  //     }
 
-      setFollowingList(data);
-    } catch (error) {
-      // console.error(error);
-    }
-  }
+  //     setFollowingList(data);
+  //   } catch (error) {
+  //     // console.error(error);
+  //   }
+  // }
 
   async function fetchFollowerList() {
     try {
-      const { data } = await getFollowerList(nickname);
+      const params = {
+        page: page,
+        size: size,
+      };
+      // console.log(params);
+      const { data } = await getFollowerList(nickname, params);
 
       for (let i = 0; i < data.length; i++) {
         getUserProfile(data[i].nickname);
         if (i == data.length - 1) setIsLoading(true);
       }
-
-      setFollowerList(data);
+      // 종료 시그널
+      if (data.length !== size) {
+        setIsStoped(true);
+      } else {
+        setPage(page + 1);
+      }
+      setIsLoaded(false);
+      setFollowerList((prev) => [...prev, ...data]);
     } catch (error) {
       // console.error(error);
     }
@@ -115,8 +170,9 @@ export default function follow() {
   return (
     <FollowLayout>
       <div>
-        {isLoading
-          ? followerList.map((f) => (
+        {isLoading ? (
+          <>
+            {followerList.map((f) => (
               <div key={f.nickname} className='flex space-x-2'>
                 {userProfileList[f.nickname] ? (
                   <Image
@@ -141,8 +197,10 @@ export default function follow() {
                   <button onClick={(e) => handleFollowUpdate(e, f.nickname)}>팔로우 하기</button>
                 )}
               </div>
-            ))
-          : null}
+            ))}
+            <div ref={setTarget} />
+          </>
+        ) : null}
       </div>
     </FollowLayout>
   );
