@@ -186,16 +186,11 @@ public class UserService {
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		PlantEntity plant = plantRepository.findById(userPlantRequestDto.getPlantId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
-		UserPlantEntity userPlant = UserPlantEntity.builder()
-			.user(user)
-			.plant(plant)
-			.plantNickname(userPlantRequestDto.getPlantNickname())
-			.plantImagePath(plant.getImagePath())
-			.isDeleted(IsDeletedType.N)
-			.build();
+		userPlantRepository.save(userPlantRequestDto.toEntity(user, plant));
 
-		userPlantRepository.save(userPlant);
-
+		// 식물 userCount++
+		plant.increaseUserCount();
+		plantRepository.save(plant);
 	}
 
 
@@ -217,7 +212,7 @@ public class UserService {
 		}
 
 		// plantNickname 수정
-		userPlant.setPlantNickname(userPlant.getPlantNickname());
+		userPlant.setPlantNickname(userPlantSimpleRequestDto.getPlantNickname());
 		userPlantRepository.save(userPlant);
 	}
 
@@ -240,6 +235,10 @@ public class UserService {
 
 		userPlant.setIsDeleted(IsDeletedType.Y);
 		userPlantRepository.save(userPlant);
+
+		// 식물 userCount--
+		userPlant.getPlant().decreaseUserCount();
+		plantRepository.save(userPlant.getPlant());
 
 		// 연결된 관찰일지가 있는지 확인
 		Optional<DiarySetEntity> diarySet = diarySetRepository.findByUserAndUserPlant(userPlant.getUser(), userPlant);
