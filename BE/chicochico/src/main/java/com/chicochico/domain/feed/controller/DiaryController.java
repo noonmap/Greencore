@@ -8,6 +8,7 @@ import com.chicochico.domain.feed.dto.response.DiarySimpleResponseDto;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.service.DiaryService;
 import com.chicochico.domain.feed.service.FeedService;
+import com.chicochico.domain.user.service.FollowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class DiaryController {
 
 	private final DiaryService diaryService;
 	private final FeedService feedService;
+	private final FollowService followService;
 
 
 	@PostMapping("/diaryset/{diarySetId}")
@@ -47,7 +49,7 @@ public class DiaryController {
 	@ApiOperation(value = "해당 일지를 상세 조회한다.", notes = "")
 	public ResponseEntity<ResultDto<DiaryResponseDto>> getDiary(@PathVariable Long diaryId) {
 		DiaryEntity diary = diaryService.getDiary(diaryId);
-		DiaryResponseDto diaryResponseDto = DiaryResponseDto.fromEntity(diary, feedService::getTagContentList);
+		DiaryResponseDto diaryResponseDto = DiaryResponseDto.fromEntity(diary, feedService::getTagContentList, followService::isFollowed);
 		return ResponseEntity.ok().body(ResultDto.of(diaryResponseDto));
 	}
 
