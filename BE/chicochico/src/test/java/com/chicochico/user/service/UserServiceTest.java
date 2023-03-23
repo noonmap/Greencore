@@ -3,23 +3,18 @@ package com.chicochico.user.service;
 
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
-import com.chicochico.domain.alert.entity.AlertEntity;
 import com.chicochico.domain.alert.service.AlertService;
-import com.chicochico.domain.feed.entity.DiarySetEntity;
-import com.chicochico.domain.feed.entity.FeedEntity;
-import com.chicochico.domain.feed.entity.LikeEntity;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
 import com.chicochico.domain.feed.service.DiarySetService;
 import com.chicochico.domain.feed.service.FeedService;
-import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.schedule.service.ScheduleService;
 import com.chicochico.domain.user.dto.request.PasswordRequestDto;
 import com.chicochico.domain.user.dto.request.RegisterRequestDto;
 import com.chicochico.domain.user.entity.UserEntity;
-import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.repository.UserPlantRepository;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.domain.user.service.FollowService;
+import com.chicochico.domain.user.service.LoginService;
 import com.chicochico.domain.user.service.UserService;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
@@ -29,8 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -40,8 +33,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -86,6 +79,8 @@ public class UserServiceTest {
 	private ScheduleService scheduleService;
 	@Mock
 	private FeedService feedService;
+	@Mock
+	private LoginService loginService;
 	@Mock
 	private AlertService alertService;
 	@Mock
@@ -301,10 +296,11 @@ public class UserServiceTest {
 				// given
 				Mockito.when(authService.getUserId()).thenReturn(1L);
 				Mockito.when(userRepository.findById(1L)).thenReturn(Optional.empty());
+				Map<String, String> logoutRequestHeader = new HashMap<>();
 
 				// when
 				CustomException customException = Assertions.assertThrows(CustomException.class, () -> {
-					userService.deleteUser();
+					userService.deleteUser(logoutRequestHeader);
 				});
 
 				// then
@@ -323,48 +319,10 @@ public class UserServiceTest {
 				// mock UserRepository
 				Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 				Mockito.when(userRepository.save(user)).thenReturn(user);
-				// Mock the diarySetList
-				DiarySetEntity diarySet = DiarySetEntity.builder().id(1L).build();
-				List<DiarySetEntity> diarySetList = Collections.singletonList(diarySet);
-				Mockito.when(diarySetService.getDiarySetBookmarkList(user.getNickname(), Pageable.unpaged())).thenReturn(new PageImpl<>(diarySetList));
-
-				// Mock the scheduleList
-				ScheduleEntity schedule = ScheduleEntity.builder().id(1L).build();
-				List<ScheduleEntity> scheduleList = Collections.singletonList(schedule);
-				Mockito.when(scheduleService.getAllScheduleByUser()).thenReturn(scheduleList);
-
-				// Mock the userPlantList
-				UserPlantEntity userPlant = UserPlantEntity.builder().id(1L).user(user).build();
-				List<UserPlantEntity> userPlantList = Collections.singletonList(userPlant);
-				Mockito.when(userRepository.findByNicknameAndIsDeleted(user.getNickname(), IsDeletedType.N)).thenReturn(Optional.of(user));
-				Mockito.when(userPlantRepository.findByUserAndIsDeleted(user, IsDeletedType.N)).thenReturn(userPlantList);
-				Mockito.when(userPlantRepository.findByIdAndIsDeleted(userPlant.getId(), IsDeletedType.N)).thenReturn(Optional.of(userPlant));
-				Mockito.when(diarySetRepository.findByUserAndUserPlant(userPlant.getUser(), userPlant)).thenReturn(Optional.empty());
-
-				// Mock the likeList
-				FeedEntity feed = FeedEntity.builder().id(1L).build();
-				LikeEntity like = LikeEntity.builder().id(1L).feed(feed).build();
-				List<LikeEntity> likeList = Collections.singletonList(like);
-				Mockito.when(feedService.getAllLikeByUser()).thenReturn(likeList);
-
-				// Mock the alertList
-				AlertEntity alert = AlertEntity.builder().id(1L).build();
-				List<AlertEntity> alertList = Collections.singletonList(alert);
-				Mockito.when(alertService.getAlertList(Pageable.unpaged())).thenReturn(alertList);
-
-				// Mock the followerList
-				UserEntity follower = UserEntity.builder()
-					.id(2L).nickname("test_nickname_2").email("test2@test.com").password("test_password_2").build();
-				List<UserEntity> followerList = Collections.singletonList(follower);
-				Mockito.when(followService.getFollowerList(user.getNickname(), Pageable.unpaged())).thenReturn(new PageImpl<>(followerList));
-
-				// Mock the followingList
-				UserEntity following = UserEntity.builder().id(3L).nickname("test_nickname_3").email("test3@test.com").password("test_password_3").build();
-				List<UserEntity> followingList = Collections.singletonList(following);
-				Mockito.when(followService.getFollowingList(user.getNickname(), Pageable.unpaged())).thenReturn(new PageImpl<>(followingList));
-
+				
+				Map<String, String> logoutRequestHeader = new HashMap<>();
 				// when
-				userService.deleteUser();
+				userService.deleteUser(logoutRequestHeader);
 
 				// then
 				Assertions.assertEquals(user.getIsDeleted(), IsDeletedType.Y);

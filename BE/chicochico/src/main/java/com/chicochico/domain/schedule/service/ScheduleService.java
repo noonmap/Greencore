@@ -16,6 +16,7 @@ import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -193,21 +194,18 @@ public class ScheduleService {
 			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
 	}
-	
+
 
 	/**
-	 * 로그인한 유저의 모든 스케줄 목록을 조회
-	 *
-	 * @return 로그인한 유저의 모든 스케줄 목록
+	 * 로그인한 유저의 모든 스케줄 목록을 삭제
 	 */
-	public List<ScheduleEntity> getAllScheduleByUser() {
-		// 로그인한 유저
-		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByUser(user);
-
-		return scheduleList;
+	@Transactional
+	public void deleteAllSchedulesByUser(UserEntity user) {
+		List<ScheduleEntity> schedules = scheduleRepository.findByUserAndIsDeleted(user, IsDeletedType.N);
+		for (ScheduleEntity schedule : schedules) {
+			schedule.setIsDeleted(IsDeletedType.Y);
+		}
+		scheduleRepository.saveAll(schedules);
 	}
 
 }

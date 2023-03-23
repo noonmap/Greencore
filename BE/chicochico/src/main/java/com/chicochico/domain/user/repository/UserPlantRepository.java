@@ -14,5 +14,6 @@ public interface UserPlantRepository extends JpaRepository<UserPlantEntity, Long
 
 	Optional<UserPlantEntity> findByIdAndIsDeleted(Long id, IsDeletedType isDeletedType);
 	List<UserPlantEntity> findByUserAndIsDeleted(UserEntity user, IsDeletedType isDeletedType);
+	List<UserPlantEntity> findByUser(UserEntity user);
 
 }

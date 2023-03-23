@@ -8,7 +8,6 @@ import com.chicochico.domain.user.dto.request.UserPlantRequestDto;
 import com.chicochico.domain.user.dto.request.UserPlantSimpleRequestDto;
 import com.chicochico.domain.user.dto.response.UserPlantResponseDto;
 import com.chicochico.domain.user.entity.UserPlantEntity;
-import com.chicochico.domain.user.service.LoginService;
 import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,8 +28,6 @@ import java.util.Map;
 public class UserController {
 
 	private final UserService userService;
-
-	private final LoginService loginService;
 
 	/*
 	 * 유저 인증 관련
@@ -85,8 +82,7 @@ public class UserController {
 	@DeleteMapping
 	@ApiOperation(value = "회원탈퇴를 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteUser(@RequestHeader Map<String, String> logoutRequestHeader) {
-		loginService.deleteAccessToken(logoutRequestHeader);
-		userService.deleteUser();
+		userService.deleteUser(logoutRequestHeader);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}

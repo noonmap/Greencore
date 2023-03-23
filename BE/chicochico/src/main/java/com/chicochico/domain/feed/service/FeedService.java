@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -323,10 +324,9 @@ public class FeedService {
 	}
 
 
-	public List<LikeEntity> getAllLikeByUser() {
-		Long userId = authService.getUserId();
-		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		return likeRepository.findByUser(user);
+	@Transactional
+	public void deleteAllLikesByUserId(Long userId) {
+		likeRepository.deleteByUserId(userId);
 	}
 
 }

@@ -4,16 +4,13 @@ package com.chicochico.domain.user.service;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.IsEnabledType;
 import com.chicochico.common.service.AuthService;
-import com.chicochico.domain.alert.entity.AlertEntity;
 import com.chicochico.domain.alert.service.AlertService;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
-import com.chicochico.domain.feed.entity.LikeEntity;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
 import com.chicochico.domain.feed.service.DiarySetService;
 import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import com.chicochico.domain.plant.repository.PlantRepository;
-import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.schedule.service.ScheduleService;
 import com.chicochico.domain.user.dto.request.PasswordRequestDto;
 import com.chicochico.domain.user.dto.request.RegisterRequestDto;
@@ -27,13 +24,12 @@ import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -54,6 +50,7 @@ public class UserService {
 	private final FeedService feedService;
 	private final AlertService alertService;
 	private final FollowService followService;
+	private final LoginService loginService;
 
 
 	public UserEntity getUserByNickname(String nickname) {
@@ -144,7 +141,7 @@ public class UserService {
 	 * 회원정보를 삭제합니다 (회원탈퇴)
 	 */
 	@Transactional
-	public void deleteUser() {
+	public void deleteUser(Map<String, String> logoutRequestHeader) {
 
 		Long userId = authService.getUserId();
 		Optional<UserEntity> selectedUser = userRepository.findById(userId);
@@ -157,47 +154,28 @@ public class UserService {
 
 		// 내키식, 스케줄, 관찰일지북마크, 피드 좋아요, 팔로우, 알림 (삭제하기)
 		// 관찰일지 북마크 삭제
-		List<DiarySetEntity> diarySetList = diarySetService.getDiarySetBookmarkList(user.getNickname(), Pageable.unpaged()).getContent();
-		for (DiarySetEntity diarySet : diarySetList) {
-			diarySetService.deleteBookmark(diarySet.getId()); // 북마크 삭제
-		}
+		diarySetService.deleteAllBookmarksByUserId(userId);
 
 		// 스케줄 삭제
-		// 로그인한 유저의 모들 스케줄 목록 불러오기
-		List<ScheduleEntity> scheduleList = scheduleService.getAllScheduleByUser();
-		for (ScheduleEntity schedule : scheduleList) {
-			scheduleService.deleteSchedule(schedule.getId()); // 스케줄 삭제
-		}
+		scheduleService.deleteAllSchedulesByUser(user);
 
 		// 내키식 삭제
-		List<UserPlantEntity> userPlantList = getUserPlantList(user.getNickname());
-		for (UserPlantEntity userPlant : userPlantList) {
-			deleteUserPlant(userPlant.getId());
-		}
+		deleteAllUserPlantsByUser(user);
 
 		// 피드 좋아요 삭제
-		List<LikeEntity> likeList = feedService.getAllLikeByUser();
-		for (LikeEntity like : likeList) {
-			feedService.deleteFeedLike(like.getFeed().getId());
-		}
+		feedService.deleteAllLikesByUserId(userId);
 
 		// 알림 삭제 TODO 프런트엔드 에서 진행 추후 삭제
-		List<AlertEntity> alertList = alertService.getAlertList(Pageable.unpaged());
-		for (AlertEntity alert : alertList) {
-			alertService.deleteAlert(alert.getId());
-		}
+		alertService.deleteAllAlertsByUserId(userId);
 
-		// 팔로워 삭제
-		Page<UserEntity> followerList = followService.getFollowerList(user.getNickname(), Pageable.unpaged());
-		for (UserEntity follower : followerList) {
-			followService.deleteFollower(follower.getNickname());
-		}
+		// 유저가 팔로워인 경우 삭제
+		followService.deleteAllFollowerByUserId(userId);
+		
+		// 유저가 팔로잉인 경우 삭제
+		followService.deleteAllFollowingByUserId(userId);
 
-		// 팔로잉 삭제
-		Page<UserEntity> followingList = followService.getFollowingList(user.getNickname(), Pageable.unpaged());
-		for (UserEntity following : followingList) {
-			followService.deleteFollowing(following.getNickname());
-		}
+		// 로그아웃
+		loginService.deleteAccessToken(logoutRequestHeader);
 
 		user.setIsDeleted(IsDeletedType.Y);
 		userRepository.save(user);
@@ -307,6 +285,14 @@ public class UserService {
 			diarySetRepository.save(diarySet.get());
 		}
 
+	}
+
+
+	@Transactional
+	public void deleteAllUserPlantsByUser(UserEntity user) {
+		List<UserPlantEntity> userPlants = userPlantRepository.findByUser(user);
+		userPlants.forEach(userPlant -> userPlant.setIsDeleted(IsDeletedType.Y));
+		userPlantRepository.saveAll(userPlants);
 	}
 
 }

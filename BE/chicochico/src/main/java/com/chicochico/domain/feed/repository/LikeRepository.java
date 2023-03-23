@@ -14,6 +14,6 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
 
 	Optional<LikeEntity> findByUserAndFeed(UserEntity user, FeedEntity feed);
 	List<LikeEntity> findByFeed(FeedEntity feed);
-	List<LikeEntity> findByUser(UserEntity user);
+	void deleteByUserId(Long userId);
 
 }
