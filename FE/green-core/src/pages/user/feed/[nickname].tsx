@@ -17,8 +17,8 @@ import toastifyCSS from '@/assets/toastify.json';
 import ReactPaginate from 'react-paginate';
 
 import AppModal from '@/components/common/AppModal';
-import UserPlantModal from '@/components/common/UserPlantModal';
-import DiarySetModal from '@/components/common/DiarySetModal';
+import UserPlantModal from '@/components/modal/UserPlantModal';
+import DiarySetModal from '@/components/modal/DiarySetModal';
 import { getDiarySetList, deleteDiarySet } from '@/core/diarySet/diarySetAPI';
 
 type ProfileType = {
@@ -483,6 +483,8 @@ export default function FeedDetail() {
       />
       <AppModal
         isOpen={isOpenUserPlantDeleteModal}
+        title='내 식물 삭제'
+        content2='삭제하시겠습니까?'
         handleModalClose={() => setIsOpenUserPlantDeleteModal(false)}
         handleModalConfirm={handleUserPlantDelete}
       />
@@ -504,13 +506,20 @@ export default function FeedDetail() {
       />
       <AppModal
         isOpen={isOpenDiarySetDeleteModal}
+        title='관찰일지 삭제'
         handleModalClose={() => setIsOpenDiarySetDeleteModal(false)}
         handleModalConfirm={handleDiarySetDelete}
       />
 
-      <AppModal isOpen={isOpenPostDeleteModal} handleModalClose={() => setIsOpenPostDeleteModal(false)} handleModalConfirm={handlePostDelete} />
+      <AppModal
+        isOpen={isOpenPostDeleteModal}
+        title='포스트 삭제'
+        handleModalClose={() => setIsOpenPostDeleteModal(false)}
+        handleModalConfirm={handlePostDelete}
+      />
       <AppModal
         isOpen={isOpenSelectedPostDeleteModal}
+        title='포스트 삭제'
         handleModalClose={() => setIsOpenSelectedPostDeleteModal(false)}
         handleModalConfirm={handleSelectedPostDelete}
       />
