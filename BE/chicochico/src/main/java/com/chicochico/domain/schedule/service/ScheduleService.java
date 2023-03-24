@@ -390,7 +390,7 @@ public class ScheduleService {
 
 			//있던 거 삭제
 			//정기 일정이랑 정기 일정에 속한 일정들 삭제
-			deleteScheduleOfRegularSchedule(regularId);
+			deleteSchedulesOfRegularSchedule(regularId);
 
 			//수정본 저장
 			RegularScheduleEntity regularSchedule1 = scheduleRequestDto.toEntity(regularId, user, userPlant);
@@ -419,7 +419,7 @@ public class ScheduleService {
 	 */
 	public void deleteRegularSchedule(Long regularId) {
 		//정기 일정에 속한 일정을 현재 이후로 삭제
-		deleteScheduleOfRegularSchedule(regularId);
+		deleteSchedulesOfRegularSchedule(regularId);
 		//정기 일정 삭제
 		regularScheduleRepository.deleteById(regularId);
 
@@ -431,7 +431,7 @@ public class ScheduleService {
 	 *
 	 * @param regularId
 	 */
-	public void deleteScheduleOfRegularSchedule(Long regularId) {
+	public void deleteSchedulesOfRegularSchedule(Long regularId) {
 		//오늘
 		LocalDate date = LocalDate.now();
 		//현재 로그인 돼있는 사용자
@@ -462,8 +462,13 @@ public class ScheduleService {
 	 */
 	@Transactional
 	public void deleteAllSchedulesByUser(UserEntity user) {
-		scheduleRepository.deleteAllByUser(user);
+		scheduleRepository.deleteAllByUserAndDateAfter(user, LocalDate.now());
 
+	}
+
+
+	public void deleteAllSchedulesByUserPlant(UserPlantEntity userPlant) {
+		scheduleRepository.deleteAllByUserPlantAndDateAfter(userPlant, LocalDate.now());
 	}
 
 }
