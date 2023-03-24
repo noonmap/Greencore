@@ -261,7 +261,7 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (payload)
 /** [DELETE] 로그아웃 API
  * @url /logout
  */
-export const logOut = createAsyncThunk('logOut', async (accessToken: string) => {
+export const logOut = createAsyncThunk('logOut', async () => {
   try {
     // const headers = { authorization: accessToken };
     const { data } = await http.delete('/logout');
