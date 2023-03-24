@@ -4,10 +4,14 @@ package com.chicochico.domain.user.service;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.IsEnabledType;
 import com.chicochico.common.service.AuthService;
+import com.chicochico.domain.alert.service.AlertService;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import com.chicochico.domain.feed.repository.DiarySetRepository;
+import com.chicochico.domain.feed.service.DiarySetService;
+import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import com.chicochico.domain.plant.repository.PlantRepository;
+import com.chicochico.domain.schedule.service.ScheduleService;
 import com.chicochico.domain.user.dto.request.PasswordRequestDto;
 import com.chicochico.domain.user.dto.request.RegisterRequestDto;
 import com.chicochico.domain.user.dto.request.UserPlantRequestDto;
@@ -25,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -39,6 +44,13 @@ public class UserService {
 	private final DiarySetRepository diarySetRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthService authService;
+
+	private final DiarySetService diarySetService;
+	private final ScheduleService scheduleService;
+	private final FeedService feedService;
+	private final AlertService alertService;
+	private final FollowService followService;
+	private final LoginService loginService;
 
 
 	public UserEntity getUserByNickname(String nickname) {
@@ -129,15 +141,42 @@ public class UserService {
 	 * 회원정보를 삭제합니다 (회원탈퇴)
 	 */
 	@Transactional
-	public void deleteUser() {
+	public void deleteUser(Map<String, String> logoutRequestHeader) {
 
 		Long userId = authService.getUserId();
 		Optional<UserEntity> selectedUser = userRepository.findById(userId);
 		if (selectedUser.isEmpty()) {
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		}
-
 		UserEntity user = selectedUser.get();
+
+		// 식물도감, 인증, 공통그룹코드, 댓글 관찰일지, 일지, 게시물, 피드, 피드 태그, 태그 (그대로 두기)
+
+		// 내키식, 스케줄, 관찰일지북마크, 피드 좋아요, 팔로우, 알림 (삭제하기)
+		// 관찰일지 북마크 삭제
+		diarySetService.deleteAllBookmarksByUserId(userId);
+
+		// 스케줄 삭제
+		scheduleService.deleteAllSchedulesByUser(user);
+
+		// 내키식 삭제
+		deleteAllUserPlantsByUser(user);
+
+		// 피드 좋아요 삭제
+		feedService.deleteAllLikesByUserId(userId);
+
+		// 알림 삭제 TODO 프런트엔드 에서 진행 추후 삭제
+		alertService.deleteAllAlertsByUserId(userId);
+
+		// 유저가 팔로워인 경우 삭제
+		followService.deleteAllFollowerByUserId(userId);
+		
+		// 유저가 팔로잉인 경우 삭제
+		followService.deleteAllFollowingByUserId(userId);
+
+		// 로그아웃
+		loginService.deleteAccessToken(logoutRequestHeader);
+
 		user.setIsDeleted(IsDeletedType.Y);
 		userRepository.save(user);
 	}
@@ -236,10 +275,6 @@ public class UserService {
 		userPlant.setIsDeleted(IsDeletedType.Y);
 		userPlantRepository.save(userPlant);
 
-		// 식물 userCount--
-		userPlant.getPlant().decreaseUserCount();
-		plantRepository.save(userPlant.getPlant());
-
 		// 연결된 관찰일지가 있는지 확인
 		Optional<DiarySetEntity> diarySet = diarySetRepository.findByUserAndUserPlant(userPlant.getUser(), userPlant);
 
@@ -250,6 +285,14 @@ public class UserService {
 			diarySetRepository.save(diarySet.get());
 		}
 
+	}
+
+
+	@Transactional
+	public void deleteAllUserPlantsByUser(UserEntity user) {
+		List<UserPlantEntity> userPlants = userPlantRepository.findByUser(user);
+		userPlants.forEach(userPlant -> userPlant.setIsDeleted(IsDeletedType.Y));
+		userPlantRepository.saveAll(userPlants);
 	}
 
 }

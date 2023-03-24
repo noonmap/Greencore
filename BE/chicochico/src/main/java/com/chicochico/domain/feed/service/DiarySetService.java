@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -260,6 +261,17 @@ public class DiarySetService {
 		Optional<BookmarkEntity> bookmark = bookmarkRepository.findByDiarySetAndUser(diarySetId, userId);
 		if (bookmark.isPresent()) return true;
 		return false;
+	}
+
+
+	/**
+	 * 유저의 모든 북마크 삭제
+	 *
+	 * @param userId 북마크를 삭제하려고 하는 유저
+	 */
+	@Transactional
+	public void deleteAllBookmarksByUserId(Long userId) {
+		bookmarkRepository.deleteByUserId(userId);
 	}
 
 }

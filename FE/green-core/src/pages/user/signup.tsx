@@ -83,14 +83,16 @@ export default function signup() {
 
   async function handleSignUp(e: React.SyntheticEvent<EventTarget>) {
     try {
-      if (checkVaildSignUp()) {
-        const payload = { email, password, nickname };
-        const { data } = await signUp(payload);
+      // 배포 테스트 중 임시로 주석
+      // if (checkVaildSignUp()) {
+      const payload = { email, password, nickname };
+      const { data } = await signUp(payload);
 
-        if (data) handleSetUserProfile();
+      if (data) handleSetUserProfile();
 
-        console.log(data);
-      } else checkInputFormToast();
+      console.log(data);
+      // 배포 테스트 중 임시로 주석
+      // } else checkInputFormToast();
     } catch (err) {
       console.error(err);
     }
