@@ -2,7 +2,6 @@ package com.chicochico.schedule;
 
 
 import com.chicochico.common.code.IsCompletedType;
-import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.ScheduleType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.plant.repository.PlantRepository;
@@ -75,7 +74,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate1)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 
@@ -109,7 +107,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate1)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule);
@@ -119,7 +116,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate2)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule1);
@@ -129,7 +125,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate3)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule2);
@@ -139,7 +134,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate4)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule3);
@@ -149,7 +143,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate5)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule4);
@@ -177,7 +170,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate1)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		when(scheduleRepository.findById(1L)).thenReturn(Optional.of(schedule));
@@ -185,8 +177,7 @@ public class ScheduleServiceTest {
 		assertThatCode(() -> {
 			scheduleService.deleteSchedule(1L);
 		}).doesNotThrowAnyException();
-		schedule.setIsDeleted(IsDeletedType.Y);
-		Mockito.verify(scheduleRepository, times(1)).save(refEq(schedule));
+		Mockito.verify(scheduleRepository, times(1)).delete(refEq(schedule));
 
 	}
 
@@ -206,7 +197,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate1)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		when(scheduleRepository.findById(1L)).thenReturn(Optional.of(schedule));
@@ -236,7 +226,6 @@ public class ScheduleServiceTest {
 			.user(user)
 			.date(localdate1)
 			.isCompleted(IsCompletedType.Y)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		when(scheduleRepository.findById(1L)).thenReturn(Optional.of(schedule));

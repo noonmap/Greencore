@@ -1,6 +1,7 @@
 package com.chicochico.domain.schedule.controller;
 
 
+import com.chicochico.common.code.RegularScheduleType;
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.domain.schedule.dto.request.ScheduleRequestDto;
 import com.chicochico.domain.schedule.dto.response.ScheduleResponseDto;
@@ -48,8 +49,35 @@ public class ScheduleController {
 	@PostMapping
 	@ApiOperation(value = "일정을 생성합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
-		scheduleService.createSchedule(scheduleRequestDto);
+		//하루 일정
+		if (scheduleRequestDto.getRegularScheduleCode() == null || scheduleRequestDto.getRegularScheduleCode().equals("")) {
+			scheduleService.createSchedule(scheduleRequestDto);
+		}
+		//주간 정기 일정
+		else if (scheduleRequestDto.getRegularScheduleCode().equals(RegularScheduleType.WEEKLY_SCHEDULE)) {
+			scheduleService.createWeeklySchedule(scheduleRequestDto);
+		}
+		//월간 정기 일정
+		else if (scheduleRequestDto.getRegularScheduleCode().equals(RegularScheduleType.MONTHLY_SCHEDULE)) {
+			scheduleService.createMonthlySchedule(scheduleRequestDto);
+		}
 
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	}
+
+
+	@DeleteMapping("/regular/{regularId}")
+	@ApiOperation(value = "정기 일정을 현재 시간 부로 삭제합니다.")
+	public ResponseEntity<ResultDto<Boolean>> deleteRegularSchedule(@PathVariable Long regularId) {
+		scheduleService.deleteRegularSchedule(regularId);
+		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	}
+
+
+	@PutMapping("/regular/{regularId}")
+	@ApiOperation(value = "정기 일정을 현재 시간 부로 수정합니다.")
+	public ResponseEntity<ResultDto<Boolean>> modifyRegularSchedule(@PathVariable Long regularId, @RequestBody ScheduleRequestDto scheduleRequestDto) {
+		scheduleService.modifyRegularSchedule(regularId, scheduleRequestDto);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
 
