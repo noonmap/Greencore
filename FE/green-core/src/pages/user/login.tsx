@@ -51,6 +51,7 @@ export default function login() {
     try {
       const payload = { email, password };
       dispatch(logIn(payload));
+      // console.log(payload);
     } catch (error) {
       console.error(error);
     }

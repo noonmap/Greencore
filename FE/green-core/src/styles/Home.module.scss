@@ -1,2 +1,8 @@
 .main {
+  box-shadow: var(--box-shadow);
+  // box-shadow: var(--box-shadow-light);
+  // box-shadow: var(--box-shadow-card);
+  height: 100px;
+  border-radius: var(--border-radius-input);
+  padding: var(--padding-card);
 }

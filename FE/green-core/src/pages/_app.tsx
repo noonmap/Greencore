@@ -6,6 +6,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { useEffect } from 'react';
 import Script from 'next/script';
 import store, { persistor } from '@/core/store';
+import { AxiosInterceptor } from '@/lib/http';
+import { getCookieToken } from '@/lib/cookies';
 
 import '@/styles/tailwind.css';
 import '@/styles/globals.scss';
@@ -14,7 +16,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import 'toastify-js/src/toastify.css';
 
 import kakaoConfig from '~/config/kakaoConfig.json';
-import { useAppDispatch } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getAccessToken } from '@/core/user/userAPI';
 import AppLoading from '@/components/common/AppLoading';
 
@@ -30,9 +32,10 @@ const onBeforeLift = () => {
 
 function App() {
   const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
 
   useEffect(() => {
-    dispatch(getAccessToken());
+    if (getCookieToken()) dispatch(getAccessToken());
 
     var styles = [
       'background-image: radial-gradient( circle 1259px at 2.8% 48.8%,  rgba(255,243,110,1) 0%, rgba(30,204,214,1) 45.6%, rgba(5,54,154,1) 65.9% );',
@@ -69,17 +72,20 @@ export default function AppWraper({ Component, pageProps }: AppProps) {
     <CookiesProvider>
       <Provider store={store}>
         <PersistGate loading={<AppLoading />} onBeforeLift={onBeforeLift} persistor={persistor}>
-          <App />
-          <Component {...pageProps} />
-          <link
-            href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
-            rel='stylesheet'
-          />
-          <Script
-            src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'
-            integrity='sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB'
-            crossOrigin='anonymous'
-            onLoad={kakaoInit}></Script>
+          <AxiosInterceptor>
+            <App />
+            <Component {...pageProps} />
+            <link
+              href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
+              rel='stylesheet'
+            />
+
+            <Script
+              src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'
+              integrity='sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB'
+              crossOrigin='anonymous'
+              onLoad={kakaoInit}></Script>
+          </AxiosInterceptor>
         </PersistGate>
       </Provider>
     </CookiesProvider>

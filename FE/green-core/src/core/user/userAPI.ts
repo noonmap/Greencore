@@ -9,7 +9,9 @@ import toastifyCSS from '@/assets/toastify.json';
 import { PageType, SearchType } from '@/core/common/commonType';
 import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType } from './userType';
 
-// 회원가입
+/** [POST] 회원가입  API
+ * @url /user
+ */
 export const signUp = async (payload: SignUpDataType) => {
   /* "background": "linear-gradient(to right, #00b09b, #96c93d)",*/
   // "background": "linear-gradient(to top, #c1dfc4 0%, #deecdd 100%)",
@@ -37,7 +39,36 @@ export const signUp = async (payload: SignUpDataType) => {
   }
 };
 
-// 메일 전송 (중복도 확인)
+/** [POST] OAUTH 이용해서 회원가입  API
+ * @url /user
+ */
+export const signUpByOAuth = async (payload: SignUpDataType) => {
+  try {
+    const { data } = await http.post('/user', payload);
+
+    Toastify({
+      text: message.SignUpSuccess,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
+
+    return data;
+  } catch (err) {
+    Toastify({
+      text: message.SignUpFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
+};
+
+/** [POST] 해당 이메일에 인증번호 메일 전송하는 API
+ * @url /mail
+ */
 export const checkEmail = async (payload: EmailType) => {
   try {
     const { data } = await http.post('/mail', payload);
@@ -62,23 +93,24 @@ export const checkEmail = async (payload: EmailType) => {
   }
 };
 
-// 이메일 중복 확인
-export const checkEmailDuplicated = async () => {
+/** [GET] DB에 있는 이메일인지 아닌지 확인하는 API
+ * @url /user/email/${email}
+ */
+export const checkEmailDuplicated = async (email: string) => {
   try {
-    const { data } = await http.get('/mail/confirm');
+    const { data } = await http.get(`/user/email/${email}`);
     return data;
   } catch (error) {}
 };
 
-// 임시 비밀번호 전송
-export const findPassword = async (payload: EmailType, accessToken: string) => {
+/** [POST] 비밀번호 찾기, 이메일로 임시 비밀번호를 전송하는 API
+ * @url /mail/password
+ */
+export const findPassword = async (payload: EmailType) => {
   try {
-    const headers = {
-      authorization: accessToken,
-      'x-refresh-token': cookies.getCookieToken(),
-    };
-
-    const { data } = await http.post('/mail/password', payload, { headers });
+    // FIXME:  비밀번호 찾기인데 토큰이 필요한가?
+    // const headers = { authorization: accessToken };
+    const { data } = await http.post('/mail/password', payload);
 
     Toastify({
       text: message.FindPasswordSuccess,
@@ -92,7 +124,9 @@ export const findPassword = async (payload: EmailType, accessToken: string) => {
   } catch (error) {}
 };
 
-// 메일 검증 (인증코드 확인)
+/** [POST] 메일 검증하는 API (인증코드 확인)
+ * @url /mail/confirm
+ */
 export const checkAuthCode = async (payload: EmailType) => {
   try {
     const { data } = await http.post('/mail/confirm', payload);
@@ -117,15 +151,13 @@ export const checkAuthCode = async (payload: EmailType) => {
   }
 };
 
-// 회원탈퇴
+/** [DELETE] 회원탈퇴 API
+ * @url /user
+ */
 export const deleteUser = createAsyncThunk('deleteUser', async (accessToken: string) => {
   try {
-    const headers = {
-      authorization: accessToken,
-      'x-refresh-token': cookies.getCookieToken(),
-    };
-
-    const { data } = await http.delete(`/user`, { headers });
+    // const headers = { authorization: accessToken };
+    const { data } = await http.delete(`/user`);
 
     if (cookies.getCookieToken()) cookies.removeCookieToken();
 
@@ -149,13 +181,15 @@ export const deleteUser = createAsyncThunk('deleteUser', async (accessToken: str
   }
 });
 
-// 로그인
+/** [POST] 로그인 API
+ * @url /login
+ */
 export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
   try {
     const res = await http.post('/login', payload);
-    console.log('login data: ', res);
     const nickname = res.data.data.nickname;
     const profileImagePath = res.data.data.profileImagePath;
+    console.log('login data: ', res);
 
     let accessToken = null;
     let refreshToken = null;
@@ -197,7 +231,9 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
   }
 });
 
-// refresh 토큰
+/** [POST] 새롭게 access token 받는 API (refresh token)
+ * @url /refresh
+ */
 export const getAccessToken = createAsyncThunk('getAccessToken', async (payload) => {
   try {
     if (cookies.getCookieToken()) {
@@ -222,14 +258,13 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (payload)
   }
 });
 
-// 로그아웃
+/** [DELETE] 로그아웃 API
+ * @url /logout
+ */
 export const logOut = createAsyncThunk('logOut', async (accessToken: string) => {
   try {
-    const headers = {
-      authorization: accessToken,
-    };
-
-    const { data } = await http.delete('/logout', { headers });
+    // const headers = { authorization: accessToken };
+    const { data } = await http.delete('/logout');
 
     if (cookies.getCookieToken()) cookies.removeCookieToken();
 
@@ -253,7 +288,9 @@ export const logOut = createAsyncThunk('logOut', async (accessToken: string) => 
   }
 });
 
-// 닉네임 중복 확인
+/** [GET] 닉네임 중복 확인하는 API
+ * @url `/user/${nickname}`
+ */
 export const checkNickname = async (nickname: string) => {
   try {
     const { data } = await http.get(`/user/${nickname}`);
@@ -278,9 +315,12 @@ export const checkNickname = async (nickname: string) => {
   }
 };
 
-// 회원정보 조회 (현재 비밀번호 확인)
+/** [POST] 현재 비밀번호 확인하는 API
+ * @url `/user/password`
+ */
 export const checkPassword = async (payload: PasswordType) => {
   try {
+    // const headers = { authorization: accessToken };
     const { data } = await http.post(`/user/password`, payload);
     return data;
   } catch (error) {
@@ -294,9 +334,12 @@ export const checkPassword = async (payload: PasswordType) => {
   }
 };
 
-// 회원정보 수정 (현재 비밀번호 수정)
+/** [PUT] 회원 정보 수정 API (현재 비밀번호 수정)
+ * @url /user/password
+ */
 export const updatePassword = async (payload: PasswordType) => {
   try {
+    // const headers = { authorization: accessToken };
     const { data } = await http.put(`/user/password`, payload);
 
     Toastify({
@@ -319,9 +362,12 @@ export const updatePassword = async (payload: PasswordType) => {
   }
 };
 
-// 회원 프로필 조회
+/** [GET] 회원 프로필 조회 API
+ * @url /profile/${nickname}
+ */
 export const getProfile = async (nickname: string | string[]) => {
   try {
+    // const headers = { authorization: accessToken };
     const { data } = await http.get(`/profile/${nickname}`);
     return data;
   } catch (error) {
@@ -335,9 +381,12 @@ export const getProfile = async (nickname: string | string[]) => {
   }
 };
 
-// 회원 프로필 수정
+/** [PUT] 회원 프로필 수정 API
+ * @url /profile
+ */
 export const updateProfile = async (payload: ProfileType) => {
   try {
+    // const headers = { authorization: accessToken };
     const { data } = await http.put(`/profile`, payload);
 
     Toastify({
@@ -360,9 +409,12 @@ export const updateProfile = async (payload: ProfileType) => {
   }
 };
 
-// 회원 프로필 이미지 수정
+/** [PUT] 회원 프로필 수정 API
+ * @url /profile/img
+ */
 export const updateProfileImage = createAsyncThunk('updateProfileImage', async (payload: ProfileType) => {
   try {
+    // const headers = { authorization: accessToken };
     const { data } = await http.put(`/profile/img`, payload);
 
     Toastify({
@@ -385,14 +437,21 @@ export const updateProfileImage = createAsyncThunk('updateProfileImage', async (
   }
 });
 
-// 키우는 식물 리스트 조회
+/** [GET] 키우는 식물 리스트 조회 API
+ * @url /user/plant/${nickname}
+ */
 export const getUserPlantList = async (nickname: string | string[], params: PageType) => {
-  const { data } = await http.get(`/user/plant/${nickname}`, { params });
+  // const headers = { authorization: accessToken, ...params };
+  const { data } = await http.get(`/user/plant/${nickname}`);
   return data;
 };
 
 // 키우는 식물  조회
+/** [GET] 키우는 식물 단일 조회 API
+ * @url /user/plant/${nickname}/${userPlatId}
+ */
 export const getUserPlant = async (nickname: string, userPlatId: string) => {
+  // const headers = { authorization: accessToken };
   const { data } = await http.get(`/user/plant/${nickname}/${userPlatId}`);
   return data;
 };
