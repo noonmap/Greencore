@@ -19,7 +19,10 @@ public interface UserPlantRepository extends JpaRepository<UserPlantEntity, Long
 	Optional<UserPlantEntity> findByIdAndIsDeleted(Long id, IsDeletedType isDeletedType);
 	List<UserPlantEntity> findByUserAndIsDeleted(UserEntity user, IsDeletedType isDeletedType);
 	List<UserPlantEntity> findByUserIdAndIsDeleted(Long userId, IsDeletedType isDeleted);
+
+	List<UserPlantEntity> findByUser(UserEntity user);
+
 	@Query("SELECT DISTINCT up.user FROM UserPlantEntity up WHERE up.plant.id IN :plantIds AND up.isDeleted = 'N' AND up.user.isDeleted = 'N' AND up.user.id != :excludeUserId ORDER BY RAND()")
 	List<UserEntity> findDistinctUsersByPlantIdsRandom(@Param("plantIds") Set<Long> plantIds, @Param("excludeUserId") Long excludeUserId, Pageable pageable);
-	
+
 }
