@@ -5,11 +5,29 @@ VALUES
 (now(),now(), "test1@test.com",2,2,"김씨의 한 줄 소개입니다",'N',"김씨","$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di","/user/default.jpg"),
 (now(),now(), "test2@test.com",1,1,"임씨의 한 줄 소개입니다",'N',"임씨","$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di","/user/default.jpg"),
 (now(),now(), "test3@test.com",1,1,"양씨의 한 줄 소개입니다",'N',"양씨","$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di","/user/default.jpg");
-SET @user1 := last_insert_id();
-SET @user2 := @user1 + 1;
-SET @user3 := @user2 + 1;
+SET
+@user1 := last_insert_id();
+SET
+@user2 := @user1 + 1;
+SET
+@user3 := @user2 + 1;
 
-# 식물 5 추가
+#
+팔로우 추가
+INSERT INTO `chicochico`.`follow`
+(`follower_id`,`following_id`)
+VALUES
+# 유저1 -> 유저2
+(@user1,@user2),
+# 유저1 -> 유저3
+(@user1,@user3),
+# 유저2 -> 유저1
+(@user2,@user1),
+# 유저3 -> 유저1
+(@user3,@user1);
+
+#
+식물 5 추가
 INSERT INTO `chicochico`.`plant`
 (`image_path`,`name`,`user_count`)
 VALUES
@@ -59,32 +77,30 @@ VALUES
 # 유저3 게시글 2개 추가
 ('FEED_POST',now(),now(),0,'양씨의 게시글1','/post/default.jpg','N',0,@user3),
 ('FEED_POST',now(),now(),0,'양씨의 게시글2','/post/default.jpg','N',0,@user3);
-SET @post1 := last_insert_id();
-SET @post2 := @post1 + 1;
-SET @post3 := @post2 + 1;
-SET @post4 := @post3 + 1;
-SET @post5 := @post4 + 1;
-SET @post6 := @post5 + 1;
+SET
+@post1 := last_insert_id();
+SET
+@post2 := @post1 + 1;
+SET
+@post3 := @post2 + 1;
+SET
+@post4 := @post3 + 1;
+SET
+@post5 := @post4 + 1;
+SET
+@post6 := @post5 + 1;
 
 INSERT INTO `chicochico`.`post`
-(`id`)
-VALUES
-(@post1),(@post2),(@post3),(@post4),(@post5),(@post6);
+    (`id`)
+VALUES (@post1),
+       (@post2),
+       (@post3),
+       (@post4),
+       (@post5),
+       (@post6);
 
-# 팔로우 추가
-INSERT INTO `chicochico`.`follow`
-(`follower_id`,`following_id`)
-VALUES
-# 유저1 -> 유저2
-(@user1,@user2),
-# 유저1 -> 유저3
-(@user1,@user3),
-# 유저2 -> 유저1
-(@user2,@user1),
-# 유저3 -> 유저1
-(@user3,@user1);
-
-# 관찰일지 추가
+#
+관찰일지 추가
 INSERT INTO `chicochico`.`diary_set`
 (`created_at`,`updated_at`,`bookmark_count`,`diary_count`,`image_path`,`is_deleted`,`is_enabled_add_diary`,`title`,`user_id`,`user_plant_id`)
 VALUES
@@ -155,9 +171,9 @@ SET @diary19 := @diary18 + 1;
 SET @diary20 := @diary19 + 1;
 
 INSERT INTO `chicochico`.`diary`
-(`id`, `observation_date`,`diary_set_id`)
+    (`id`, `observation_date`, `diary_set_id`)
 VALUES
-# user1 - 딸기
+    # user1 - 딸기
 (@diary1,date(curdate() - interval 60 day),@diaryset1),
 (@diary2,date(curdate() - interval 55 day),@diaryset1),
 (@diary3,date(curdate() - interval 45 day),@diaryset1),
