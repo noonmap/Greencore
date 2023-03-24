@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -320,6 +321,12 @@ public class FeedService {
 
 		// 연결된 좋아요 삭제 --> 영구 삭제
 		deleteConnectedLike(feed);
+	}
+
+
+	@Transactional
+	public void deleteAllLikesByUserId(Long userId) {
+		likeRepository.deleteByUserId(userId);
 	}
 
 }

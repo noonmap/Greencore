@@ -11,5 +11,6 @@ import java.util.List;
 public interface AlertRepository extends JpaRepository<AlertEntity, Long> {
 
 	List<AlertEntity> findAllByUserId(Long userId, Pageable pageable);
+	void deleteByUserId(Long userId);
 
 }

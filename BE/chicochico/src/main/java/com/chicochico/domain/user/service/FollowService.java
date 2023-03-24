@@ -188,4 +188,16 @@ public class FollowService {
 		return followRepository.existsByFollowerIdAndFollowingId(userId, followingId);
 	}
 
+
+	@Transactional
+	public void deleteAllFollowerByUserId(Long userId) {
+		followRepository.deleteByFollowerId(userId);
+	}
+
+
+	@Transactional
+	public void deleteAllFollowingByUserId(Long userId) {
+		followRepository.deleteByFollowingId(userId);
+	}
+
 }

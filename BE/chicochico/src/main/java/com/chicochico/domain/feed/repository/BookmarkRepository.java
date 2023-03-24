@@ -16,5 +16,6 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
 	List<BookmarkEntity> findByDiarySet(DiarySetEntity diarySet);
 	List<BookmarkEntity> findByUser(UserEntity user);
 	Optional<BookmarkEntity> findByDiarySetAndUser(DiarySetEntity diarySet, UserEntity user);
+	void deleteByUserId(Long userId);
 
 }
