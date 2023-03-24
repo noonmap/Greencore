@@ -46,9 +46,9 @@ public class DiaryResponseDto {
 	private LocalDateTime createdAt;
 
 
-	public static DiaryResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList) {
+	public static DiaryResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed) {
 		return DiaryResponseDto.builder()
-			.user(ProfileResponseDto.fromEntity(diary.getUser()))
+			.user(ProfileResponseDto.fromEntity(diary.getUser(), isFollowed))
 			.diarySetId(diary.getDiarySet().getId())
 			.observationDate(diary.getObservationDate())
 			.content(diary.getContent())
