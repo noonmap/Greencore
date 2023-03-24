@@ -57,7 +57,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    defer-datasource-initialization: true # dummy data 사용
+    defer-datasource-initialization: ${jpa.ddl.defer-datasource-initialization} # dummy data 사용
   sql:
     init:
       mode: ${sql.init.mode} # sql파일로 init할 것인지 설정
