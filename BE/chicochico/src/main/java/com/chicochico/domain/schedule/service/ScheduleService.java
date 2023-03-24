@@ -467,6 +467,11 @@ public class ScheduleService {
 	}
 
 
+	/**
+	 * 내키식 삭제할 때 관련된 모든 스케줄(앞으로 있을) 삭제
+	 *
+	 * @param userPlant
+	 */
 	public void deleteAllSchedulesByUserPlant(UserPlantEntity userPlant) {
 		scheduleRepository.deleteAllByUserPlantAndDateAfter(userPlant, LocalDate.now());
 	}
