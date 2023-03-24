@@ -1,0 +1,18 @@
+@keyframes move {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(400px);
+  }
+}
+
+@keyframes move2 {
+  from {
+    transform: translateX(0);
+    animation-timing-function: cubic-bezier(1, 0, 0.8, 1);
+  }
+  to {
+    transform: translateX(400px);
+  }
+}
