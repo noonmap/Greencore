@@ -8,16 +8,20 @@ import moment from 'moment';
 import 'moment/locale/ko';
 import ScheduleCode from '@/components/ScheduleCode';
 import ScheduleListItem from '@/components/ScheduleListItem';
+import ScheduleModal from '@/components/common/ScheduleModal';
+import { Calender } from '@/components/Calendar';
 
 export default function schedule() {
   const dispatch = useAppDispatch();
-  const [value, setValue] = useState(new Date());
+  const [date, setDate] = useState(new Date());
   const [monthSchedule, setMonthSchedule] = useState([]);
   const [weekSchedule, setWeekSchedule] = useState({});
   const [marks, setMarks] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [isOpenScheduleCreateModal, setIsOpenScheduleCreateModal] = useState(false);
+  const [isOpenScheduleManageModal, setIsOpenScheduleManageModal] = useState(false);
 
-  const requestData = { day: moment(value).format('DD'), month: moment(value).format('MM'), year: moment(value).format('YYYY') };
+  const requestData = { day: moment(date).format('DD'), month: moment(date).format('MM'), year: moment(date).format('YYYY') };
 
   // 월간 스케줄
   const getMonthSchedule = async () => {
@@ -31,7 +35,8 @@ export default function schedule() {
   // 월간 스케줄 GET
   useEffect(() => {
     getMonthSchedule();
-  }, []);
+    console.log('월간 GET');
+  }, [reload]);
 
   // 주간 스케줄
   const getWeekSchedule = async () => {
@@ -50,16 +55,36 @@ export default function schedule() {
   // 주간 스케줄 GET
   useEffect(() => {
     getWeekSchedule();
-  }, []);
+    console.log('주간 GET');
+  }, [reload, date]);
 
   return (
     <AppLayout>
+      {isOpenScheduleCreateModal && (
+        <ScheduleModal
+          isOpen={isOpenScheduleCreateModal}
+          modalTitle='스케줄 생성'
+          create
+          handleReload={() => setReload((prev) => !prev)}
+          handleModalClose={() => setIsOpenScheduleCreateModal(false)}
+        />
+      )}
+      {/* {isOpenScheduleManageModal && (
+        <ScheduleModal
+          isOpen={isOpenScheduleManageModal}
+          modalTitle='스케줄 수정'
+          update
+          handleReload={() => setReload((prev) => !prev)}
+          handleModalClose={() => setIsOpenScheduleManageModal(false)}
+        />
+      )} */}
+
       <div style={{ display: 'flex' }}>
-        <div>
-          <Calendar
+        {/* React-Calendar */}
+        {/* <Calendar
             calendarType='US' // 요일을 일요일부터 시작하도록 설정
-            onChange={setValue}
-            value={value}
+            onChange={setDate}
+            value={date}
             minDetail='month' // 상단 네비게이션에서 '월' 단위만 보이게 설정
             maxDetail='month' // 상단 네비게이션에서 '월' 단위만 보이게 설정
             navigationLabel={null}
@@ -82,7 +107,6 @@ export default function schedule() {
                     </div>
                   );
                 });
-
                 return (
                   <>
                     <div style={{ display: 'flex', flexWrap: 'wrap', margin: '4px' }}>{html}</div>
@@ -90,18 +114,35 @@ export default function schedule() {
                 );
               }
             }}
-          />
-        </div>
-        <div>
+          /> */}
+
+        {/* 구현한 달력 */}
+        <Calender marks={marks} monthSchedule={monthSchedule} date={date} setDate={setDate} setReload={setReload} />
+        <div style={{ width: '50%', padding: '2%' }}>
           <div style={{ display: 'flex' }}>
             <div>주간 스케줄</div>
+            <button
+              style={{ padding: '0', paddingInline: '4px', marginLeft: 'auto', border: 'solid 1px', fontSize: '12px' }}
+              onClick={() => setIsOpenScheduleCreateModal(true)}>
+              + 일정 추가하기
+            </button>
+            <button
+              style={{ padding: '0', paddingInline: '4px', marginLeft: 'auto', border: 'solid 1px', fontSize: '12px' }}
+              // onClick={() => setIsOpenScheduleManageModal(true)}
+            >
+              + 일정 관리하기
+            </button>
           </div>
           {Object.keys(weekSchedule)
             .sort()
             .map((day: string) => {
               return (
                 <div key={day}>
-                  <div>{moment(weekSchedule[day][0].scheduleDate).format('dddd')}</div>
+                  {moment(new Date()).format('YYYY-MM-DD') === weekSchedule[day][0].scheduleDate ? (
+                    <div>오늘</div>
+                  ) : (
+                    <div>{moment(weekSchedule[day][0].scheduleDate).format('DD일(dd)')}</div>
+                  )}
                   {weekSchedule[day].map((toDo: any, index: React.Key) => {
                     return (
                       <div key={index}>
