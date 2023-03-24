@@ -12,7 +12,6 @@ import styles from './AppHeader.module.scss';
 
 export default function AppHeader() {
   const dispatch = useAppDispatch();
-  const accessToken = useAppSelector((state) => state.user.accessToken);
 
   // github
   const githubAuth = GitHubGetAuth();
@@ -25,7 +24,7 @@ export default function AppHeader() {
   /** 로그아웃: github, kakao, google, jwt */
   async function handleLogOut() {
     try {
-      dispatch(logOut(accessToken));
+      dispatch(logOut());
     } catch (error) {
       console.error(error);
     }
@@ -85,7 +84,7 @@ export default function AppHeader() {
             <Link href='/user/follow/temp'>팔로우 관리</Link>
             <Link href='/alert'>알림</Link>
             <Link href='/user/password'>설정</Link>
-            <Link href='/user/signup'>회원가입</Link>
+            <Link href='/auth/signup'>회원가입</Link>
             <Link href='/auth/login'>로그인</Link>
           </div>
         </div>
