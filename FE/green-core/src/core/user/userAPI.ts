@@ -154,9 +154,8 @@ export const checkAuthCode = async (payload: EmailType) => {
 /** [DELETE] 회원탈퇴 API
  * @url /user
  */
-export const deleteUser = createAsyncThunk('deleteUser', async (accessToken: string) => {
+export const deleteUser = createAsyncThunk('deleteUser', async () => {
   try {
-    // const headers = { authorization: accessToken };
     const { data } = await http.delete(`/user`);
 
     if (cookies.getCookieToken()) cookies.removeCookieToken();

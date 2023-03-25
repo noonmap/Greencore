@@ -1,5 +1,15 @@
+.container {
+  max-width: 600px;
+}
+
 .wrap {
-  margin-top: 10%;
+  // min-width: 100px;
+  // margin-top: 10%;
+}
+
+.main {
+  color: var(--main-color);
+  font-weight: var(--text-bold);
 }
 
 .help {
