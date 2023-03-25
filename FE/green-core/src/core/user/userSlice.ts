@@ -59,13 +59,13 @@ const userSlice = createSlice({
         state.accessToken = null;
       })
       .addCase(userAPI.getAccessToken.pending, (state) => {
-        state.isAuthenticated = false;
         state.accessToken = null;
       })
       .addCase(userAPI.getAccessToken.fulfilled, (state, action) => {
-        if (action.payload == false) state.isAuthenticated = false;
-        else {
-          state.isAuthenticated = true;
+        if (action.payload == false) {
+          // state.isAuthenticated = false;
+        } else {
+          // state.isAuthenticated = true;
           state.accessToken = action.payload?.accessToken;
         }
       })

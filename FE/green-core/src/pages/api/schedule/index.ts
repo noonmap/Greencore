@@ -9,13 +9,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
   if (req.method === 'GET') {
     const month = Number(req.query.month);
     const year = Number(req.query.year);
-    console.log(month, year);
     res.status(200).json({
       result: 'SUCCESS',
       data: [
         {
           scheduleId: 0,
-          scheduleDate: '2023-03-22T13:00',
+          scheduleDate: '2023-03-22',
           scheduleCode: 'WATER',
           isCompleted: true,
           plant: {
@@ -27,7 +26,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 3,
-          scheduleDate: '2023-03-24T18:00',
+          scheduleDate: '2023-03-24',
           scheduleCode: 'REPOT',
           isCompleted: false,
           plant: {
@@ -39,7 +38,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 1,
-          scheduleDate: '2023-03-23T13:00',
+          scheduleDate: '2023-03-23',
           scheduleCode: 'WATER',
           isCompleted: false,
           plant: {
@@ -51,7 +50,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 2,
-          scheduleDate: '2023-03-22T13:00',
+          scheduleDate: '2023-03-22',
           scheduleCode: 'WATER',
           isCompleted: false,
           plant: {
@@ -63,7 +62,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 4,
-          scheduleDate: '2023-03-24T13:00',
+          scheduleDate: '2023-03-24',
           scheduleCode: 'PRUNING',
           isCompleted: false,
           plant: {
@@ -75,7 +74,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 5,
-          scheduleDate: '2023-03-24T13:00',
+          scheduleDate: '2023-03-24',
           scheduleCode: 'NUTRITION',
           isCompleted: false,
           plant: {
@@ -87,7 +86,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 6,
-          scheduleDate: '2023-03-24T13:00',
+          scheduleDate: '2023-03-24',
           scheduleCode: 'VENTILATION',
           isCompleted: false,
           plant: {
@@ -99,7 +98,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 7,
-          scheduleDate: '2023-03-24T13:00',
+          scheduleDate: '2023-03-24',
           scheduleCode: 'SPRAY',
           isCompleted: false,
           plant: {
@@ -110,6 +109,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
           content: '선인장 미스트 뿌려줌',
         },
       ],
+    });
+  } else if (req.method === 'POST') {
+    res.status(200).json({
+      result: 'SUCCESS',
+      data: {},
     });
   }
 }

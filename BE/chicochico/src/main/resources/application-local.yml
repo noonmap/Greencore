@@ -57,11 +57,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: ${jpa.ddl.defer-datasource-initialization} # dummy data 사용
   sql:
     init:
-      mode: ${sql.init.mode}
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
+      mode: ${sql.init.mode} # sql파일로 init할 것인지 설정
+      #      schema-locations: classpath:schema.sql # schema init 사용
+      data-locations: classpath:data.sql # dummy data 사용
 
   # hibernate logging
   logging:

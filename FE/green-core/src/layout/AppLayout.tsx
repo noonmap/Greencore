@@ -1,7 +1,9 @@
 import React from 'react';
-import Head from 'next/head';
 import AppHeader from './AppHeader';
-import AppFooter from './AppFooter';
+import AppMain from './AppMain';
+import AppSearch from './AppSearch';
+import { useAppSelector } from '@/core/hooks';
+import styles from './AppLayout.module.scss';
 
 type AppLayoutProps = {
   children: React.ReactNode;
@@ -9,27 +11,29 @@ type AppLayoutProps = {
 };
 
 export default function AppLayout({ children, home }: AppLayoutProps) {
+  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
+
+  // 로그인 시
+  if (isAuthenticated) {
+    return (
+      <>
+        <AppHeader />
+        <main>{home ? <>{children}</> : <>{children}</>}</main>
+      </>
+    );
+  }
+
+  // 비 로그인 시
   return (
     <>
-      <Head>
-        <title>치코치코</title>
-        <meta name='description' content='특화프로젝트' />
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
+      <div className=' flex md:gap-5'>
+        <AppHeader />
 
-      <AppHeader />
-      <main className='p-5'>
-        {home ? (
-          <div>
-            <div className='mx-auto max-w-7xl p-6 lg:px-8'>home</div>
-            {children}
-          </div>
-        ) : (
-          children
-        )}
-      </main>
-      <AppFooter />
+        <div className='flex-1 flex h-screen'>
+          <AppMain children={children} />
+          <AppSearch />
+        </div>
+      </div>
     </>
   );
 }

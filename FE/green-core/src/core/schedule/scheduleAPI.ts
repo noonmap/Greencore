@@ -3,7 +3,7 @@ import http from '@/lib/http.js';
 import Toastify from 'toastify-js';
 import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
-import { MonthScheduleType } from './scheduleType';
+import { CreateScheduleType, MonthScheduleType, UpdateScheduleType } from './scheduleType';
 
 // 월간 스케줄 받기, {day, month, year}
 export const getMonthList = createAsyncThunk('getMonthList', async (requestData: MonthScheduleType) => {
@@ -48,3 +48,53 @@ export const CancelToDo = createAsyncThunk('CancelToDo', async (requestData: { s
     return {};
   }
 });
+
+// 스케줄 생성, { userPlantId, scheduleDate, scheduleCode, content, periodType }
+export const createSchedule = async (payload: CreateScheduleType) => {
+  try {
+    const { data } = await http.post(`/schedule`, payload);
+    if (data.result === 'SUCCESS') {
+      Toastify({
+        text: message.CreateDiarySuccess,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+    } else {
+      Toastify({
+        text: message.CreateDiaryFail,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
+    return data;
+  } catch (error) {}
+};
+
+// 스케줄 수정, {}
+export const updateSchedule = async (requestData: UpdateScheduleType) => {
+  try {
+    const { data } = await http.post(`/schedule/${requestData.scheduleId}`, requestData.payload);
+    if (data.result === 'SUCCESS') {
+      Toastify({
+        text: message.CreateDiarySuccess,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+    } else {
+      Toastify({
+        text: message.CreateDiaryFail,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
+    return data;
+  } catch (error) {}
+};
