@@ -1,17 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import AppButton from '../button/AppButton';
 
 type PropsType = {
   isOpen: boolean;
   title: string;
-  content: string;
-  content2?: string;
+  content?: string | ReactNode | undefined;
   desc?: string | null;
   handleModalClose: () => void;
   handleModalConfirm?: (params: any) => any;
 };
 
-export default function AppModal({ isOpen, title, content, content2, desc, handleModalClose, handleModalConfirm }: PropsType) {
+export default function AppModal({ isOpen, title, content, desc, handleModalClose, handleModalConfirm }: PropsType) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,11 +43,7 @@ export default function AppModal({ isOpen, title, content, content2, desc, handl
                 <div className='modalTitle'>{title}</div>
                 <div className='mb-5 text-sm titleLight'>{desc}</div>
 
-                <div>
-                  {content}
-                  <br />
-                  {content2}
-                </div>
+                <div>{content}</div>
               </div>
 
               <div className='flex space-x-2'>
@@ -66,6 +61,10 @@ export default function AppModal({ isOpen, title, content, content2, desc, handl
 AppModal.defaultProps = {
   isOpen: true,
   title: '모달 제목',
-  content: `삭제하시면 다시 되돌릴 수 없습니다.`,
-  content2: '삭제하시겠습니까?',
+  content: (
+    <div>
+      삭제하시면 되돌릴 수 없습니다. <br />
+      삭제하시겠습니까?
+    </div>
+  ),
 };

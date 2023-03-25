@@ -68,8 +68,6 @@ export default function AppHeader() {
       });
   }
 
-  function handle() {}
-
   return (
     <>
       <div className={`${styles.container} xl:w-56 w-20 flex-none fixed overflow-hidden h-full px-3 py-5`}>
@@ -80,16 +78,16 @@ export default function AppHeader() {
               <div className={`${styles.title} mb-10`}>GREENCORE</div>
             </div>
 
-            <div className={`${styles.navContainer} flex flex-col space-y-8`}>
+            <div className={`${styles.navContainer} flex flex-col space-y-7`}>
               {/* <Link href='/'>비로그인</Link> */}
               <Link href='/feed'>Home</Link>
               <Link href='/'>식물 검색</Link>
               <Link href='/schedule'>식물 스케줄링</Link>
               <Link href='/user/follow/temp'>팔로우 관리</Link>
               <Link href='/alert'>알림</Link>
-              <Link href='/user/password'>설정</Link>
-              <Link href='/auth/signup'>회원가입</Link>
+              <Link href='/user/settings'>설정</Link>
               <Link href='/auth/login'>로그인</Link>
+              <Link href='/auth/signup'>회원가입</Link>
             </div>
           </div>
 

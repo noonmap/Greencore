@@ -5,6 +5,8 @@ import { checkInputFormToast } from '@/lib/utils';
 import { useAppSelector } from '@/core/hooks';
 import AppButton from '../button/AppButton';
 
+import { EssentialMessage, EmailMessage } from '@/assets/message.json';
+
 type PropsType = {
   isOpen: boolean;
   handleModalClose: () => void;
@@ -80,19 +82,19 @@ export default function AppModal({ isOpen, handleModalClose }: PropsType) {
                 <div className='mb-4 text-sm titleLight'>해당 이메일로 새 비밀번호가 전송됩니다</div>
 
                 <div className='flex flex-col'>
-                  <div className='flex flex-col'>
+                  <div className='flex flex-col space-y-2'>
                     <input
                       type='email'
-                      className='block'
+                      className={`${errors?.email ? 'inputError' : null} block w-full`}
                       placeholder='이메일을 입력해주세요'
                       {...register('email', {
-                        required: '필수 항목입니다',
-                        pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: '올바른 이메일 형식이 아닙니다' },
+                        required: EssentialMessage,
+                        pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: EmailMessage },
                       })}
                     />
 
                     <div className={`error`}>
-                      {/* {errors?.email && errors?.email.type === 'required' && <span>{errors?.email?.message}</span>} */}
+                      {errors?.email && errors?.email.type === 'required' && <span>{errors?.email?.message}</span>}
                       {errors?.email && errors?.email.type === 'pattern' && <span>{errors?.email?.message}</span>}
                     </div>
                   </div>

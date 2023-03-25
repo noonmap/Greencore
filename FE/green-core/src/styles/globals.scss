@@ -84,6 +84,10 @@ input {
 .inputError {
   &:focus {
     border: 1px solid var(--like-color);
+
+    &::placeholder {
+      color: var(--light-color);
+    }
   }
 }
 
@@ -149,7 +153,7 @@ h1 {
 .modalContent {
   padding: 2.5rem var(--padding-card);
   min-width: 400px;
-  min-height: 290px;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
 }
@@ -157,6 +161,10 @@ h1 {
 .error {
   color: var(--danger-color);
   font-size: 0.85rem;
+}
+
+.main {
+  color: var(--main-color);
 }
 
 .titleLight {

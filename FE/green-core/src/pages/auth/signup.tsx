@@ -4,14 +4,15 @@ import { useForm } from 'react-hook-form';
 import { signUp, checkEmail, checkNickname, checkAuthCode } from '~/src/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
 import { getStorage, ref, uploadBytes, uploadString } from 'firebase/storage';
-import { readFile } from 'fs';
 
 import styles from '@/styles/Auth.module.scss';
 import Image from 'next/image';
 import AppButton from '@/components/button/AppButton';
+import { EssentialMessage, EmailMessage, PasswordMessage, NicknameMessage } from '@/assets/message.json';
 
 type StateType = {
   email: string;
+  isCheckedEmail: boolean;
   password: string;
   checkPassword: string;
   passwordMessage: string;
@@ -23,6 +24,7 @@ type StateType = {
 
 const initialState: StateType = {
   email: '',
+  isCheckedEmail: false,
   password: '',
   checkPassword: '',
   passwordMessage: '',
@@ -42,8 +44,9 @@ export default function signup() {
     getValues,
     watch,
   } = useForm<StateType>({ defaultValues: initialState, mode: 'onChange' });
-  const [email, password, checkPassword, passwordMessage, authCode, isCheckedAuthCode, nickname, isCheckedNickname] = getValues([
+  const [email, isCheckedEmail, password, checkPassword, passwordMessage, authCode, isCheckedAuthCode, nickname, isCheckedNickname] = getValues([
     'email',
+    'isCheckedEmail',
     'password',
     'checkPassword',
     'passwordMessage',
@@ -106,7 +109,9 @@ export default function signup() {
     try {
       const payload = { email };
       const { data } = await checkEmail(payload);
-      console.log(data);
+
+      if (data) setValue('isCheckedEmail', true);
+      else setValue('isCheckedEmail', false);
     } catch (error) {
       setValue('email', '');
       console.error(error);
@@ -164,7 +169,7 @@ export default function signup() {
 
   return (
     <AppLayout>
-      <div className={`${styles.container} h-screen overflow-auto`}>
+      <div className={`${styles.container} h-full`}>
         <Image src='/images/leaf1.png' width={512} height={512} alt='' className={`${styles.leaf1} `} />
         <Image src='/images/leaf2.png' width={512} height={512} alt='' className={`${styles.leaf2}`} />
         <Image src='/images/leaf3.png' width={512} height={512} alt='' className={`${styles.leaf3}`} />
@@ -183,8 +188,8 @@ export default function signup() {
                     placeholder='ssafy@ssafy.com'
                     className={`${errors?.email ? 'inputError' : null} block w-full`}
                     {...register('email', {
-                      required: '필수 항목입니다',
-                      pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: '올바른 이메일 형식이 아닙니다' },
+                      required: EssentialMessage,
+                      pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: EmailMessage },
                     })}
                   />
                   <AppButton text='이메일 확인' className='w-1' handleClick={handleCheckEmail} />
@@ -194,15 +199,17 @@ export default function signup() {
                   {errors?.email && errors?.email.type === 'required' && <span>{errors?.email?.message}</span>}
                   {errors?.email && errors?.email.type === 'pattern' && <span>{errors?.email?.message}</span>}
                 </div>
-              </div>
 
-              {/* 이메일 인증 */}
-              <div className={`${styles.content} space-y-2 mb-10`}>
-                <label className={`${styles.email}`}>이메일 인증 코드</label>
-                <div className='flex space-x-2'>
-                  <input type='email' placeholder='인증 코드' className='block w-full' {...register('authCode')} />
-                  <AppButton text='인증코드 확인' className='w-1' handleClick={handleCheckAuthCode} />
-                </div>
+                {/* 이메일 인증 */}
+                {isCheckedEmail ? (
+                  <div className={`${styles.content} space-y-2 mb-10`}>
+                    <label className={`${styles.email}`}>이메일 인증 코드</label>
+                    <div className='flex space-x-2'>
+                      <input type='email' placeholder='인증 코드' className='block w-full' {...register('authCode')} />
+                      <AppButton text='인증코드 확인' className='w-1' handleClick={handleCheckAuthCode} />
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               {/* 비밀번호 */}
@@ -218,10 +225,10 @@ export default function signup() {
                     placeholder='비밀번호'
                     className={`${errors?.password ? 'inputError' : null} block w-full`}
                     {...register('password', {
-                      required: '필수 항목입니다',
+                      required: EssentialMessage,
                       pattern: {
                         value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
-                        message: '최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자',
+                        message: PasswordMessage,
                       },
                       onChange: (e) => handleCheckPassword(e),
                     })}
@@ -234,10 +241,10 @@ export default function signup() {
                     placeholder='비밀번호 확인'
                     className={`${errors?.checkPassword ? 'inputError' : null} block w-full`}
                     {...register('checkPassword', {
-                      required: '필수 항목입니다',
+                      required: EssentialMessage,
                       pattern: {
                         value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
-                        message: '최소 8 자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자',
+                        message: PasswordMessage,
                       },
                       onChange: (e) => handleCheckPassword(e),
                     })}
@@ -245,6 +252,7 @@ export default function signup() {
                 </div>
 
                 <div className={`${styles.error}`}>
+                  {/* {errors?.password && errors?.password.type === 'required' && <span>{errors?.password?.message}</span>} */}
                   {errors?.password && errors?.password.type === 'pattern' ? <span>{errors?.password?.message}</span> : passwordMessage}
                 </div>
               </div>
@@ -258,8 +266,8 @@ export default function signup() {
                     placeholder='닉네임'
                     className={`${errors?.nickname ? 'inputError' : null} block w-full`}
                     {...register('nickname', {
-                      required: '필수 항목입니다',
-                      pattern: { value: /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$/, message: '2자 이상 16자 이하, 영어 또는 숫자 또는 한글로 구성' },
+                      required: EssentialMessage,
+                      pattern: { value: /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$/, message: NicknameMessage },
                     })}
                   />
                   <AppButton text='닉네임 중복 확인' className='w-1' handleClick={handleCheckNickname} />

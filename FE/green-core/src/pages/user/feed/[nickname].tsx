@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -484,7 +484,6 @@ export default function FeedDetail() {
       <AppModal
         isOpen={isOpenUserPlantDeleteModal}
         title='내 식물 삭제'
-        content2='삭제하시겠습니까?'
         handleModalClose={() => setIsOpenUserPlantDeleteModal(false)}
         handleModalConfirm={handleUserPlantDelete}
       />
