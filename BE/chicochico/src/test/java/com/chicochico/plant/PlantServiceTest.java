@@ -46,30 +46,35 @@ public class PlantServiceTest {
 			.userCount(0)
 			.build();
 		plantRepository.save(plant);
+
 		PlantEntity plant2 = PlantEntity.builder()
 			.name("장미")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant2);
+
 		PlantEntity plant3 = PlantEntity.builder()
 			.name("산수유")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant3);
+
 		PlantEntity plant4 = PlantEntity.builder()
 			.name("사과나무")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant4);
+
 		PlantEntity plant5 = PlantEntity.builder()
 			.name("페퍼민트")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant5);
+
 		PlantEntity plant6 = PlantEntity.builder()
 			.name("라벤더")
 			.imagePath("default")
@@ -98,30 +103,35 @@ public class PlantServiceTest {
 			.userCount(0)
 			.build();
 		plantRepository.save(plant);
+
 		PlantEntity plant2 = PlantEntity.builder()
 			.name("장미")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant2);
+
 		PlantEntity plant3 = PlantEntity.builder()
 			.name("산수유")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant3);
+
 		PlantEntity plant4 = PlantEntity.builder()
 			.name("사과나무")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant4);
+
 		PlantEntity plant5 = PlantEntity.builder()
 			.name("페퍼민트")
 			.imagePath("default")
 			.userCount(0)
 			.build();
 		plantRepository.save(plant5);
+
 		PlantEntity plant6 = PlantEntity.builder()
 			.name("라벤더")
 			.imagePath("default")
