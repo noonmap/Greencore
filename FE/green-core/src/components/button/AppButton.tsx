@@ -7,7 +7,7 @@ type PropsType = {
   textColor?: string;
   bgColor?: string;
   className?: string;
-  handleClick: () => void;
+  handleClick: (params: any) => any;
 };
 
 export default function AppButton({ bgColor, textColor, text, handleClick, className }: PropsType) {

@@ -84,6 +84,10 @@ input {
 .inputError {
   &:focus {
     border: 1px solid var(--like-color);
+
+    &::placeholder {
+      color: var(--light-color);
+    }
   }
 }
 
@@ -124,9 +128,49 @@ h1 {
   border-radius: 0.375rem;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
   z-index: 100;
+  // padding: 0 0.5rem;
+}
+
+.modalTitle {
+  color: var(--main-color);
+  font-size: 1.3rem;
+  font-weight: var(--text-bold);
+  // margin-bottom: 1rem;
+}
+
+.modalClose {
+  color: var(--light-color);
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--danger-color);
+  }
 }
 
 .modalContent {
+  padding: 2.5rem var(--padding-card);
+  min-width: 400px;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
+}
+
+.error {
+  color: var(--danger-color);
+  font-size: 0.85rem;
+}
+
+.main {
+  color: var(--main-color);
+}
+
+.titleLight {
+  color: var(--title-light-color);
+}
+
+.light {
+  color: var(--light-color);
 }

@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import Image from 'next/image';
+import Link from 'next/link';
 
-import { appendErrors, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getAuth as GitHubGetAuth, signInWithPopup as GitHubSignInWithPopup, GithubAuthProvider, signOut as GitHubSignOut } from 'firebase/auth';
 import { getAuth as GoogleGetAuth, signInWithPopup as GoogleSignInWithPopup, GoogleAuthProvider, signOut as GoogleSignOut } from 'firebase/auth';
 
 import { signUp, logIn, logOut, checkEmailDuplicated, signUpByOAuth } from '@/core/user/userAPI';
-import { SET_ACCESS_TOKEN, SET_IS_OAUTH_FALSE, SET_IS_OAUTH_TRUE } from '@/core/user/userSlice';
+import { SET_ACCESS_TOKEN, SET_IS_OAUTH_TRUE } from '@/core/user/userSlice';
 import { checkInputFormToast } from '@/lib/utils';
 import * as cookies from '@/lib/cookies';
 
 import styles from '@/styles/Auth.module.scss';
 import AppButton from '@/components/button/AppButton';
-import Link from 'next/link';
+import FindPasswordModal from '@/components/modal/FindPasswordModal';
 
 type StateType = {
   email: string;
@@ -28,7 +29,7 @@ const initialState: StateType = {
 
 export default function login() {
   const dispatch = useAppDispatch();
-  const accessToken = useAppSelector((state) => state.user.accessToken);
+  const [isOpenFindPasswordModal, setIsOpenFindPasswordModal] = useState<boolean>(false);
 
   // github
   const githubAuth = GitHubGetAuth();
@@ -179,6 +180,8 @@ export default function login() {
 
   return (
     <AppLayout>
+      <FindPasswordModal isOpen={isOpenFindPasswordModal} handleModalClose={() => setIsOpenFindPasswordModal(false)} />
+
       <div className={`${styles.container} h-full flex flex-col`}>
         <Image src='/images/leaf1.png' width={512} height={512} alt='' className={`${styles.leaf1} `} />
         <Image src='/images/leaf2.png' width={512} height={512} alt='' className={`${styles.leaf2}`} />
@@ -222,13 +225,15 @@ export default function login() {
 
           {/* 로그인 버튼 */}
           <div>
-            <AppButton text='로그인' bgColor={isPossibleLogIn ? 'main' : 'thin'} handleClick={handleLogIn} />
-            <div className={`${styles.line} flex justify-between space-x-2 mt-2`}>
+            <div className={`${styles.find} flex justify-between space-x-2 mt-2`}>
               <Link href='/auth/signup' className={` underline cursor-pointer`}>
                 회원가입
               </Link>
-              <div className={`underline cursor-pointer`}>비밀번호 찾기</div>
+              <div className={`underline cursor-pointer`} onClick={() => setIsOpenFindPasswordModal(true)}>
+                비밀번호 찾기
+              </div>
             </div>
+            <AppButton text='로그인' bgColor={isPossibleLogIn ? 'main' : 'thin'} handleClick={handleLogIn} />
           </div>
         </div>
       </div>
