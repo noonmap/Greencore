@@ -21,6 +21,7 @@
   // color: var(--title-light-color);
 
   a {
+    transition: all 0.15s var(--timing-func);
     // transition: var(--transition-nav);
     // transition: --transition;
     // transition: all 0.12s cubic-bezier(1, 0, 0.8, 1);

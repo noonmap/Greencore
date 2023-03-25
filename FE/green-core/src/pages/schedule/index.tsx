@@ -8,7 +8,7 @@ import moment from 'moment';
 import 'moment/locale/ko';
 import ScheduleCode from '@/components/ScheduleCode';
 import ScheduleListItem from '@/components/ScheduleListItem';
-import ScheduleModal from '@/components/common/ScheduleModal';
+import ScheduleModal from '@/components/modal/ScheduleModal';
 import { Calender } from '@/components/Calendar';
 
 export default function schedule() {

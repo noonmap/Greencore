@@ -7,6 +7,7 @@ import { checkInputFormToast } from '@/lib/utils';
 import styles from '@/styles/Settings.module.scss';
 import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
+import { useRouter } from 'next/router';
 
 type StateType = {
   password: string;
@@ -19,6 +20,8 @@ const initialState: StateType = {
 };
 
 export default function index() {
+  const router = useRouter();
+
   const {
     register,
     formState: { errors },
@@ -52,7 +55,7 @@ export default function index() {
 
     try {
       const { data } = await checkPassword({ password });
-      console.log(data);
+      if (data) router.push('/user/settings/delete/confirm');
     } catch (error) {
       console.error(error);
     }
@@ -60,7 +63,7 @@ export default function index() {
 
   return (
     <SettingsLayout>
-      <div className={`flex flex-col justify-center h-4/6 px-20`}>
+      <div className={`${styles.container} flex flex-col mx-auto justify-center h-4/6`}>
         <div className={`${styles.wrap} flex flex-col justify-center space-y-20 h-full`}>
           <div className='space-y-5'>
             <div className='flex items-center space-x-2'>

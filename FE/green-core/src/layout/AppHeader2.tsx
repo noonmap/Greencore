@@ -15,11 +15,7 @@ export default function AppHeader() {
       <div className='flex space-x-4'>
         <h2 className='font-bold'>정아</h2>
         <Link href='/user/following/식집사입니다만'>팔로우 목록</Link>
-
-        <Link href='/user/settings'>비밀번호 확인</Link>
-        <Link href='/user/settings/password'>비밀번호 수정</Link>
         <Link href='/user/settings/nickname'>닉네임 수정</Link>
-        <Link href='/user/settings/delete'>회원탈퇴</Link>
       </div>
 
       <div className='flex space-x-4'>

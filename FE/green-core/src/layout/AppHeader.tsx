@@ -85,7 +85,7 @@ export default function AppHeader() {
               <Link href='/schedule'>식물 스케줄링</Link>
               <Link href='/user/follow/temp'>팔로우 관리</Link>
               <Link href='/alert'>알림</Link>
-              <Link href='/user/settings'>설정</Link>
+              <Link href='/user/settings/password'>설정</Link>
               <Link href='/auth/login'>로그인</Link>
               <Link href='/auth/signup'>회원가입</Link>
             </div>
