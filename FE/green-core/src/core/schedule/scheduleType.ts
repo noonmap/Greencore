@@ -23,7 +23,18 @@ export type UpdateScheduleType = {
     scheduleDate: string;
     scheduleCode: string;
     content: string;
-    regularScheduleCode: string;
   };
   scheduleId: number;
+};
+
+// 정기스케줄 수정 타입
+export type UpdateRegularScheduleType = {
+  payload: {
+    scheduleCode: string;
+    userPlantId: number;
+    content: string;
+    regularScheduleCode: string;
+    day: number | string;
+  };
+  regularId: number;
 };

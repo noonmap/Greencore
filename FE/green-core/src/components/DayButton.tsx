@@ -17,7 +17,7 @@ export default function DayButton(props: PropsType) {
         style={
           isSelected
             ? {
-                backgroundColor: 'green',
+                backgroundColor: '#4FC577',
                 color: 'white',
                 cursor: 'pointer',
                 padding: '0',
@@ -27,7 +27,7 @@ export default function DayButton(props: PropsType) {
                 height: '32px',
               }
             : {
-                backgroundColor: 'gray',
+                backgroundColor: '#D9D9D9',
                 color: 'white',
                 cursor: 'pointer',
                 padding: '0',

@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/core/hooks';
-import { createSchedule, updateSchedule } from '@/core/schedule/scheduleAPI';
+import { createSchedule, updateRegularSchedule, updateSchedule } from '@/core/schedule/scheduleAPI';
 import http from '@/lib/http';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,8 +9,11 @@ type PropsType = {
   isOpen: boolean;
   modalTitle: string;
   scheduleId?: number;
+  schedule?: any;
+  regularId?: number;
   create?: boolean;
   update?: boolean;
+  regular?: boolean;
   handleReload: () => void;
   handleModalClose: () => void;
 };
@@ -24,16 +27,26 @@ type StateType = {
   day: number | string;
 };
 
-const initialState: StateType = {
-  userPlantId: 0,
-  scheduleDate: '',
-  scheduleCode: 'WATER',
-  content: '',
-  regularScheduleCode: '0',
-  day: null,
-};
-
-export default function ScheduleModal({ isOpen, modalTitle, create, update, scheduleId, handleReload, handleModalClose }: PropsType) {
+export default function ScheduleModal({
+  isOpen,
+  modalTitle,
+  create,
+  update,
+  regular,
+  scheduleId,
+  schedule,
+  regularId,
+  handleReload,
+  handleModalClose,
+}: PropsType) {
+  const initialState: StateType = {
+    userPlantId: schedule ? schedule.plant.userPlantId : 0,
+    scheduleDate: schedule ? schedule.scheduleDate : '',
+    scheduleCode: schedule ? schedule.scheduleCode : 'WATER',
+    content: schedule ? schedule.content : '',
+    regularScheduleCode: schedule ? (schedule.regularScheduleCode ? schedule.regularScheduleCode : '0') : '0',
+    day: null,
+  };
   const modalRef = useRef<HTMLDivElement>(null);
   const { register, setValue, getValues, watch } = useForm({ defaultValues: initialState, mode: 'onChange' });
   const [userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day] = getValues([
@@ -85,6 +98,7 @@ export default function ScheduleModal({ isOpen, modalTitle, create, update, sche
 
   // 스케줄 생성
   const handleScheduleCreate = async (e: any) => {
+    console.log('스케줄 생성');
     e.preventDefault();
     const payload = { userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day: Number(day) };
     try {
@@ -101,14 +115,33 @@ export default function ScheduleModal({ isOpen, modalTitle, create, update, sche
 
   // 스케줄 수정
   const handleScheduleUpdate = async (e: any) => {
+    console.log('스케줄 수정');
     e.preventDefault();
-    const payload = { userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day };
+    const payload = { userPlantId, scheduleDate, scheduleCode, content };
     const requestData = {
       scheduleId,
       payload,
     };
     try {
       const data = await updateSchedule(requestData);
+      if (data.result === 'SUCCESS') {
+        handleReload();
+        handleModalClose();
+      }
+    } catch (err) {}
+  };
+
+  // 정기스케줄 수정
+  const handleRegularScheduleUpdate = async (e: any) => {
+    console.log('정기스케줄 수정');
+    e.preventDefault();
+    const payload = { scheduleCode, userPlantId, content, regularScheduleCode, day };
+    const requestData = {
+      regularId,
+      payload,
+    };
+    try {
+      const data = await updateRegularSchedule(requestData);
       if (data.result === 'SUCCESS') {
         handleReload();
         handleModalClose();
@@ -155,45 +188,60 @@ export default function ScheduleModal({ isOpen, modalTitle, create, update, sche
               </select>
               <label id='content'>내용</label>
               <input type='text' id='content' {...register('content')} placeholder='내용을 입력해주세요!' />
-              <label id='period'>주기 선택</label>
-              <div style={{ display: 'flex' }}>
-                <select
-                  {...(register('regularScheduleCode'),
-                  {
-                    onChange(event) {
-                      setValue('regularScheduleCode', event.target.value);
-                      setValue('scheduleDate', '');
-                      setIsSelectedList(Array(dayList.length).fill(false));
-                      setValue('day', null);
-                    },
-                  })}>
-                  <option value='0'>매월</option>
-                  <option value='1'>매주</option>
-                  <option value='2'>하루</option>
-                </select>
+              {(create || regular) && (
+                <>
+                  <label id='period'>주기 선택</label>
+                  <div style={{ display: 'flex' }}>
+                    <select
+                      {...(register('regularScheduleCode'),
+                      {
+                        onChange(event) {
+                          setValue('regularScheduleCode', event.target.value);
+                          setValue('scheduleDate', '');
+                          setIsSelectedList(Array(dayList.length).fill(false));
+                          setValue('day', null);
+                        },
+                      })}>
+                      <option value='0'>매월</option>
+                      <option value='1'>매주</option>
+                      <option value='2'>하루</option>
+                    </select>
 
-                {/* 매월 */}
-                {regularScheduleCode == '0' && (
-                  <div>
-                    <input type='text' {...register('day')} id='period' placeholder='ex) 1' /> 일
+                    {/* 매월 */}
+                    {regularScheduleCode == '0' && (
+                      <div>
+                        <input type='text' {...register('day')} id='period' placeholder='ex) 1' /> 일
+                      </div>
+                    )}
+
+                    {/* 매주 */}
+                    <div style={{ display: 'flex' }}>
+                      {regularScheduleCode == '1' &&
+                        dayList.map((day, index) => (
+                          <DayButton key={index} isSelected={isSelectedList[index]} handleClick={handleClick} elementIndex={index} content={day[0]} />
+                        ))}
+                    </div>
+
+                    {/* 개별 */}
+                    {regularScheduleCode === '2' && <input type='date' {...register('scheduleDate')} id='period' />}
                   </div>
-                )}
-
-                {/* 매주 */}
-                <div style={{ display: 'flex' }}>
-                  {regularScheduleCode == '1' &&
-                    dayList.map((day, index) => (
-                      <DayButton key={index} isSelected={isSelectedList[index]} handleClick={handleClick} elementIndex={index} content={day[0]} />
-                    ))}
+                </>
+              )}
+              {update && (
+                <>
+                  <label id='scheduleDate'>날짜</label>
+                  <input type='date' {...register('scheduleDate')} id='scheduleDate' />
+                </>
+              )}
+              {regular ? (
+                <div className='flex'>
+                  <button onClick={handleRegularScheduleUpdate}>확인</button>
                 </div>
-
-                {/* 개별 */}
-                {regularScheduleCode == '2' && <input type='date' {...register('scheduleDate')} id='period' />}
-              </div>
-              <div className='flex'>
-                {create ? <button onClick={handleScheduleCreate}>생성</button> : <button onClick={handleScheduleUpdate}>수정</button>}
-                <button onClick={() => handleModalClose()}>취소</button>
-              </div>
+              ) : (
+                <div className='flex'>
+                  {create ? <button onClick={handleScheduleCreate}>확인</button> : <button onClick={handleScheduleUpdate}>확인</button>}
+                </div>
+              )}
             </div>
           </div>
         </div>
