@@ -14,7 +14,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
       data: [
         {
           scheduleId: 0,
-          scheduleDate: '2023-03-22',
+          scheduleDate: '2023-03-25',
           scheduleCode: 'WATER',
           isCompleted: true,
           plant: {
@@ -26,7 +26,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 3,
-          scheduleDate: '2023-03-24',
+          scheduleDate: '2023-03-27',
           scheduleCode: 'REPOT',
           isCompleted: false,
           plant: {
@@ -38,12 +38,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 1,
-          scheduleDate: '2023-03-23',
+          scheduleDate: '2023-03-28',
           scheduleCode: 'WATER',
           isCompleted: false,
           plant: {
             plantId: 0,
-            userPlantId: 0,
+            userPlantId: 3,
             plantNickname: '선인장',
           },
           content: '선인장 물 줬음',
@@ -55,26 +55,26 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
           isCompleted: false,
           plant: {
             plantId: 0,
-            userPlantId: 0,
+            userPlantId: 4,
             plantNickname: '선인장',
           },
           content: '선인장 물 줬음',
         },
         {
           scheduleId: 4,
-          scheduleDate: '2023-03-24',
+          scheduleDate: '2023-03-23',
           scheduleCode: 'PRUNING',
           isCompleted: false,
           plant: {
             plantId: 0,
-            userPlantId: 0,
+            userPlantId: 5,
             plantNickname: '선인장',
           },
           content: '선인장 가지쳤음',
         },
         {
           scheduleId: 5,
-          scheduleDate: '2023-03-24',
+          scheduleDate: '2023-03-25',
           scheduleCode: 'NUTRITION',
           isCompleted: false,
           plant: {
@@ -86,7 +86,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 6,
-          scheduleDate: '2023-03-24',
+          scheduleDate: '2023-03-26',
           scheduleCode: 'VENTILATION',
           isCompleted: false,
           plant: {
@@ -98,7 +98,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         },
         {
           scheduleId: 7,
-          scheduleDate: '2023-03-24',
+          scheduleDate: '2023-03-27',
           scheduleCode: 'SPRAY',
           isCompleted: false,
           plant: {

@@ -29,11 +29,13 @@ const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
 
 const RenderDays = () => {
   const days = [];
-  const date = ['Sun', 'Mon', 'Thu', 'Wed', 'Thrs', 'Fri', 'Sat'];
+  const date = ['SUN', 'MON', 'THU', 'WED', 'THR', 'FRI', 'SAT'];
 
   for (let i = 0; i < 7; i++) {
     days.push(
-      <div className={`${styles.col}`} key={i}>
+      <div
+        className={date[i] === 'SUN' ? `${styles.col} ${styles.sun}` : date[i] === 'SAT' ? `${styles.col} ${styles.sat}` : `${styles.col}`}
+        key={i}>
         {date[i]}
       </div>
     );
@@ -70,15 +72,18 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, marks, monthSche
           }`}
           key={day.toISOString()}
           onClick={() => onDateClick(cloneDay)}>
-          <span className={format(currentMonth, 'M') !== format(day, 'M') ? `${styles.text} ${styles.notValid}` : ''}>{formattedDate}</span>
+          <span
+            className={
+              format(currentMonth, 'M') !== format(day, 'M') ? `${styles.notValid}` : i === 0 ? `${styles.sun}` : i === 6 ? `${styles.sat}` : ``
+            }>
+            {formattedDate}
+          </span>
           {marks.find((x: string) => x === moment(day).format('YYYY-MM-DD')) && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', margin: '4px' }}>
+            <div className={format(currentMonth, 'M') !== format(day, 'M') ? `${styles.notValid}` : `${styles.code}`}>
               {monthSchedule
                 .filter((mark: { scheduleDate: string }) => mark.scheduleDate.slice(0, 10) === moment(day).format('YYYY-MM-DD'))
                 .map((mark: { scheduleCode: any }, index: React.Key) => (
-                  <div key={index} style={{ display: 'flex' }}>
-                    <ScheduleCode scheduleCode={mark.scheduleCode} size='xs' />
-                  </div>
+                  <ScheduleCode scheduleCode={mark.scheduleCode} key={index} size='lg' />
                 ))}
             </div>
           )}
