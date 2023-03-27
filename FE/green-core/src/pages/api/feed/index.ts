@@ -8,10 +8,6 @@ export type Data = {
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method === 'GET') {
-    // res.status(400).json({ result: 'FAIL', data: null });
-    // console.log(req.query.page);
-    // console.log(req.query.size);
-    console.log('44444444444444444');
     const page = Number(req.query.page);
 
     if (page >= 10) {
@@ -36,11 +32,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             opservationDate: '2023-03-13', // 일지에만
             feedId: page * 2 + 1,
             content: '치코치코',
-            imagePath: 'https://blog.kakaocdn.net/dn/lpYCZ/btrzwex57Ty/08c2P9aZ1iSUawi5wag1Pk/img.png', // 포스트엔 없을수도
+            imagePath: 'http://www.urbanbrush.net/web/wp-content/uploads/edd/2018/08/urbanbrush-20180822082426113204.png', // 포스트엔 없을수도
             likeCount: 1,
             isLiked: true,
-            craetedAt: '2023-03-13T13:00:00',
+            createdAt: '2023-03-27T17:05:00',
             commentCount: 1,
+            diarySetTitle: '관찰일지 Title',
+            growingDay: 100,
           },
           {
             user: {
@@ -55,11 +53,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             opservationDate: '2023-03-13', // 일지에만
             feedId: page * 2 + 2,
             content: '치코치코',
-            imagePath: 'https://blog.kakaocdn.net/dn/lpYCZ/btrzwex57Ty/08c2P9aZ1iSUawi5wag1Pk/img.png', // 포스트엔 없을수도
+            imagePath: 'http://www.urbanbrush.net/web/wp-content/uploads/edd/2018/08/urbanbrush-20180822082426113204.png', // 포스트엔 없을수도
             likeCount: 1,
             isLiked: false,
-            craetedAt: '2023-03-13T13:00:00',
+            createdAt: '2023-03-13T13:00:00',
             commentCount: 1,
+            diarySetTitle: '관찰일지 Title',
+            growingDay: 100,
           },
         ],
       });

@@ -5,10 +5,9 @@ import { getFeedList, getFollowFeedList, getTagFeedList, getTagFeedListMore } fr
 import { initFeedList } from '@/core/feed/feedSlice';
 import FeedListItem from '@/components/FeedListItem';
 import SearchComponent from '@/components/SearchComponent';
+import styles from '@/styles/Home.module.scss';
 
 export default function feed() {
-  console.log(process.env.NODE_ENV);
-  console.log(process.env.APP_SERVER_URL);
   const dispatch = useAppDispatch();
   // 피드 조회
   const isLoading = useAppSelector((state) => state.feed.isLoading);
@@ -101,105 +100,67 @@ export default function feed() {
     setIsSelectRecomment(false);
   }
 
-  // -------------------------- 태그 -------------------------------
-
-  // // 태그 검색
-  // function handleKeyUp(event) {
-  //   if (event.key === 'Enter') {
-  //     setInputData(event.target.value);
-  //     searchInputValue(event.target.value);
-  //   }
-  // }
-
-  // function searchInputValue(search: string) {
-  //   const params = {
-  //     search: search,
-  //     page: 0,
-  //     size: sizeAtTag,
-  //   };
-  //   dispatch(getTagFeedList(params));
-  //   setIsLoadedAtTag(false);
-  // }
-
-  // // 타겟 설정
-  // useEffect(() => {
-  //   let observer2;
-  //   if (targetAtTag && !isStopedAtTag && inputData) {
-  //     setTimeout(() => {
-  //       observer2 = new IntersectionObserver(onIntersect2, {
-  //         threshold: 1, // 배열의 요소가 100% 보여질때마다 콜백을 실행
-  //       });
-  //       observer2.observe(targetAtTag);
-  //     }, 100);
-  //   }
-  //   return () => observer2 && observer2.disconnect();
-  // }, [targetAtTag, isLoadedAtTag]);
-
-  // // 타겟을 만났을 때 실행하는 로직
-  // const onIntersect2 = async ([entry2]: any, observer2: any) => {
-  //   if (entry2.isIntersecting && !isLoadedAtTag) {
-  //     observer2.unobserve(entry2.target); // 관찰 멈춤
-  //     getMoreItem2(); // isLoaded를 바꿈
-  //     observer2.observe(entry2.target); // 관찰 재시작
-  //   }
-  // };
-
-  // // 추가 데이터 요청
-  // const getMoreItem2 = () => {
-  //   setIsLoadedAtTag(true);
-  // };
-
-  // // isLoadedAtTag 가 변할 때 실행
-  // useEffect(() => {
-  //   if (inputData !== '' && isLoadedAtTag) {
-  //     fetchTagFeedList();
-  //   }
-  //   return () => {};
-  // }, [isLoadedAtTag]);
-
-  // // 추가 데이터 요청하기
-  // async function fetchTagFeedList() {
-  //   const params = {
-  //     search: inputData,
-  //     page: pageAtTag,
-  //     size: sizeAtTag,
-  //   };
-  //   await dispatch(getTagFeedListMore(params));
-  //   setIsLoadedAtTag(false);
-  // }
-
-  // ----------------------------------------------------------------
-
   return (
     <AppLayout>
-      {isLoading ? (
-        <>로딩중</>
-      ) : feedList.length == 0 ? (
-        <div>
-          <span>조회된 피드가 없습니다.</span>
-        </div>
-      ) : (
-        <>
-          <div className={`grid grid-cols-2 gap-2`}>
-            <div>
-              <div className='flex '>
-                <button onClick={handleClickRecommend}>추천</button>
-                <button onClick={handleClickFollow}>팔로우</button>
-              </div>
-              <div className={`overflow-auto`} style={{ height: '700px' }}>
-                {feedList.map((feed) => (
-                  <FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
-                ))}
-                <div ref={setTarget} />
-                <div className={`p-5`}></div>
-              </div>
-            </div>
-            <div>
-              <SearchComponent></SearchComponent>
-            </div>
+      <div className={`py-5`}>
+        <div className={`${styles.title} mb-10 px-3 `}>Home</div>
+        <div className='flex'>
+          <div className={`w-6/12 text-xl flex justify-center ${isSelectRecomment ? styles.select : ''} border-b border-black`}>
+            <button onClick={handleClickRecommend}>추천</button>
           </div>
-        </>
-      )}
+          <div className={`w-6/12 text-xl flex justify-center ${isSelectRecomment ? '' : styles.select} border-b border-black`}>
+            <button onClick={handleClickFollow}>팔로우</button>
+          </div>
+        </div>
+        <div className={`border-b border-inherit pt-5`}></div>
+
+        {isLoading ? (
+          <>로딩중</>
+        ) : feedList.length == 0 ? (
+          <div>
+            <span>조회된 피드가 없습니다.</span>
+          </div>
+        ) : (
+          <>
+            <div className={`overflow-auto`}>
+              {feedList.map((feed) => (
+                <FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
+              ))}
+              <div ref={setTarget} />
+              <div className={`p-5`}></div>
+            </div>
+          </>
+        )}
+        {/* <div className={`w-4/12`}>
+          <div>
+            <SearchComponent></SearchComponent>
+          </div>
+        </div> */}
+        {/* {isLoading ? (
+          <>로딩중</>
+        ) : feedList.length == 0 ? (
+          <div>
+            <span>조회된 피드가 없습니다.</span>
+          </div>
+        ) : (
+          <>
+            <div className={`grid grid-cols-2 gap-2`}>
+              <div>
+                <div className={`overflow-auto`} style={{ height: '700px' }}>
+                  {feedList.map((feed) => (
+                    <FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
+                  ))}
+                  <div ref={setTarget} />
+                  <div className={`p-5`}></div>
+                </div>
+              </div>
+              <div>
+                <SearchComponent></SearchComponent>
+              </div>
+            </div>
+          </>
+        )} */}
+      </div>
     </AppLayout>
   );
 }

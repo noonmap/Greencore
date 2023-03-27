@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import { PlantType } from '../core/plant/plantType';
-import styles from '@/styles/feed.module.scss';
+import styles from '@/components/FeedListItem.module.scss';
 
 export default function SearchPlantListItem(props: { searchPlant: PlantType }) {
   const searchPlant = props.searchPlant;

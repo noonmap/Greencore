@@ -19,8 +19,10 @@ export type FeedType = {
   imagePath?: string; // 포스트엔 없을수도
   likeCount: number;
   isLiked: boolean;
-  craetedAt: string;
+  createdAt: string;
   commentCount: number;
+  diarySetTitle: string;
+  growingDay: number;
 };
 
 export type TagFeedType = {
