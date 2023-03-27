@@ -6,3 +6,13 @@
   border-radius: var(--border-radius-input);
   padding: var(--padding-card);
 }
+
+.title {
+  font-size: 1.5rem;
+  font-weight: var(--text-extra-bold);
+  color: var(--main-color);
+}
+
+.select {
+  background-color: var(--light-color);
+}

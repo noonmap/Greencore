@@ -80,7 +80,7 @@ export default function AppHeader() {
 
             <div className={`${styles.navContainer} flex flex-col space-y-7`}>
               {/* <Link href='/'>비로그인</Link> */}
-              <Link href='/feed'>Home</Link>
+              <Link href='/home'>Home</Link>
               <Link href='/'>식물 검색</Link>
               <Link href='/schedule'>식물 스케줄링</Link>
               <Link href='/user/follow/temp'>팔로우 관리</Link>
