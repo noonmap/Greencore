@@ -6,23 +6,33 @@ import styles from './Calendar.module.scss';
 import ScheduleCode from './ScheduleCode';
 import moment from 'moment';
 
-const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
+const RenderHeader = ({ currentMonth, prevMonth, nextMonth, setIsOpenScheduleCreateModal }) => {
   return (
-    <div className={`${styles.header} ${styles.row}`}>
+    <div className={`${styles.header}`}>
+      <div className={`${styles.col}`}>
+        <div onClick={prevMonth} className={`${styles.arrow}`}>
+          <span className={`${styles.arrow} material-symbols-outlined`} onClick={prevMonth}>
+            chevron_left
+          </span>
+        </div>
+      </div>
       <div className={`${styles.col} ${styles.colStart}`}>
         <span className={`${styles.text}`}>
           <span className={`${styles.text} ${styles.month}`}>{format(currentMonth, 'M')}월</span>
           {format(currentMonth, 'yyyy')}
         </span>
       </div>
-      <div className={`${styles.col} ${styles.colEnd}`}>
-        <div onClick={prevMonth} style={{ cursor: 'pointer' }}>
-          {'<'}
-        </div>
-        <div onClick={nextMonth} style={{ cursor: 'pointer' }}>
-          {'>'}
+      <div className={`${styles.col}`}>
+        <div onClick={nextMonth} className={`${styles.arrow}`}>
+          <span className={`${styles.arrow} material-symbols-outlined`} onClick={nextMonth}>
+            chevron_right
+          </span>
         </div>
       </div>
+      <button className={`${styles.createBtn}`} onClick={() => setIsOpenScheduleCreateModal(true)}>
+        <span className='material-symbols-outlined'>add</span>
+        <div>일정 추가하기</div>
+      </button>
     </div>
   );
 };
@@ -41,7 +51,7 @@ const RenderDays = () => {
     );
   }
 
-  return <div className={`${styles.days} ${styles.row}`}>{days}</div>;
+  return <div className={`${styles.days}`}>{days}</div>;
 };
 
 const RenderCells = ({ currentMonth, selectedDate, onDateClick, marks, monthSchedule }) => {
@@ -54,14 +64,16 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, marks, monthSche
   let days = [];
   let day = startDate;
   let formattedDate = '';
+  let j = -1;
 
   while (day <= endDate) {
+    j++;
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, 'd');
       const cloneDay = day;
       days.push(
         <div
-          className={`${styles.col} ${styles.cell} ${
+          className={`${styles.col} ${styles.cell} ${i === 6 ? `${styles.sat}` : ``} ${j === 0 ? `${styles.first}` : ''} ${
             !isSameMonth(day, monthStart)
               ? `${styles.disabled}`
               : isSameDay(day, selectedDate)
@@ -101,7 +113,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick, marks, monthSche
   return <div className={`${styles.body}`}>{rows}</div>;
 };
 
-export const Calender = ({ marks, monthSchedule, date, setDate, setReload }) => {
+export const Calender = ({ marks, monthSchedule, date, setDate, setReload, setIsOpenScheduleCreateModal }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const prevMonth = () => {
@@ -122,9 +134,17 @@ export const Calender = ({ marks, monthSchedule, date, setDate, setReload }) => 
   };
   return (
     <div className={`${styles.calendar}`}>
-      <RenderHeader currentMonth={currentMonth} prevMonth={prevMonth} nextMonth={nextMonth} />
-      <RenderDays />
-      <RenderCells currentMonth={currentMonth} selectedDate={date} onDateClick={onDateClick} marks={marks} monthSchedule={monthSchedule} />
+      <div className={`${styles.title}`}>월간 스케줄</div>
+      <RenderHeader
+        currentMonth={currentMonth}
+        prevMonth={prevMonth}
+        nextMonth={nextMonth}
+        setIsOpenScheduleCreateModal={setIsOpenScheduleCreateModal}
+      />
+      <div className={`${styles.content}`}>
+        <RenderDays />
+        <RenderCells currentMonth={currentMonth} selectedDate={date} onDateClick={onDateClick} marks={marks} monthSchedule={monthSchedule} />
+      </div>
     </div>
   );
 };

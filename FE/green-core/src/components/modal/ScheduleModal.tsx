@@ -4,6 +4,8 @@ import http from '@/lib/http';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DayButton from '../DayButton';
+import AppButton from '@/components/button/AppButton';
+import { checkInputFormToast } from '@/lib/utils';
 
 type PropsType = {
   isOpen: boolean;
@@ -14,7 +16,7 @@ type PropsType = {
   create?: boolean;
   update?: boolean;
   regular?: boolean;
-  handleReload: () => void;
+  handleReload?: () => void;
   handleModalClose: () => void;
 };
 
@@ -47,8 +49,10 @@ export default function ScheduleModal({
     regularScheduleCode: schedule ? (schedule.regularScheduleCode ? schedule.regularScheduleCode : '0') : '0',
     day: null,
   };
+
   const modalRef = useRef<HTMLDivElement>(null);
   const { register, setValue, getValues, watch } = useForm({ defaultValues: initialState, mode: 'onChange' });
+  const [isPossible, setIsPossible] = useState(false);
   const [userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day] = getValues([
     'userPlantId',
     'scheduleDate',
@@ -100,16 +104,21 @@ export default function ScheduleModal({
   const handleScheduleCreate = async (e: any) => {
     console.log('스케줄 생성');
     e.preventDefault();
-    const payload = { userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day: Number(day) };
-    try {
-      console.log(payload);
-      const data = await createSchedule(payload);
-      if (data.result === 'SUCCESS') {
-        handleReload();
-        handleModalClose();
+    if (isPossible) {
+      const payload = { userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day: Number(day) };
+      try {
+        console.log(payload);
+        const data = await createSchedule(payload);
+        if (data.result === 'SUCCESS') {
+          handleReload();
+          handleModalClose();
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
+    } else {
+      checkInputFormToast();
+      return;
     }
   };
 
@@ -117,36 +126,46 @@ export default function ScheduleModal({
   const handleScheduleUpdate = async (e: any) => {
     console.log('스케줄 수정');
     e.preventDefault();
-    const payload = { userPlantId, scheduleDate, scheduleCode, content };
-    const requestData = {
-      scheduleId,
-      payload,
-    };
-    try {
-      const data = await updateSchedule(requestData);
-      if (data.result === 'SUCCESS') {
-        handleReload();
-        handleModalClose();
-      }
-    } catch (err) {}
+    if (isPossible) {
+      const payload = { userPlantId, scheduleDate, scheduleCode, content };
+      const requestData = {
+        scheduleId,
+        payload,
+      };
+      try {
+        const data = await updateSchedule(requestData);
+        if (data.result === 'SUCCESS') {
+          handleReload();
+          handleModalClose();
+        }
+      } catch (err) {}
+    } else {
+      checkInputFormToast();
+      return;
+    }
   };
 
   // 정기스케줄 수정
   const handleRegularScheduleUpdate = async (e: any) => {
     console.log('정기스케줄 수정');
     e.preventDefault();
-    const payload = { scheduleCode, userPlantId, content, regularScheduleCode, day };
-    const requestData = {
-      regularId,
-      payload,
-    };
-    try {
-      const data = await updateRegularSchedule(requestData);
-      if (data.result === 'SUCCESS') {
-        handleReload();
-        handleModalClose();
-      }
-    } catch (err) {}
+    if (isPossible) {
+      const payload = { scheduleCode, userPlantId, content, regularScheduleCode, day };
+      const requestData = {
+        regularId,
+        payload,
+      };
+      try {
+        const data = await updateRegularSchedule(requestData);
+        if (data.result === 'SUCCESS') {
+          handleReload();
+          handleModalClose();
+        }
+      } catch (err) {}
+    } else {
+      checkInputFormToast();
+      return;
+    }
   };
 
   useEffect(() => {
@@ -160,6 +179,19 @@ export default function ScheduleModal({
       document.removeEventListener('mousedown', handleModalOutsideClick);
     };
   }, []);
+
+  // 생성 가능한지 확인하는 함수
+  const checkIsPossible = () => {
+    if (userPlantId >= 0 && (scheduleDate !== '' || day !== '') && scheduleCode !== '' && content !== '' && regularScheduleCode) {
+      setIsPossible(true);
+    } else {
+      setIsPossible(false);
+    }
+  };
+
+  useEffect(() => {
+    checkIsPossible();
+  }, [userPlantId, scheduleDate, day, scheduleCode, content, regularScheduleCode]);
 
   return (
     <>
@@ -210,7 +242,7 @@ export default function ScheduleModal({
                     {/* 매월 */}
                     {regularScheduleCode == '0' && (
                       <div>
-                        <input type='text' {...register('day')} id='period' placeholder='ex) 1' /> 일
+                        <input type='number' min={1} max={31} {...register('day')} id='period' placeholder='ex) 1' /> 일
                       </div>
                     )}
 
@@ -235,11 +267,15 @@ export default function ScheduleModal({
               )}
               {regular ? (
                 <div className='flex'>
-                  <button onClick={handleRegularScheduleUpdate}>확인</button>
+                  <AppButton text='확인' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleRegularScheduleUpdate} />
                 </div>
               ) : (
                 <div className='flex'>
-                  {create ? <button onClick={handleScheduleCreate}>확인</button> : <button onClick={handleScheduleUpdate}>확인</button>}
+                  {create ? (
+                    <AppButton text='확인' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleScheduleCreate} />
+                  ) : (
+                    <AppButton text='확인' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleScheduleUpdate} />
+                  )}
                 </div>
               )}
             </div>
