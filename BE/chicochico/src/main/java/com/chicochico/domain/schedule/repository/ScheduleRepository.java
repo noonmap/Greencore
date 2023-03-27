@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Long> {
 
 	Optional<ScheduleEntity> findById(Long scheduleId);
-	List<ScheduleEntity> findAllByDateBetweenAndUser(LocalDate localDateSt, LocalDate localDateEd, UserEntity user);
+	List<ScheduleEntity> findAllByDateBetweenAndUserOrderByDate(LocalDate localDateSt, LocalDate localDateEd, UserEntity user);
 	List<ScheduleEntity> findAllByRegularScheduleIdAndDateAfter(Long regularId, LocalDate date);
 	List<ScheduleEntity> deleteAllByUserAndDateAfter(UserEntity user, LocalDate date);
 	List<ScheduleEntity> deleteAllByUserPlantAndDateAfter(UserPlantEntity userPlant, LocalDate date);

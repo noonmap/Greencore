@@ -4,7 +4,9 @@ package com.chicochico.domain.schedule.controller;
 import com.chicochico.common.code.RegularScheduleType;
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.domain.schedule.dto.request.ScheduleRequestDto;
+import com.chicochico.domain.schedule.dto.response.RegularScheduleResponseDto;
 import com.chicochico.domain.schedule.dto.response.ScheduleResponseDto;
+import com.chicochico.domain.schedule.entity.RegularScheduleEntity;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.schedule.service.ScheduleService;
 import io.swagger.annotations.Api;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -29,6 +32,8 @@ public class ScheduleController {
 	@GetMapping(params = { "year", "month" })
 	@ApiOperation(value = "본인이 작성한 일정 중 특정 달에 해당하는 일정 목록을 리턴받습니다 .", notes = "")
 	public ResponseEntity<ResultDto<List<ScheduleResponseDto>>> getMonthSchedule(@RequestParam Integer year, @RequestParam Integer month) {
+		LocalDate date = LocalDate.of(year, month, 1);
+		scheduleService.createRegularSchedule(date);
 		List<ScheduleEntity> scheduleEntityList = scheduleService.getMonthSchedule(year, month);
 		List<ScheduleResponseDto> scheduleResponseDtoList = ScheduleResponseDto.fromEnityMonthList(scheduleEntityList);
 
@@ -66,8 +71,18 @@ public class ScheduleController {
 	}
 
 
+	@GetMapping("/regular")
+	@ApiOperation(value = "정기 일정 목록을 조회합니다.")
+	public ResponseEntity<ResultDto<List<RegularScheduleResponseDto>>> getRegularScheduleList() {
+		List<RegularScheduleEntity> regularScheduleList = scheduleService.getRegularScheduleList();
+		List<RegularScheduleResponseDto> result = RegularScheduleResponseDto.fromEntityList(regularScheduleList);
+		return ResponseEntity.ok().body(ResultDto.of(result));
+	}
+
+
 	@DeleteMapping("/regular/{regularId}")
 	@ApiOperation(value = "정기 일정을 현재 시간 부로 삭제합니다.")
+
 	public ResponseEntity<ResultDto<Boolean>> deleteRegularSchedule(@PathVariable Long regularId) {
 		scheduleService.deleteRegularSchedule(regularId);
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());

@@ -43,7 +43,7 @@ public class ScheduleRequestDto {
 
 
 	//정기 일정
-	public RegularScheduleEntity toEntity(UserEntity user, UserPlantEntity userPlant) {
+	public RegularScheduleEntity toEntity(UserEntity user, UserPlantEntity userPlant, LocalDate date) {
 		return RegularScheduleEntity.builder()
 			.user(user)
 			.day(day)
@@ -51,11 +51,12 @@ public class ScheduleRequestDto {
 			.content(content)
 			.scheduleCode(scheduleCode)
 			.userPlant(userPlant)
+			.lastDate(date)
 			.build();
 	}
 
 
-	public RegularScheduleEntity toEntity(Long regularId, UserEntity user, UserPlantEntity userPlant) {
+	public RegularScheduleEntity toEntity(Long regularId, UserEntity user, UserPlantEntity userPlant, LocalDate date) {
 		return RegularScheduleEntity.builder()
 			.id(regularId)
 			.regularScheduleCode(regularScheduleCode)
@@ -64,6 +65,7 @@ public class ScheduleRequestDto {
 			.content(content)
 			.scheduleCode(scheduleCode)
 			.userPlant(userPlant)
+			.lastDate(date)
 			.build();
 	}
 

@@ -16,7 +16,6 @@ import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,7 +51,7 @@ public class ScheduleService {
 		LocalDate localdateSt = LocalDate.of(year, month, 1);
 		LocalDate localdateEd = localdateSt.plusDays(localdateSt.lengthOfMonth());
 
-		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUser(localdateSt, localdateEd, user);
+		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUserOrderByDate(localdateSt, localdateEd, user);
 
 		return scheduleList;
 
@@ -76,7 +75,7 @@ public class ScheduleService {
 		LocalDate localdateSt = LocalDate.of(year, month, day);
 		LocalDate localdateEd = localdateSt.plusDays(3);
 
-		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUser(localdateSt, localdateEd, user);
+		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUserOrderByDate(localdateSt, localdateEd, user);
 		return scheduleList;
 
 	}
@@ -217,12 +216,19 @@ public class ScheduleService {
 
 		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
+		LocalDate now = LocalDate.now();
+
 		//정기 일정 등록
-		RegularScheduleEntity regularSchedule = scheduleRequestDto.toEntity(user, userPlant);
+		RegularScheduleEntity regularSchedule = scheduleRequestDto.toEntity(user, userPlant, now);
 		regularScheduleRepository.save(regularSchedule);
 
+		//다음달 1일
+		LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), now.lengthOfMonth());
+		LocalDate lastDate = date.plusMonths(1);
+		lastDate = LocalDate.of(lastDate.getYear(), lastDate.getMonth(), 1);
+
 		//정기 일정에 포함된 일정들 한 해 동안 등록
-		createWeeklySchedule(scheduleRequestDto, user, regularSchedule);
+		createWeeklySchedule(scheduleRequestDto, user, regularSchedule, lastDate);
 
 	}
 
@@ -239,23 +245,38 @@ public class ScheduleService {
 
 		UserPlantEntity userPlant = userPlantRepository.findById(scheduleRequestDto.getUserPlantId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
+		LocalDate now = LocalDate.now();
+
 		//정기 일정 등록
-		RegularScheduleEntity regularSchedule = scheduleRequestDto.toEntity(user, userPlant);
+		RegularScheduleEntity regularSchedule = scheduleRequestDto.toEntity(user, userPlant, now);
 		regularScheduleRepository.save(regularSchedule);
 
+		//다음달 1일
+		LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), now.lengthOfMonth());
+		LocalDate lastDate = date.plusMonths(1);
+		lastDate = LocalDate.of(lastDate.getYear(), lastDate.getMonth(), 1);
+
 		//정기 일정에 포함된 일정들 한 해 동안 등록
-		createMonthlySchedule(scheduleRequestDto, user, regularSchedule);
+		createMonthlySchedule(scheduleRequestDto, user, regularSchedule, lastDate);
 
 	}
 
 
 	/**
-	 * 매년 1월 1일 0시 0분 0초에 모든 정기 일정을 1년치 등록합니다.
+	 * 달력이 넘어가면 자동으로 정기 일정 생성합니다.
+	 *
+	 * @param date
 	 */
-	@Scheduled(cron = "0 0 0 1 1 ?", zone = "Asia/Seoul")
-	public void createRegularSchedule() {
-		//삭제되지 않은 모든 정기 일정을 조회
-		List<RegularScheduleEntity> regularScheduleList = regularScheduleRepository.findAll();
+	public void createRegularSchedule(LocalDate date) {
+		//현재 로그인 돼있는 사용자
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		//다음달 1일
+		LocalDate lastDate = date.plusMonths(1);
+
+		//유저의 삭제되지 않은 && 현재 달력기준의 날짜에 만들어지지 않은 모든 정기 일정을 조회
+		List<RegularScheduleEntity> regularScheduleList = regularScheduleRepository.findAllByUserAndLastDateBefore(user, lastDate);
 
 		//각 일정들에 대한 로직 처리
 		for (RegularScheduleEntity regularSchedule : regularScheduleList) {
@@ -268,15 +289,13 @@ public class ScheduleService {
 				.scheduleCode(regularSchedule.getScheduleCode())
 				.build();
 
-			UserEntity user = regularSchedule.getUser();
-
 			//주 단위 정기 일정
 			if (regularSchedule.getRegularScheduleCode().equals(RegularScheduleType.WEEKLY_SCHEDULE)) {
-				createWeeklySchedule(scheduleRequestDto, user, regularSchedule);
+				createWeeklySchedule(scheduleRequestDto, user, regularSchedule, lastDate);
 			}
 			//월 단위 정기 일정
 			else if (regularSchedule.getRegularScheduleCode().equals(RegularScheduleType.MONTHLY_SCHEDULE)) {
-				createMonthlySchedule(scheduleRequestDto, user, regularSchedule);
+				createMonthlySchedule(scheduleRequestDto, user, regularSchedule, lastDate);
 			}
 		}
 
@@ -288,60 +307,64 @@ public class ScheduleService {
 	 *
 	 * @param scheduleRequestDto
 	 * @param user
+	 * @param lastDate           다음달 1일
 	 */
-	public void createMonthlySchedule(ScheduleRequestDto scheduleRequestDto, UserEntity user, RegularScheduleEntity regularSchedule) {
-		//오늘
-		LocalDate dateSt = LocalDate.now();
+	public void createMonthlySchedule(ScheduleRequestDto scheduleRequestDto, UserEntity user, RegularScheduleEntity regularSchedule, LocalDate lastDate) {
+		//마지막으로 생성된 정기일정 날짜
+		LocalDate dateSt = regularSchedule.getLastDate();
 
 		Integer nowYear = dateSt.getYear();
 		Integer nowMonth = dateSt.getMonthValue();
 		Integer nowDay = dateSt.getDayOfMonth();
 
 		Integer day = scheduleRequestDto.getDay();
-		//다음 일정 언제부터 등록할지
-		Integer nextMonth = nowDay > day ? nowMonth + 1 : nowMonth;
+		//현재 달에 등록 가능한지
+		Boolean nextMonth = nowDay > day ? false : true;
 
-		//다음해 1월 1일 전까지
-		LocalDate dateEd = LocalDate.of(nowYear + 1, 1, 1);
-		//선택한 날이 월의 마지막 날 or 마지막날보다 클 때
-		if (day >= dateSt.lengthOfMonth()) {
-			for (int m = nowMonth; m <= 12; m++) {
-				//마지막 날 구하기
-				LocalDate date1 = LocalDate.of(nowYear, m, 1);
-				LocalDate date = LocalDate.of(nowYear, m, date1.lengthOfMonth());
+		LocalDate newDate = dateSt;
 
-				//매달 마지막 날마다 스케줄 등록
-				ScheduleEntity schedule = scheduleRequestDto.toEntity(user, regularSchedule, date);
+		//마지막 등록부터 현재 달까지 주기적 일정 등록
+		for (LocalDate date = dateSt.plusDays(1); date.isBefore(lastDate); date = date.plusMonths(1)) {
+			//마지막 날마다 schedule 등록
+			if (day >= date.lengthOfMonth()) {
+				newDate = LocalDate.of(date.getYear(), date.getMonth(), date.lengthOfMonth());
+				if (newDate.isBefore(dateSt)) {
+					newDate = dateSt;
+					continue;
+				}
+				ScheduleEntity schedule = scheduleRequestDto.toEntity(user, regularSchedule, newDate);
+				scheduleRepository.save(schedule);
+			}
+			//매달 해당 일마다 schedule 등록
+			else {
+				newDate = LocalDate.of(date.getYear(), date.getMonth(), day);
+				if (newDate.isBefore(dateSt)) {
+					newDate = dateSt;
+					continue;
+				}
+				ScheduleEntity schedule = scheduleRequestDto.toEntity(user, regularSchedule, newDate);
 				scheduleRepository.save(schedule);
 			}
 		}
-		//선택한 날이 달의 마지막 날이 아닐 때
-		else {
-			for (int m = nextMonth; m <= 12; m++) {
-				LocalDate date = LocalDate.of(nowYear, m, day);
-
-				//매달 해당 일 마다 스케줄 등록
-				ScheduleEntity schedule = scheduleRequestDto.toEntity(user, regularSchedule, date);
-				scheduleRepository.save(schedule);
-			}
-		}
+		//마지막 데이트 갱신
+		regularSchedule.setLastDate(newDate);
+		regularScheduleRepository.save(regularSchedule);
 
 	}
 
 
 	/**
-	 * 주간 정기 일정을 등록합니다.
+	 * 주간 정기 일정을 등록합니다. (처음 생성)
 	 *
 	 * @param scheduleRequestDto
 	 * @param user
 	 * @param regularSchedule
 	 */
-	public void createWeeklySchedule(ScheduleRequestDto scheduleRequestDto, UserEntity user, RegularScheduleEntity regularSchedule) {
+	public void createWeeklySchedule(ScheduleRequestDto scheduleRequestDto, UserEntity user, RegularScheduleEntity regularSchedule, LocalDate lastDate) {
 		//월 화 수 목 금 토 일 : 1 2 3 4 5 6 7
 
-		//오늘
-		LocalDate nowDate = LocalDate.now();
-		Integer nowYear = nowDate.getYear();
+		//마지막으로 생성된 정기일정 날짜
+		LocalDate nowDate = regularSchedule.getLastDate();
 
 		//요일
 		Integer day = scheduleRequestDto.getDay();
@@ -356,14 +379,17 @@ public class ScheduleService {
 			}
 		}
 
-		//마지막 날
-		LocalDate dateEd = LocalDate.of(nowYear, 12, 31);
-
 		//매주마다 스케줄 등록
-		for (LocalDate date = dateSt; date.isBefore(dateEd); date = date.plusDays(7)) {
+		for (LocalDate date = dateSt; date.isBefore(lastDate); date = date.plusDays(7)) {
 			ScheduleEntity schedule = scheduleRequestDto.toEntity(user, regularSchedule, date);
 			scheduleRepository.save(schedule);
 		}
+
+		//마지막 날 구하기
+		LocalDate newDate = lastDate.minusDays(1);
+		//마지막 데이트 갱신
+		regularSchedule.setLastDate(newDate);
+		regularScheduleRepository.save(regularSchedule);
 
 	}
 
@@ -393,7 +419,7 @@ public class ScheduleService {
 			deleteSchedulesOfRegularSchedule(regularId);
 
 			//수정본 저장
-			RegularScheduleEntity regularSchedule1 = scheduleRequestDto.toEntity(regularId, user, userPlant);
+			RegularScheduleEntity regularSchedule1 = scheduleRequestDto.toEntity(regularId, user, userPlant, date);
 			regularScheduleRepository.save(regularSchedule1);
 
 			//새로 등록할 정기 일정 타입
@@ -401,11 +427,11 @@ public class ScheduleService {
 
 			//바뀐 정기 일정이 주간 정기 일정일 때
 			if (regularScheduleType.equals(RegularScheduleType.WEEKLY_SCHEDULE)) {
-				createWeeklySchedule(scheduleRequestDto, user, regularSchedule1);
+				createWeeklySchedule(scheduleRequestDto, user, regularSchedule1, date);
 			}
 			//바뀐 정기 일정이 월간 정기 일정일 때
 			else if (regularScheduleType.equals(RegularScheduleType.MONTHLY_SCHEDULE)) {
-				createMonthlySchedule(scheduleRequestDto, user, regularSchedule1);
+				createMonthlySchedule(scheduleRequestDto, user, regularSchedule1, date);
 			}
 		}
 
@@ -474,6 +500,15 @@ public class ScheduleService {
 	 */
 	public void deleteAllSchedulesByUserPlant(UserPlantEntity userPlant) {
 		scheduleRepository.deleteAllByUserPlantAndDateAfter(userPlant, LocalDate.now());
+	}
+
+
+	public List<RegularScheduleEntity> getRegularScheduleList() {
+		//현재 로그인 돼있는 사용자
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		return regularScheduleRepository.findAllByUser(user);
 	}
 
 }

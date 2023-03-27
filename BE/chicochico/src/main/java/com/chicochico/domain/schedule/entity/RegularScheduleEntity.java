@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 
 @Entity
@@ -45,5 +46,13 @@ public class RegularScheduleEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_plant_id", nullable = false)
 	private UserPlantEntity userPlant;
+
+	@Column
+	private LocalDate lastDate;
+
+
+	public void setLastDate(LocalDate lastDate) {
+		this.lastDate = lastDate;
+	}
 
 }
