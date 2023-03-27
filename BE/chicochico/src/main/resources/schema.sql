@@ -138,6 +138,7 @@ CREATE TABLE `diary_set` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `start_date` date NOT NULL,
   `bookmark_count` int NOT NULL,
   `diary_count` int NOT NULL,
   `image_path` varchar(255) NOT NULL,

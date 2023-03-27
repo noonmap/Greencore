@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,9 @@ public class DiarySetEntity extends CommonEntity {
 
 	@Column(nullable = false)
 	private Integer diaryCount;
+
+	@Column(nullable = false)
+	private LocalDate startDate;
 
 	@Column(nullable = false)
 	private String title;

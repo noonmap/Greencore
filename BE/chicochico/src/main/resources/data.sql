@@ -86,15 +86,15 @@ VALUES
 
 -- 관찰일지 추가
 INSERT INTO `chicochico`.`diary_set`
-(`created_at`,`updated_at`,`bookmark_count`,`diary_count`,`image_path`,`is_deleted`,`is_enabled_add_diary`,`title`,`user_id`,`user_plant_id`)
+(`created_at`,`updated_at`,`start_date`,`bookmark_count`,`diary_count`,`image_path`,`is_deleted`,`is_enabled_add_diary`,`title`,`user_id`,`user_plant_id`)
 VALUES
-(now(),now(),1,6,"/diaryset/default.jpg",'N','Y','김씨의 딸기 관찰일지', 	@user1, @user_plant1),
-(now(),now(),1,0,"/diaryset/default.jpg",'N','Y','김씨의 토마토 관찰일지', 	@user1, @user_plant2),
-(now(),now(),1,0,"/diaryset/default.jpg",'N','Y','임씨의 딸기 관찰일지', 	@user2, @user_plant3),
-(now(),now(),1,6,"/diaryset/default.jpg",'N','Y','임씨의 토마토 관찰일지', 	@user2, @user_plant4),
-(now(),now(),1,0,"/diaryset/default.jpg",'N','Y','임씨의 오이 관찰일지', 	@user2, @user_plant5),
-(now(),now(),0,0,"/diaryset/default.jpg",'N','Y','양씨의 토마토 관찰일지', 	@user3, @user_plant6),
-(now(),now(),1,8,"/diaryset/default.jpg",'N','Y','양씨의 대파 관찰일지', 	@user3, @user_plant7);
+(now(),now(),now()-interval 60 day,1,6,"/diaryset/default.jpg",'N','Y','김씨의 딸기 관찰일지', 	@user1, @user_plant1),
+(now(),now(),now()-interval 60 day,1,0,"/diaryset/default.jpg",'N','Y','김씨의 토마토 관찰일지', 	@user1, @user_plant2),
+(now(),now(),now()-interval 70 day,1,0,"/diaryset/default.jpg",'N','Y','임씨의 딸기 관찰일지', 	@user2, @user_plant3),
+(now(),now(),now()-interval 70 day,1,6,"/diaryset/default.jpg",'N','Y','임씨의 토마토 관찰일지', 	@user2, @user_plant4),
+(now(),now(),now()-interval 70 day,1,0,"/diaryset/default.jpg",'N','Y','임씨의 오이 관찰일지', 	@user2, @user_plant5),
+(now(),now(),now()-interval 30 day,0,0,"/diaryset/default.jpg",'N','Y','양씨의 토마토 관찰일지', 	@user3, @user_plant6),
+(now(),now(),now()-interval 30 day,1,8,"/diaryset/default.jpg",'N','Y','양씨의 대파 관찰일지', 	@user3, @user_plant7);
 SET @diaryset1 := last_insert_id();
 SET @diaryset2 := @diaryset1 + 1;
 SET @diaryset3 := @diaryset2 + 1;
