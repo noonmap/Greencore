@@ -125,7 +125,7 @@ public class FeedControllerTest extends FeedTestHelper {
 			ResultDto<List<FeedResponseDto>> result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResultDto.class);
 
 			// 데이터 결과 검사
-			assertThat(result.getResultCode()).isEqualTo(ResultEnum.SUCCESS);
+			assertThat(result.getResult()).isEqualTo(ResultEnum.SUCCESS);
 
 		}
 
@@ -160,7 +160,7 @@ public class FeedControllerTest extends FeedTestHelper {
 			ResultDto<List<FeedResponseDto>> result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResultDto.class);
 
 			// 데이터 결과 검사
-			assertThat(result.getResultCode()).isEqualTo(ResultEnum.SUCCESS);
+			assertThat(result.getResult()).isEqualTo(ResultEnum.SUCCESS);
 		}
 
 	}
@@ -191,7 +191,7 @@ public class FeedControllerTest extends FeedTestHelper {
 			ResultDto<List<FeedResponseDto>> result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResultDto.class);
 
 			// 데이터 결과 검사
-			assertThat(result.getResultCode()).isEqualTo(ResultEnum.SUCCESS);
+			assertThat(result.getResult()).isEqualTo(ResultEnum.SUCCESS);
 		}
 
 	}
@@ -215,7 +215,7 @@ public class FeedControllerTest extends FeedTestHelper {
 			ResultDto<List<FeedResponseDto>> result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResultDto.class);
 
 			// 데이터 결과 검사
-			assertThat(result.getResultCode()).isEqualTo(ResultEnum.SUCCESS);
+			assertThat(result.getResult()).isEqualTo(ResultEnum.SUCCESS);
 
 		}
 
@@ -239,7 +239,7 @@ public class FeedControllerTest extends FeedTestHelper {
 			ResultDto<List<FeedResponseDto>> result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResultDto.class);
 
 			// 데이터 결과 검사
-			assertThat(result.getResultCode()).isEqualTo(ResultEnum.SUCCESS);
+			assertThat(result.getResult()).isEqualTo(ResultEnum.SUCCESS);
 
 		}
 

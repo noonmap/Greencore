@@ -13,7 +13,7 @@ import lombok.*;
 public class ResultDto<T> {
 
 	private T data;
-	private ResultEnum resultCode;
+	private ResultEnum result;
 
 
 	public static <T> ResultDto<T> of(T data, ResultEnum result) {
