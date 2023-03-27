@@ -1,42 +1,42 @@
 $shadow: var(--light-color);
 
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .wrap {
-  background-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(3px);
-  border: 1px solid var(--thin-color);
-  box-shadow: var(--box-shadow-card);
-  border-radius: var(--border-radius-card);
-  padding: 3.5rem;
-  min-width: 450px;
-  min-height: 520px;
-  position: relative;
-  z-index: 20;
+	background-color: rgba(255, 255, 255, 0.3);
+	backdrop-filter: blur(3px);
+	border: 1px solid var(--thin-color);
+	box-shadow: var(--box-shadow-card);
+	border-radius: var(--border-radius-card);
+	padding: 3.5rem;
+	min-width: 450px;
+	min-height: 520px;
+	position: relative;
+	z-index: 20;
 }
 
 .login {
-  overflow: hidden;
+	overflow: hidden;
 }
 .signup {
-  width: 500px;
+	width: 500px;
 }
 
 .title {
-  color: var(--main-color);
-  // color: var(--second-light-color);
-  // color: #fff;
-  // color: var(--thin-color);
-  font-weight: var(--text-extra-bold);
-  position: absolute;
-  top: -30px;
-  right: 30px;
-  font-size: 2.5rem;
-  // text-shadow: $shadow 1px 1px, $shadow 2px 2px, $shadow 3px 3px, $shadow 4px 4px, $shadow 5px 5px, $shadow 6px 6px;
+	color: var(--main-color);
+	// color: var(--second-light-color);
+	// color: #fff;
+	// color: var(--thin-color);
+	font-weight: var(--text-extra-bold);
+	position: absolute;
+	top: -30px;
+	right: 30px;
+	font-size: 2.5rem;
+	// text-shadow: $shadow 1px 1px, $shadow 2px 2px, $shadow 3px 3px, $shadow 4px 4px, $shadow 5px 5px, $shadow 6px 6px;
 }
 
 .content {
@@ -45,68 +45,68 @@ $shadow: var(--light-color);
 .email,
 .password,
 .nickname {
-  color: var(--main-color);
-  font-weight: var(--text-bold);
+	color: var(--main-color);
+	font-weight: var(--text-bold);
 }
 
 .help {
-  color: var(--title-light-color);
-  font-size: 0.85rem;
+	color: var(--title-light-color);
+	font-size: 0.85rem;
 }
 
 .find {
-  color: var(--main-color);
-  font-size: 0.85rem;
+	color: var(--main-color);
+	font-size: 0.85rem;
 }
 
 .error {
-  color: var(--danger-color);
-  font-size: 0.85rem;
+	color: var(--danger-color);
+	font-size: 0.85rem;
 }
 
 .line {
-  font-size: 0.7rem;
-  color: var(--title-light-color);
-  // color: rgb(185, 185, 185);
-  // color: var(--title-light-color);
-  // border-bottom: 1px solid var(--light-color);
-  // width: 150px;
+	font-size: 0.7rem;
+	color: var(--title-light-color);
+	// color: rgb(185, 185, 185);
+	// color: var(--title-light-color);
+	// border-bottom: 1px solid var(--light-color);
+	// width: 150px;
 }
 
 .oauth {
-  div {
-    width: 50px;
-    height: 50px;
-    // background-color: var(--thin-color);
-    background-color: #fff;
-    box-shadow: var(--box-shadow);
-    border-radius: 100%;
-    color: var(--main-color);
-    cursor: pointer;
-  }
+	div {
+		width: 50px;
+		height: 50px;
+		// background-color: var(--thin-color);
+		background-color: #fff;
+		box-shadow: var(--box-shadow);
+		border-radius: 100%;
+		color: var(--main-color);
+		cursor: pointer;
+	}
 }
 
 .leaf1 {
-  position: absolute;
-  width: 270px;
-  top: 67%;
-  left: 18%;
-  z-index: 10;
-  opacity: 0.2;
+	position: absolute;
+	width: 270px;
+	top: 67%;
+	left: 18%;
+	z-index: 10;
+	opacity: 0.2;
 }
 .leaf2 {
-  position: absolute;
-  width: 270px;
-  top: 55%;
-  left: 47%;
-  z-index: 10;
-  opacity: 0.2;
+	position: absolute;
+	width: 270px;
+	top: 55%;
+	left: 47%;
+	z-index: 10;
+	opacity: 0.2;
 }
 .leaf3 {
-  position: absolute;
-  width: 230px;
-  top: 10%;
-  left: 20%;
-  z-index: 10;
-  opacity: 0.2;
+	position: absolute;
+	width: 230px;
+	top: 10%;
+	left: 20%;
+	z-index: 10;
+	opacity: 0.2;
 }
