@@ -58,6 +58,11 @@ public class UserService {
 	}
 
 
+	public Optional<UserEntity> getUserByEmail(String Email) {
+		return userRepository.findByEmailAndIsDeleted(Email, IsDeletedType.N);
+	}
+
+
 	/**
 	 * 회원을 생성합니다 (회원가입)
 	 *

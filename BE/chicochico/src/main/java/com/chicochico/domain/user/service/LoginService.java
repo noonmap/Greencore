@@ -4,11 +4,15 @@ package com.chicochico.domain.user.service;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
+import com.chicochico.domain.user.dto.request.RegisterRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,7 +22,6 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.chicochico.exception.ErrorCode.PASSWORD_NOT_MATCH;
@@ -34,6 +37,8 @@ public class LoginService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final RedisTemplate<String, String> redisTemplate;
+
+	private final FirebaseAuth firebaseAuth;
 
 
 	/**
@@ -86,17 +91,12 @@ public class LoginService {
 	 */
 	public ProfileSimpleResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
 
-		// 유저 존재 확인
-		Optional<UserEntity> user = userRepository.findByEmail(loginRequestDto.getEmail());
-
-		if (user.isEmpty() || user.get().getIsDeleted().equals(IsDeletedType.Y)) {
-			// 유저가 존재하지 않을 때 혹은 탈퇴한 유저 일때 error 발생
-			throw new CustomException(USER_NOT_FOUND);
-		}
+		// 유저가 존재하지 않을 때 혹은 탈퇴한 유저 일때 error 발생
+		UserEntity user = userRepository.findByEmailAndIsDeleted(loginRequestDto.getEmail(), IsDeletedType.N).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
 		log.info("[login] 비밀번호 비교 수행");
 		// 비밀번호 체크
-		if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.get().getPassword())) {
+		if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(PASSWORD_NOT_MATCH);
 		}
 
@@ -105,25 +105,68 @@ public class LoginService {
 		log.info("[login] 토큰 생성 및 응답");
 
 		// 토큰 생성 및 응답
-		String accessToken = authTokenProvider.createAccessToken(user.get().getId(), user.get().getNickname());
-		String refreshToken = authTokenProvider.createRefreshToken(user.get().getId(), user.get().getNickname());
+		String accessToken = authTokenProvider.createAccessToken(user.getId(), user.getNickname());
+		String refreshToken = authTokenProvider.createRefreshToken(user.getId(), user.getNickname());
 		authTokenProvider.setHeaderAccessToken(response, accessToken);
 		authTokenProvider.setHeaderRefreshToken(response, refreshToken);
 
 		// refresh token Redis에 저장
-		redisTemplate.opsForValue().set("RT:" + user.get().getId(), refreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
+		redisTemplate.opsForValue().set("RT:" + user.getId(), refreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
 
-		return ProfileSimpleResponseDto.fromEntity(user.get());
+		return ProfileSimpleResponseDto.fromEntity(user);
 	}
 
 
 	/**
-	 * 깃허브로그인을 수행합니다
+	 * Oauth 깃헙 로그인을 수행합니다
 	 *
 	 * @param loginRequestHeader 이메일과 비밀번호 (email, password)
 	 * @param response           엑세스 토큰을 담을 response
 	 */
-	public void githubLogin(Map<String, Object> loginRequestHeader, HttpServletResponse response) {
+	public ProfileSimpleResponseDto oauthLogin(Map<String, String> loginRequestHeader, HttpServletResponse response) {
+
+		// "authorization":(AccessToken) String
+		// "x-refresh-token":(RefreshToken) String
+
+		log.info("[oauthLogin] 서비스 들어옮");
+		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
+		log.info("[oauthLogin] refresh 토큰 꺼내기");
+		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
+		log.info("[oauthLogin] accessToken 토큰 꺼내기");
+		// 유저 존재 확인
+		FirebaseToken decodedToken = null;
+		try {
+			decodedToken = firebaseAuth.verifyIdToken(accessToken);
+		} catch (FirebaseAuthException e) {
+			throw new CustomException(ErrorCode.TOKEN_ERROR);
+		}
+
+		log.info("[oauthLogin] 유저 존재 확인 완료");
+
+		// 회원가입 되지 않은 유저인가? -> 회원가입 (email, nickname, password)
+		if (userRepository.findByEmail(decodedToken.getEmail()).isEmpty()) {
+			RegisterRequestDto registerRequestDto = new RegisterRequestDto(decodedToken.getEmail(), decodedToken.getName(), decodedToken.getUid() + "!");
+
+			// 이미 존재하는 닉네임인지 다시 한번 확인
+			if (userRepository.findByNickname(registerRequestDto.getNickname()).isPresent()) {
+				throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+			}
+
+			registerRequestDto.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+			userRepository.save(registerRequestDto.toEntity());
+		}
+
+		// id를 firebase에서 제공하는 email를 사용함
+		// 있는 유저라면 계속 진행하기 or 회원가입 완료 후 db에 있는 유저
+		UserEntity user = userRepository.findByEmailAndIsDeleted(decodedToken.getEmail(), IsDeletedType.N).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+		log.info("[oauthLogin] 토큰 생성 및 응답");
+
+		// refresh token Redis에 저장
+		redisTemplate.opsForValue().set("RT:" + user.getId(), loginRequestRefreshToken, authTokenProvider.getExpiration(loginRequestRefreshToken), TimeUnit.MILLISECONDS);
+
+		return ProfileSimpleResponseDto.fromEntity(user);
+
 	}
 
 
