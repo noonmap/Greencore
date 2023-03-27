@@ -8,7 +8,7 @@ import { getStorage, ref, uploadBytes, uploadString } from 'firebase/storage';
 import styles from '@/styles/Auth.module.scss';
 import Image from 'next/image';
 import AppButton from '@/components/button/AppButton';
-import { EssentialMessage, EmailMessage, PasswordMessage, NicknameMessage } from '@/assets/message.json';
+import message from '@/assets/message.json';
 
 type StateType = {
   email: string;
@@ -189,8 +189,8 @@ export default function signup() {
                     placeholder='ssafy@ssafy.com'
                     className={`${errors?.email ? 'inputError' : null} block w-full`}
                     {...register('email', {
-                      required: EssentialMessage,
-                      pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: EmailMessage },
+                      required: message.EssentialMessage,
+                      pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: message.EmailMessage },
                     })}
                   />
                   <AppButton text='이메일 확인' className='w-1' handleClick={handleCheckEmail} />
@@ -226,10 +226,10 @@ export default function signup() {
                     placeholder='비밀번호'
                     className={`${errors?.password ? 'inputError' : null} block w-full`}
                     {...register('password', {
-                      required: EssentialMessage,
+                      required: message.EssentialMessage,
                       pattern: {
                         value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
-                        message: PasswordMessage,
+                        message: message.PasswordMessage,
                       },
                       onChange: (e) => handleCheckPassword(e),
                     })}
@@ -242,10 +242,10 @@ export default function signup() {
                     placeholder='비밀번호 확인'
                     className={`${errors?.checkPassword ? 'inputError' : null} block w-full`}
                     {...register('checkPassword', {
-                      required: EssentialMessage,
+                      required: message.EssentialMessage,
                       pattern: {
                         value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
-                        message: PasswordMessage,
+                        message: message.PasswordMessage,
                       },
                       onChange: (e) => handleCheckPassword(e),
                     })}
@@ -267,8 +267,8 @@ export default function signup() {
                     placeholder='닉네임'
                     className={`${errors?.nickname ? 'inputError' : null} block w-full`}
                     {...register('nickname', {
-                      required: EssentialMessage,
-                      pattern: { value: /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$/, message: NicknameMessage },
+                      required: message.EssentialMessage,
+                      pattern: { value: /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$/, message: message.NicknameMessage },
                     })}
                   />
                   <AppButton text='닉네임 중복 확인' className='w-1' handleClick={handleCheckNickname} />

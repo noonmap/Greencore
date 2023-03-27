@@ -366,7 +366,6 @@ export const updatePassword = async (payload: PasswordType) => {
  */
 export const getProfile = async (nickname: string | string[]) => {
   try {
-    // const headers = { authorization: accessToken };
     const { data } = await http.get(`/profile/${nickname}`);
     return data;
   } catch (error) {
