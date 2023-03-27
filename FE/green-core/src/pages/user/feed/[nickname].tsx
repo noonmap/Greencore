@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form';
 
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { getProfile, getUserPlantList, deleteUserPlant } from '@/core/user/userAPI';
-import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import Skeleton from 'react-loading-skeleton';
 
 import Toastify from 'toastify-js';
@@ -20,6 +19,9 @@ import AppModal from '@/components/common/AppModal';
 import UserPlantModal from '@/components/modal/UserPlantModal';
 import DiarySetModal from '@/components/modal/DiarySetModal';
 import { getDiarySetList, deleteDiarySet } from '@/core/diarySet/diarySetAPI';
+
+import styles from '@/styles/UserFeed.module.scss';
+import UserFeedProfile from '@/components/UserFeedProfile';
 
 type ProfileType = {
   followerCount: number;
@@ -306,10 +308,10 @@ export default function FeedDetail() {
     // setItemOffset(newOffset);
   }
 
-  function handleImageExploerOpen() {
-    const profileImageInput: HTMLElement = document.querySelector(`.profileImageInput`);
-    profileImageInput.click();
-  }
+  // function handleImageExploerOpen() {
+  //   const profileImageInput: HTMLElement = document.querySelector(`.profileImageInput`);
+  //   profileImageInput.click();
+  // }
 
   function handleProfileImageUpdate() {
     if (!uploadProfileImage) return;
@@ -357,15 +359,15 @@ export default function FeedDetail() {
     );
   }
 
-  async function handleFollowDelete() {
-    const { data } = await deleteFollow(nickname);
-    console.log(data);
-  }
+  // async function handleFollowDelete() {
+  //   const { data } = await deleteFollow(nickname);
+  //   console.log(data);
+  // }
 
-  async function handleFollowUpdate() {
-    const { data } = await updateFollow(nickname);
-    console.log(data);
-  }
+  // async function handleFollowUpdate() {
+  //   const { data } = await updateFollow(nickname);
+  //   console.log(data);
+  // }
 
   function handleisEditToggle() {
     setIsEditPopUp(!isEditPopUp);
@@ -465,8 +467,6 @@ export default function FeedDetail() {
 
   return (
     <AppLayout>
-      <h1>프로필 라인</h1>
-
       <UserPlantModal
         isOpen={isOpenUserPlantCreateModal}
         create
@@ -523,9 +523,18 @@ export default function FeedDetail() {
         handleModalConfirm={handleSelectedPostDelete}
       />
 
-      <div className='space-y-2 '>
+      <div className='space-y-2 px-3 py-5'>
+        {/* 타이틀 */}
+        <h1 className='main'>프로필</h1>
+
+        <div className={`${styles.wrap}`}>
+          <div className={`${styles.content}`}>
+            <UserFeedProfile />
+          </div>
+        </div>
+
         {/* 프로필 라인 */}
-        <div>
+        {/* <div>
           <input type='file' accept='image/*' hidden className='profileImageInput' {...register('uploadProfileImage')} />
           <div className='flex space-x-3'>
             <div onClick={handleImageExploerOpen}>
@@ -573,7 +582,7 @@ export default function FeedDetail() {
               <div>팔로잉 {userProfile?.followingCount}</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* 내키식 라인 */}
         <div className='space-y-2 '>

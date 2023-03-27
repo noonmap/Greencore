@@ -12,8 +12,7 @@ SET
 SET
 @user3 := @user2 + 1;
 
-#
-팔로우 추가
+# 팔로우 추가
 INSERT INTO `chicochico`.`follow`
 (`follower_id`,`following_id`)
 VALUES
@@ -26,8 +25,7 @@ VALUES
 # 유저3 -> 유저1
 (@user3,@user1);
 
-#
-식물 5 추가
+# 식물 5 추가
 INSERT INTO `chicochico`.`plant`
 (`image_path`,`name`,`user_count`)
 VALUES
@@ -99,8 +97,7 @@ VALUES (@post1),
        (@post5),
        (@post6);
 
-#
-관찰일지 추가
+# 관찰일지 추가
 INSERT INTO `chicochico`.`diary_set`
 (`created_at`,`updated_at`,`bookmark_count`,`diary_count`,`image_path`,`is_deleted`,`is_enabled_add_diary`,`title`,`user_id`,`user_plant_id`)
 VALUES
