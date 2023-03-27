@@ -1,5 +1,7 @@
+import { getRegularSchedule } from '@/core/schedule/scheduleAPI';
 import moment from 'moment';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import RegularScheduleListItem from '../RegularScheduleListItem';
 import ScheduleListItem from '../ScheduleListItem';
 
 type PropsType = {
@@ -13,6 +15,29 @@ export default function ScheduleManage({ isOpen, weekSchedule, handleReload, han
   const modalRef = useRef<HTMLDivElement>(null);
   const modalTitles = ['스케줄 관리', '정기스케줄 관리'];
   const [title, setTitle] = useState(modalTitles[0]);
+  const [regularScheduleList, setRegularScheduleList] = useState([]);
+
+  // 모달 바깥 클릭 시
+  function handleModalOutsideClick(e: any) {
+    if (modalRef.current && !modalRef.current.contains(e.target)) handleModalClose();
+  }
+
+  // 정기스케줄 목록 가져오는 함수
+  const getRegularScheduleList = async () => {
+    const data = await getRegularSchedule();
+    setRegularScheduleList(data.data);
+  };
+
+  // 정기스케줄 목록 가져오기
+  useEffect(() => {
+    getRegularScheduleList();
+
+    document.addEventListener('mousedown', handleModalOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+    };
+  }, []);
 
   return (
     <>
@@ -64,7 +89,17 @@ export default function ScheduleManage({ isOpen, weekSchedule, handleReload, han
             )}
             {title === '정기스케줄 관리' && (
               <div className='modalContent'>
-                <div>정기스케줄 목록 받아와서 채워넣어야됨</div>
+                {regularScheduleList.length > 0 ? (
+                  regularScheduleList.map((regularSchedule) => {
+                    return (
+                      <div key={regularSchedule.regularScheduleId}>
+                        <RegularScheduleListItem item={regularSchedule} handleReload={handleReload} />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div>정기스케줄이 없습니다</div>
+                )}
               </div>
             )}
           </div>

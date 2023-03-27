@@ -125,6 +125,14 @@ export const deleteSchedule = async (scheduleId: number) => {
   } catch (error) {}
 };
 
+// 정기스케줄 조회
+export const getRegularSchedule = async () => {
+  try {
+    const { data } = await http.get(`/schedule/regular`);
+    return data;
+  } catch (err) {}
+};
+
 // 정기스케줄 수정
 export const updateRegularSchedule = async (requestData: UpdateRegularScheduleType) => {
   try {

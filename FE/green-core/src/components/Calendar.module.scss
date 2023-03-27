@@ -1,58 +1,92 @@
 @use '../styles/_theme.scss';
 @use '../styles/common/_common.scss' as common;
 
+// 각 셀의 크기 계산
+$col-count: 7;
+@function calc-size($size) {
+  @return $size / $col-count * 100%;
+}
+
 .calendar {
-  @include common.size(50%, 90%);
-  padding: 2%;
+  @include common.size(70%, 90%);
+  padding: 1rem;
+  .title {
+    font-size: 1.5rem;
+    font-weight: var(--text-extra-bold);
+    color: var(--main-color);
+    margin-bottom: 2.5rem;
+  }
   .header {
     @include common.size(100%, 7%);
-    @include common.flexRow(space-between, baseline);
+    @include common.flexRow(flex-start, center);
+    margin-bottom: 0.5rem;
     .col.colStart {
-      @include common.size(80%, 100%);
+      @include common.size(fit-content, 100%);
       @include common.flexColumn(center, flex-start);
-      margin-left: 1%;
       .text {
-        font-size: 0.8em;
+        display: flex;
+        @include common.flexRow(flex-start, baseline);
+        @include common.size(fit-content, fit-content);
+        font-size: 0.8rem;
+        margin-inline: 2px;
       }
       .text.month {
-        margin-right: 5px;
-        font-size: 1.6em;
-        font-weight: 600;
+        margin-right: 0.5rem;
+        font-size: 2rem;
+        font-weight: 800;
+        @include common.flexRow(center, center);
       }
     }
-    .col.colEnd {
-      @include common.size(20%, 100%);
-      @include common.flexRow(flex-end, baseline);
-      svg {
-        @include common.size(11%, fit-content);
-        margin-left: 5%;
-        color: transparentize(gray, 0.2);
-        &:hover {
-          @include common.hoverEvent();
-          transform: scale(1.15);
-          color: theme.$dark-gray-color;
-        }
+    .createBtn {
+      padding: 0;
+      padding-inline: 0.25rem;
+      @include common.size(8rem, 1.8rem);
+      margin-left: auto;
+      background-color: #f0f0f0;
+      color: var(--main-color);
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      display: flex;
+      @include common.flexRow(center, center);
+      div {
+        text-decoration: underline;
       }
+    }
+    .arrow {
+      @include common.size(fit-content, fit-content);
+      color: transparentize(gray, 0.2);
+      &:hover {
+        @include common.hoverEvent();
+        transform: scale(1.15);
+        color: theme.$dark-gray-color;
+      }
+      // @include common.flexRow(center, baseline);
     }
   }
+  .content {
+    border: solid 1px #d9d9d9;
+    border-radius: 1rem;
+    box-shadow: var(--box-shadow);
+  }
   .days {
-    @include common.size(100%, fit-content);
-    @include common.flexRow(space-between, center);
+    @include common.size(100%, 2rem);
+    @include common.flexRow(flex-start, center);
     font-weight: 600;
     font-size: 1em;
-    // padding: 2px;
-    color: theme.$dark-gray-color;
+    border-bottom: solid 1px #d9d9d9;
+    color: #68716b;
+
     .col {
-      @include common.size(12.9%, 100%);
-      @include common.flexColumn(flex-end);
-      // @include common.flexColumn(flex-end, flex-start);
-      // padding-left: 1%;
+      @include common.size(calc-size(100), 100%);
+      flex: 1;
+      @include common.flexColumn(center, center);
+      margin-inline: auto;
       background: '';
-      // background: transparentize(theme.$step-color, 0.6);
-      // border-radius: 10px;
+      border-right: 1px solid #d9d9d9;
     }
     .sat {
       color: #5eb4d4;
+      border-right: none;
     }
     .sun {
       color: #ca7468;
@@ -65,18 +99,19 @@
       @include common.size(100%, 100%);
       @include common.flexRow(space-between, center);
       .col {
-        @include common.size(13.5%, 93%);
-        @include common.flexColumn(flex-start, center);
-        // @include common.flexRow(flex-start, flex-start);
-
-        border: 0.4px solid transparentize(gray, 0.4);
-        border-radius: 3px;
+        @include common.size(calc-size(100), 100%);
+        flex: 1;
+        @include common.flexColumn(flex-start, flex-start);
+        border-right: 1px solid #d9d9d9;
+        border-top: 1px solid #d9d9d9;
+        padding-left: 4px;
+        // border: 0.4px solid transparentize(gray, 0.4);
+        // border-radius: 3px;
         font-size: 0.8em;
         span {
           margin: 4px 0 0 4px;
         }
         .notValid {
-          // color: theme.$gray-color;
           display: none;
         }
         img {
@@ -86,8 +121,14 @@
           display: flex;
           flex-wrap: wrap;
           margin: 4px;
-          margin-block: auto;
+          margin-bottom: auto;
         }
+      }
+      .col.sat {
+        border-right: none;
+      }
+      .col.first {
+        border-top: none;
       }
       .col.cell.valid {
         &:hover {
@@ -97,20 +138,19 @@
           border: none;
           background: transparentize(theme.$gray-color, 0.5);
         }
+        .sat {
+          color: #5eb4d4;
+        }
+        .sun {
+          color: #ca7468;
+        }
       }
       .col.cell.selected {
-        @include common.shadow(1.5px, #87d0a0, 0.1);
+        @include common.shadow(1.5px, theme.$main-color, 0.1);
         transform: scale(1.02);
         border: none;
-        background: #8ed67d;
-        color: #000000;
+        background: theme.$main-light;
         font-weight: 600;
-      }
-      .sat {
-        color: #5eb4d4;
-      }
-      .sun {
-        color: #ca7468;
       }
     }
   }

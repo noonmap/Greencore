@@ -1,5 +1,5 @@
 import { deleteRegularSchedule, deleteSchedule } from '@/core/schedule/scheduleAPI';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 type PropsType = {
   isOpen: boolean;
@@ -12,6 +12,11 @@ type PropsType = {
 
 export default function ScheduleDeleteModal({ isOpen, modalTitle, scheduleId, regularId, handleModalClose, handleReload }: PropsType) {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // 모달 바깥 클릭 시
+  function handleModalOutsideClick(e: any) {
+    if (modalRef.current && !modalRef.current.contains(e.target)) handleModalClose();
+  }
 
   // 스케줄 삭제
   const handleScheduleDelete = async (scheduleId: number) => {
@@ -32,6 +37,14 @@ export default function ScheduleDeleteModal({ isOpen, modalTitle, scheduleId, re
     }
   };
 
+  useEffect(() => {
+    document.addEventListener('mousedown', handleModalOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+    };
+  }, []);
+
   return (
     <>
       {isOpen ? (
@@ -47,8 +60,8 @@ export default function ScheduleDeleteModal({ isOpen, modalTitle, scheduleId, re
               <div>삭제 하시겠습니까?</div>
             </div>
             <button onClick={() => handleModalClose()}>취소</button>
-            {scheduleId && <button onClick={() => handleScheduleDelete(scheduleId)}>확인</button>}
-            {regularId && <button onClick={() => handleRegularScheduleDelete(regularId)}>확인</button>}
+            {scheduleId >= 0 && <button onClick={() => handleScheduleDelete(scheduleId)}>확인</button>}
+            {regularId >= 0 && <button onClick={() => handleRegularScheduleDelete(regularId)}>확인</button>}
           </div>
         </div>
       ) : null}

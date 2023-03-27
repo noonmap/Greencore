@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import ScheduleDeleteModal from './modal/ScheduleDeleteModal';
 import ScheduleModal from './modal/ScheduleModal';
 import ScheduleCode from './ScheduleCode';
+import styles from './ScheduleListItem.module.scss';
 
 type PropsType = {
   item: any;
@@ -57,28 +58,28 @@ export default function ScheduleListItem({ item, check, handleReload }: PropsTyp
           handleReload={handleReload}
         />
       )}
-      <div style={{ display: 'flex', border: '1px solid', marginBlock: '8px' }}>
-        <div style={{ borderRadius: '50%' }}>
+      <div className={`${styles.container}`}>
+        <div className={`${styles.icon}`}>
           <ScheduleCode scheduleCode={item.scheduleCode} size='lg' />
         </div>
         {check ? (
           isCompleted ? (
             <>
-              <div style={{ textDecoration: 'line-through' }}>{item.content}</div>
-              <FontAwesomeIcon icon={faCheck} color='#4FC577' style={{ cursor: 'pointer' }} onClick={() => cancelToDo(item.scheduleId)} />
+              <div className={`${styles.text} ${styles.done}`}>{item.content}</div>
+              <FontAwesomeIcon icon={faCheck} color='#4FC577' className={`${styles.check}`} onClick={() => cancelToDo(item.scheduleId)} />
             </>
           ) : (
             <>
-              <div>{item.content}</div>
-              <FontAwesomeIcon icon={faCheck} color='#D9D9D9' style={{ cursor: 'pointer' }} onClick={() => completeToDo(item.scheduleId)} />
+              <div className={`${styles.text}`}>{item.content}</div>
+              <FontAwesomeIcon icon={faCheck} color='#D9D9D9' className={`${styles.check}`} onClick={() => completeToDo(item.scheduleId)} />
             </>
           )
         ) : (
           <>
-            <div onClick={() => setIsOpenScheduleUpdateModal(true)} style={{ cursor: 'pointer' }}>
+            <div onClick={() => setIsOpenScheduleUpdateModal(true)} style={{ cursor: 'pointer' }} className={`${styles.text}`}>
               {item.content}
             </div>
-            <FontAwesomeIcon icon={faRemove} color='#D9D9D9' style={{ cursor: 'pointer' }} onClick={() => setIsOpenCheckDeleteModal(true)} />
+            <FontAwesomeIcon icon={faRemove} color='#D9D9D9' className={`${styles.check}`} onClick={() => setIsOpenCheckDeleteModal(true)} />
           </>
         )}
       </div>
