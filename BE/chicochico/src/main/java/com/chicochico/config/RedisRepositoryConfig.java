@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
@@ -24,10 +25,17 @@ public class RedisRepositoryConfig {
 	@Value("${spring.redis.port}")
 	private int redisPort;//redist 포트 번호
 
+	@Value("${spring.redis.password}")
+	private String redisPassword;
+
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		return new LettuceConnectionFactory(redisHost, redisPort);//RedisConnectionFactory를 통해 내장 혹은 외부의 Redis를 연결한다.
+		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+		redisStandaloneConfiguration.setHostName(redisHost);
+		redisStandaloneConfiguration.setPort(redisPort);
+		redisStandaloneConfiguration.setPassword(redisPassword);
+		return new LettuceConnectionFactory(redisStandaloneConfiguration);//RedisConnectionFactory를 통해 내장 혹은 외부의 Redis를 연결한다.
 	}
 
 

@@ -24,6 +24,7 @@ public class ScheduleResponseDto {
 	private LocalDate scheduleDate;
 	private ScheduleType scheduleCode;
 	private IsCompletedType isCompleted;
+	private String content;
 	private PlantOnScheduleResponseDto plant;
 
 
@@ -34,6 +35,7 @@ public class ScheduleResponseDto {
 			.scheduleId(scheduleEntity.getId())
 			.scheduleDate(scheduleEntity.getDate())
 			.scheduleCode(scheduleEntity.getScheduleCode())
+			.content(scheduleEntity.getContent())
 			.plant(plant).build();
 		return scheduleResponseDto;
 	}

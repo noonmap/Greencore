@@ -84,7 +84,6 @@ public class ScheduleRepositoryTest {
 			.user(user)
 			.date(localdate1)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule);
@@ -94,7 +93,6 @@ public class ScheduleRepositoryTest {
 			.user(user)
 			.date(localdate2)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule1);
@@ -104,7 +102,6 @@ public class ScheduleRepositoryTest {
 			.user(user)
 			.date(localdate3)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule2);
@@ -114,7 +111,6 @@ public class ScheduleRepositoryTest {
 			.user(user)
 			.date(localdate4)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule3);
@@ -124,7 +120,6 @@ public class ScheduleRepositoryTest {
 			.user(user)
 			.date(localdate5)
 			.isCompleted(IsCompletedType.N)
-			.isDeleted(IsDeletedType.N)
 			.scheduleCode(ScheduleType.SCHEDULE_PRUNING)
 			.build();
 		scheduleRepository.save(schedule4);

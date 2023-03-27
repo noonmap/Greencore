@@ -83,6 +83,7 @@ public class DiarySetService {
 			.userPlant(userPlant)
 			.imagePath(savedPath)
 			.diaryCount(0)
+			.startDate(diarySetRequestDto.getStartDate())
 			.title(diarySetRequestDto.getTitle())
 			.isDeleted(IsDeletedType.N)
 			.build();
