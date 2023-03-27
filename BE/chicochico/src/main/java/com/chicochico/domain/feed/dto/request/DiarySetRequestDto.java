@@ -1,7 +1,6 @@
 package com.chicochico.domain.feed.dto.request;
 
 
-import com.chicochico.domain.feed.entity.DiarySetEntity;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,10 +25,5 @@ public class DiarySetRequestDto {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate startDate;
 	private String title;
-
-
-	public DiarySetEntity toEntity() {
-		return (DiarySetEntity) new Object();
-	}
 
 }
