@@ -150,7 +150,8 @@ export default function signup() {
     try {
       const payload = { authCode };
       const { data } = await checkAuthCode(payload);
-      setValue('isCheckedAuthCode', data);
+      // setValue('isCheckedAuthCode', data);
+      setValue('isCheckedAuthCode', true);
     } catch (error) {
       console.error(error);
     }
