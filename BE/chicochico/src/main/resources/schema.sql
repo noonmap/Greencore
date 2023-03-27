@@ -1,3 +1,21 @@
+DROP TABLE IF EXISTS `alert`;
+DROP TABLE IF EXISTS `feed_like`;
+DROP TABLE IF EXISTS `bookmark`;
+DROP TABLE IF EXISTS `feed_tag`;
+DROP TABLE IF EXISTS `comment`;
+DROP TABLE IF EXISTS `diary`;
+DROP TABLE IF EXISTS `diary_set`;
+DROP TABLE IF EXISTS `schedule`;
+DROP TABLE IF EXISTS `user_plant`;
+DROP TABLE IF EXISTS `post`;
+DROP TABLE IF EXISTS `feed`;
+DROP TABLE IF EXISTS `follow`;
+DROP TABLE IF EXISTS `tag`;
+DROP TABLE IF EXISTS `plant`;
+DROP TABLE IF EXISTS `user_table`;
+DROP TABLE IF EXISTS `code`;
+DROP TABLE IF EXISTS `group_code`;
+
 CREATE TABLE `group_code` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `description` varchar(255) NOT NULL,
@@ -24,6 +42,18 @@ CREATE TABLE `user_table` (
   `password` varchar(255) NOT NULL,
   `profile_image_path` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `alert` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `url_path` varchar(255) NOT NULL,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKf7a0a2h9v7oq5ix09aoul6gil` (`user_id`),
+  CONSTRAINT `FKf7a0a2h9v7oq5ix09aoul6gil` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `plant` (
