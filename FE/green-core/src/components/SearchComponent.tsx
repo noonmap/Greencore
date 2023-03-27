@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getTagFeedList, getTagFeedListMore } from '@/core/feed/feedAPI';
 import { searchByUser, searchByUserMore } from '@/core/user/userAPI';
 import { searchByPlantName, searchByPlantNameMore } from '@/core/plant/plantAPI';
-import styles from '@/styles/feed.module.scss';
+import styles from '@/components/FeedListItem.module.scss';
 import SearchFedListItem from '@/components/SearchFeedListItem';
 import SearchUserListItem from '@/components/SearchUserListItem';
 import SearchPlantListItem from '@/components/SearchPlantListItem';
