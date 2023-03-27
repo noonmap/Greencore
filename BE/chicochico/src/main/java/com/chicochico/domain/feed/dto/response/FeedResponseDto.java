@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -36,26 +37,26 @@ public class FeedResponseDto implements Serializable {
 	private LocalDateTime createdAt;
 	// FEED_DIARY인 경우, diarySet 관련 추가
 	private String diarySetTitle;
-	private LocalDate diarySetStartDate;
+	private Long growingDay;
 
 
 	public static FeedResponseDto fromEntity(FeedEntity xx, Boolean isLiked, Integer commentCount, Function<Long, Boolean> isFollowed) {
 		FeedType feedType;
 		LocalDate observationDate;
 		String diarySetTitle;
-		LocalDate diarySetStartDate;
+		Long growingDay;
 		DiaryEntity diary = null;
 		if (xx instanceof DiaryEntity) {
 			diary = (DiaryEntity) xx;
 			feedType = FeedType.FEED_DIARY;
 			observationDate = diary.getObservationDate();
 			diarySetTitle = diary.getDiarySet().getTitle();
-			diarySetStartDate = diary.getDiarySet().getStartDate();
+			growingDay = ChronoUnit.DAYS.between(diary.getDiarySet().getStartDate(), diary.getObservationDate());
 		} else {
 			feedType = FeedType.FEED_POST;
 			observationDate = null;
 			diarySetTitle = null;
-			diarySetStartDate = null;
+			growingDay = null;
 		}
 
 		return FeedResponseDto.builder()
@@ -69,7 +70,7 @@ public class FeedResponseDto implements Serializable {
 			.isLiked(isLiked)
 			.commentCount(commentCount)
 			.diarySetTitle(diarySetTitle)
-			.diarySetStartDate(diarySetStartDate)
+			.growingDay(growingDay)
 			.createdAt(xx.getCreatedAt())
 			.build();
 	}
