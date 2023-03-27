@@ -7,7 +7,9 @@ export default function Home() {
     <AppLayout home>
       <main className={styles.main}>
         안뇽
+        <span className='material-symbols-outlined'>search</span>
         <button className='bg-blue-500 px-3 rounded'>hi</button>
+        <span className='material-symbols-outlined'>favorite</span>
       </main>
     </AppLayout>
   );

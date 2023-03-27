@@ -1,14 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useForm } from 'react-hook-form';
 import { signUp, checkEmail, checkNickname, checkAuthCode } from '~/src/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
-import { getStorage, ref, uploadBytes, uploadString } from 'firebase/storage';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
 import styles from '@/styles/Auth.module.scss';
 import Image from 'next/image';
 import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
+import { useRouter } from 'next/router';
 
 type StateType = {
   email: string;
@@ -35,6 +36,7 @@ const initialState: StateType = {
 };
 
 export default function signup() {
+  const router = useRouter();
   const storage = getStorage();
 
   const {
@@ -85,14 +87,14 @@ export default function signup() {
   /** 회원가입 함수 */
   async function handleSignUp() {
     try {
-      // 배포 테스트 중 임시로 주석
       if (isPossibleSignUp) {
         const payload = { email, password, nickname };
         const { data } = await signUp(payload);
 
-        if (data.result) handleSetUserProfile();
-
-        // 배포 테스트 중 임시로 주석
+        if (data) {
+          handleSetUserProfile();
+          router.push('/auth/login');
+        }
       } else checkInputFormToast();
     } catch (err) {
       console.error(err);
@@ -171,9 +173,9 @@ export default function signup() {
   return (
     <AppLayout>
       <div className={`${styles.container} h-full`}>
-        <Image src='/images/leaf1.png' width={512} height={512} alt='' className={`${styles.leaf1} `} />
-        <Image src='/images/leaf2.png' width={512} height={512} alt='' className={`${styles.leaf2}`} />
-        <Image src='/images/leaf3.png' width={512} height={512} alt='' className={`${styles.leaf3}`} />
+        <Image src='/images/leaf1.png' priority width={512} height={512} alt='' className={`${styles.leaf1} `} />
+        <Image src='/images/leaf2.png' priority width={512} height={512} alt='' className={`${styles.leaf2}`} />
+        <Image src='/images/leaf3.png' priority width={512} height={512} alt='' className={`${styles.leaf3}`} />
 
         <div className={`${styles.wrap} ${styles.signup} flex flex-col justify-between`}>
           <div>
@@ -283,7 +285,7 @@ export default function signup() {
           </div>
 
           {/* 간편 로그인 */}
-          <div className={`flex flex-col gap-2 items-center justify-center mb-10`}>
+          {/* <div className={`flex flex-col gap-2 items-center justify-center mb-10`}>
             <div className={`${styles.help} ${styles.line} `}>간편 회원가입</div>
             <div className={`${styles.oauth} flex space-x-5 items-center justify-center`}>
               <div className='flex items-center justify-center'>
@@ -296,7 +298,7 @@ export default function signup() {
                 <i className='fa-brands fa-github text-2xl'></i>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <AppButton text='회원가입' bgColor={isPossibleSignUp ? 'main' : 'thin'} handleClick={handleSignUp} />
         </div>

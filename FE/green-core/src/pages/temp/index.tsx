@@ -3,6 +3,7 @@ import AppLayout from '@/layout/AppLayout';
 
 import http from '@/lib/http';
 import { Data } from '../api/temp';
+import { getAuth, getRedirectResult } from 'firebase/auth';
 
 export default function temp() {
   const [tempData, setTempDate] = useState<Data>(null);
@@ -19,6 +20,9 @@ export default function temp() {
 
   useEffect(() => {
     getData();
+
+    const auth = getAuth();
+
     return () => {};
   }, []);
 

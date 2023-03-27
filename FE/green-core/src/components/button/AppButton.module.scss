@@ -1,6 +1,6 @@
 .container {
   min-width: 150px;
-  min-height: var(--min-height-input);
+  // min-height: var(--min-height-input);
   border-radius: var(--border-radius-input);
   // letter-spacing: -0.5px;
   letter-spacing: 0.5px;
@@ -17,6 +17,14 @@
   //   color: #fff;
   //   font-weight: 500;
   // }
+}
+
+.medium {
+  min-height: var(--min-height-input);
+}
+
+.small {
+  min-height: var(--min-height-input-small);
 }
 
 .white {
