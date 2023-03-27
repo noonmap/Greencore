@@ -46,10 +46,12 @@ public class JwtFilter extends OncePerRequestFilter {
 		String token = resolveToken(request);
 		FirebaseToken decodedToken;
 
+		log.info("여기: {}", request.getRequestURI());
+
 		// 2. validateToken 으로 토큰 유효성 검사
 		// 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
-		if (StringUtils.hasText(token)) {
-			
+		if (StringUtils.hasText(token) && !request.getRequestURI().equals("/api/login/oauth")) {
+
 			if (tokenProvider.validate(token)) {
 				// 3. Redis에 해당 accessToken 로그아웃 여부 확인
 				String isLogout = (String) redisTemplate.opsForValue().get(token);

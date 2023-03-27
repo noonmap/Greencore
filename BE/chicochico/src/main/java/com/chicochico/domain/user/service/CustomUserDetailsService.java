@@ -38,6 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		log.info("[loadUserByEmail] email: {}", email);
 
 		Optional<UserEntity> user = userRepository.findByEmailAndIsDeleted(email, IsDeletedType.N);
+		log.info("[loadUserByEmail] 유저 있나요?: {}", user.isEmpty());
 		if (user.isEmpty()) {
 			throw new UsernameNotFoundException(email);
 		}

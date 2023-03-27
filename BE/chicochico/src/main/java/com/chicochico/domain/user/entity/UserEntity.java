@@ -2,6 +2,7 @@ package com.chicochico.domain.user.entity;
 
 
 import com.chicochico.common.code.IsDeletedType;
+import com.chicochico.common.code.UserStoreType;
 import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.feed.entity.BookmarkEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -55,6 +56,10 @@ public class UserEntity extends CommonEntity implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private IsDeletedType isDeleted;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private UserStoreType userStore;
 
 	@OneToMany(mappedBy = "user")
 	@Builder.Default
@@ -111,6 +116,7 @@ public class UserEntity extends CommonEntity implements UserDetails {
 		this.followingCount = this.followingCount == null ? 0 : this.followingCount;
 		this.followerCount = this.followerCount == null ? 0 : this.followerCount;
 		this.isDeleted = this.isDeleted == null ? IsDeletedType.N : this.isDeleted;
+		this.userStore = this.userStore == null ? UserStoreType.DB : this.userStore;
 	}
 
 

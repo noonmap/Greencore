@@ -2,9 +2,10 @@ package com.chicochico.domain.user.service;
 
 
 import com.chicochico.common.code.IsDeletedType;
+import com.chicochico.common.code.UserStoreType;
+import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
-import com.chicochico.domain.user.dto.request.RegisterRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +38,7 @@ public class LoginService {
 	private final AuthTokenProvider authTokenProvider;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final AuthService authService;
 	private final RedisTemplate<String, String> redisTemplate;
 
 	private final FirebaseAuth firebaseAuth;
@@ -48,36 +51,63 @@ public class LoginService {
 	 * @param response           엑세스 토큰을 담을 response
 	 */
 	public void createAccessToken(Map<String, String> loginRequestHeader, HttpServletResponse response) {
+		// 로그인 유저 가져오기
+		Long loginUserId = authService.getUserId();
+		UserEntity user = userRepository.findByIdAndIsDeleted(loginUserId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
 		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
 
-		// 1. Refresh Token 검증
-		if (!authTokenProvider.validate(loginRequestRefreshToken)) {
-			// Refresh Token 정보가 유효하지 않습니다.
-			throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
+		if (user.getUserStore().equals(UserStoreType.DB)) { // 로그인 유저가 db 유저라면
+
+			// 1. Refresh Token 검증
+			if (!authTokenProvider.validate(loginRequestRefreshToken)) {
+				// Refresh Token 정보가 유효하지 않습니다.
+				throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
+			}
+
+			// 2. AccessToken에서 UserId와 UserNickname 가져옵니다.
+			Long userId = authTokenProvider.getUserId(accessToken);
+			String userNickname = authTokenProvider.getUserNickname(accessToken);
+
+			// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
+			String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
+			if (!StringUtils.hasText(refreshToken) || !refreshToken.equals(loginRequestRefreshToken)) {
+				// Refresh Token 정보가 일치하지 않습니다.
+				throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
+			}
+
+			// 4. 새로운 토큰 생성
+			String newAccessToken = authTokenProvider.createAccessToken(userId, userNickname);
+			String newRefreshToken = authTokenProvider.createRefreshToken(userId, userNickname);
+			authTokenProvider.setHeaderAccessToken(response, newAccessToken);
+			authTokenProvider.setHeaderRefreshToken(response, newRefreshToken);
+
+			// 5. RefreshToken Redis 업데이트
+			redisTemplate.opsForValue()
+				.set("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
+
+		} else if (user.getUserStore().equals(UserStoreType.FIREBASE)) {
+			FirebaseToken token = null;
+			try {
+				Long userId = user.getId();
+				String idToken = firebaseAuth.createCustomToken(user.getNickname());
+
+				// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
+				String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
+				if (!StringUtils.hasText(refreshToken) || !refreshToken.equals(loginRequestRefreshToken)) {
+					// Refresh Token 정보가 일치하지 않습니다.
+					throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
+				}
+
+				// 4. 새로운 토큰 생성
+				authTokenProvider.setHeaderAccessToken(response, idToken);
+				authTokenProvider.setHeaderRefreshToken(response, refreshToken);
+
+			} catch (FirebaseAuthException e) {
+				throw new RuntimeException(e);
+			}
 		}
-
-		// 2. AccessToken에서 UserId와 UserNickname 가져옵니다.
-		Long userId = authTokenProvider.getUserId(accessToken);
-		String userNickname = authTokenProvider.getUserNickname(accessToken);
-
-		// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
-		String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
-		if (!StringUtils.hasText(refreshToken) || !refreshToken.equals(loginRequestRefreshToken)) {
-			// Refresh Token 정보가 일치하지 않습니다.
-			throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
-		}
-
-		// 4. 새로운 토큰 생성
-		String newAccessToken = authTokenProvider.createAccessToken(userId, userNickname);
-		String newRefreshToken = authTokenProvider.createRefreshToken(userId, userNickname);
-		authTokenProvider.setHeaderAccessToken(response, newAccessToken);
-		authTokenProvider.setHeaderRefreshToken(response, newRefreshToken);
-
-		// 5. RefreshToken Redis 업데이트
-		redisTemplate.opsForValue()
-			.set("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
 
 	}
 
@@ -123,6 +153,7 @@ public class LoginService {
 	 * @param loginRequestHeader 이메일과 비밀번호 (email, password)
 	 * @param response           엑세스 토큰을 담을 response
 	 */
+	@Transactional
 	public ProfileSimpleResponseDto oauthLogin(Map<String, String> loginRequestHeader, HttpServletResponse response) {
 
 		// "authorization":(AccessToken) String
@@ -142,28 +173,32 @@ public class LoginService {
 		}
 
 		log.info("[oauthLogin] 유저 존재 확인 완료");
+		log.info("[oauthLogin] 유저 존재 확인 완료 {} {} {}", decodedToken.getEmail(), decodedToken.getUid(), decodedToken.getUid());
 
 		// 회원가입 되지 않은 유저인가? -> 회원가입 (email, nickname, password)
 		if (userRepository.findByEmail(decodedToken.getEmail()).isEmpty()) {
-			RegisterRequestDto registerRequestDto = new RegisterRequestDto(decodedToken.getEmail(), decodedToken.getName(), decodedToken.getUid() + "!");
 
 			// 이미 존재하는 닉네임인지 다시 한번 확인
-			if (userRepository.findByNickname(registerRequestDto.getNickname()).isPresent()) {
+			if (userRepository.findByNickname(decodedToken.getName()).isPresent()) {
 				throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 			}
 
-			registerRequestDto.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
-			userRepository.save(registerRequestDto.toEntity());
+			UserEntity userEntity = UserEntity.builder().email(decodedToken.getEmail()).nickname(decodedToken.getUid()).password(passwordEncoder.encode(decodedToken.getUid() + "!"))
+				.userStore(UserStoreType.FIREBASE)
+				.build();
+
+			userRepository.save(userEntity);
 		}
+		log.info("[oauthLogin] 회원가입 된 상태");
 
 		// id를 firebase에서 제공하는 email를 사용함
 		// 있는 유저라면 계속 진행하기 or 회원가입 완료 후 db에 있는 유저
 		UserEntity user = userRepository.findByEmailAndIsDeleted(decodedToken.getEmail(), IsDeletedType.N).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-		log.info("[oauthLogin] 토큰 생성 및 응답");
+		log.info("[oauthLogin] 토큰 생성 및 응답 {}", decodedToken.getClaims().get("exp"));
 
 		// refresh token Redis에 저장
-		redisTemplate.opsForValue().set("RT:" + user.getId(), loginRequestRefreshToken, authTokenProvider.getExpiration(loginRequestRefreshToken), TimeUnit.MILLISECONDS);
+		redisTemplate.opsForValue().set("RT:" + user.getId(), loginRequestRefreshToken, (Long) decodedToken.getClaims().get("exp"), TimeUnit.MILLISECONDS);
 
 		return ProfileSimpleResponseDto.fromEntity(user);
 
