@@ -9,7 +9,7 @@ import FeedCommentList from '@/components/FeedCommentList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
-import styles from '@/components/common/UserInfo.module.scss';
+import styles from '@/components/modal/UserInfo.module.scss';
 import { useAppDispatch } from '@/core/hooks';
 import { deletePost } from '@/core/post/postAPI';
 
