@@ -88,6 +88,7 @@ public class LoginService {
 
 		// 유저 존재 확인
 		Optional<UserEntity> user = userRepository.findByEmail(loginRequestDto.getEmail());
+		System.out.println("loginRequestDto: " + loginRequestDto);
 
 		if (user.isEmpty() || user.get().getIsDeleted().equals(IsDeletedType.Y)) {
 			// 유저가 존재하지 않을 때 혹은 탈퇴한 유저 일때 error 발생

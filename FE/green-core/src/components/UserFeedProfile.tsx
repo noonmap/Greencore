@@ -16,6 +16,8 @@ import { getProfile } from '@/core/user/userAPI';
 import AppLoading from './common/AppLoading';
 
 import styles from './UserFeedProfile.module.scss';
+import AppButton from './button/AppButton';
+import UserProfileUpdateModal from '@/components/modal/UserProfileUpdateModal';
 
 type ProfileType = {
   followerCount: number;
@@ -44,6 +46,7 @@ export default function UserFeedProfile() {
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
+  const [isOpenUserProfileUpdateModal, setIsOpenUserProfileUpdateModal] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<ProfileType>(null);
   const [uploadProfileImage] = getValues(['uploadProfileImage']);
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
@@ -165,57 +168,101 @@ export default function UserFeedProfile() {
   }
 
   return (
-    <div className={`mx-5 `}>
-      <div className='flex justify-between space-x-3'>
-        <div className='flex items-center'>
-          {/* 프로필 이미지 라인 */}
-          <input type='file' accept='image/*' hidden className='profileImageInput' {...register('uploadProfileImage')} />
-          {!userProfile ? (
-            <Skeleton width={90} height={90} circle />
-          ) : (
-            <div onClick={handleImageExploerOpen}>
-              {userProfileImagePath ? (
-                (
-                  <Image
-                    src={userProfileImagePath}
-                    alt='사용자 프로필 이미지'
-                    width={90}
-                    height={90}
-                    className='rounded-full bg-cover'
-                    onClick={handleProfileImageUpdate}
-                    priority
-                  />
-                ) || <Skeleton width={90} height={90} circle />
+    <div className={`${styles.container} pb-10`}>
+      <UserProfileUpdateModal
+        isOpen={isOpenUserProfileUpdateModal}
+        userProfile={userProfile}
+        handleModalClose={() => setIsOpenUserProfileUpdateModal(false)}
+      />
+
+      <div className={`mx-5`}>
+        <div className='flex justify-center space-x-36'>
+          <div className='flex items-center'>
+            {/* 프로필 이미지 라인 */}
+            <input type='file' accept='image/*' hidden className='profileImageInput' {...register('uploadProfileImage')} />
+            {userProfile ? (
+              <div onClick={handleImageExploerOpen}>
+                {userProfileImagePath ? (
+                  (
+                    <Image
+                      src={userProfileImagePath}
+                      alt='사용자 프로필 이미지'
+                      width={90}
+                      height={90}
+                      className='rounded-full bg-cover'
+                      onClick={handleProfileImageUpdate}
+                      priority
+                    />
+                  ) || <Skeleton width={90} height={90} circle />
+                ) : (
+                  <Image src='/images/noProfile.png' alt='사용자 프로필 이미지' width={90} height={90} className='rounded-full bg-cover' priority />
+                )}
+              </div>
+            ) : (
+              <Skeleton width={90} height={90} circle />
+            )}
+
+            {/* 닉네임 & 한 줄 자기소개 */}
+            <div className='pl-3'>
+              {userProfile ? (
+                <>
+                  <div className='flex items-center space-x-1'>
+                    <div className={styles.nickname}>{userProfile?.nickname}</div>
+                    {isSameUser ? (
+                      <span className='material-symbols-outlined main text-lg cursor-pointer' onClick={() => setIsOpenUserProfileUpdateModal(true)}>
+                        edit
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className={styles.introduction}>{userProfile?.introduction}</div>
+                </>
               ) : (
-                <Image src='/images/noProfile.png' alt='사용자 프로필 이미지' width={90} height={90} className='rounded-full bg-cover' priority />
+                <>
+                  <div className='flex items-center space-x-1'>
+                    <Skeleton width={100} />
+                  </div>
+                  <Skeleton width={150} />
+                </>
               )}
             </div>
-          )}
-
-          {/* 닉네임 & 한 줄 자기소개 */}
-          <div className='px-3'>
-            <div className='flex items-center space-x-1'>
-              <div className={styles.nickname}>{userProfile?.nickname}</div>
-              {isSameUser ? <span className='material-symbols-outlined'>edit</span> : null}
-            </div>
-            <div>{userProfile?.introduction}</div>
           </div>
-        </div>
 
-        <div>
-          <div>팔로워 {userProfile?.followerCount}</div>
-          <div>팔로잉 {userProfile?.followingCount}</div>
+          <div className='flex flex-col items-center justify-between'>
+            <div className='flex justify-evenly w-full'>
+              <div className='flex flex-col items-center justify-center'>
+                {userProfile ? (
+                  <>
+                    <div className={styles.introduction}>팔로워</div>
+                    <div className={styles.introduction}>{userProfile?.followerCount}</div>
+                  </>
+                ) : (
+                  <>
+                    <Skeleton width={150} /> <Skeleton width={150} />
+                  </>
+                )}
+              </div>
 
-          <div>
-            {userProfile?.isFollowed ? (
-              <button className='bg-blue-500 rounded' onClick={handleFollowDelete}>
-                팔로우중
-              </button>
-            ) : (
-              <button className='bg-blue-500 rounded' onClick={handleFollowUpdate}>
-                팔로우하기
-              </button>
-            )}
+              <div className='flex flex-col items-center justify-center'>
+                {userProfile ? (
+                  <>
+                    <div className={styles.introduction}>팔로잉</div>
+                    <div className={styles.introduction}>{userProfile?.followingCount}</div>
+                  </>
+                ) : null}
+              </div>
+            </div>
+
+            <div className='flex items-center'>
+              {userProfile ? (
+                <>
+                  {userProfile?.isFollowed ? (
+                    <AppButton text='팔로우 중' className='w-2 h-1' handleClick={handleFollowDelete} />
+                  ) : (
+                    <AppButton text='팔로우 하기' size='small' className='w-3 h-0.5' handleClick={handleFollowUpdate} />
+                  )}
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

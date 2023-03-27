@@ -16,21 +16,12 @@ import toastifyCSS from '@/assets/toastify.json';
 import ReactPaginate from 'react-paginate';
 
 import AppModal from '@/components/common/AppModal';
-import UserPlantModal from '@/components/modal/UserPlantModal';
 import DiarySetModal from '@/components/modal/DiarySetModal';
 import { getDiarySetList, deleteDiarySet } from '@/core/diarySet/diarySetAPI';
 
 import styles from '@/styles/UserFeed.module.scss';
 import UserFeedProfile from '@/components/UserFeedProfile';
-
-type ProfileType = {
-  followerCount: number;
-  followingCount: number;
-  introduction: string;
-  isFollowed: boolean;
-  nickname: string;
-  profileImagePath: string;
-};
+import UserFeedPlant from '@/components/UserFeedPlant';
 
 type UserPlantType = {
   plantId: number;
@@ -53,25 +44,13 @@ const initialState: StateType = {
 export default function FeedDetail() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const storage = getStorage();
 
   const { nickname } = router.query;
-  const myNickname = useAppSelector((state) => state.common.userInfo?.nickname);
 
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [uploadProfileImage, checkedPostList] = getValues(['uploadProfileImage', 'checkedPostList']);
 
-  const [isSameUser, setIsSameUser] = useState<boolean>(false);
-  const [userProfile, setUserProfile] = useState<ProfileType>();
-  const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>();
-  const [userPlantListAll, setUserPlantListAll] = useState<Array<UserPlantType>>();
-  const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
-  const [isEditPopUp, setIsEditPopUp] = useState(false);
   const [isEditPopUp2, setIsEditPopUp2] = useState(false);
-
-  const [isOpenUserPlantCreateModal, setIsOpenUserPlantCreateModal] = useState(false);
-  const [isOpenUserPlantUpdateModal, setIsOpenUserPlantUpdateModal] = useState(false);
-  const [isOpenUserPlantDeleteModal, setIsOpenUserPlantDeleteModal] = useState(false);
 
   const [isOpenDiarySetCreateModal, setIsOpenDiarySetCreateModal] = useState(false);
   const [isOpenDiarySetUpdateModal, setIsOpenDiarySetUpdateModal] = useState(false);
@@ -80,13 +59,8 @@ export default function FeedDetail() {
   const [isOpenPostDeleteModal, setIsOpenPostDeleteModal] = useState(false);
   const [isOpenSelectedPostDeleteModal, setIsOpenSelectedPostDeleteModal] = useState(false);
 
-  const [userPlantId, setUserPlantId] = useState(null);
-  const [userPlantNickname, setUserPlantNickname] = useState('');
-
   const [diarySetId, setDiarySetId] = useState(null);
 
-  const [userPlantPage, setUserPlantPage] = useState(0);
-  const [userPlantSize, setUserPlantSize] = useState(2);
   const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(8);
 
   const [diarySetPage, setDiarySetPage] = useState(0);
@@ -95,52 +69,19 @@ export default function FeedDetail() {
 
   const [diarySetList, setDiarySetList] = useState([]);
   const [diarySetListAll, setDiarySetListAll] = useState([]);
+  const [userPlantListAll, setUserPlantListAll] = useState<Array<UserPlantType>>();
 
   const [postList, setPostList] = useState([]);
   const [postListTotalCount, setPostListTotalCount] = useState(3);
   const [postPage, setPostPage] = useState(0);
 
-  const checkSameUser = useCallback(() => {
-    if (myNickname == nickname) setIsSameUser(true);
-  }, [myNickname, nickname]);
-
-  const fetchUserProfile = useCallback(async () => {
-    const { data } = await getProfile(nickname);
-    setUserProfile(data);
-
-    const profileRef = ref(storage, `${nickname}/profileImage`);
-
-    getDownloadURL(profileRef)
-      .then((downloadURL) => {
-        setUserProfileImagePath(downloadURL);
-      })
-      .catch((error) => {
-        switch (error.code) {
-          case 'storage/object-not-found':
-            setUserProfileImagePath(null);
-            break;
-          case 'storage/unauthorized':
-            break;
-          case 'storage/canceled':
-            break;
-          case 'storage/unknown':
-            break;
-        }
-      });
-  }, [nickname]);
-
-  const fetchUserPlantList = useCallback(async () => {
-    try {
-      const params = { page: userPlantPage, size: userPlantSize };
-      const { data } = await getUserPlantList(nickname, params);
-
-      // FIXME: 확인
-      let temp = data.slice(userPlantPage, userPlantPage + userPlantSize);
-      setUserPlantList(temp);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [nickname, userPlantPage, userPlantSize]);
+  useEffect(() => {
+    watch();
+    fetchDiarySetList();
+    fetchDiarySetListAll();
+    fetchPostList();
+    return () => {};
+  }, [nickname, uploadProfileImage, checkedPostList, userPlantListTotalCount, diarySetSize, postPage]); // 해당 변수가 업데이트 되면 한번 더 불러짐
 
   async function fetchUserPlantListAll() {
     try {
@@ -268,22 +209,6 @@ export default function FeedDetail() {
     }
   }
 
-  async function prevUserPlantListPage() {
-    let page = userPlantPage - userPlantSize;
-    if (page < 0) return;
-
-    setUserPlantPage(page);
-    await fetchUserPlantList();
-  }
-
-  async function nextUserPlantListPage() {
-    let page = userPlantPage + userPlantSize;
-    if (page >= userPlantListTotalCount) return;
-
-    setUserPlantPage(page);
-    await fetchUserPlantList();
-  }
-
   async function prevDiarySetListPage() {
     let page = diarySetPage - diarySetSize;
     if (page < 0) return;
@@ -306,97 +231,6 @@ export default function FeedDetail() {
     // setPostPage((e.selected / 2) * postListTotalCount);
     // const newOffset = (e.selected * itemsPerPage) % items.length;
     // setItemOffset(newOffset);
-  }
-
-  // function handleImageExploerOpen() {
-  //   const profileImageInput: HTMLElement = document.querySelector(`.profileImageInput`);
-  //   profileImageInput.click();
-  // }
-
-  function handleProfileImageUpdate() {
-    if (!uploadProfileImage) return;
-
-    const profileRef = ref(storage, `${myNickname}/profileImage`);
-    const uploadTask = uploadBytesResumable(profileRef, uploadProfileImage[0]);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused');
-            break;
-          case 'running':
-            console.log('Upload is running');
-            break;
-        }
-      },
-      (error) => {
-        Toastify({
-          text: message.UpdateProfileImageFail,
-          duration: 1500,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.fail,
-        }).showToast();
-        console.error(error);
-      },
-      () => {
-        Toastify({
-          text: message.UpdateProfileImageSuccess,
-          duration: 1500,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.success,
-        }).showToast();
-
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setUserProfileImagePath(downloadURL);
-        });
-      }
-    );
-  }
-
-  // async function handleFollowDelete() {
-  //   const { data } = await deleteFollow(nickname);
-  //   console.log(data);
-  // }
-
-  // async function handleFollowUpdate() {
-  //   const { data } = await updateFollow(nickname);
-  //   console.log(data);
-  // }
-
-  function handleisEditToggle() {
-    setIsEditPopUp(!isEditPopUp);
-  }
-
-  function handleisEditToggle2() {
-    setIsEditPopUp2(!isEditPopUp2);
-  }
-
-  function handleIsOpenUserPlantNicknameUpdate(userPlantId: number, plantNickname: string) {
-    setUserPlantId(userPlantId);
-    setUserPlantNickname(plantNickname);
-    setIsOpenUserPlantUpdateModal(true);
-  }
-
-  function handleIsOpenUserPlantDelete(userPlantId: number) {
-    setUserPlantId(userPlantId);
-    setIsOpenUserPlantDeleteModal(true);
-  }
-
-  async function handleUserPlantDelete() {
-    try {
-      const { data } = await deleteUserPlant(userPlantId);
-      setIsOpenUserPlantDeleteModal(false);
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-      setIsOpenUserPlantDeleteModal(false);
-    }
   }
 
   function handleIsOpenDiarySetUpdate(diarySetId: number) {
@@ -446,48 +280,12 @@ export default function FeedDetail() {
     });
   }
 
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (!router.query.nickname) return;
-
-    checkSameUser();
-    fetchUserProfile();
-    fetchUserPlantList();
-    fetchUserPlantListAll();
-    fetchDiarySetList();
-    fetchDiarySetListAll();
-    fetchPostList();
-    watch();
-
-    console.log(checkedPostList);
-
-    handleProfileImageUpdate();
-    return () => {};
-  }, [nickname, uploadProfileImage, checkedPostList, userPlantPage, userPlantSize, diarySetPage, diarySetSize, postPage]); // 해당 변수가 업데이트 되면 한번 더 불러짐
+  function handleisEditToggle2() {
+    setIsEditPopUp2(!isEditPopUp2);
+  }
 
   return (
     <AppLayout>
-      <UserPlantModal
-        isOpen={isOpenUserPlantCreateModal}
-        create
-        title={'내식물 생성'}
-        handleModalClose={() => setIsOpenUserPlantCreateModal(false)}
-      />
-      <UserPlantModal
-        isOpen={isOpenUserPlantUpdateModal}
-        update
-        userPlantId={userPlantId}
-        userPlantNickname={userPlantNickname}
-        title={'내식물 정보 수정'}
-        handleModalClose={() => setIsOpenUserPlantUpdateModal(false)}
-      />
-      <AppModal
-        isOpen={isOpenUserPlantDeleteModal}
-        title='내 식물 삭제'
-        handleModalClose={() => setIsOpenUserPlantDeleteModal(false)}
-        handleModalConfirm={handleUserPlantDelete}
-      />
-
       {/* FIXME: 만약 내키식을 생성하지 않았다면 해당 모달이 뜨지않고 다른 알람 모달이 뜨도록 */}
       <DiarySetModal
         isOpen={isOpenDiarySetCreateModal}
@@ -528,63 +326,13 @@ export default function FeedDetail() {
         <h1 className='main'>프로필</h1>
 
         <div className={`${styles.wrap}`}>
-          <div className={`${styles.content}`}>
+          <div className={`${styles.content} space-y-5`}>
             <UserFeedProfile />
+            <UserFeedPlant nickname={nickname} />
           </div>
         </div>
 
-        {/* 프로필 라인 */}
-        {/* <div>
-          <input type='file' accept='image/*' hidden className='profileImageInput' {...register('uploadProfileImage')} />
-          <div className='flex space-x-3'>
-            <div onClick={handleImageExploerOpen}>
-              {userProfileImagePath ? (
-                (
-                  <Image
-                    src={userProfileImagePath}
-                    alt='사용자 프로필 이미지'
-                    width={90}
-                    height={90}
-                    className='rounded-full bg-cover'
-                    onClick={handleProfileImageUpdate}
-                    priority
-                  />
-                ) || <Skeleton width={90} height={90} circle />
-              ) : (
-                <Image src='/images/noProfile.png' alt='사용자 프로필 이미지' width={90} height={90} className='rounded-full bg-cover' priority />
-              )}
-            </div>
-
-            <div>
-              <div className='flex'>
-                <div>{userProfile?.nickname}</div>
-                {isSameUser ? (
-                  <Link href='/user/settings'>
-                    <span className='material-symbols-outlined'>edit</span>
-                  </Link>
-                ) : null}
-              </div>
-              <div>{userProfile?.introduction}</div>
-              <div>
-                {userProfile?.isFollowed ? (
-                  <button className='bg-blue-500 rounded' onClick={handleFollowDelete}>
-                    팔로우중
-                  </button>
-                ) : (
-                  <button className='bg-blue-500 rounded' onClick={handleFollowUpdate}>
-                    팔로우하기
-                  </button>
-                )}
-              </div>
-            </div>
-            <div>
-              <div>팔로워 {userProfile?.followerCount}</div>
-              <div>팔로잉 {userProfile?.followingCount}</div>
-            </div>
-          </div>
-        </div> */}
-
-        {/* 내키식 라인 */}
+        {/* 내키식 라인
         <div className='space-y-2 '>
           <h1>내키식 라인</h1>
           <button className='rounded bg-blue-500' onClick={() => setIsOpenUserPlantCreateModal(true)}>
@@ -626,7 +374,7 @@ export default function FeedDetail() {
           ) : (
             <div>아직 생성하지않았음</div>
           )}
-        </div>
+        </div> */}
 
         {/* 관찰일지 라인 */}
         <div>

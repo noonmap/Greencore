@@ -174,3 +174,8 @@ h1 {
 .light {
   color: var(--light-color);
 }
+
+.label {
+  color: var(--main-color);
+  font-weight: var(--text-bold);
+}
