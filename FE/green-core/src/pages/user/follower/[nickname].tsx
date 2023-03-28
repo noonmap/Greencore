@@ -1,34 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import AppLayout from '@/layout/AppLayout';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '@/core/hooks';
-import { getFollowerList, getFollowingList } from '@/core/follow/followAPI';
-import Image from 'next/image';
-import { getProfile } from '@/core/user/userAPI';
-import { ProfileType } from '@/core/user/userType';
+import { getFollowerList } from '@/core/follow/followAPI';
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
 import Skeleton from 'react-loading-skeleton';
-import axios, { Axios } from 'axios';
-import http from '@/lib/http';
 
 import FollowLayout from '@/layout/FollowLayout';
+import AppButton from '@/components/button/AppButton';
 
-export default function follow() {
+export default function follower() {
   const router = useRouter();
   const storage = getStorage();
 
   const { nickname } = router.query;
-  const { nickname: myNickname } = useAppSelector((state) => state.common.userInfo);
-
-  const [isFollowing, setisFollowing] = useState(false);
-
-  const [followingList, setFollowingList] = useState([]);
   const [followerList, setFollowerList] = useState([]);
-
   const [userProfileList, setUserProfileList] = useState({});
-
   const [isLoading, setIsLoading] = useState(false);
 
   // ------------------------ 인피니티 스크롤 변수 -----------------------
@@ -38,35 +27,36 @@ export default function follow() {
   const [target, setTarget] = useState(null); // 관찰 대상 target
   const [isLoaded, setIsLoaded] = useState(true); // 데이터 로딩 상태
   // -------------------------------------------------------------------
-  // 타겟 설정
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    fetchFollowerList();
+    return () => {};
+  }, [nickname]);
+
+  // 무한 스크롤 타켓 설정
   useEffect(() => {
     let observer;
     if (target && !isStoped) {
       setTimeout(() => {
-        observer = new IntersectionObserver(onIntersect, {
-          threshold: 1, // 배열의 요소가 100% 보여질때마다 콜백을 실행
-        });
+        // 배열의 요소가 100% 보여질때마다 콜백을 실행
+        observer = new IntersectionObserver(onIntersect, { threshold: 1 });
         observer.observe(target);
       }, 100);
     }
     return () => observer && observer.disconnect();
   }, [target, isLoaded]);
 
-  // 타겟을 만났을 때 실행하는 로직
+  /** 타겟을 만났을 때 실행하는 로직 */
   const onIntersect = async ([entry]: any, observer: any) => {
     if (entry.isIntersecting && !isLoaded) {
       observer.unobserve(entry.target); // 관찰 멈춤
-      getMoreItem(); // isLoaded를 바꿈
+      setIsLoaded(true); // isLoaded를 바꿈
       observer.observe(entry.target); // 관찰 재시작
     }
   };
 
-  // 추가 데이터 요청
-  const getMoreItem = () => {
-    setIsLoaded(true);
-  };
-
-  // isLoaded 가 변할 때 실행
+  /** isLoaded 가 변할 때 실행 */
   useEffect(() => {
     if (isLoaded && page !== 0) {
       fetchFollowerList();
@@ -74,7 +64,7 @@ export default function follow() {
     return () => {};
   }, [isLoaded]);
 
-  // --------------------------------------------------------------------------
+  /** 사용자 프로필 이미지 가져오는 함수 */
   function getUserProfile(nickname) {
     const profileRef = ref(storage, `${nickname}/profileImage`);
 
@@ -89,21 +79,7 @@ export default function follow() {
       });
   }
 
-  // async function fetchFollowingList() {
-  //   try {
-  //     const { data } = await getFollowingList(nickname, params);
-
-  //     for (let i = 0; i < data.length; i++) {
-  //       getUserProfile(data[i].nickname);
-  //       if (i == data.length - 1) setIsLoading(true);
-  //     }
-
-  //     setFollowingList(data);
-  //   } catch (error) {
-  //     // console.error(error);
-  //   }
-  // }
-
+  /** 팔로잉 목록 가져오는 함수 */
   async function fetchFollowerList() {
     try {
       const params = {
@@ -130,16 +106,7 @@ export default function follow() {
     }
   }
 
-  async function handleSetUserProfile() {
-    const res = await fetch('/images/noProfile.png');
-    const blob = await res.blob();
-    const file = new File([blob], 'noProfile', { type: 'image/png' });
-
-    const profileRef = ref(storage, `${nickname}/profileImage`);
-
-    uploadBytes(profileRef, file, { contentType: 'image/png' }).then(() => {});
-  }
-
+  /** 팔로우 하는 함수 */
   async function handleFollowUpdate(e, nickname) {
     try {
       const { data } = await updateFollow(nickname);
@@ -148,6 +115,8 @@ export default function follow() {
       console.error(error);
     }
   }
+
+  /** 언팔로우 함수 */
   async function handleFollowDelete(e, nickname) {
     try {
       const { data } = await deleteFollow(nickname);
@@ -157,51 +126,98 @@ export default function follow() {
     }
   }
 
-  useEffect(() => {
-    if (!router.isReady) return;
-    console.log(nickname);
-
-    // fetchFollowingList();
-    fetchFollowerList();
-
-    return () => {};
-  }, [nickname]);
+  function handleFollowerDelete() {}
 
   return (
     <FollowLayout>
-      <div>
-        {isLoading ? (
-          <>
-            {followerList.map((f) => (
-              <div key={f.nickname} className='flex space-x-2'>
-                {userProfileList[f.nickname] ? (
-                  <Image
-                    src={userProfileList[f.nickname]}
-                    alt='사용자 프로필 이미지'
-                    width={90}
-                    height={90}
-                    className='rounded-full bg-cover'
-                    priority
-                  />
-                ) : (
-                  <Skeleton width={90} height={90} circle />
-                )}
+      <div className='w-full flex justify-center items-center py-10'>
+        <div className='space-y-5 divide-y divide-slate-200'>
+          {isLoading ? (
+            <>
+              {followerList.map((f) => (
+                <div key={f.nickname} className='flex pt-4 space-x-2 items-center justify-between'>
+                  {userProfileList[f.nickname] ? (
+                    <Link href={`/user/feed/${f.nickname}`}>
+                      <Image
+                        src={userProfileList[f.nickname]}
+                        alt='사용자 프로필 이미지'
+                        width={60}
+                        height={60}
+                        className='rounded-full bg-cover'
+                        priority
+                      />
+                    </Link>
+                  ) : (
+                    <Skeleton width={60} height={60} circle />
+                  )}
 
-                <Link href={`/user/feed/${f.nickname}`}>{f.nickname}</Link>
+                  <div className='flex flex-col'>
+                    {f.nickname ? <Link href={`/user/feed/${f.nickname}`}>{f.nickname}</Link> : <Skeleton width={50} />}
+                    {f.introduction ? <div className='w-80 introduction'>{f.introduction}</div> : <Skeleton width={150} />}
+                  </div>
 
-                <div>{f.introduction}</div>
+                  <div className='flex space-x-2 items-center'>
+                    {f.isFollowed ? (
+                      <AppButton
+                        text='언팔로우'
+                        className='hover:bg-red-100'
+                        bgColor='thin'
+                        size='small'
+                        handleClick={(e) => handleFollowDelete(e, f.nickname)}
+                      />
+                    ) : (
+                      <AppButton text='팔로우 하기' size='small' handleClick={(e) => handleFollowUpdate(e, f.nickname)} />
+                    )}
 
-                {f.isFollowed ? (
-                  <button onClick={(e) => handleFollowDelete(e, f.nickname)}>팔로우중</button>
-                ) : (
-                  <button onClick={(e) => handleFollowUpdate(e, f.nickname)}>팔로우 하기</button>
-                )}
-              </div>
-            ))}
-            <div ref={setTarget} />
-          </>
-        ) : null}
+                    <span className='material-symbols-outlined cursor-pointer close' onClick={handleFollowerDelete}>
+                      close
+                    </span>
+                  </div>
+                </div>
+              ))}
+              <div ref={setTarget} />
+            </>
+          ) : null}
+        </div>
       </div>
+
+      <div>더보기?</div>
     </FollowLayout>
+
+    // <FollowLayout>
+    //   <div>
+    //     {isLoading ? (
+    //       <>
+    //         {followerList.map((f) => (
+    //           <div key={f.nickname} className='flex space-x-2'>
+    //             {userProfileList[f.nickname] ? (
+    //               <Image
+    //                 src={userProfileList[f.nickname]}
+    //                 alt='사용자 프로필 이미지'
+    //                 width={90}
+    //                 height={90}
+    //                 className='rounded-full bg-cover'
+    //                 priority
+    //               />
+    //             ) : (
+    //               <Skeleton width={90} height={90} circle />
+    //             )}
+
+    //             <Link href={`/user/feed/${f.nickname}`}>{f.nickname}</Link>
+
+    //             <div>{f.introduction}</div>
+
+    //             {f.isFollowed ? (
+    //               <button onClick={(e) => handleFollowDelete(e, f.nickname)}>팔로우중</button>
+    //             ) : (
+    //               <button onClick={(e) => handleFollowUpdate(e, f.nickname)}>팔로우 하기</button>
+    //             )}
+    //           </div>
+    //         ))}
+    //         <div ref={setTarget} />
+    //       </>
+    //     ) : null}
+    //   </div>
+    // </FollowLayout>
   );
 }
