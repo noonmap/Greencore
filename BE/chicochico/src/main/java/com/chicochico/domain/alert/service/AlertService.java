@@ -10,8 +10,8 @@ import com.chicochico.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static com.chicochico.exception.ErrorCode.ACCESS_TOKEN_NOT_FOUND;
@@ -47,6 +47,7 @@ public class AlertService {
 	 *
 	 * @param alertId
 	 */
+	@Transactional
 	public void deleteAlert(Long alertId) {
 		AlertEntity alert = alertRepository.findById(alertId).orElseThrow(() -> new CustomException(ALERT_NOT_FOUND));
 		alertRepository.delete(alert);

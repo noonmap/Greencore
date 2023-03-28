@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class DiaryService {
 	 * @param diarySetId
 	 * @param diaryRequestDto
 	 */
+	@Transactional
 	public void createDiary(Long diarySetId, DiaryRequestDto diaryRequestDto) {
 		// 관찰 일지 조회
 		DiarySetEntity diarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
@@ -114,6 +116,7 @@ public class DiaryService {
 	 * @param diaryId
 	 * @param diaryRequestDto
 	 */
+	@Transactional
 	public void modifyDiary(Long diaryId, DiaryRequestDto diaryRequestDto) {
 		// 기존 일지 조회
 		DiaryEntity originDiary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
@@ -158,6 +161,7 @@ public class DiaryService {
 	 *
 	 * @param diaryId
 	 */
+	@Transactional
 	public void deleteDiary(Long diaryId) {
 		// 관찰 일지 조회
 		DiaryEntity diary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
