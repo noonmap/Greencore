@@ -35,8 +35,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://blog.kakaocdn.net/dn/lpYCZ/btrzwex57Ty/08c2P9aZ1iSUawi5wag1Pk/img.png', // 포스트엔 없을수도
             likeCount: 1,
             isLiked: true,
-            craetedAt: '2023-03-13T13:00:00',
+            createdAt: '2023-03-13T13:00:00',
             commentCount: 1,
+            diarySetTitle: '관찰일지 Title',
+            growingDay: 100,
           },
           {
             user: {
@@ -54,7 +56,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://blog.kakaocdn.net/dn/lpYCZ/btrzwex57Ty/08c2P9aZ1iSUawi5wag1Pk/img.png', // 포스트엔 없을수도
             likeCount: 1,
             isLiked: false,
-            craetedAt: '2023-03-13T13:00:00',
+            createdAt: '2023-03-13T13:00:00',
             commentCount: 1,
           },
         ],

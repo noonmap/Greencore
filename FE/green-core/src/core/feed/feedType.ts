@@ -21,8 +21,8 @@ export type FeedType = {
   isLiked: boolean;
   createdAt: string;
   commentCount: number;
-  diarySetTitle: string;
-  growingDay: number;
+  diarySetTitle?: string;
+  growingDay?: number;
 };
 
 export type TagFeedType = {
