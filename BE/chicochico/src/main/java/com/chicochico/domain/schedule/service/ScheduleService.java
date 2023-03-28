@@ -274,7 +274,6 @@ public class ScheduleService {
 	 *
 	 * @param date
 	 */
-	@Transactional
 	public void createRegularSchedule(LocalDate date) {
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();
