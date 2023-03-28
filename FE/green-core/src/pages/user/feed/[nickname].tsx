@@ -13,7 +13,7 @@ export default function FeedDetail() {
 
   return (
     <AppLayout>
-      <div className='space-y-2 px-3 py-5'>
+      <div className='space-y-2 px-10 py-5'>
         {/* 타이틀 */}
         <h1 className='main'>프로필</h1>
 

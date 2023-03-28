@@ -1,0 +1,10 @@
+.modalTitleList {
+  display: flex;
+  justify-content: space-evenly;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modalContentSub {
+  height: 50vh;
+  overflow-y: scroll;
+}

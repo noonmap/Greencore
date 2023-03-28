@@ -65,7 +65,7 @@ export default function ScheduleListItem({ item, check, handleReload }: PropsTyp
         {check ? (
           isCompleted ? (
             <>
-              <div className={`${styles.text} ${styles.done}`}>{item.content}</div>
+              <div className={`${styles.text}`}>{item.content}</div>
               <FontAwesomeIcon icon={faCheck} color='#4FC577' className={`${styles.check}`} onClick={() => cancelToDo(item.scheduleId)} />
             </>
           ) : (

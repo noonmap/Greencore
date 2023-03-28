@@ -1,0 +1,26 @@
+.label {
+  margin-top: 1.5rem;
+}
+
+.selectBox {
+  box-shadow: var(--box-shadow);
+}
+
+.btn {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.inputBox {
+  box-shadow: var(--box-shadow);
+}
+
+.inputError {
+  &:focus {
+    border: 1px solid var(--like-color);
+
+    &::placeholder {
+      color: var(--light-color);
+    }
+  }
+}
