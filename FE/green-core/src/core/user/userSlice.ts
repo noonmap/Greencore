@@ -69,6 +69,8 @@ const userSlice = createSlice({
           state.accessToken = action.payload?.accessToken;
         }
       })
+      // .addCase(userAPI.getProfile.pending, (state) => {})
+      // .addCase(userAPI.getProfile.fulfilled, (state) => {})
       .addCase(userAPI.deleteUser.fulfilled, (state) => {
         state.isAuthenticated = false;
         state.accessToken = null;

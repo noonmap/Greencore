@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { searchByPlantNameAndUser } from '@/core/plant/plantAPI';
 import { createUserPlant, updateUserPlant } from '@/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
+import AppButton from '../button/AppButton';
 
 type PropsType = {
   isOpen: boolean;
@@ -44,8 +45,6 @@ export default function UserPlantModal({
 
     plantList.forEach((p) => {
       if (p.plantName == searchPlant) {
-        console.log('hihi:', p);
-        console.log(p.plantId);
         setPlantId(p.plantId);
       }
     });
@@ -95,52 +94,64 @@ export default function UserPlantModal({
   }, [userPlantNickname, plantId]);
 
   return (
-    <>
+    <div className='absolute top-0 left-0'>
       {isOpen ? (
         <div className='modalContainer'>
           <div className='modalWrap' ref={modalRef}>
             {/* 모달 내부 */}
-            <div onClick={() => handleModalClose()}>X</div>
+            <div className='relative'>
+              <span className='modalClose material-symbols-outlined' onClick={() => handleModalClose()}>
+                close
+              </span>
+            </div>
 
             {/* 모달 컨텐츠 */}
-            <div className='modalContent'>
-              <div>{title}</div>
+            <div className='modalContent flex justify-between'>
+              <div className='modalTitle mb-5'>{title}</div>
 
               {create ? (
-                <div>
-                  <input
-                    type='text'
-                    className='border-2 border-slate-200'
-                    placeholder='식물 검색'
-                    onChange={(e) => searchByPlantName(e.target.value)}
-                  />
-                  <div>
-                    {plantList.map((plant) => (
-                      <div key={plant.plantId}>
-                        {plantId}
-                        {JSON.stringify(plant)}
-                      </div>
-                    ))}
+                <div className='flex flex-col space-y-2'>
+                  <div className='flex flex-col space-y-2'>
+                    <label className='label'>식물 검색</label>
+                    <input
+                      type='text'
+                      className='border-2 border-slate-200'
+                      placeholder='식물 검색'
+                      onChange={(e) => searchByPlantName(e.target.value)}
+                    />
+                    <div>
+                      {plantList.map((plant) => (
+                        <div key={plant.plantId}>
+                          {plantId}
+                          {JSON.stringify(plant)}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <input type='text' className='border-2 border-slate-200' placeholder='식물 별명 짓기' {...register('plantNickname')} />
+
+                  <div className='flex flex-col space-y-2'>
+                    <label className='label'>식물 별명</label>
+                    <input type='text' className='border-2 border-slate-200' placeholder='식물 별명 짓기' {...register('plantNickname')} />
+                  </div>
                 </div>
               ) : null}
 
               {update ? (
-                <div>
+                <div className='flex flex-col space-y-2'>
+                  <label className='label'>식물 별명</label>
                   <input type='text' className='border-2 border-slate-200' placeholder='식물 별명 짓기' {...register('plantNickname')} />
                 </div>
               ) : null}
 
-              <div className='flex'>
-                <button onClick={() => handleModalClose()}>취소</button>
-                {create ? <button onClick={handleUserPlantCreate}>확인</button> : null}
-                {update ? <button onClick={handleUserPlantNicknameUpdate}>확인</button> : null}
+              <div className='flex mt-20 space-x-2'>
+                <AppButton text='취소' bgColor='thin' className='w-full' handleClick={handleModalClose} />
+                {create ? <AppButton text='확인' className='w-full' handleClick={handleUserPlantCreate} /> : null}
+                {update ? <AppButton text='확인' className='w-full' handleClick={handleUserPlantNicknameUpdate} /> : null}
               </div>
             </div>
           </div>
         </div>
       ) : null}
-    </>
+    </div>
   );
 }

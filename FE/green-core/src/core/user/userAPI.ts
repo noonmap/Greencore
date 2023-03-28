@@ -19,13 +19,23 @@ export const signUp = async (payload: SignUpDataType) => {
   try {
     const { data } = await http.post('/user', payload);
 
-    Toastify({
-      text: message.SignUpSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+    if (data.result == 'SUCCESS') {
+      Toastify({
+        text: message.SignUpSuccess,
+        duration: 1500,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+    } else {
+      Toastify({
+        text: message.SignUpFail,
+        duration: 1500,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
 
     return data;
   } catch (err) {
@@ -186,6 +196,7 @@ export const deleteUser = createAsyncThunk('deleteUser', async () => {
 export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
   try {
     const res = await http.post('/login', payload);
+    console.log('hihi:', res);
     const nickname = res.data.data.nickname;
     const profileImagePath = res.data.data.profileImagePath;
     console.log('login data: ', res);
@@ -366,7 +377,6 @@ export const updatePassword = async (payload: PasswordType) => {
  */
 export const getProfile = async (nickname: string | string[]) => {
   try {
-    // const headers = { authorization: accessToken };
     const { data } = await http.get(`/profile/${nickname}`);
     return data;
   } catch (error) {
