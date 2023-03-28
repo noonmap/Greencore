@@ -81,10 +81,22 @@ export default function AppHeader() {
             <div className={`${styles.navContainer} flex flex-col space-y-7`}>
               {nickname ? (
                 <>
-                  <Link href='/'>Home</Link>
-                  <Link href='/'>식물 검색</Link>
-                  <Link href='/schedule'>식물 스케줄링</Link>
-                  <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
+                  <div className='flex items-center space-x-1'>
+                    <span className='material-symbols-outlined'>home</span>
+                    <Link href='/'>Home</Link>
+                  </div>
+                  <div className='flex items-center space-x-1'>
+                    <span className='material-symbols-outlined'>search</span>
+                    <Link href='/'>식물 검색</Link>
+                  </div>
+                  <div className='flex items-center space-x-1'>
+                    <span className='material-symbols-outlined'>calendar_month</span>
+                    <Link href='/schedule'>식물 스케줄링</Link>
+                  </div>
+                  <div className='flex items-center space-x-1'>
+                    <span className='material-symbols-outlined'>person_add</span>
+                    <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
+                  </div>
                   <Link href={`/user/alert/${nickname}`}>알림</Link>
                   <Link href='/user/settings/password'>설정</Link>
                 </>
