@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import { getFeedList, getFollowFeedList, getTagFeedList, getTagFeedListMore } from '@/core/feed/feedAPI';
+import { getFeedList, getFollowFeedList } from '@/core/feed/feedAPI';
 import { initFeedList } from '@/core/feed/feedSlice';
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import FeedListItem from '@/components/FeedListItem';
-import SearchComponent from '@/components/SearchComponent';
 import styles from '@/styles/Home.module.scss';
 
 export default function feed() {
@@ -32,8 +32,14 @@ export default function feed() {
   const [inputData, setInputData] = useState<string>(''); // 데이터 로딩 상태
   // let inputData: string = '';
 
+  // searchState 변경
+  function changeSearchState() {
+    dispatch(SET_IS_SEARCH_STATE('home'));
+  }
+
   // 초기 웹 훅
   useEffect(() => {
+    changeSearchState();
     // feedList 초기화 하기
     dispatch(initFeedList());
     setIsLoaded(true);

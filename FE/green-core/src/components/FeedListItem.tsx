@@ -89,7 +89,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
   }
 
   function goDetail() {
-    if (feed.feedCode === 'DIARY') {
+    if (feed.feedCode === 'FEED_DIARY') {
       router.push(`/diary/${feed.feedId}`);
     } else {
       router.push(`/post/${feed.feedId}`);
