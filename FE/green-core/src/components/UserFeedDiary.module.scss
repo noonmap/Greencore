@@ -1,0 +1,33 @@
+.wrap {
+}
+
+.content {
+}
+
+.img {
+  width: 150px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+
+  transition: all 0.15s var(--timing-func);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.card {
+  background: linear-gradient(to top, rgb(0, 0, 0), transparent 100%);
+  color: #fff;
+  width: 150px;
+  height: 60px;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  padding: var(--padding-input);
+  font-size: 0.85rem;
+  line-height: 35px;
+}
+
+.popUp {
+  top: -90px;
+  right: 10px;
+}

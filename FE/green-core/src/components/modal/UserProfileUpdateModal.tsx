@@ -55,8 +55,8 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
   /** 사용자 정보 세팅하는 함수 (nickname, introduction) */
   function setUserProfile() {
     try {
-      setValue('nickname', userProfile.nickname);
-      setValue('introduction', userProfile.introduction);
+      setValue('nickname', userProfile?.nickname);
+      setValue('introduction', userProfile?.introduction);
     } catch (error) {
       console.error(error);
     }

@@ -40,7 +40,7 @@ const commonSlice = createSlice({
         state.userInfo = null;
       })
       .addCase(logIn.fulfilled, (state, action) => {
-        state.userInfo = action.payload.userInfo;
+        state.userInfo = action.payload?.userInfo;
       })
       .addCase(logOut.fulfilled, (state) => {
         state.userInfo = null;
