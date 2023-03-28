@@ -44,6 +44,16 @@ public class LoginController {
 	}
 
 
+	@PostMapping("/login/kakao")
+	@ApiOperation(value = "카카오로 로그인합니다. (firebase)", notes = "")
+	public ResponseEntity<ResultDto<ProfileSimpleResponseDto>> kakaoLogin(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response) {
+		log.info("[kakaoLogin] Controller 들어옴");
+		ProfileSimpleResponseDto profileSimpleResponseDto = loginService.kakaoLogin(loginRequestHeader, response);
+
+		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDto));
+	}
+
+
 	@PostMapping("/refresh")
 	@ApiOperation(value = "엑세스 토큰을 재발급합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response) {

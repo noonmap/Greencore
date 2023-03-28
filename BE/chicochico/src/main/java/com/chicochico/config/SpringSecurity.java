@@ -2,7 +2,9 @@ package com.chicochico.config;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
+import com.chicochico.common.service.KakaoRestApiHelper;
 import com.chicochico.domain.user.service.CustomUserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -29,10 +31,10 @@ public class SpringSecurity {
 	private final AuthTokenProvider tokenProvider;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final JwtExceptionFilter jwtExceptionFilter;
-
 	private final FirebaseAuth firebaseAuth;
-
 	private final CustomUserDetailsService userDetailsService;
+	private final KakaoRestApiHelper kakaoRestApiHelper;
+	private final ObjectMapper objectMapper;
 
 
 	@Bean
@@ -83,7 +85,7 @@ public class SpringSecurity {
 
 			// JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate, jwtExceptionFilter, firebaseAuth, userDetailsService));
+			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate, jwtExceptionFilter, firebaseAuth, userDetailsService, kakaoRestApiHelper, objectMapper));
 
 		http
 			.logout()
