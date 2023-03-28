@@ -17,8 +17,13 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
   if (isAuthenticated) {
     return (
       <>
-        <AppHeader />
-        <main>{home ? <>{children}</> : <>{children}</>}</main>
+        <div className=' flex md:gap-5'>
+          <AppHeader />
+          <div className={`overflow-auto mx-auto xl:ml-56 ml-20 flex flex-1`}>
+            <main>{home ? <>{children}</> : <>{children}</>}</main>
+            <AppSearch />
+          </div>
+        </div>
       </>
     );
   }

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // firebase
 import firebaseConfig from '~/config/firebaseConfig.json';
@@ -11,6 +11,7 @@ interface CommonState {
   firebase: any;
   isLoading: boolean;
   userInfo: UserInfoType;
+  searchState: string;
 }
 
 const firebase = initializeApp(firebaseConfig);
@@ -19,6 +20,7 @@ const initialState: CommonState = {
   firebase: firebase,
   isLoading: false,
   userInfo: null,
+  searchState: 'home',
 };
 
 const commonSlice = createSlice({
@@ -31,6 +33,9 @@ const commonSlice = createSlice({
     },
     SET_IS_LOADING_FALSE: (state) => {
       state.isLoading = false;
+    },
+    SET_IS_SEARCH_STATE: (state, action: PayloadAction<string>) => {
+      state.searchState = action.payload;
     },
   },
 
@@ -51,6 +56,6 @@ const commonSlice = createSlice({
   },
 });
 
-export const { SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE } = commonSlice.actions;
+export const { SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, SET_IS_SEARCH_STATE } = commonSlice.actions;
 
 export default commonSlice.reducer;
