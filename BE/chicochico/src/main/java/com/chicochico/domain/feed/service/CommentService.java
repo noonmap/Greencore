@@ -91,6 +91,7 @@ public class CommentService {
 	 * @param feedId
 	 * @param commentRequestDto
 	 */
+	@Transactional
 	public void createComment(Long feedId, CommentRequestDto commentRequestDto) {
 		//피드 찾기
 		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
@@ -122,6 +123,7 @@ public class CommentService {
 	 * @param commentId
 	 * @param commentRequestDto
 	 */
+	@Transactional
 	public void modifyComment(Long commentId, CommentRequestDto commentRequestDto) {
 
 		//댓글 찾기

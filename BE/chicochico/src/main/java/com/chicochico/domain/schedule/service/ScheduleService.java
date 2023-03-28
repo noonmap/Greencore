@@ -17,8 +17,8 @@ import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -86,6 +86,7 @@ public class ScheduleService {
 	 *
 	 * @param scheduleRequestDto
 	 */
+	@Transactional
 	public void createSchedule(ScheduleRequestDto scheduleRequestDto) {
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();
@@ -104,6 +105,7 @@ public class ScheduleService {
 	 * @param scheduleId
 	 * @param scheduleRequestDto
 	 */
+	@Transactional
 	public void modifySchedule(Long scheduleId, ScheduleRequestDto scheduleRequestDto) {
 		ScheduleEntity scheduleEntity = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 로그인 돼있는 사용자
@@ -138,6 +140,7 @@ public class ScheduleService {
 	 *
 	 * @param scheduleId
 	 */
+	@Transactional
 	public void deleteSchedule(Long scheduleId) {
 		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 로그인 돼있는 사용자
@@ -161,6 +164,7 @@ public class ScheduleService {
 	 *
 	 * @param scheduleId
 	 */
+	@Transactional
 	public void completeSchedule(Long scheduleId) {
 		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 로그인 돼있는 사용자
@@ -185,6 +189,7 @@ public class ScheduleService {
 	 *
 	 * @param scheduleId
 	 */
+	@Transactional
 	public void incompleteSchedule(Long scheduleId) {
 		ScheduleEntity schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 		//현재 로그인 돼있는 사용자
@@ -209,6 +214,7 @@ public class ScheduleService {
 	 *
 	 * @param scheduleRequestDto
 	 */
+	@Transactional
 	public void createWeeklySchedule(ScheduleRequestDto scheduleRequestDto) {
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();
@@ -238,6 +244,7 @@ public class ScheduleService {
 	 *
 	 * @param scheduleRequestDto
 	 */
+	@Transactional
 	public void createMonthlySchedule(ScheduleRequestDto scheduleRequestDto) {
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();
@@ -309,6 +316,7 @@ public class ScheduleService {
 	 * @param user
 	 * @param lastDate           다음달 1일
 	 */
+	@Transactional
 	public void createMonthlySchedule(ScheduleRequestDto scheduleRequestDto, UserEntity user, RegularScheduleEntity regularSchedule, LocalDate lastDate) {
 		//마지막으로 생성된 정기일정 날짜
 		LocalDate dateSt = regularSchedule.getLastDate();
@@ -354,12 +362,13 @@ public class ScheduleService {
 
 
 	/**
-	 * 주간 정기 일정을 등록합니다. (처음 생성)
+	 * 주간 정기 일정을 등록합니다.
 	 *
 	 * @param scheduleRequestDto
 	 * @param user
 	 * @param regularSchedule
 	 */
+	@Transactional
 	public void createWeeklySchedule(ScheduleRequestDto scheduleRequestDto, UserEntity user, RegularScheduleEntity regularSchedule, LocalDate lastDate) {
 		//월 화 수 목 금 토 일 : 1 2 3 4 5 6 7
 
@@ -400,6 +409,7 @@ public class ScheduleService {
 	 * @param regularId
 	 * @param scheduleRequestDto
 	 */
+	@Transactional
 	public void modifyRegularSchedule(Long regularId, ScheduleRequestDto scheduleRequestDto) {
 		//오늘
 		LocalDate date = LocalDate.now();
@@ -443,6 +453,7 @@ public class ScheduleService {
 	 *
 	 * @param regularId
 	 */
+	@Transactional
 	public void deleteRegularSchedule(Long regularId) {
 		//정기 일정에 속한 일정을 현재 이후로 삭제
 		deleteSchedulesOfRegularSchedule(regularId);
@@ -457,6 +468,7 @@ public class ScheduleService {
 	 *
 	 * @param regularId
 	 */
+	@Transactional
 	public void deleteSchedulesOfRegularSchedule(Long regularId) {
 		//오늘
 		LocalDate date = LocalDate.now();
@@ -498,11 +510,17 @@ public class ScheduleService {
 	 *
 	 * @param userPlant
 	 */
+	@Transactional
 	public void deleteAllSchedulesByUserPlant(UserPlantEntity userPlant) {
 		scheduleRepository.deleteAllByUserPlantAndDateAfter(userPlant, LocalDate.now());
 	}
 
 
+	/**
+	 * 사용자가 등록한 정기 일정 목록을 반환
+	 *
+	 * @return
+	 */
 	public List<RegularScheduleEntity> getRegularScheduleList() {
 		//현재 로그인 돼있는 사용자
 		Long userId = authService.getUserId();

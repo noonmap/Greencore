@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS `comment`;
 DROP TABLE IF EXISTS `diary`;
 DROP TABLE IF EXISTS `diary_set`;
 DROP TABLE IF EXISTS `schedule`;
+DROP TABLE IF EXISTS `regular_schedule`;
 DROP TABLE IF EXISTS `user_plant`;
 DROP TABLE IF EXISTS `post`;
 DROP TABLE IF EXISTS `feed`;
@@ -213,20 +214,38 @@ CREATE TABLE `feed_like` (
   CONSTRAINT `FKgurobtyio3jh1vn4n8tmqt842` FOREIGN KEY (`feed_id`) REFERENCES `feed` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE `regular_schedule` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `content` varchar(255) DEFAULT NULL,
+  `day` int NOT NULL,
+  `last_date` date DEFAULT NULL,
+  `regular_schedule_code` varchar(255) NOT NULL,
+  `schedule_code` varchar(255) NOT NULL,
+  `user_id` bigint NOT NULL,
+  `user_plant_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKmvs8icxlwui4t0x5lli000sxv` (`user_id`),
+  KEY `FKjilddqlnyy057wjttxi0554j1` (`user_plant_id`),
+  CONSTRAINT `FKjilddqlnyy057wjttxi0554j1` FOREIGN KEY (`user_plant_id`) REFERENCES `user_plant` (`id`),
+  CONSTRAINT `FKmvs8icxlwui4t0x5lli000sxv` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE `schedule` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `content` varchar(255) DEFAULT NULL,
-  `date` date NOT NULL,
+  `date` date DEFAULT NULL,
   `is_completed` varchar(255) NOT NULL,
-  `is_deleted` varchar(255) NOT NULL,
   `schedule_code` varchar(255) NOT NULL,
+  `regular_id` bigint DEFAULT NULL,
   `user_id` bigint NOT NULL,
   `user_plant_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `FKius7ypb7gfagfw8ng1hj4nyaj` (`regular_id`),
   KEY `FKruqlgul0dhbr1uvpfkb6rjxya` (`user_id`),
   KEY `FKm20ak9xp1tsvdpi88lpd3cy6e` (`user_plant_id`),
+  CONSTRAINT `FKius7ypb7gfagfw8ng1hj4nyaj` FOREIGN KEY (`regular_id`) REFERENCES `regular_schedule` (`id`),
   CONSTRAINT `FKm20ak9xp1tsvdpi88lpd3cy6e` FOREIGN KEY (`user_plant_id`) REFERENCES `user_plant` (`id`),
   CONSTRAINT `FKruqlgul0dhbr1uvpfkb6rjxya` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

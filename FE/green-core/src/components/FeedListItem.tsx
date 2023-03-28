@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Skeleton from 'react-loading-skeleton';
 import { FeedType } from '../core/feed/feedType';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
-import Image from 'next/image';
+import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
 import styles from './FeedListItem.module.scss';
 
 export default function FeedListItem(props: { feed: FeedType }) {
@@ -14,6 +14,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
   const [followerCount, setFollowerCount] = useState<number>(feed.user.followerCount);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -25,28 +26,30 @@ export default function FeedListItem(props: { feed: FeedType }) {
     return () => {};
   }, []);
 
-  function handlePostLike() {
+  function handlePostLike(event) {
+    event.stopPropagation();
     createLike(feed.feedId);
     setIsLiked(true);
     setLikeCount(likeCount + 1);
   }
 
-  function handleDeleteLike() {
+  function handleDeleteLike(event) {
+    event.stopPropagation();
     deleteLike(feed.feedId);
     setIsLiked(false);
     setLikeCount(likeCount - 1);
   }
 
-  function handlePostFollow() {
-    // TODO : 팔로우하기
-    // createLike(feed.feedId);
+  function handlePostFollow(event) {
+    event.stopPropagation();
+    updateFollow(feed.user.nickname);
     setIsFollowed(true);
     setFollowerCount(followerCount + 1);
   }
 
-  function handleDeleteFollow() {
-    // TODO : 팔로우 취소하기
-    // deleteLike(feed.feedId);
+  function handleDeleteFollow(event) {
+    event.stopPropagation();
+    deleteFollow(feed.user.nickname);
     setIsFollowed(false);
     setFollowerCount(followerCount - 1);
   }
@@ -80,25 +83,46 @@ export default function FeedListItem(props: { feed: FeedType }) {
     }
   }
 
-  function openEditPopUp() {
+  function openEditPopUp(event) {
+    event.stopPropagation();
     setIsEditOpen(true);
+  }
+
+  function goDetail() {
+    if (feed.feedCode === 'DIARY') {
+      router.push(`/diary/${feed.feedId}`);
+    } else {
+      router.push(`/post/${feed.feedId}`);
+    }
+  }
+
+  function goDiarySet(event) {
+    event.stopPropagation();
+    router.push(`/diaryset/${feed.feedId}`);
+  }
+
+  function goProfile(event) {
+    event.stopPropagation();
+    router.push(`/user/feed/${feed.user.nickname}`);
   }
 
   return (
     <>
-      <div className={`flex border-b border-inherit`}>
+      <div className={`flex border-b border-inherit`} onClick={goDetail}>
         <div className={`flex flex-col`}>
-          {/* 프로필 사진 */}
           <div className={`pt-5 pl-5`}>
+            {/* 프로필 사진 */}
             <div className={`${styles.helpTip} flex `}>
-              {feed.user.profileImagePath ? (
-                <img className='mb-3' src={feed.user.profileImagePath} alt='로고' width='80' height='80'></img>
-              ) : (
-                <Skeleton width={80} height={80} />
-              )}
+              <div onClick={goProfile}>
+                {feed.user.profileImagePath ? (
+                  <img className='mb-3' src={feed.user.profileImagePath} alt='로고' width='80' height='80'></img>
+                ) : (
+                  <Skeleton width={80} height={80} />
+                )}
+              </div>
 
               {/* 프로필 팝업 */}
-              <div className={`flex flex-col div ${styles.userInfo}`}>
+              <div className={`flex flex-col div ${styles.userInfo}`} onClick={goProfile}>
                 <div className={`flex`}>
                   <div className={`flex flex-col justify-center items-center pr-5`}>
                     {feed.user.profileImagePath ? (
@@ -135,7 +159,6 @@ export default function FeedListItem(props: { feed: FeedType }) {
                       팔로우 하기
                     </button>
                   )}
-                  {/* <span>팔로잉 여부 : {feed.user.isFollowed ? <i className='fa-solid fa-heart'></i> : 'false'}</span> */}
                 </div>
               </div>
             </div>
@@ -174,6 +197,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
             <span>{feed.user.nickname}</span>
             {/* 편집창 팝업 */}
             <div>
+              {/* TODO : 작성자만 보이게 */}
               <span className='material-symbols-outlined px-2' onClick={openEditPopUp} style={{ cursor: 'pointer' }}>
                 more_vert
               </span>
@@ -194,40 +218,51 @@ export default function FeedListItem(props: { feed: FeedType }) {
           </div>
           {/* 내용 */}
           <div className={`pl-3`}>{feed.content}</div>
-          {/* 관찰일지인지 여부 조사 */}
-
-          {feed.feedCode === 'FEED_DIARY' ? (
-            <div className={`p-3 mr-5`}>
-              {/* 다이어리일때 사진 */}
-              <div className={`relative`}>
-                <div className={`${styles.imageWarrper}`}>
-                  {feed.imagePath ? <img className={``} src={feed.imagePath} alt='로고' width='100%'></img> : <Skeleton width={400} height={400} />}
-                </div>
-                <div className={`${styles.gradation}`}>
-                  <div className={`p-5 flex justify-between h-full`}>
-                    <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
-                      <p>{feed.diarySetTitle}</p>
-                      <p>day {feed.growingDay}</p>
-                    </div>
-                    <div className={`p-3 flex flex-col text-lg text-white font-bold justify-end h-full `}>
-                      <Link href={`/diaryset/${feed.feedId}`}>
-                        <button className={`rounded-lg`} style={{ backgroundColor: 'var(--main-color)' }}>
+          <div className={`p-3 mr-5`}>
+            {feed.feedCode === 'FEED_DIARY' ? (
+              <>
+                {/* 다이어리일때 사진 */}
+                <div className={`relative`}>
+                  <div className={`${styles.imageWarrper}`}>
+                    {feed.imagePath ? <img className={``} src={feed.imagePath} alt='로고' width='100%'></img> : <Skeleton width={400} height={400} />}
+                  </div>
+                  <div className={`${styles.gradation}`}>
+                    <div className={`p-5 flex justify-between h-full`}>
+                      <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
+                        <p>{feed.diarySetTitle}</p>
+                        <p>day {feed.growingDay}</p>
+                      </div>
+                      <div className={`p-3 flex flex-col text-lg text-white font-bold justify-end h-full `}>
+                        <button className={`rounded-lg`} style={{ backgroundColor: 'var(--main-color)' }} onClick={goDiarySet}>
                           관찰일지 보러가기
                         </button>
-                      </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className={`flex justify-end pt-3`}>{getData(feed.createdAt)}</div>
-            </div>
-          ) : (
-            <>
-              {/* 일지일 때 사진 */}
-              <div>6</div>
-            </>
-          )}
+              </>
+            ) : (
+              <>
+                {/* 일지일 때 사진 */}
+                {feed.imagePath ? (
+                  <>
+                    <div className={`relative`}>
+                      <div className={`${styles.imageWarrper}`}>
+                        {feed.imagePath ? (
+                          <img className={``} src={feed.imagePath} alt='로고' width='100%'></img>
+                        ) : (
+                          <Skeleton width={400} height={400} />
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
+            <div className={`flex justify-end pt-3`}>{getData(feed.createdAt)}</div>
+          </div>
         </div>
       </div>
       {/* <div key={feed.feedId} className={`${styles.feedContainer} bg-green-300`}>
