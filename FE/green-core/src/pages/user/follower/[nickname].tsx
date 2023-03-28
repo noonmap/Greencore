@@ -177,47 +177,11 @@ export default function follower() {
               ))}
               <div ref={setTarget} />
             </>
-          ) : null}
+          ) : (
+            <>로딩중..</>
+          )}
         </div>
       </div>
-
-      <div>더보기?</div>
     </FollowLayout>
-
-    // <FollowLayout>
-    //   <div>
-    //     {isLoading ? (
-    //       <>
-    //         {followerList.map((f) => (
-    //           <div key={f.nickname} className='flex space-x-2'>
-    //             {userProfileList[f.nickname] ? (
-    //               <Image
-    //                 src={userProfileList[f.nickname]}
-    //                 alt='사용자 프로필 이미지'
-    //                 width={90}
-    //                 height={90}
-    //                 className='rounded-full bg-cover'
-    //                 priority
-    //               />
-    //             ) : (
-    //               <Skeleton width={90} height={90} circle />
-    //             )}
-
-    //             <Link href={`/user/feed/${f.nickname}`}>{f.nickname}</Link>
-
-    //             <div>{f.introduction}</div>
-
-    //             {f.isFollowed ? (
-    //               <button onClick={(e) => handleFollowDelete(e, f.nickname)}>팔로우중</button>
-    //             ) : (
-    //               <button onClick={(e) => handleFollowUpdate(e, f.nickname)}>팔로우 하기</button>
-    //             )}
-    //           </div>
-    //         ))}
-    //         <div ref={setTarget} />
-    //       </>
-    //     ) : null}
-    //   </div>
-    // </FollowLayout>
   );
 }

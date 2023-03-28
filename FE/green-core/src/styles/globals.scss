@@ -87,9 +87,9 @@ input[type='checkbox'] {
   padding: 8px;
   cursor: pointer;
   outline: none !important;
-  border: 1px solid #eeeeee;
+  border: 1px solid var(--light-color);
   border-radius: 2px;
-  background: #fbfbfb;
+  background: var(--thin-color);
 }
 
 input[type='checkbox']::before {
@@ -254,6 +254,15 @@ h1 {
 .fill-small {
   font-size: 1rem;
   font-variation-settings: 'FILL' 1;
+}
+
+.like {
+  color: var(--like-color);
+  font-size: 0.3rem;
+}
+.alertLight {
+  color: var(--light-color);
+  font-size: 0.3rem;
 }
 
 .popUp {

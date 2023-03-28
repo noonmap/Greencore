@@ -164,11 +164,11 @@ export default function following() {
               ))}
               <div ref={setTarget} />
             </>
-          ) : null}
+          ) : (
+            <>로딩중..</>
+          )}
         </div>
       </div>
-
-      <div>더보기?</div>
     </FollowLayout>
   );
 }
