@@ -21,17 +21,6 @@ export default function feed() {
 
   const [isSelectRecomment, setIsSelectRecomment] = useState(true);
 
-  // 태그 검색 조회
-  const tagFeedList = useAppSelector((state) => state.feed.tagFeedList);
-  const isStopedAtTag = useAppSelector((state) => state.feed.isStopedAtTag);
-  const pageAtTag = useAppSelector((state) => state.feed.pageAtTag);
-
-  const [sizeAtTag, setSizeAtTag] = useState<number>(10);
-  const [targetAtTag, setTargetAtTag] = useState(null); // 관찰 대상 target
-  const [isLoadedAtTag, setIsLoadedAtTag] = useState(true); // 데이터 로딩 상태
-  const [inputData, setInputData] = useState<string>(''); // 데이터 로딩 상태
-  // let inputData: string = '';
-
   // searchState 변경
   function changeSearchState() {
     dispatch(SET_IS_SEARCH_STATE('home'));
@@ -137,35 +126,6 @@ export default function feed() {
             </div>
           </>
         )}
-        {/* <div className={`w-4/12`}>
-          <div>
-            <SearchComponent></SearchComponent>
-          </div>
-        </div> */}
-        {/* {isLoading ? (
-          <>로딩중</>
-        ) : feedList.length == 0 ? (
-          <div>
-            <span>조회된 피드가 없습니다.</span>
-          </div>
-        ) : (
-          <>
-            <div className={`grid grid-cols-2 gap-2`}>
-              <div>
-                <div className={`overflow-auto`} style={{ height: '700px' }}>
-                  {feedList.map((feed) => (
-                    <FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
-                  ))}
-                  <div ref={setTarget} />
-                  <div className={`p-5`}></div>
-                </div>
-              </div>
-              <div>
-                <SearchComponent></SearchComponent>
-              </div>
-            </div>
-          </>
-        )} */}
       </div>
     </AppLayout>
   );

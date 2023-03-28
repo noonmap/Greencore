@@ -300,10 +300,10 @@ export default function HomeSearch() {
         ) : // 검색 데이터 있을 때
         searchTypeTemp === 'feed' ? (
           // 태그 검색일 때
-          tagFeedList.length === 0 ? (
+          tagFeedList?.length === 0 ? (
             <div>조회된 게시글이 없습니다</div>
           ) : (
-            <div className={`overflow-auto`} style={{ height: '700px' }}>
+            <div className={`overflow-auto`}>
               {tagFeedList.map((tagFeed) => (
                 <SearchFedListItem key={tagFeed.feedId} tagFeed={tagFeed}></SearchFedListItem>
               ))}
@@ -313,7 +313,7 @@ export default function HomeSearch() {
           )
         ) : searchTypeTemp === 'profile' ? (
           // 유저 검색일 때
-          searchUserList.length === 0 ? (
+          searchUserList?.length === 0 ? (
             <div>조회된 유저가 없습니다</div>
           ) : (
             <div className={`overflow-auto`} style={{ height: '700px' }}>
@@ -324,7 +324,7 @@ export default function HomeSearch() {
               <div className={`p-5`}></div>
             </div>
           )
-        ) : searchPlantList.length === 0 ? (
+        ) : searchPlantList?.length === 0 ? (
           // 식물 검색일 때
           <div>조회된 식물이 없습니다</div>
         ) : (

@@ -2,14 +2,16 @@ import React from 'react';
 import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import { TagFeedType } from '../core/feed/feedType';
-import styles from '@/components/FeedListItem.module.scss';
+import styles from '@/components/SearchFeedListItem.module.scss';
+import { parseJSON } from 'date-fns';
 
-export default function SearchFedListItem(props: { tagFeed: TagFeedType }) {
+export default function SearchFeedListItem(props: { tagFeed: TagFeedType }) {
   const tagFeed = props.tagFeed;
 
   return (
     <>
-      <div key={tagFeed.feedId} className={`${styles.feedContainer} bg-green-300`}>
+      <div key={tagFeed.feedId} className={`${styles.feedContainer} overflow-scroll bg-green-300`}>
+        {JSON.stringify(tagFeed)}
         <div>{tagFeed.feedId || <Skeleton />} </div>
         <div>{tagFeed.feedCode || <Skeleton />}</div>
         <div>
