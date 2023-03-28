@@ -22,9 +22,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +65,7 @@ public class DiarySetService {
 	 *
 	 * @param diarySetRequestDto 생성할 관찰일지 내용
 	 */
+	@Transactional
 	public void createDiarySet(DiarySetRequestDto diarySetRequestDto) {
 		// 작성자 조회
 		Long userId = authService.getUserId();
@@ -97,6 +98,7 @@ public class DiarySetService {
 	 * @param diarySetId         관찰일지 ID
 	 * @param diarySetRequestDto 수정할 관찰일지 내용
 	 */
+	@Transactional
 	public void modifyDiarySet(Long diarySetId, DiarySetRequestDto diarySetRequestDto) {
 		// 삭제된 관찰일지인지 확인
 		DiarySetEntity originDiarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
@@ -135,6 +137,7 @@ public class DiarySetService {
 	 *
 	 * @param diarySetId 관찰 일지 ID
 	 */
+	@Transactional
 	public void deleteDiarySet(Long diarySetId) {
 		// 삭제된 관찰일지인지 확인
 		DiarySetEntity diarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
@@ -203,6 +206,7 @@ public class DiarySetService {
 	 *
 	 * @param diarySetId 관찰 일지 ID
 	 */
+	@Transactional
 	public void createBookmark(Long diarySetId) {
 		// 유저 조회
 		Long userId = authService.getUserId();
@@ -233,6 +237,7 @@ public class DiarySetService {
 	 *
 	 * @param diarySetId 관찰 일지 ID
 	 */
+	@Transactional
 	public void deleteBookmark(Long diarySetId) {
 		// 유저 조회
 		Long userId = authService.getUserId();

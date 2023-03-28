@@ -15,8 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +47,8 @@ public class FeedService {
 	 * @param content
 	 * @return
 	 */
-	private TagEntity createTag(String content) {
+	@Transactional
+	public TagEntity createTag(String content) {
 		Optional<TagEntity> tag = tagRepository.findByContentIgnoreCase(content);
 		if (tag.isPresent()) return tag.get();
 		// 소문자로 변환 후 저장함
@@ -62,7 +63,8 @@ public class FeedService {
 	 *
 	 * @param tag
 	 */
-	private void connectTag(TagEntity tag, FeedEntity feed) {
+	@Transactional
+	public void connectTag(TagEntity tag, FeedEntity feed) {
 		// 존재하는지 확인
 		Optional<FeedTagEntity> feedTag = feedTagRepository.findByTagAndFeed(tag, feed);
 		if (feedTag.isEmpty()) { // 존재하지 않으면 새로 생성
