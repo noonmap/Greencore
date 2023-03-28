@@ -286,3 +286,23 @@ h1 {
   color: var(--title-light-color);
   font-size: 0.9rem;
 }
+
+select {
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 10px 6px;
+  font-size: 14px;
+  height: var(--min-height-input);
+}
+
+select:focus {
+  border-color: var(--main-color);
+}
+
+select:hover {
+  border-color: var(--main-color);
+}
+
+select:disabled {
+  opacity: 0.5;
+}

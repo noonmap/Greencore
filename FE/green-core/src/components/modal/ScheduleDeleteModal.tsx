@@ -1,5 +1,7 @@
 import { deleteRegularSchedule, deleteSchedule } from '@/core/schedule/scheduleAPI';
 import React, { useEffect, useRef } from 'react';
+import AppButton from '../button/AppButton';
+import styles from './ScheduleDeleteModal.module.scss';
 
 type PropsType = {
   isOpen: boolean;
@@ -49,19 +51,30 @@ export default function ScheduleDeleteModal({ isOpen, modalTitle, scheduleId, re
     <>
       {isOpen ? (
         <div className='modalContainer'>
-          <div className='modalWrap' ref={modalRef}>
+          <div className={`modalWrap`} ref={modalRef}>
             {/* 모달 내부 */}
-            <div onClick={() => handleModalClose()}>X</div>
+            <div className='relative'>
+              <span className='modalClose material-symbols-outlined' onClick={() => handleModalClose()}>
+                close
+              </span>
+            </div>
 
             {/* 모달 컨텐츠 */}
-            <div className='modalTitle'>{modalTitle}</div>
-            <div className='modalContent'>
-              <div>삭제하시면 다시 되돌릴 수 없습니다.</div>
-              <div>삭제 하시겠습니까?</div>
+            <div className={`modalContent flex justify-between ${styles.modalContentSub}`}>
+              <div className='modalTitle'>{modalTitle}</div>
+
+              <div>
+                <div>삭제하시면 다시 되돌릴 수 없습니다.</div>
+                <div>삭제 하시겠습니까?</div>
+              </div>
+
+              <div className={`flex justify-between`}>
+                <AppButton text='취소' bgColor='thin' handleClick={() => handleModalClose()} />
+
+                {scheduleId >= 0 && <AppButton text='확인' handleClick={() => handleScheduleDelete(scheduleId)} />}
+                {regularId >= 0 && <AppButton text='확인' handleClick={() => handleRegularScheduleDelete(regularId)} />}
+              </div>
             </div>
-            <button onClick={() => handleModalClose()}>취소</button>
-            {scheduleId >= 0 && <button onClick={() => handleScheduleDelete(scheduleId)}>확인</button>}
-            {regularId >= 0 && <button onClick={() => handleRegularScheduleDelete(regularId)}>확인</button>}
           </div>
         </div>
       ) : null}

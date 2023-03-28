@@ -3,6 +3,11 @@
   width: 30%;
 }
 
+.contentBox {
+  height: 70vh;
+  overflow-y: scroll;
+}
+
 .title {
   font-size: 1.5rem;
   font-weight: var(--text-extra-bold);

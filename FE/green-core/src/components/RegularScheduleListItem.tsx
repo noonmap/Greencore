@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import ScheduleDeleteModal from './modal/ScheduleDeleteModal';
 import ScheduleModal from './modal/ScheduleModal';
 import ScheduleCode from './ScheduleCode';
+import styles from './RegularScheduleListItem.module.scss';
 
 type PropsType = {
   item: any;
@@ -35,14 +36,14 @@ export default function RegularScheduleListItem({ item, handleReload }: PropsTyp
           handleModalClose={() => setIsOpenRegularScheduleDeleteModal(false)}
         />
       )}
-      <div style={{ display: 'flex', border: '1px solid', marginBlock: '8px' }}>
-        <div style={{ borderRadius: '50%' }}>
+      <div className={`${styles.container}`}>
+        <div className={`${styles.icon}`}>
           <ScheduleCode scheduleCode={item.scheduleCode} size='lg' />
         </div>
-        <div onClick={() => setIsOpenRegularScheduleUpdateModal(true)} style={{ cursor: 'pointer' }}>
+        <div onClick={() => setIsOpenRegularScheduleUpdateModal(true)} className={`${styles.text}`}>
           {item.content}
         </div>
-        <FontAwesomeIcon icon={faRemove} color='#D9D9D9' style={{ cursor: 'pointer' }} onClick={() => setIsOpenRegularScheduleDeleteModal(true)} />
+        <FontAwesomeIcon icon={faRemove} color='#D9D9D9' className={`${styles.check}`} onClick={() => setIsOpenRegularScheduleDeleteModal(true)} />
       </div>
     </>
   );
