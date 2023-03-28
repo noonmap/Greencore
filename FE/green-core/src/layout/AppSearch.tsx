@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import AppHeader2 from './AppHeader2';
 import HomeSearch from './HomeSearch';
+import ScheduleSearch from './ScheduleSearch';
+import PlantDocsSearch from './PlantDocsSearch';
 import styles from './AppSearch.module.scss';
 import { useAppSelector } from '@/core/hooks';
 
@@ -13,11 +15,16 @@ export default function AppSearch() {
         <>
           <HomeSearch></HomeSearch>
         </>
-      ) : (
+      ) : searchState === 'schedule' ? (
         <>
-          <AppHeader2></AppHeader2>
-          AppSearch
+          <ScheduleSearch></ScheduleSearch>
         </>
+      ) : searchState === 'plantDocs' ? (
+        <>
+          <PlantDocsSearch></PlantDocsSearch>
+        </>
+      ) : (
+        <></>
       )}
     </div>
   );
