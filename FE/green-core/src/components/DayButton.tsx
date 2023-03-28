@@ -23,8 +23,8 @@ export default function DayButton(props: PropsType) {
                 padding: '0',
                 marginInline: '4px',
                 borderRadius: '50%',
-                width: '32px',
-                height: '32px',
+                width: '1.9rem',
+                height: '1.9rem',
               }
             : {
                 backgroundColor: '#D9D9D9',
@@ -33,8 +33,8 @@ export default function DayButton(props: PropsType) {
                 padding: '0',
                 marginInline: '4px',
                 borderRadius: '50%',
-                width: '32px',
-                height: '32px',
+                width: '1.9rem',
+                height: '1.9rem',
               }
         }>
         {content}
