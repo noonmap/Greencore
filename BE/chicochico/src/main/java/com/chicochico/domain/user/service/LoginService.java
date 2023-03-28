@@ -5,7 +5,8 @@ import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.UserStoreType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.AuthTokenProvider;
-import com.chicochico.common.service.KakaoRestApiHelper;
+import com.chicochico.common.service.KakaoService;
+import com.chicochico.common.service.OauthService;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -49,7 +50,8 @@ public class LoginService {
 	private final AuthService authService;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final FirebaseAuth firebaseAuth;
-	private final KakaoRestApiHelper kakaoRestApiHelper;
+	private final KakaoService kakaoService;
+	private final OauthService oauthService;
 	private final ObjectMapper objectMapper;
 
 
@@ -97,31 +99,29 @@ public class LoginService {
 				.set("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
 
 		} else if (user.getUserStore().equals(UserStoreType.FIREBASE)) { // firebase에 저장된 유저 (구글/깃헙)
-			FirebaseToken token = null;
+			Map<String, String> params = new HashMap<>();
+			params.put("refresh_token", loginRequestRefreshToken);
+
+			// 새 access 토큰 생성
+			String result = oauthService.oauthRefreshToken(params);
+			JsonNode jsonNode = null;
 			try {
-				Long userId = user.getId();
-				String idToken = firebaseAuth.createCustomToken(user.getNickname());
-
-				// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
-				String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
-				if (!StringUtils.hasText(refreshToken) || !refreshToken.equals(loginRequestRefreshToken)) {
-					// Refresh Token 정보가 일치하지 않습니다.
-					throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
-				}
-
-				// 4. 새로운 토큰 생성
-				authTokenProvider.setHeaderAccessToken(response, idToken);
-				authTokenProvider.setHeaderRefreshToken(response, refreshToken);
-
-			} catch (FirebaseAuthException e) {
+				jsonNode = objectMapper.readTree(result);
+			} catch (JsonProcessingException e) {
 				throw new CustomException(ErrorCode.TOKEN_ERROR);
 			}
+			FirebaseToken token = null;
+			// 새로운 토큰 header에 넣기
+			String newAccessToken = kakaoService.getStringValue(jsonNode, "id_token");
+			authTokenProvider.setHeaderAccessToken(response, newAccessToken);
+			authTokenProvider.setHeaderRefreshToken(response, loginRequestRefreshToken);
+
 		} else if (user.getUserStore().equals(UserStoreType.KAKAO)) { // kakao 로그인 유저
 			Map<String, String> params = new HashMap<>();
 			params.put("refresh_token", loginRequestRefreshToken);
 
 			// 새 access 토큰 생성
-			String result = kakaoRestApiHelper.kakaoRefreshToken(params);
+			String result = kakaoService.kakaoRefreshToken(params);
 			JsonNode jsonNode = null;
 			try {
 				jsonNode = objectMapper.readTree(result);
@@ -129,7 +129,7 @@ public class LoginService {
 				throw new CustomException(ErrorCode.TOKEN_ERROR);
 			}
 
-			String newAccessToken = kakaoRestApiHelper.getStringValue(jsonNode, "access_token");
+			String newAccessToken = kakaoService.getStringValue(jsonNode, "access_token");
 
 			// 새 access token header 에 담기, 이전 refreshToken 다시 담아서 전달
 			// refreshToken 만료시 에러 발생 -> 다시 로그인해야함
@@ -185,11 +185,9 @@ public class LoginService {
 	@Transactional
 	public ProfileSimpleResponseDto oauthLogin(Map<String, String> loginRequestHeader, HttpServletResponse response) {
 
-		log.info("[oauthLogin] 서비스 들어옴");
 		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
-		log.info("[oauthLogin] refresh 토큰 꺼내기");
 		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
-		log.info("[oauthLogin] accessToken 토큰 꺼내기");
+
 		// 유저 존재 확인
 		FirebaseToken decodedToken = null;
 		try {
@@ -199,7 +197,6 @@ public class LoginService {
 		}
 
 		log.info("[oauthLogin] 유저 존재 확인 완료");
-		log.info("[oauthLogin] 유저 존재 확인 완료 {} {} {}", decodedToken.getEmail(), decodedToken.getUid(), decodedToken.getUid());
 
 		// 회원가입 되지 않은 유저인가? -> 회원가입 (email, nickname, password)
 		if (userRepository.findByEmail(decodedToken.getEmail()).isEmpty()) {
@@ -209,7 +206,9 @@ public class LoginService {
 				throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 			}
 
-			UserEntity userEntity = UserEntity.builder().email(decodedToken.getEmail()).nickname(decodedToken.getUid()).password(passwordEncoder.encode(decodedToken.getUid() + "!"))
+			String nickname = decodedToken.getName() == null ? decodedToken.getUid() : decodedToken.getName();
+
+			UserEntity userEntity = UserEntity.builder().email(decodedToken.getEmail()).nickname(nickname).password(passwordEncoder.encode(decodedToken.getUid() + "!"))
 				.userStore(UserStoreType.FIREBASE)
 				.build();
 
@@ -221,10 +220,10 @@ public class LoginService {
 		// 있는 유저라면 계속 진행하기 or 회원가입 완료 후 db에 있는 유저
 		UserEntity user = userRepository.findByEmailAndIsDeleted(decodedToken.getEmail(), IsDeletedType.N).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-		log.info("[oauthLogin] 토큰 생성 및 응답 {}", decodedToken.getClaims().get("exp"));
+		Long expTime = ((Long) decodedToken.getClaims().get("exp") * 1000) - new Date().getTime();
 
 		// refresh token Redis에 저장
-		redisTemplate.opsForValue().set("RT:" + user.getId(), loginRequestRefreshToken, (Long) decodedToken.getClaims().get("exp") - new Date().getTime(), TimeUnit.MILLISECONDS);
+		redisTemplate.opsForValue().set("RT:" + user.getId(), loginRequestRefreshToken, expTime, TimeUnit.MILLISECONDS);
 
 		// 다시 동일한 accessToken, refreshToken 담기
 		authTokenProvider.setHeaderAccessToken(response, accessToken);
@@ -243,16 +242,13 @@ public class LoginService {
 	 */
 	@Transactional
 	public ProfileSimpleResponseDto kakaoLogin(Map<String, String> loginRequestHeader, HttpServletResponse response) {
-		log.info("[kakaoLogin] 서비스 들어옴");
 		// refresh, accessToken 토큰 꺼내기
 		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
-		log.info("[kakaoLogin] refresh 토큰 꺼내기");
 		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
-		log.info("[kakaoLogin] accessToken 토큰 꺼내기");
 
 		// 토큰 정보 가져오기
-		kakaoRestApiHelper.setAccessToken(accessToken);
-		String result = kakaoRestApiHelper.getKakaoUserAccessTokenInfo();
+		kakaoService.setAccessToken(accessToken);
+		String result = kakaoService.getKakaoUserAccessTokenInfo();
 
 		// ACCESS_TOKEN_ERROR에 문제가 있음
 		if (result == null) throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
@@ -260,13 +256,9 @@ public class LoginService {
 
 		JsonObject jsonObject = new Gson().fromJson(result, JsonObject.class);
 		String expiresInMillis = jsonObject.get("expiresInMillis").getAsString();
-		String id = jsonObject.get("id").getAsString();
-
-		System.out.println("expiresInMillis : " + expiresInMillis);
-		System.out.println("id : " + id);
 
 		// 유저 정보 가져오기
-		String userInfo = kakaoRestApiHelper.kakaoMe();
+		String userInfo = kakaoService.kakaoMe();
 		// 카카오로부터 유저 정보를 가져올 수 없음
 		if (userInfo == null) throw new CustomException(USER_NOT_FOUND);
 
@@ -279,12 +271,10 @@ public class LoginService {
 
 		JsonNode kakaoAccount = jsonNode.get("kakao_account");
 
-		String kakaoEmail = kakaoRestApiHelper.getStringValue(kakaoAccount, "email");
-		String kakaoNickname = kakaoRestApiHelper.getStringValue(kakaoAccount, "profile", "nickname");
-		String kakaoProfileImageUrl = kakaoRestApiHelper.getStringValue(kakaoAccount, "profile", "profile_image_url");
-		String kakaoUID = kakaoRestApiHelper.getStringValue(jsonNode, "id");
-
-		System.out.println("출력:" + kakaoEmail + " " + kakaoNickname + " " + kakaoProfileImageUrl + " " + kakaoUID);
+		String kakaoEmail = kakaoService.getStringValue(kakaoAccount, "email");
+		String kakaoNickname = kakaoService.getStringValue(kakaoAccount, "profile", "nickname");
+		String kakaoProfileImageUrl = kakaoService.getStringValue(kakaoAccount, "profile", "profile_image_url");
+		String kakaoUID = kakaoService.getStringValue(jsonNode, "id");
 
 		// 회원가입 되지 않은 유저인가? -> 회원가입 (email, nickname, password)
 		if (userRepository.findByEmail(kakaoEmail).isEmpty()) {

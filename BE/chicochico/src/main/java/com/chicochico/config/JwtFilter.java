@@ -2,7 +2,7 @@ package com.chicochico.config;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
-import com.chicochico.common.service.KakaoRestApiHelper;
+import com.chicochico.common.service.KakaoService;
 import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	private final RedisTemplate redisTemplate;
 	private final FirebaseAuth firebaseAuth;
 	private final CustomUserDetailsService userDetailsService;
-	private final KakaoRestApiHelper kakaoRestApiHelper;
+	private final KakaoService kakaoService;
 	private final ObjectMapper objectMapper;
 
 
@@ -80,12 +80,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
 				} catch (FirebaseAuthException e) {
 					// TODO kakaoAuth Token 검증필요
-					kakaoRestApiHelper.setAccessToken(token);
-					String result = kakaoRestApiHelper.getKakaoUserAccessTokenInfo();
+					kakaoService.setAccessToken(token);
+					String result = kakaoService.getKakaoUserAccessTokenInfo();
 					if (result == null)
 						throw new JwtException("accessToken 유효하지 않음");
 
-					String userInfo = kakaoRestApiHelper.kakaoMe();
+					String userInfo = kakaoService.kakaoMe();
 
 					JsonNode jsonNode = null;
 					try {
@@ -96,7 +96,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 					JsonNode kakaoAccount = jsonNode.get("kakao_account");
 
-					String kakaoEmail = kakaoRestApiHelper.getStringValue(kakaoAccount, "email");
+					String kakaoEmail = kakaoService.getStringValue(kakaoAccount, "email");
 
 					UserDetails user = userDetailsService.loadUserByEmail(kakaoEmail);
 					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

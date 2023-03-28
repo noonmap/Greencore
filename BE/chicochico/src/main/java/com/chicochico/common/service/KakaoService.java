@@ -3,18 +3,21 @@ package com.chicochico.common.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 
-@Component
-public class KakaoRestApiHelper {
+@Service
+public class KakaoService {
 
 	private static final String API_SERVER_HOST = "https://kapi.kakao.com";
 
@@ -128,7 +131,7 @@ public class KakaoRestApiHelper {
 			while ((line = reader.readLine()) != null) {
 				buffer.append(line);
 			}
-			System.out.println(buffer.toString());
+			System.out.println(buffer);
 			return buffer.toString();
 
 		} catch (IOException e) {
@@ -154,11 +157,7 @@ public class KakaoRestApiHelper {
 
 
 	public String urlEncodeUTF8(String s) {
-		try {
-			return URLEncoder.encode(s, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new UnsupportedOperationException(e);
-		}
+		return URLEncoder.encode(s, StandardCharsets.UTF_8);
 	}
 
 
