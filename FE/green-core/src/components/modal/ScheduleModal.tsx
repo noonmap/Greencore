@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import DayButton from '../DayButton';
 import AppButton from '@/components/button/AppButton';
 import { checkInputFormToast } from '@/lib/utils';
+import styles from './ScheduleModal.module.scss';
 
 type PropsType = {
   isOpen: boolean;
@@ -47,7 +48,7 @@ export default function ScheduleModal({
     scheduleCode: schedule ? schedule.scheduleCode : 'WATER',
     content: schedule ? schedule.content : '',
     regularScheduleCode: schedule ? (schedule.regularScheduleCode ? schedule.regularScheduleCode : '0') : '0',
-    day: null,
+    day: '',
   };
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -182,7 +183,13 @@ export default function ScheduleModal({
 
   // 생성 가능한지 확인하는 함수
   const checkIsPossible = () => {
-    if (userPlantId >= 0 && (scheduleDate !== '' || day !== '') && scheduleCode !== '' && content !== '' && regularScheduleCode) {
+    if (
+      userPlantId >= 0 &&
+      (scheduleDate !== '' || (day !== '' && day <= 31 && day >= 1)) &&
+      scheduleCode !== '' &&
+      content !== '' &&
+      regularScheduleCode
+    ) {
       setIsPossible(true);
     } else {
       setIsPossible(false);
@@ -199,39 +206,60 @@ export default function ScheduleModal({
         <div className='modalContainer'>
           <div className='modalWrap' ref={modalRef}>
             {/* 모달 내부 */}
-            <div onClick={() => handleModalClose()}>X</div>
+            <div className='relative'>
+              <span className='modalClose material-symbols-outlined' onClick={() => handleModalClose()}>
+                close
+              </span>
+            </div>
 
             {/* 모달 컨텐츠 */}
-            <div className='modalContent'>
-              <div>{modalTitle}</div>
-              <label id='plant'>스케줄링 식물 선택</label>
-              <select {...register('userPlantId')} id='plant'>
-                {userPlantList?.map((plant) => {
-                  return <option key={plant.userPlantId}>{plant.plantNickname}</option>;
-                })}
-              </select>
-              <label id='toDo'>할 일</label>
-              <select id='toDo' {...register('scheduleCode')}>
+            <div className='modalContent flex justify-between'>
+              <div className='modalTitle'>{modalTitle}</div>
+
+              <div className='flex flex-col'>
+                <div className='flex flex-col space-y-2'>
+                  <label id='plant' className={`${styles.label}`}>
+                    스케줄링 식물 선택
+                  </label>
+                  <select className={`${styles.selectBox}`} {...register('userPlantId')} id='plant' defaultValue={userPlantList[0]}>
+                    {userPlantList?.map((plant) => {
+                      return <option key={plant.userPlantId}>{plant.plantNickname}</option>;
+                    })}
+                  </select>
+                </div>
+              </div>
+
+              <label className={`${styles.label}`} id='toDo'>
+                할 일
+              </label>
+              <select className={`${styles.selectBox}`} id='toDo' {...register('scheduleCode')}>
                 {scheduleCodeList.map((code) => (
                   <option key={code[1]} value={code[1]}>
                     {code[0]}
                   </option>
                 ))}
               </select>
-              <label id='content'>내용</label>
-              <input type='text' id='content' {...register('content')} placeholder='내용을 입력해주세요!' />
+
+              <label className={`${styles.label}`} id='content'>
+                내용
+              </label>
+              <input type='text' id='content' {...register('content')} placeholder='내용을 입력해주세요!' className={`${styles.inputBox}`} />
+
               {(create || regular) && (
                 <>
-                  <label id='period'>주기 선택</label>
+                  <label className={`${styles.label}`} id='period'>
+                    주기 선택
+                  </label>
                   <div style={{ display: 'flex' }}>
                     <select
+                      className={`${styles.selectBox}`}
                       {...(register('regularScheduleCode'),
                       {
                         onChange(event) {
                           setValue('regularScheduleCode', event.target.value);
                           setValue('scheduleDate', '');
                           setIsSelectedList(Array(dayList.length).fill(false));
-                          setValue('day', null);
+                          setValue('day', '');
                         },
                       })}>
                       <option value='0'>매월</option>
@@ -241,40 +269,59 @@ export default function ScheduleModal({
 
                     {/* 매월 */}
                     {regularScheduleCode == '0' && (
-                      <div>
-                        <input type='number' min={1} max={31} {...register('day')} id='period' placeholder='ex) 1' /> 일
+                      <div className='flex items-center w-full'>
+                        <input
+                          type='number'
+                          min={1}
+                          max={31}
+                          {...register('day')}
+                          id='period'
+                          placeholder='ex) 1'
+                          className={`${styles.inputBox}`}
+                          style={{ marginInline: '0.5rem', width: '100%' }}
+                        />
+                        <div>일</div>
                       </div>
                     )}
 
                     {/* 매주 */}
-                    <div style={{ display: 'flex' }}>
+                    <div className='flex ml-auto'>
                       {regularScheduleCode == '1' &&
                         dayList.map((day, index) => (
-                          <DayButton key={index} isSelected={isSelectedList[index]} handleClick={handleClick} elementIndex={index} content={day[0]} />
+                          <div key={index} className='flex justify-center items-center'>
+                            <DayButton isSelected={isSelectedList[index]} handleClick={handleClick} elementIndex={index} content={day[0]} />
+                          </div>
                         ))}
                     </div>
 
                     {/* 개별 */}
-                    {regularScheduleCode === '2' && <input type='date' {...register('scheduleDate')} id='period' />}
+                    {regularScheduleCode === '2' && <input type='date' {...register('scheduleDate')} id='period' className={`${styles.inputBox}`} />}
                   </div>
                 </>
               )}
               {update && (
                 <>
-                  <label id='scheduleDate'>날짜</label>
-                  <input type='date' {...register('scheduleDate')} id='scheduleDate' />
+                  <label className={`${styles.label}`} id='scheduleDate'>
+                    날짜
+                  </label>
+                  <input type='date' {...register('scheduleDate')} id='scheduleDate' className={`${styles.inputBox}`} />
                 </>
               )}
               {regular ? (
                 <div className='flex'>
-                  <AppButton text='확인' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleRegularScheduleUpdate} />
+                  <AppButton
+                    text='수정'
+                    bgColor={isPossible ? 'main' : 'thin'}
+                    handleClick={handleRegularScheduleUpdate}
+                    className={`${styles.btn}`}
+                  />
                 </div>
               ) : (
                 <div className='flex'>
                   {create ? (
-                    <AppButton text='확인' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleScheduleCreate} />
+                    <AppButton text='생성' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleScheduleCreate} className={`${styles.btn}`} />
                   ) : (
-                    <AppButton text='확인' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleScheduleUpdate} />
+                    <AppButton text='수정' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleScheduleUpdate} className={`${styles.btn}`} />
                   )}
                 </div>
               )}
