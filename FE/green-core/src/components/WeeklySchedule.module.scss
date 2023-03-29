@@ -1,10 +1,11 @@
 .container {
-  padding: 1rem;
-  width: 30%;
+  padding: 1rem 3rem;
+  width: 100%;
 }
 
 .contentBox {
   height: 70vh;
+  padding-right: 1rem;
   overflow-y: scroll;
 }
 

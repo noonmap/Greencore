@@ -107,6 +107,12 @@ export default function AppHeader() {
                     <span className='material-symbols-outlined'>settings</span>
                     <Link href='/user/settings/password'>설정</Link>
                   </div>
+                  <Link href='/home'>Home</Link>
+                  <Link href='/plant/docs'>식물 검색</Link>
+                  <Link href='/schedule'>식물 스케줄링</Link>
+                  <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
+                  <Link href={`/user/alert/${nickname}`}>알림</Link>
+                  <Link href='/user/settings/password'>설정</Link>
                 </>
               ) : (
                 <>

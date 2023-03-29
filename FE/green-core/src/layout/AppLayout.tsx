@@ -12,6 +12,7 @@ type AppLayoutProps = {
 
 export default function AppLayout({ children, home }: AppLayoutProps) {
   const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
+  const searchState = useAppSelector((state) => state.common.searchState || 'home');
 
   // 로그인 시
   if (isAuthenticated) {
@@ -21,7 +22,8 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
           <AppHeader />
           <div className={`overflow-auto mx-auto xl:ml-56 ml-20 flex flex-1`}>
             <main>{home ? <>{children}</> : <>{children}</>}</main>
-            <AppSearch />
+
+            {searchState === 'home' ? <AppSearch /> : <></>}
           </div>
         </div>
       </>
@@ -36,7 +38,7 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
 
         <div className='flex-1 flex h-screen'>
           <AppMain children={children} />
-          <AppSearch />
+          {searchState === 'home' ? <AppSearch /> : <></>}
         </div>
       </div>
     </>

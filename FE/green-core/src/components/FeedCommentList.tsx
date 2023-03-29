@@ -3,6 +3,8 @@ import FeedCommentItem from './FeedCommentItem';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '@/core/hooks';
 import { createComment, getCommentList } from '@/core/feed/feedAPI';
+import styles from './FeedCommentList.module.scss';
+import AppButton from './button/AppButton';
 
 export default function FeedCommentList(feedId: any) {
   const [commentList, setCommentList] = useState([]);
@@ -80,17 +82,19 @@ export default function FeedCommentList(feedId: any) {
   }, []);
 
   return (
-    <div>
-      <div style={{ display: 'flex' }}>
-        <textarea cols={50} rows={3} {...register('content')} />
-        <button style={{ paddingInline: '4px' }} onClick={handleCreateComment}>
-          댓글 작성
-        </button>
+    <>
+      <div className={`${styles.inputBox}`}>
+        <textarea className={`${styles.textareaBox}`} rows={2} {...register('content')} />
+        <AppButton text='작성' className={`${styles.btn}`} handleClick={handleCreateComment} />
       </div>
       {commentList.map((comment) => {
         return <FeedCommentItem key={comment.commentId} comment={comment} feedId={feedId} deleteCommentList={deleteCommentList} />;
       })}
-      {!isStop && <button onClick={handleGetCommentList}>더보기</button>}
-    </div>
+      {!isStop ? (
+        <AppButton text='더보기' handleClick={handleGetCommentList} />
+      ) : (
+        <AppButton text='더 이상 불러올 댓글이 없습니다' bgColor='thin' handleClick={handleGetCommentList} />
+      )}
+    </>
   );
 }

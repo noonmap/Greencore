@@ -1,0 +1,14 @@
+.container {
+  min-width: 800px;
+}
+
+@media (max-width: 800px) {
+  .container {
+    width: auto;
+  }
+}
+
+.container2 {
+  // border-left: 1px solid var(--light-color);
+  box-shadow: var(--box-shadow);
+}

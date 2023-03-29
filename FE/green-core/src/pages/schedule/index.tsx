@@ -8,8 +8,9 @@ import 'moment/locale/ko';
 import ScheduleModal from '@/components/modal/ScheduleModal';
 import ScheduleManageModal from '@/components/modal/ScheduleManageModal';
 import { Calender } from '@/components/Calendar';
-import styles from '@/styles/Schedule.module.scss';
 import WeeklySchedule from '@/components/WeeklySchedule';
+import styles from '@/styles/Schedule.module.scss';
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 
 export default function schedule() {
   const dispatch = useAppDispatch();
@@ -22,6 +23,11 @@ export default function schedule() {
   const [isOpenScheduleManageModal, setIsOpenScheduleManageModal] = useState(false);
 
   const requestData = { day: moment(date).format('DD'), month: moment(date).format('MM'), year: moment(date).format('YYYY') };
+
+  // searchState 변경
+  function changeSearchState() {
+    dispatch(SET_IS_SEARCH_STATE('null'));
+  }
 
   // 월간 스케줄
   const getMonthSchedule = async () => {
@@ -36,6 +42,7 @@ export default function schedule() {
   useEffect(() => {
     getMonthSchedule();
     console.log('월간 GET');
+    changeSearchState();
   }, [reload]);
 
   // 주간 스케줄
@@ -77,20 +84,22 @@ export default function schedule() {
           handleModalClose={() => setIsOpenScheduleManageModal(false)}
         />
       )}
-
-      <div style={{ display: 'flex', padding: '1.25rem' }}>
-        {/* 월간 스케줄 달력 */}
-        <Calender
-          marks={marks}
-          monthSchedule={monthSchedule}
-          date={date}
-          setDate={setDate}
-          setReload={setReload}
-          setIsOpenScheduleCreateModal={setIsOpenScheduleCreateModal}
-        />
-
-        {/* 주간 스케줄 */}
-        <WeeklySchedule weekSchedule={weekSchedule} setIsOpenScheduleManageModal={setIsOpenScheduleManageModal} />
+      <div className={`overflow-auto mx-auto flex flex-1 h-full`}>
+        <div className={`${styles.container} overflow-auto flex-1 mx-auto pt-2 px-3`}>
+          {/* 월간 스케줄 달력 */}
+          <Calender
+            marks={marks}
+            monthSchedule={monthSchedule}
+            date={date}
+            setDate={setDate}
+            setReload={setReload}
+            setIsOpenScheduleCreateModal={setIsOpenScheduleCreateModal}
+          />
+        </div>
+        <div className={`${styles.container2} lg:block hidden overflow-auto lg:w-1/3 pt-2`}>
+          {/* 주간 스케줄 */}
+          <WeeklySchedule weekSchedule={weekSchedule} setIsOpenScheduleManageModal={setIsOpenScheduleManageModal} />
+        </div>
       </div>
     </AppLayout>
   );

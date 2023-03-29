@@ -2,6 +2,10 @@ package com.chicochico.config;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
+import com.chicochico.common.service.KakaoService;
+import com.chicochico.domain.user.service.CustomUserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
@@ -26,8 +30,11 @@ public class SpringSecurity {
 
 	private final AuthTokenProvider tokenProvider;
 	private final RedisTemplate<String, String> redisTemplate;
-
 	private final JwtExceptionFilter jwtExceptionFilter;
+	private final FirebaseAuth firebaseAuth;
+	private final CustomUserDetailsService userDetailsService;
+	private final KakaoService kakaoService;
+	private final ObjectMapper objectMapper;
 
 
 	@Bean
@@ -72,13 +79,13 @@ public class SpringSecurity {
 			// 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
 			.and()
 			.authorizeRequests()
-			.antMatchers("/login/**", "/user", "/user/{nickname}", "/user/email/{email}", "/refresh", "/mail/**").permitAll()
+			.antMatchers("/login/**", "/user", "/user/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type").permitAll()
 			.antMatchers("/swagger-resources/**", "/swagger-ui", "/swagger-ui/**").permitAll()
 			.anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 
 			// JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate, jwtExceptionFilter));
+			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate, jwtExceptionFilter, firebaseAuth, userDetailsService, kakaoService, objectMapper));
 
 		http
 			.logout()

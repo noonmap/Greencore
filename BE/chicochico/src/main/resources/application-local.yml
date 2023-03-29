@@ -61,8 +61,8 @@ spring:
   sql:
     init:
       mode: ${sql.init.mode} # sql파일로 init할 것인지 설정
-      schema-locations: classpath:schema.sql # schema init 사용
-      data-locations: classpath:data.sql # dummy data 사용
+      schema-locations: classpath:/sql/schema.sql # schema init 사용
+      data-locations: classpath:/sql/init_data.sql, classpath:/sql/dummy_data.sql # dummy data 사용
 
   # hibernate logging
   logging:

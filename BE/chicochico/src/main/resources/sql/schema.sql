@@ -14,35 +14,22 @@ DROP TABLE IF EXISTS `follow`;
 DROP TABLE IF EXISTS `tag`;
 DROP TABLE IF EXISTS `plant`;
 DROP TABLE IF EXISTS `user_table`;
-DROP TABLE IF EXISTS `code`;
-DROP TABLE IF EXISTS `group_code`;
 
-CREATE TABLE `group_code` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-CREATE TABLE `code` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) NOT NULL,
-  `group_id` bigint NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-CREATE TABLE `user_table` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `follower_count` int NOT NULL,
-  `following_count` int NOT NULL,
-  `introduction` varchar(255) NOT NULL,
-  `is_deleted` varchar(255) NOT NULL,
-  `nickname` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `profile_image_path` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE `user_table`
+(
+    `id`                 bigint       NOT NULL AUTO_INCREMENT,
+    `created_at`         datetime     NOT NULL,
+    `updated_at`         datetime     NOT NULL,
+    `email`              varchar(255) NOT NULL,
+    `follower_count`     int          NOT NULL,
+    `following_count`    int          NOT NULL,
+    `introduction`       varchar(255) NOT NULL,
+    `is_deleted`         varchar(255) NOT NULL,
+    `nickname`           varchar(255) NOT NULL,
+    `password`           varchar(255) NOT NULL,
+    `profile_image_path` varchar(255) NOT NULL,
+    `user_store`         varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `alert` (

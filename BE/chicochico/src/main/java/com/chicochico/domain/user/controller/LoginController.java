@@ -34,12 +34,23 @@ public class LoginController {
 	}
 
 
-	@PostMapping("/login/github")
-	@ApiOperation(value = "깃허브로 로그인합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> githubLogin(@RequestHeader Map<String, Object> loginRequestHeader, HttpServletResponse response) {
-		loginService.githubLogin(loginRequestHeader, response);
+	@PostMapping("/login/oauth")
+	@ApiOperation(value = "구글/깃허브로 로그인합니다. (firebase)", notes = "")
+	public ResponseEntity<ResultDto<ProfileSimpleResponseDto>> oauthLogin(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response) {
+		log.info("[oauthLogin] Controller 들어옴");
+		ProfileSimpleResponseDto profileSimpleResponseDto = loginService.oauthLogin(loginRequestHeader, response);
 
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDto));
+	}
+
+
+	@PostMapping("/login/kakao")
+	@ApiOperation(value = "카카오로 로그인합니다. (firebase)", notes = "")
+	public ResponseEntity<ResultDto<ProfileSimpleResponseDto>> kakaoLogin(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response) {
+		log.info("[kakaoLogin] Controller 들어옴");
+		ProfileSimpleResponseDto profileSimpleResponseDto = loginService.kakaoLogin(loginRequestHeader, response);
+
+		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDto));
 	}
 
 
