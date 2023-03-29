@@ -280,7 +280,7 @@ export default function HomeSearch() {
     <>
       {/* 검색창 */}
       <div className={`h-full w-full flex flex-col`}>
-        <div className={`${styles.search} w-full flex relative`}>
+        <div className={`w-full flex relative`}>
           <SelectBox options={OPTIONS} defaultValue='feed'></SelectBox>
           <input
             className={`p-2 rounded-xl border-0 w-full`}
