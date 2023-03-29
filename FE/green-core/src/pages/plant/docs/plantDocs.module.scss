@@ -8,23 +8,39 @@
 }
 
 .active {
-  background-color: rgb(21, 128, 61) !important;
+  background-color: var(--main-color) !important;
   color: white !important;
 }
 
-.pagination li {
+.paginationItem {
+  margin: 2px;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  width: 35px;
+  height: 35px;
   padding: 5px 10px;
-  // border: 1px solid green;
-  background-color: rgb(134, 239, 172);
+  background-color: white;
   color: black;
-  border-radius: 5px;
+  border-radius: 30px;
+  border: var(--thin-color) 1px solid;
   cursor: pointer;
   text-align: center;
+}
+
+.pagination li:hover {
+  background-color: var(--main-color);
+  color: white;
 }
 
 .pagination li.disabled {
   color: green;
   cursor: not-allowed;
+}
+
+.indexBtn:hover {
+  background-color: var(--main-color);
+  color: white;
 }
 
 .search {
@@ -33,7 +49,6 @@
 
 .search input {
   width: 100%;
-  border: 1px solid #bbb;
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 14px;
@@ -52,4 +67,28 @@
   top: 10px;
   right: 12px;
   margin: 0;
+}
+
+.mainContainer {
+  min-width: 800px;
+}
+
+@media (max-width: 800px) {
+  .mainContainer {
+    width: auto;
+  }
+}
+
+.sideContainer {
+  box-shadow: var(--box-shadow);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: var(--text-extra-bold);
+  color: var(--main-color);
+}
+
+.item:hover {
+  background-color: var(--light-color);
 }

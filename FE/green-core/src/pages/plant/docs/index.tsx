@@ -23,7 +23,7 @@ export default function plantDocs() {
 
   // 식물도감 리스트 인덱스 검색
   const indexList = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [pageAtindex, setPageAtindex] = useState<number>(1);
   const [sizeAtindex, setSizeAtindex] = useState<number>(5);
 
@@ -49,7 +49,7 @@ export default function plantDocs() {
 
   // 우측바 상태 변경
   useEffect(() => {
-    dispatch(SET_IS_SEARCH_STATE('plantDocs'));
+    dispatch(SET_IS_SEARCH_STATE('null'));
   }, []);
 
   // 인기 식물 조회
@@ -98,6 +98,8 @@ export default function plantDocs() {
 
   // 식물도감 리스트 index 버튼 클릭
   function handleIndexBtnCLick(e) {
+    setPageAtindex(1);
+    setInputData('');
     const search = e.target.innerText;
     const data = indexList.findIndex((index) => {
       return index === search;
@@ -153,10 +155,15 @@ export default function plantDocs() {
   // 검색창 Enter 입력
   async function handleKeyUp(event) {
     if (event.key === 'Enter') {
-      setInputData(event.target.value);
-      setSelectedIndex(null);
-      fetchPlantList();
+      setPage(1);
+      handleSearch();
     }
+  }
+
+  // 검색 요청
+  function handleSearch() {
+    setSelectedIndex(null);
+    fetchPlantList();
   }
 
   // 페이지네이션 클릭
@@ -181,49 +188,137 @@ export default function plantDocs() {
   return (
     <AppLayout>
       <>
-        <div className={`overflow-auto`} style={{ height: '700px' }}>
-          <h1>식물도감</h1>
-          {/* index 검색 */}
-          <div className={`flex flex-wrap`}>
-            {indexList.map((index) => (
-              <div key={index}>
-                <button
-                  className={`rounded-full px-3 mr-1 my-1 ${indexList[selectedIndex] === index ? 'bg-green-700 text-white' : 'bg-green-300'}`}
-                  onClick={handleIndexBtnCLick}>
-                  {index}
-                </button>
+        <div className={`flex h-full`}>
+          {/* 메인 */}
+          <div className={`${styles.mainContainer} flex-col flex h-screen h-full w-3/5`}>
+            <div className={`${styles.title} flex-none p-5`}>식물 도감</div>
+
+            <div className={`${styles.search} flex-none w-full flex p-5 pb-1`}>
+              <input
+                className={`p-2 rounded-xl border-0 w-full`}
+                style={{ backgroundColor: 'var(--thin-color)' }}
+                type='text'
+                placeholder={'검색'}
+                value={inputData}
+                onChange={(e) => setInputData(e.target.value)}
+                onKeyUp={handleKeyUp}
+              />
+              <div className={`absolute p-5`} style={{ right: '10px', top: '10px', color: 'var(--main-color)' }}>
+                <span className='material-symbols-outlined'>search</span>
               </div>
-            ))}
-          </div>
-          {/* 식물도감 검색 */}
-          <div className={`${styles.search} w-full flex`}>
-            <input type='text' placeholder={'검색어를 입력하세요'} onKeyUp={handleKeyUp} />
-            <img src='https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png' />
-          </div>
-          {/* 검색결과 */}
-          {plantDocsList.length === 0 ? (
-            <div className={`p-5`}>조회된 식물이 없습니다</div>
-          ) : (
-            <>
-              {plantDocsList.map((plantDocs) => (
-                <div key={plantDocs.plantId} className={`bg-green-300 p-5 my-2`}>
-                  <div onClick={() => getDetail(plantDocs.plantId)}>{plantDocs.plantName}</div>
+            </div>
+
+            {/* index 검색 */}
+            <div className={`flex-none flex flex-wrap px-5`}>
+              {indexList.map((index) => (
+                <div key={index}>
+                  <button
+                    className={`${styles.indexBtn} rounded-full px-3 mr-1 my-1 ${indexList[selectedIndex] === index ? 'text-white' : 'text-black'}`}
+                    style={{ backgroundColor: indexList[selectedIndex] === index ? 'var(--main-color)' : '' }}
+                    onClick={handleIndexBtnCLick}>
+                    {index}
+                  </button>
                 </div>
               ))}
-              <div className={`${styles.pagination}`}>
-                <Pagination
-                  activePage={selectedIndex === null ? page : pageAtindex}
-                  itemsCountPerPage={selectedIndex === null ? size : sizeAtindex}
-                  totalItemsCount={totalItemCount}
-                  pageRangeDisplayed={5}
-                  activeClass={styles.active}
-                  prevPageText={'‹'}
-                  nextPageText={'›'}
-                  onChange={selectedIndex === null ? handlePageChange : handlePageAtindexChange}
-                />
+            </div>
+
+            {/* 검색결과 */}
+            {plantDocsList.length === 0 ? (
+              <div className={`p-5`}>조회된 식물이 없습니다</div>
+            ) : (
+              <div className={`grow flex flex-col p-5`}>
+                {/* 데이터 */}
+                {plantDocsList.map((plantDocs) => (
+                  <div key={plantDocs.plantId} className={` p-5 ${styles.item}`} onClick={() => getDetail(plantDocs.plantId)}>
+                    <span>{plantDocs.plantName}</span>
+                  </div>
+                ))}
               </div>
-            </>
-          )}
+            )}
+            {/* 페이지네이션 */}
+            <div className={`${styles.pagination} pb-10`}>
+              <Pagination
+                activePage={selectedIndex === null ? page : pageAtindex}
+                itemsCountPerPage={selectedIndex === null ? size : sizeAtindex}
+                totalItemsCount={totalItemCount}
+                pageRangeDisplayed={5}
+                activeClass={styles.active}
+                itemClass={styles.paginationItem}
+                prevPageText={'<'}
+                nextPageText={'>'}
+                firstPageText={'≪'}
+                lastPageText={'≫'}
+                onChange={selectedIndex === null ? handlePageChange : handlePageAtindexChange}
+              />
+            </div>
+          </div>
+
+          {/* 사이드바 */}
+
+          <div className={`${styles.sideContainer} lg:block hidden overflow-auto px-7 py-5 w-2/5`}>
+            <div className={`overflow-auto`}>
+              {!isDetailSearched ? (
+                <div className={`bg-green-300 p-5 my-2`}>
+                  {/* 인기 식물 */}
+                  <span className={`text-xl font-bold`}>인기 식물 </span>
+                  <span>이번 주 가장 많이 검색된 식물</span>
+                  <br />
+                  <div className={`flex`}></div>
+                  {topPlantList.map((topPlant) => (
+                    <div key={topPlant.plantId} className={` pr-5  inline-block`}>
+                      <img src={topPlant.imagePath} width={150} height={150} />
+                    </div>
+                  ))}
+                  <br />
+                  <br />
+                  <br />
+                  {/* 인기 관찰일지 */}
+                  <span className={`text-xl font-bold`}>인기 관찰일지 </span>
+                  <span>이번 주 가장 많이 검색된 관찰일지</span>
+                  <br />
+                  <div className={`flex`}></div>
+                  {topDiarySetList.map((topDiarySet) => (
+                    <div key={topDiarySet.diarySetId} className={`pr-5  inline-block`}>
+                      <Link href={`/diarySet/${topDiarySet.diarySetId}`}>
+                        <img src={topDiarySet.imagePath} width={200} height={200} style={{ width: '100%', height: '100%' }} />
+                      </Link>
+                      <span>{topDiarySet.title}</span>
+                      <br />
+                      <span>시작일 : {topDiarySet.startDate}</span>
+                    </div>
+                  ))}
+                  <br />
+                  <br />
+                  <br />
+                  {/* 나와 같은 식물을 키우는 유저 */}
+                  <span className={`text-xl font-bold`}>나와 같은 식물을 키우는 사람들 </span> <br />
+                  <br />
+                  {samePlantUserList.map((samPlantUser) => (
+                    <div key={samPlantUser.nickname} className={`pr-5  inline-block`}>
+                      <Link href={`/user/feed/${samPlantUser.nickname}`}>
+                        <img src={samPlantUser.profileImagePath} width={150} height={150} />
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              ) : plantDocsList.length === 0 ? (
+                <div className={`p-5`}>조회된게 없어요</div>
+              ) : (
+                // 식물 도감 상세 검색
+                <div className={`bg-green-300 p-5 my-2`}>
+                  <span className={`text-xl font-bold`}>식물도감 상세조회</span>
+                  {plantDocsDetailList.map((plantDocsDetail) => (
+                    <div key={plantDocsDetail.plantName} className={`bg-green-300`}>
+                      <div>
+                        <img className='mb-3' src={plantDocsDetail.imagePath} alt='image' width='300' height='300'></img>
+                      </div>
+                      <div>{plantDocsDetail.plantName}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </>
     </AppLayout>

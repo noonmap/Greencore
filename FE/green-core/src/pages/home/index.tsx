@@ -5,7 +5,7 @@ import { getFeedList, getFollowFeedList } from '@/core/feed/feedAPI';
 import { initFeedList } from '@/core/feed/feedSlice';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import FeedListItem from '@/components/FeedListItem';
-import styles from '@/styles/Home.module.scss';
+import styles from './Home.module.scss';
 
 export default function feed() {
   const dispatch = useAppDispatch();
