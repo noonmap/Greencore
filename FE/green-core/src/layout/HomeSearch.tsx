@@ -236,7 +236,11 @@ export default function HomeSearch() {
     };
 
     return (
-      <select className={`p-2 mr-3 rounded-xl`} style={{ backgroundColor: 'var(--thin-color)' }} onChange={handleChange} defaultValue={searchType}>
+      <select
+        className={`p-2 mr-3 rounded-xl border-0`}
+        style={{ backgroundColor: 'var(--thin-color)' }}
+        onChange={handleChange}
+        defaultValue={searchType}>
         {props.options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.name}
@@ -300,10 +304,13 @@ export default function HomeSearch() {
         ) : // 검색 데이터 있을 때
         searchTypeTemp === 'feed' ? (
           // 태그 검색일 때
-          tagFeedList.length === 0 ? (
+          tagFeedList?.length === 0 ? (
             <div>조회된 게시글이 없습니다</div>
           ) : (
-            <div className={`overflow-auto`} style={{ height: '700px' }}>
+            <div className={`overflow-auto rounded-xl mt-5`} style={{ backgroundColor: 'var(--thin-color)' }}>
+              <div className='text-xl p-5 font-bold'>
+                <span>게시글 검색</span>
+              </div>
               {tagFeedList.map((tagFeed) => (
                 <SearchFedListItem key={tagFeed.feedId} tagFeed={tagFeed}></SearchFedListItem>
               ))}
@@ -313,10 +320,13 @@ export default function HomeSearch() {
           )
         ) : searchTypeTemp === 'profile' ? (
           // 유저 검색일 때
-          searchUserList.length === 0 ? (
+          searchUserList?.length === 0 ? (
             <div>조회된 유저가 없습니다</div>
           ) : (
-            <div className={`overflow-auto`} style={{ height: '700px' }}>
+            <div className={`overflow-auto rounded-xl mt-5`} style={{ backgroundColor: 'var(--thin-color)' }}>
+              <div className='text-xl pr-5  font-bold'>
+                <span>사용자 검색</span>
+              </div>
               {searchUserList.map((user) => (
                 <SearchUserListItem key={user.nickname} searchUser={user}></SearchUserListItem>
               ))}
@@ -324,11 +334,14 @@ export default function HomeSearch() {
               <div className={`p-5`}></div>
             </div>
           )
-        ) : searchPlantList.length === 0 ? (
+        ) : searchPlantList?.length === 0 ? (
           // 식물 검색일 때
-          <div>조회된 식물이 없습니다</div>
+          <div>조호된 식물이 없습니다</div>
         ) : (
-          <div className={`overflow-auto`} style={{ height: '700px' }}>
+          <div className={`overflow-auto rounded-xl mt-5`} style={{ backgroundColor: 'var(--thin-color)' }}>
+            <div className='text-xl p-5 font-bold'>
+              <span>식물검색</span>
+            </div>
             {searchPlantList.map((plant) => (
               <SearchPlantListItem key={plant.plantId} searchPlant={plant}></SearchPlantListItem>
             ))}
