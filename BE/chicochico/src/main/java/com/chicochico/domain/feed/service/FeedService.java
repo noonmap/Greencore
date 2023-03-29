@@ -158,8 +158,8 @@ public class FeedService {
 	 */
 	public Page<FeedEntity> getFeedList(Pageable pageable) {
 
-		Page<FeedEntity> feedPage = feedRepository.findAll(pageable);
-		return getUnDeletedFeedPage(feedPage, pageable);
+		Page<FeedEntity> feedPage = feedRepository.findAllByIsDeleted(IsDeletedType.N, pageable);
+		return feedPage;
 	}
 
 
