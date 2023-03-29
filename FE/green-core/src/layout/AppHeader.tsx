@@ -81,8 +81,8 @@ export default function AppHeader() {
             <div className={`${styles.navContainer} flex flex-col space-y-7`}>
               {nickname ? (
                 <>
-                  <Link href='/'>Home</Link>
-                  <Link href='/'>식물 검색</Link>
+                  <Link href='/home'>Home</Link>
+                  <Link href='/plant/docs'>식물 검색</Link>
                   <Link href='/schedule'>식물 스케줄링</Link>
                   <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
                   <Link href={`/user/alert/${nickname}`}>알림</Link>

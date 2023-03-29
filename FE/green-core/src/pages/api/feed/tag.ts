@@ -28,7 +28,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
           {
             feedId: page * 2 + 2,
             feedCode: 'FEED_POST',
-            imagePath: 'https://i1.sndcdn.com/avatars-mHalH2yXGeayCWfR-fsdm0w-t240x240.jpg',
+            // imagePath: 'https://i1.sndcdn.com/avatars-mHalH2yXGeayCWfR-fsdm0w-t240x240.jpg',
             content: '치코 치코 !',
           },
         ],
