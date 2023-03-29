@@ -5,8 +5,7 @@ import Link from 'next/link';
 
 import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import { getAuth as GitHubGetAuth, signInWithPopup as GitHubSignInWithPopup, GithubAuthProvider, signOut as GitHubSignOut } from 'firebase/auth';
-import { getAuth as GoogleGetAuth, signInWithPopup as GoogleSignInWithPopup, GoogleAuthProvider, signOut as GoogleSignOut } from 'firebase/auth';
+import { getAuth, getRedirectResult, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signInWithCredential } from 'firebase/auth';
 
 import { signUp, logIn, logOut, checkEmailDuplicated, signUpByOAuth } from '@/core/user/userAPI';
 import { SET_ACCESS_TOKEN, SET_IS_OAUTH_TRUE } from '@/core/user/userSlice';
@@ -29,23 +28,24 @@ const initialState: StateType = {
 
 export default function login() {
   const dispatch = useAppDispatch();
-  const [isOpenFindPasswordModal, setIsOpenFindPasswordModal] = useState<boolean>(false);
+  const firebase = useAppSelector((state) => state.common.firebase);
 
-  // github
-  const githubAuth = GitHubGetAuth();
+  // oauth
+  const auth = getAuth();
   const githubProvider = new GithubAuthProvider();
-
-  // google
-  const googleAuth = GoogleGetAuth();
   const googleProvider = new GoogleAuthProvider();
+
+  const [isOpenFindPasswordModal, setIsOpenFindPasswordModal] = useState<boolean>(false);
+  const [isPossibleLogIn, setIsPossibleLogIn] = useState<boolean>(false);
 
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [email, password] = getValues(['email', 'password']);
 
-  const [isPossibleLogIn, setIsPossibleLogIn] = useState<boolean>(false);
+  const accessToken = useAppSelector((state) => state.user.accessToken);
 
   useEffect(() => {
     watch();
+
     return () => {};
   }, []);
 
@@ -64,7 +64,7 @@ export default function login() {
     try {
       const payload = { email, password };
       dispatch(logIn(payload));
-      // console.log(payload);
+      console.log(payload);
     } catch (error) {
       console.error(error);
     }
@@ -72,7 +72,7 @@ export default function login() {
 
   /** GitHub OAUTH 로그인 */
   function handleGithubLogIn() {
-    GitHubSignInWithPopup(githubAuth, githubProvider)
+    signInWithPopup(auth, githubProvider)
       .then(async (result: any) => {
         // const credential = GithubAuthProvider.credentialFromResult(result);
         const token = result?.user?.stsTokenManager;
@@ -130,7 +130,7 @@ export default function login() {
 
   /** Google OAUTH 로그인 */
   function handleGoogleLogIn() {
-    GoogleSignInWithPopup(googleAuth, googleProvider)
+    signInWithPopup(auth, googleProvider)
       .then(async (result: any) => {
         // const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = result.user.stsTokenManager;
@@ -147,15 +147,34 @@ export default function login() {
         console.log(googleEmail, googleNickname, googleUID, googlePhotoUrl);
         console.log(googleAccessToken, googleRefreshToken);
 
-        // TODO: api 완성되면 이메일 중복 확인 하고 token 도 넘겨주기
-        if (!false) {
-          const payload = { email: googleEmail, password: googleUID + '!', nickname: googleNickname };
-          const { data } = await signUp(payload);
-        }
+        try {
+          const { data } = await checkEmailDuplicated(email);
 
-        dispatch(SET_IS_OAUTH_TRUE());
-        dispatch(SET_ACCESS_TOKEN(googleAccessToken));
-        cookies.setRefreshToken(googleRefreshToken);
+          // FIXME: 토의가 필요함! 이메일이랑 비밀번호를 디비에 넣나?
+          // 그러면 그냥 로그인이 진행이 될려나..?
+          // oauth 인것은.. common 에서 persist 하게 저장해야하나? 구분하게..
+          // isAuth 인것은 refreshTOken 이 쿠키에 있으니까 알 수 있다
+          if (!data.result) {
+            // 이미 있는 이메일이라면 그냥 로그인
+            console.log('있는 이메일');
+            dispatch(SET_IS_OAUTH_TRUE());
+            dispatch(SET_ACCESS_TOKEN(googleAccessToken));
+            cookies.setRefreshToken(googleRefreshToken);
+          } else {
+            // 만약 없는 이메일이라면 회원가입 진행
+            console.log('만약 없는 이메일');
+            const payload = { email: googleEmail, password: googleUID + '!', nickname: googleNickname };
+            const { data } = await signUpByOAuth(payload);
+
+            if (data.result) {
+              dispatch(SET_IS_OAUTH_TRUE());
+              dispatch(SET_ACCESS_TOKEN(googleAccessToken));
+              cookies.setRefreshToken(googleRefreshToken);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -183,9 +202,9 @@ export default function login() {
       <FindPasswordModal isOpen={isOpenFindPasswordModal} handleModalClose={() => setIsOpenFindPasswordModal(false)} />
 
       <div className={`${styles.container} h-full flex flex-col`}>
-        <Image src='/images/leaf1.png' width={512} height={512} alt='' className={`${styles.leaf1} `} />
-        <Image src='/images/leaf2.png' width={512} height={512} alt='' className={`${styles.leaf2}`} />
-        <Image src='/images/leaf3.png' width={512} height={512} alt='' className={`${styles.leaf3}`} />
+        <Image src='/images/leaf1.png' priority width={512} height={512} alt='' className={`${styles.leaf1} `} />
+        <Image src='/images/leaf2.png' priority width={512} height={512} alt='' className={`${styles.leaf2}`} />
+        <Image src='/images/leaf3.png' priority width={512} height={512} alt='' className={`${styles.leaf3}`} />
 
         <div className={`w-96 ${styles.wrap} flex flex-col justify-between`}>
           <div className={`${styles.title}`}>LOGIN</div>

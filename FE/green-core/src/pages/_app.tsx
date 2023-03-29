@@ -75,10 +75,6 @@ export default function AppWraper({ Component, pageProps }: AppProps) {
           <AxiosInterceptor>
             <App />
             <Component {...pageProps} />
-            <link
-              href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
-              rel='stylesheet'
-            />
 
             <Script
               src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'

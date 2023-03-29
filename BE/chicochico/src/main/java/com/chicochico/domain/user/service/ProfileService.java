@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class ProfileService {
 	 *
 	 * @param profileRequestDto 프로필 수정 내용
 	 */
+	@Transactional
 	public void modifyUserProfile(ProfileRequestDto profileRequestDto) {
 		// 로그인한 유저의 프로필 가져오기
 		String userNickname = authService.getUserNickname();
@@ -76,6 +78,7 @@ public class ProfileService {
 	 *
 	 * @param profileImage 프로필 이미지
 	 */
+	@Transactional
 	public void modifyUserProfileImage(MultipartFile profileImage) {
 		// 로그인한 유저의 프로필 가져오기
 		String userNickname = authService.getUserNickname();

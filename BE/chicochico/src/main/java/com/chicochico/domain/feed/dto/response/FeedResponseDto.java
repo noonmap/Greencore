@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -34,18 +35,28 @@ public class FeedResponseDto implements Serializable {
 	private Boolean isLiked;
 	private Integer commentCount;
 	private LocalDateTime createdAt;
+	// FEED_DIARY인 경우, diarySet 관련 추가
+	private String diarySetTitle;
+	private Long growingDay;
 
 
 	public static FeedResponseDto fromEntity(FeedEntity xx, Boolean isLiked, Integer commentCount, Function<Long, Boolean> isFollowed) {
 		FeedType feedType;
 		LocalDate observationDate;
+		String diarySetTitle;
+		Long growingDay;
+		DiaryEntity diary = null;
 		if (xx instanceof DiaryEntity) {
-			DiaryEntity diary = (DiaryEntity) xx;
+			diary = (DiaryEntity) xx;
 			feedType = FeedType.FEED_DIARY;
 			observationDate = diary.getObservationDate();
+			diarySetTitle = diary.getDiarySet().getTitle();
+			growingDay = ChronoUnit.DAYS.between(diary.getDiarySet().getStartDate(), diary.getObservationDate());
 		} else {
 			feedType = FeedType.FEED_POST;
 			observationDate = null;
+			diarySetTitle = null;
+			growingDay = null;
 		}
 
 		return FeedResponseDto.builder()
@@ -53,11 +64,13 @@ public class FeedResponseDto implements Serializable {
 			.feedCode(feedType)
 			.observationDate(observationDate)
 			.feedId(xx.getId())
-			.content(xx.getContent())
+			.content(xx.getContent().substring(0, Math.min(xx.getContent().length(), 50))) // 최대 50자까지 잘라서 전송
 			.imagePath(xx.getImagePath())
 			.likeCount(xx.getLikeCount())
 			.isLiked(isLiked)
 			.commentCount(commentCount)
+			.diarySetTitle(diarySetTitle)
+			.growingDay(growingDay)
 			.createdAt(xx.getCreatedAt())
 			.build();
 	}

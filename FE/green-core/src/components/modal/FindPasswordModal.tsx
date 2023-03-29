@@ -5,7 +5,7 @@ import { checkInputFormToast } from '@/lib/utils';
 import { useAppSelector } from '@/core/hooks';
 import AppButton from '../button/AppButton';
 
-import { EssentialMessage, EmailMessage } from '@/assets/message.json';
+import message from '@/assets/message.json';
 
 type PropsType = {
   isOpen: boolean;
@@ -88,8 +88,8 @@ export default function AppModal({ isOpen, handleModalClose }: PropsType) {
                       className={`${errors?.email ? 'inputError' : null} block w-full`}
                       placeholder='이메일을 입력해주세요'
                       {...register('email', {
-                        required: EssentialMessage,
-                        pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: EmailMessage },
+                        required: message.EssentialMessage,
+                        pattern: { value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/, message: message.EmailMessage },
                       })}
                     />
 

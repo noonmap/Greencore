@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 import { SearchUserType } from '../core/user/userType';
-import styles from '@/styles/feed.module.scss';
+import styles from '@/components/FeedListItem.module.scss';
 
 export default function SearchUserListItem(props: { searchUser: SearchUserType }) {
   const searchUser = props.searchUser;

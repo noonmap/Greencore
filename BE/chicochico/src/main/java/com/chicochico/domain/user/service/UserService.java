@@ -175,7 +175,7 @@ public class UserService {
 
 		// 유저가 팔로워인 경우 삭제
 		followService.deleteAllFollowerByUserId(userId);
-		
+
 		// 유저가 팔로잉인 경우 삭제
 		followService.deleteAllFollowingByUserId(userId);
 
@@ -289,6 +289,9 @@ public class UserService {
 			diarySet.get().setIsEnabledAddDiary(IsEnabledType.N);
 			diarySetRepository.save(diarySet.get());
 		}
+
+		//관련 스케줄 삭제
+		scheduleService.deleteAllSchedulesByUserPlant(userPlant);
 
 	}
 

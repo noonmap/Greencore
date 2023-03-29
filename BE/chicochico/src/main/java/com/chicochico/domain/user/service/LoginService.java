@@ -152,6 +152,7 @@ public class LoginService {
 
 		// 유저가 존재하지 않을 때 혹은 탈퇴한 유저 일때 error 발생
 		UserEntity user = userRepository.findByEmailAndIsDeleted(loginRequestDto.getEmail(), IsDeletedType.N).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+		System.out.println("loginRequestDto: " + loginRequestDto);
 
 		log.info("[login] 비밀번호 비교 수행");
 		// 비밀번호 체크

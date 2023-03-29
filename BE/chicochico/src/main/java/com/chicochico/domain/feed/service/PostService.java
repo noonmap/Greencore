@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class PostService {
 	 *
 	 * @param postRequestDto
 	 */
+	@Transactional
 	public void createPost(PostRequestDto postRequestDto) {
 		// 작성자 조회
 		Long userId = authService.getUserId();
@@ -115,6 +117,7 @@ public class PostService {
 	 * @param postId
 	 * @param postRequestDto
 	 */
+	@Transactional
 	public void modifyPost(Long postId, PostRequestDto postRequestDto) {
 		// 삭제된 게시글인지 확인
 		PostEntity originPost = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -158,6 +161,7 @@ public class PostService {
 	 *
 	 * @param postId
 	 */
+	@Transactional
 	public void deletePost(Long postId) {
 		// 삭제된 게시글인지 확인
 		PostEntity post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
