@@ -1,12 +1,23 @@
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '@/core/hooks';
 import { deleteComment, updateComment } from '@/core/feed/feedAPI';
+import styles from './FeedCommentItem.module.scss';
+import AppButton from './button/AppButton';
 
 export default function FeedCommentItem({ comment, feedId, deleteCommentList }) {
   const [isUpdated, setIsUpdated] = useState(false);
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+
+  // 모달 바깥 클릭 시
+  function handleModalOutsideClick(e: any) {
+    if (ref.current && !ref.current.contains(e.target)) {
+      setIsOpenMenu(false);
+    }
+  }
 
   // react-hook-form 설정
   type StateType = {
@@ -23,12 +34,18 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
 
   useEffect(() => {
     watch();
-    return () => {};
+
+    document.addEventListener('mousedown', handleModalOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+    };
   });
 
   // 댓글 수정 토글
   const handleUpdateCommentToggle = (e: any) => {
     e.preventDefault();
+    setIsOpenMenu(false);
     setIsUpdated((prev) => !prev);
   };
 
@@ -52,6 +69,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
 
   // 댓글 삭제 확인
   const checkDeleteComment = () => {
+    setIsOpenMenu(false);
     if (window.confirm('삭제하시겠습니까?')) {
       handleDeleteComment();
     }
@@ -66,64 +84,105 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
     }
   };
 
+  // 시간 포맷
+  const elapsedTime = (date: any) => {
+    const start = +new Date(date);
+    const end = +new Date();
+
+    const diff = (end - start) / 1000;
+
+    const times = [
+      { name: '년', milliSeconds: 60 * 60 * 24 * 365 },
+      { name: '개월', milliSeconds: 60 * 60 * 24 * 30 },
+      { name: '일', milliSeconds: 60 * 60 * 24 },
+      { name: '시간', milliSeconds: 60 * 60 },
+      { name: '분', milliSeconds: 60 },
+    ];
+
+    for (const value of times) {
+      const betweenTime = Math.floor(diff / value.milliSeconds);
+
+      if (betweenTime > 0) {
+        return `${betweenTime}${value.name} 전`;
+      }
+    }
+    return '방금 전';
+  };
+
+  console.log(isOpenMenu);
+
   return (
-    <div key={comment.commentId} style={{ display: 'flex', marginBlock: '16px' }}>
+    <div key={comment.commentId} className={`${styles.container}`}>
       <div>
         <Link href={`/user/feed/${comment.user.nickname}`}>
           <img src={comment.user.profileImagePath} alt='프로필사진' style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
         </Link>
       </div>
       {isUpdated ? (
-        <div>
-          <textarea rows={4} {...register('content')} />
+        <div className='flex items-center w-full'>
+          <div className={`${styles.name}`}>
+            <Link href={`/user/feed/${comment.user.nickname}`}>{comment.user.nickname}</Link>
+          </div>
+          <textarea className={`${styles.textareaBox} flex-1`} rows={2} {...register('content')} />
         </div>
       ) : (
-        <div>
-          <div>
+        <div className='flex items-center'>
+          <div className={`${styles.name}`}>
             <Link href={`/user/feed/${comment.user.nickname}`}>{comment.user.nickname}</Link>
           </div>
           <div>
-            {content.split(/(@[^\s@#]+)/g).map((v: string, index: number) => {
-              if (v.match(/@[^\s@#]+/g)) {
+            <div>
+              {content.split(/(@[^\s@#]+)/g).map((v: string, index: number) => {
+                if (v.match(/@[^\s@#]+/g)) {
+                  return (
+                    <span key={index}>
+                      <Link href={`/user/feed/${comment.user.nickname}`} style={{ color: 'blue', whiteSpace: 'pre-line' }}>
+                        {v}
+                      </Link>
+                    </span>
+                  );
+                }
                 return (
-                  <span key={index}>
-                    <Link href={`/user/feed/${comment.user.nickname}`} style={{ color: 'blue', whiteSpace: 'pre-line' }}>
-                      {v}
-                    </Link>
+                  <span key={index} style={{ whiteSpace: 'pre-line' }}>
+                    {v}
                   </span>
                 );
-              }
-              return (
-                <span key={index} style={{ whiteSpace: 'pre-line' }}>
-                  {v}
-                </span>
-              );
-            })}
-          </div>
-          <div>
-            {comment.createdAt.slice(0, 10)} {comment.createdAt.slice(11, 16)}
+              })}
+            </div>
+            <div className={`${styles.date}`}>{elapsedTime(comment.createdAt)}</div>
           </div>
         </div>
       )}
-      {isUpdated ? (
-        <div>
-          <button style={{ paddingInline: '4px' }} onClick={checkUpdateComment}>
-            수정
-          </button>
-          <button style={{ paddingInline: '4px' }} onClick={handleUpdateCommentToggle}>
-            취소
-          </button>
-        </div>
-      ) : (
-        <div>
-          <button style={{ paddingInline: '4px' }} onClick={handleUpdateCommentToggle}>
-            수정
-          </button>
-          <button style={{ paddingInline: '4px' }} onClick={checkDeleteComment}>
-            삭제
-          </button>
-        </div>
-      )}
+      <div className={`${styles.end}`}>
+        {isUpdated ? (
+          <>
+            <AppButton text='수정' className={`${styles.btn} mb-1`} handleClick={checkUpdateComment} />
+            <AppButton text='취소' className={`${styles.btn}`} handleClick={handleUpdateCommentToggle} bgColor='thin' />
+          </>
+        ) : (
+          <>
+            <span className='material-symbols-outlined cursor-pointer' onClick={() => setIsOpenMenu((prev) => !prev)}>
+              more_vert
+            </span>
+            <div className={`${styles.dropdown}`}>
+              <div ref={ref} className={`${isOpenMenu ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
+                <div
+                  className={`border-b border-slate-300 bg-white flex justify-center items-center cursor-pointer ${styles.dropdownMenu}`}
+                  onClick={handleUpdateCommentToggle}>
+                  <span className='text-lg p-2'>수정</span>
+                  <span className='material-symbols-outlined'>edit</span>
+                </div>
+                <div
+                  className={`border-b border-slate-300 bg-white flex justify-center items-center text-red-400 cursor-pointer ${styles.dropdownMenu}`}
+                  onClick={checkDeleteComment}>
+                  <span className='text-lg p-2'>삭제</span>
+                  <span className='material-symbols-outlined'>delete</span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
