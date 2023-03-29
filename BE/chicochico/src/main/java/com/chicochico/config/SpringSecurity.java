@@ -79,7 +79,7 @@ public class SpringSecurity {
 			// 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
 			.and()
 			.authorizeRequests()
-			.antMatchers("/login/**", "/user", "/user/{nickname}", "/user/email/{email}", "/refresh", "/mail/**").permitAll()
+			.antMatchers("/login/**", "/user", "/user/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type").permitAll()
 			.antMatchers("/swagger-resources/**", "/swagger-ui", "/swagger-ui/**").permitAll()
 			.anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 
