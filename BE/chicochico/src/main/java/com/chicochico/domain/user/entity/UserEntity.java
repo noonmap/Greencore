@@ -2,6 +2,7 @@ package com.chicochico.domain.user.entity;
 
 
 import com.chicochico.common.code.IsDeletedType;
+import com.chicochico.common.code.UserStoreType;
 import com.chicochico.common.entity.CommonEntity;
 import com.chicochico.domain.feed.entity.BookmarkEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,6 +57,10 @@ public class UserEntity extends CommonEntity implements UserDetails {
 	@Column(nullable = false)
 	private IsDeletedType isDeleted;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private UserStoreType userStore;
+
 	@OneToMany(mappedBy = "user")
 	@Builder.Default
 	private List<BookmarkEntity> bookmarkList = new ArrayList<>();
@@ -106,11 +111,12 @@ public class UserEntity extends CommonEntity implements UserDetails {
 
 	@PrePersist
 	public void prePersist() {
-		this.profileImagePath = this.profileImagePath == null ? "default_profileImagePath" : this.profileImagePath;
-		this.introduction = this.introduction == null ? "default_introduction" : this.introduction;
+		this.profileImagePath = this.profileImagePath == null ? "/user/default.jpg" : this.profileImagePath;
+		this.introduction = this.introduction == null ? "안녕하세요! 초보 식집사입니다! 잘부탁드려요~" : this.introduction;
 		this.followingCount = this.followingCount == null ? 0 : this.followingCount;
 		this.followerCount = this.followerCount == null ? 0 : this.followerCount;
 		this.isDeleted = this.isDeleted == null ? IsDeletedType.N : this.isDeleted;
+		this.userStore = this.userStore == null ? UserStoreType.DB : this.userStore;
 	}
 
 

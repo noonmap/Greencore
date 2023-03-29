@@ -15,19 +15,21 @@ DROP TABLE IF EXISTS `tag`;
 DROP TABLE IF EXISTS `plant`;
 DROP TABLE IF EXISTS `user_table`;
 
-CREATE TABLE `user_table` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `follower_count` int NOT NULL,
-  `following_count` int NOT NULL,
-  `introduction` varchar(255) NOT NULL,
-  `is_deleted` varchar(255) NOT NULL,
-  `nickname` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `profile_image_path` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE `user_table`
+(
+    `id`                 bigint       NOT NULL AUTO_INCREMENT,
+    `created_at`         datetime     NOT NULL,
+    `updated_at`         datetime     NOT NULL,
+    `email`              varchar(255) NOT NULL,
+    `follower_count`     int          NOT NULL,
+    `following_count`    int          NOT NULL,
+    `introduction`       varchar(255) NOT NULL,
+    `is_deleted`         varchar(255) NOT NULL,
+    `nickname`           varchar(255) NOT NULL,
+    `password`           varchar(255) NOT NULL,
+    `profile_image_path` varchar(255) NOT NULL,
+    `user_store`         varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `alert` (

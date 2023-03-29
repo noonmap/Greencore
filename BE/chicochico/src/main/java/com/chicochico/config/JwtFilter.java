@@ -2,12 +2,22 @@ package com.chicochico.config;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
+import com.chicochico.common.service.KakaoService;
+import com.chicochico.domain.user.service.CustomUserDetailsService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,6 +38,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	private final AuthTokenProvider tokenProvider;
 	private final RedisTemplate redisTemplate;
+	private final FirebaseAuth firebaseAuth;
+	private final CustomUserDetailsService userDetailsService;
+	private final KakaoService kakaoService;
+	private final ObjectMapper objectMapper;
 
 
 	// 실제 필터링 로직은 doFilterInternal 에 들어감
@@ -36,20 +50,60 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 		// 1. Request Header 에서 토큰을 꺼냄
 		String token = resolveToken(request);
+		FirebaseToken decodedToken;
+
+		log.info("여기: {}", request.getRequestURI());
 
 		// 2. validateToken 으로 토큰 유효성 검사
 		// 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
-		if (StringUtils.hasText(token)) {
-			if (!tokenProvider.validate(token))
-				throw new JwtException("accessToken 유효하지 않음");
+		if (StringUtils.hasText(token) && !request.getRequestURI().equals("/api/login/oauth") && !request.getRequestURI().equals("/api/login/kakao")) {
 
-			// 3. Redis에 해당 accessToken 로그아웃 여부 확인
-			String isLogout = (String) redisTemplate.opsForValue().get(token);
-			if (ObjectUtils.isEmpty(isLogout)) {
-				Authentication authentication = tokenProvider.getAuthentication(token);
-				SecurityContextHolder.getContext().setAuthentication(authentication);
+			if (tokenProvider.validate(token)) {
+				// 3. Redis에 해당 accessToken 로그아웃 여부 확인
+				String isLogout = (String) redisTemplate.opsForValue().get(token);
+				if (ObjectUtils.isEmpty(isLogout)) {
+					Authentication authentication = tokenProvider.getAuthentication(token);
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+				} else {
+					throw new JwtException("로그아웃 된 accessToken 유효하지 않음");
+				}
 			} else {
-				throw new JwtException("로그아웃 된 accessToken 유효하지 않음");
+				// FirebaseAuth를 이용하여 Token을 검증한다.
+				try {
+					decodedToken = firebaseAuth.verifyIdToken(token);
+					// id를 firebase에서 제공하는 email를 사용함
+					// 있는 유저라면 계속 진행하기
+					UserDetails user = userDetailsService.loadUserByEmail(decodedToken.getEmail());
+					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+						user, null, user.getAuthorities());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+
+				} catch (FirebaseAuthException e) {
+					// TODO kakaoAuth Token 검증필요
+					kakaoService.setAccessToken(token);
+					String result = kakaoService.getKakaoUserAccessTokenInfo();
+					if (result == null)
+						throw new JwtException("accessToken 유효하지 않음");
+
+					String userInfo = kakaoService.kakaoMe();
+
+					JsonNode jsonNode = null;
+					try {
+						jsonNode = objectMapper.readTree(userInfo);
+					} catch (JsonProcessingException ex) {
+						throw new JwtException("accessToken 유효하지 않음");
+					}
+
+					JsonNode kakaoAccount = jsonNode.get("kakao_account");
+
+					String kakaoEmail = kakaoService.getStringValue(kakaoAccount, "email");
+
+					UserDetails user = userDetailsService.loadUserByEmail(kakaoEmail);
+					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+						user, null, user.getAuthorities());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+
+				}
 			}
 
 		}
