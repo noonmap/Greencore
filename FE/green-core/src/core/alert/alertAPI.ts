@@ -1,153 +1,93 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { getFirestore, collection, doc, query, orderBy, startAfter, where, updateDoc, getDocs, deleteDoc, limit, setDoc } from 'firebase/firestore';
 
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
-
-import {
-  getFirestore,
-  collection,
-  doc,
-  query,
-  orderBy,
-  startAfter,
-  onSnapshot,
-  getDoc,
-  updateDoc,
-  getDocs,
-  deleteDoc,
-  limit,
-} from 'firebase/firestore';
-import { AlertDataType } from './alertType';
+import { AlertCreateType, AlertDataType } from './alertType';
+import { setAlertMessage } from '@/lib/utils';
 
 const db = getFirestore();
 
 /** [FIREBASE] 알림 리스트 조회 */
 export const getAlertList = createAsyncThunk('getAlertList', async (payload: AlertDataType) => {
-  const { nickname, page, size } = payload;
+	const { nickname, page, size } = payload;
 
-  let lastPage = null;
-  let alertQuery = null;
+	let lastPage = null;
+	let alertQuery = null;
 
-  const alertRef = collection(db, nickname);
+	const alertRef = collection(db, nickname);
 
-  if (page) alertQuery = query(alertRef, orderBy('createdAt', 'desc'), startAfter(lastPage), limit(size));
-  else alertQuery = query(alertRef, orderBy('createdAt', 'desc'), limit(size));
+	if (page) alertQuery = query(alertRef, orderBy('createdAt', 'desc'), startAfter(lastPage), limit(size));
+	else alertQuery = query(alertRef, orderBy('createdAt', 'desc'), limit(size));
 
-  // const alertSnapshot = await getDocs(alertQuery);
+	const alertSnapshot = await getDocs(alertQuery);
 
-  let alertList = [];
+	let alertList = [];
+	alertSnapshot.forEach((doc) => {
+		let data = doc.data();
+		data['alertId'] = doc.id;
+		alertList.push(data);
+	});
 
-  const alertSnapshot = onSnapshot(alertQuery, (snapShot: any) => {
-    lastPage = snapShot.docs[snapShot.docs.length - 1];
+	lastPage = alertSnapshot.docs[alertSnapshot.docs.length - 1];
 
-    console.log(snapShot);
+	return { alertList, lastPage };
+});
 
-    // let alertList = [];
-    // snapShot.forEach((doc) => {
-    //   let newDoc = doc.data();
-    //   newDoc['alertId'] = doc.id;
-    //   // alertList.push(newDoc);
-    //   alertList.push(newDoc);
-    //   // alertList = [...temp];
-    //   console.log('j', alertList);
-    // });
-  });
+/** [FIREBASE] 알림 생성 */
+export const createAlert = createAsyncThunk('createAlert', async (payload: AlertCreateType) => {
+	const { mentionNickname, type, urlPath, createdAt, isRead } = payload;
 
-  return { alertList, lastPage };
-  // console.table('a', alertList);
+	let nickname = 'test';
+	const alertRef = collection(db, nickname);
+	const newAlert = {
+		type,
+		content: setAlertMessage(mentionNickname, type),
+		urlPath,
+		createdAt,
+		isRead
+	};
+
+	await setDoc(doc(alertRef), newAlert, { merge: true });
 });
 
 /** [FIREBASE] 알림 리스트 단일 삭제 */
 export const deleteAlert = createAsyncThunk('deleteAlert', async (payload: AlertDataType) => {
-  const { nickname, alertId } = payload;
-  const alertDoc = doc(db, `${nickname}/${alertId}`);
-  await deleteDoc(alertDoc);
+	const { nickname, alertId } = payload;
+	const alertDoc = doc(db, `${nickname}/${alertId}`);
+	await deleteDoc(alertDoc);
 });
 
 /** [FIREBASE] 알림 리스트 선택 삭제 */
 export const deleteSelectedAlert = createAsyncThunk('deleteSelectedAlert', async (payload: AlertDataType) => {
-  const { nickname, selectedAlertList } = payload;
+	const { nickname, selectedAlertList } = payload;
 
-  selectedAlertList.forEach(async (alertId) => {
-    const alertDoc = doc(db, `${nickname}/${alertId}`);
-    await deleteDoc(alertDoc);
-  });
+	selectedAlertList.forEach(async (alertId) => {
+		const alertDoc = doc(db, `${nickname}/${alertId}`);
+		await deleteDoc(alertDoc);
+	});
 });
 
 /** [FIREBASE] 알림 리스트 선택 읽음 */
-export const readSelectedAlert = createAsyncThunk('deleteAllAlertList', async (payload: AlertDataType) => {
-  const { nickname, selectedAlertList } = payload;
+export const updateSelectedAlert = createAsyncThunk('updateSelectedAlert', async (payload: AlertDataType) => {
+	const { nickname, selectedAlertList } = payload;
 
-  selectedAlertList.forEach(async (alertId) => {
-    const alertDoc = doc(db, `${nickname}/${alertId}`);
-    await updateDoc(alertDoc, { isRead: true });
-  });
+	selectedAlertList.forEach(async (alertId) => {
+		const alertDoc = doc(db, `${nickname}/${alertId}`);
+		await updateDoc(alertDoc, { isRead: true });
+	});
 });
 
-export const readAllAlert = createAsyncThunk('deleteAllAlertList', async (payload: AlertDataType) => {
-  const { nickname, selectedAlertList } = payload;
+/** [FIREBASE] 알림 리스트 전체 읽음 */
+export const updateAllAlert = createAsyncThunk('updateAllAlert', async (nickname: string) => {
+	const alertRef = collection(db, nickname);
+	const alertQuery = query(alertRef, where('isRead', '==', false));
+
+	const alertSnapshot = await getDocs(alertQuery);
+
+	alertSnapshot.forEach(async (alert) => {
+		const alertDoc = doc(db, `${nickname}/${alert.id}`);
+		await updateDoc(alertDoc, { isRead: true });
+	});
 });
-
-// 알림 리스트 조회
-// export const getAlertList = createAsyncThunk('getAlertList', async (params: AlertDataType) => {
-//   try {
-//     const { data } = await http.get('/alert', { params });
-
-//     return data.data;
-//   } catch (err) {
-//     Toastify({
-//       text: message.GetAlertListFail,
-//       duration: 1500,
-//       position: 'center',
-//       stopOnFocus: true,
-//       style: toastifyCSS.fail,
-//     }).showToast();
-
-//     console.error(err);
-
-//     return [];
-//   }
-// });
-
-// // 알림 리스트 추가 조회
-// export const getAlertListMore = createAsyncThunk('getAlertListMore', async (payload: AlertDataType) => {
-//   try {
-//     const { data } = await http.get('/alert', { params: { page: payload.page } });
-
-//     return data.data;
-//   } catch (err) {
-//     Toastify({
-//       text: message.GetAlertListFail,
-//       duration: 1500,
-//       position: 'center',
-//       stopOnFocus: true,
-//       style: toastifyCSS.fail,
-//     }).showToast();
-
-//     console.error(err);
-
-//     return [];
-//   }
-// });
-
-// // 알림 삭제
-// export const deleteAlert = async (alertId: number) => {
-//   try {
-//     const { data } = await http.delete(`/alert/${alertId}`);
-
-//     return data;
-//   } catch (err) {
-//     Toastify({
-//       text: message.DeleteAlertFail,
-//       duration: 1500,
-//       position: 'center',
-//       stopOnFocus: true,
-//       style: toastifyCSS.fail,
-//     }).showToast();
-
-//     console.error(err);
-
-//     return [];
-//   }
-// };
