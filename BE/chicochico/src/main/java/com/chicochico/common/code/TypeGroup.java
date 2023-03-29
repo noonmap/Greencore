@@ -3,21 +3,17 @@ package com.chicochico.common.code;
 
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
 public enum TypeGroup {
-	FEED(List.of(
-		FeedType.FEED_POST,
-		FeedType.FEED_DIARY)),
-	SCHEDULE(List.of(
-		ScheduleType.SCHEDULE_WATER,
-		ScheduleType.SCHEDULE_REPOT,
-		ScheduleType.SCHEDULE_PRUNING,
-		ScheduleType.SCHEDULE_NUTRITION,
-		ScheduleType.SCHEDULE_VENTILATION,
-		ScheduleType.SCHEDULE_SPRAY));
+	FEED(Arrays.stream(FeedType.values()).collect(Collectors.toList())), // FeedType 안에 있는 enum 요소들을 모두 list로 추가함
+	SCHEDULE(Arrays.stream(ScheduleType.values()).collect(Collectors.toList())),
+	REGURALSCHEDULE(Arrays.stream(RegularScheduleType.values()).collect(Collectors.toList())),
+	ALERT(Arrays.stream(AlertType.values()).collect(Collectors.toList()));
 
 	private final List<TypeModel> typeList;
 
