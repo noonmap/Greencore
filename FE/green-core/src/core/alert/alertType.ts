@@ -1,11 +1,16 @@
 export type AlertType = {
-  alertId: number;
+  alertId: string;
   content: string;
+  mentionNickname: string;
+  type: string;
   urlPath: string;
   createdAt: string;
 };
 
 export type AlertDataType = {
-  page: number;
-  size: number;
+  nickname: string;
+  alertId?: string;
+  page?: number;
+  size?: number;
+  selectedAlertList?: Array<string>;
 };

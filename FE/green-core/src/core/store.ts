@@ -12,7 +12,6 @@ import alertReducer from './alert/alertSlice';
 import feedReducer from './feed/feedSlice';
 import plantReducer from './plant/plantSlice';
 
-// whitelist: 이것만 적용, blacklist: 해당 것만 제외하고 모두 적용
 const persistConfig = { key: 'root', version: 1, storage, whitelist: ['common'] };
 
 const rootReducer = combineReducers({
@@ -26,6 +25,7 @@ const rootReducer = combineReducers({
   feed: feedReducer,
   plant: plantReducer,
 });
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export function makeStore() {
