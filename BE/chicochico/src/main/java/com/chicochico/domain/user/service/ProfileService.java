@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class ProfileService {
 
 	static private final String IMAGE_FILE_SUB_DIR = "profile";
-	static private final String DEFAULT_PROFILE_IMAGE_PATH = "default_profileImagePath";
+	static private final String DEFAULT_PROFILE_IMAGE_PATH = "/user/default.jpg";
 	private final UserRepository userRepository;
 
 	private final UserPlantRepository userPlantRepository;

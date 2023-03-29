@@ -111,8 +111,8 @@ public class UserEntity extends CommonEntity implements UserDetails {
 
 	@PrePersist
 	public void prePersist() {
-		this.profileImagePath = this.profileImagePath == null ? "default_profileImagePath" : this.profileImagePath;
-		this.introduction = this.introduction == null ? "default_introduction" : this.introduction;
+		this.profileImagePath = this.profileImagePath == null ? "/user/default.jpg" : this.profileImagePath;
+		this.introduction = this.introduction == null ? "안녕하세요! 초보 식집사입니다! 잘부탁드려요~" : this.introduction;
 		this.followingCount = this.followingCount == null ? 0 : this.followingCount;
 		this.followerCount = this.followerCount == null ? 0 : this.followerCount;
 		this.isDeleted = this.isDeleted == null ? IsDeletedType.N : this.isDeleted;
