@@ -86,7 +86,7 @@ public class FeedServiceTest extends FeedTestHelper {
 			when(feedRepository.findAll(any(Pageable.class))).thenReturn(page);
 
 			// when
-			Page<FeedEntity> result = feedService.getFeedList(pageable);
+			Page<FeedEntity> result = feedService.getRecommendedFeedList(pageable);
 
 			// given
 			Assertions.assertThat(result.isEmpty()).isTrue();
@@ -103,7 +103,7 @@ public class FeedServiceTest extends FeedTestHelper {
 			when(feedRepository.findAll(pageable)).thenReturn(page);
 
 			// when
-			Page<FeedEntity> result = feedService.getFeedList(pageable);
+			Page<FeedEntity> result = feedService.getRecommendedFeedList(pageable);
 
 			// then
 			// list에 속한 entity들이 Post와 Diary로 타입이 제대로 들어갔는지 확인
