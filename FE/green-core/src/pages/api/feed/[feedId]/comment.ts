@@ -30,7 +30,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             },
             content: `${3 * page}번째 댓글 @문동은 @주여정`,
             mentionNickname: '',
-            createdAt: '2023-03-01T07:00:00',
+            createdAt: '2023-03-29T07:00:00',
           },
           {
             commentId: 3 * page + 1,
@@ -44,7 +44,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             },
             content: `${3 * page + 1}번째 댓글`,
             mentionNickname: '',
-            createdAt: '2023-03-01T07:00:00',
+            createdAt: '2023-03-29T12:00:00',
           },
           {
             commentId: 3 * page + 2,
@@ -58,7 +58,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             },
             content: `${3 * page + 2}번째 댓글`,
             mentionNickname: '',
-            createdAt: '2023-03-01T07:00:00',
+            createdAt: '2023-03-29T14:36:30',
           },
         ],
       });

@@ -8,7 +8,7 @@ $col-count: 7;
 }
 
 .calendar {
-  @include common.size(70%, 90%);
+  @include common.size(100%, 100%);
   padding: 1rem;
   .title {
     font-size: 1.5rem;
