@@ -42,6 +42,7 @@ public class DiaryResponseDto {
 	private List<String> tags;
 	private String imagePath;
 	private Integer likeCount;
+	private Integer commentCount;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime createdAt;
 
@@ -55,6 +56,7 @@ public class DiaryResponseDto {
 			.tags(getTagsList.apply(diary.getId()))
 			.imagePath(diary.getImagePath())
 			.likeCount(diary.getLikeCount())
+			.commentCount(diary.getCommentCount())
 			.createdAt(diary.getCreatedAt())
 			.build();
 	}
