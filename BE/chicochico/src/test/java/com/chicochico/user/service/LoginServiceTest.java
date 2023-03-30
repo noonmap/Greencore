@@ -2,8 +2,10 @@ package com.chicochico.user.service;
 
 
 import com.chicochico.common.code.IsDeletedType;
+import com.chicochico.common.code.UserStoreType;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
+import com.chicochico.domain.user.dto.request.RefreshRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
@@ -167,10 +169,11 @@ class LoginServiceTest {
 	void createAccessTokenTest_엑세스토큰재발급실패_REFRESH_TOKEN_NOT_FOUND() {
 		// given
 		Map<String, String> loginRequestHeader = new HashMap<>();
+		RefreshRequestDto refreshRequestDto = new RefreshRequestDto(UserStoreType.DB);
 
 		// when
 		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
-			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse, refreshRequestDto)
 		);
 
 		// then
@@ -185,10 +188,11 @@ class LoginServiceTest {
 		Map<String, String> loginRequestHeader = new HashMap<>();
 
 		loginRequestHeader.put(REFRESHHEADERKEY, testRefreshToken);
+		RefreshRequestDto refreshRequestDto = new RefreshRequestDto(UserStoreType.DB);
 
 		// when
 		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
-			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse, refreshRequestDto)
 		);
 
 		// then
@@ -206,9 +210,10 @@ class LoginServiceTest {
 		loginRequestHeader.put(ACCESSHEADERKEY, testBearerToken);
 
 		Mockito.when(authTokenProvider.validate(testRefreshToken)).thenReturn(false);
+		RefreshRequestDto refreshRequestDto = new RefreshRequestDto(UserStoreType.DB);
 
 		// when
-		CustomException customException = Assertions.assertThrows(CustomException.class, () -> loginService.createAccessToken(loginRequestHeader, httpServletResponse));
+		CustomException customException = Assertions.assertThrows(CustomException.class, () -> loginService.createAccessToken(loginRequestHeader, httpServletResponse, refreshRequestDto));
 
 		// then
 		Assertions.assertEquals(ErrorCode.REFRESH_TOKEN_ERROR, customException.getErrorCode());
@@ -233,9 +238,11 @@ class LoginServiceTest {
 		Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
 		Mockito.when(valueOperations.get("RT:" + userId)).thenReturn("");
 
+		RefreshRequestDto refreshRequestDto = new RefreshRequestDto(UserStoreType.DB);
+
 		// when
 		CustomException customException = Assertions.assertThrows(CustomException.class, () ->
-			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse, refreshRequestDto)
 		);
 
 		// then
@@ -266,9 +273,11 @@ class LoginServiceTest {
 		Mockito.when(authTokenProvider.createRefreshToken(userId, testNickname)).thenReturn("newRefreshToken");
 		Mockito.when(authTokenProvider.getExpiration(testRefreshToken)).thenReturn(1000L);
 
+		RefreshRequestDto refreshRequestDto = new RefreshRequestDto(UserStoreType.DB);
+
 		// when
 		assertThatCode(() ->
-			loginService.createAccessToken(loginRequestHeader, httpServletResponse)
+			loginService.createAccessToken(loginRequestHeader, httpServletResponse, refreshRequestDto)
 		).doesNotThrowAnyException();
 
 		// then

@@ -7,6 +7,7 @@ import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.common.service.OuathService;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
+import com.chicochico.domain.user.dto.request.RefreshRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.repository.UserRepository;
@@ -59,14 +60,14 @@ public class LoginService {
 	 * @param loginRequestHeader 엑세스 토큰
 	 * @param response           엑세스 토큰을 담을 response
 	 */
-	public void createAccessToken(Map<String, String> loginRequestHeader, HttpServletResponse response) {
+	public void createAccessToken(Map<String, String> loginRequestHeader, HttpServletResponse response, RefreshRequestDto refreshRequestDto) {
+
 		// 로그인 유저 가져오기
-		Long loginUserId = authService.getUserId();
-		UserEntity user = userRepository.findByIdAndIsDeleted(loginUserId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
+		UserStoreType userStore = refreshRequestDto.getAuthType();
 
-		if (user.getUserStore().equals(UserStoreType.DB)) { // 로그인 유저가 db 유저라면
+		if (userStore.equals(UserStoreType.DB)) { // 로그인 유저가 db 유저라면
 
 			// 1. Refresh Token 검증
 			if (!authTokenProvider.validate(loginRequestRefreshToken)) {
@@ -95,7 +96,7 @@ public class LoginService {
 			redisTemplate.opsForValue()
 				.set("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
 
-		} else if (user.getUserStore().equals(UserStoreType.FIREBASE)) { // firebase에 저장된 유저 (구글/깃헙)
+		} else if (userStore.equals(UserStoreType.FIREBASE)) { // firebase에 저장된 유저 (구글/깃헙)
 			Map<String, String> params = new HashMap<>();
 			params.put("refresh_token", loginRequestRefreshToken);
 
@@ -113,7 +114,7 @@ public class LoginService {
 			authTokenProvider.setHeaderAccessToken(response, newAccessToken);
 			authTokenProvider.setHeaderRefreshToken(response, loginRequestRefreshToken);
 
-		} else if (user.getUserStore().equals(UserStoreType.KAKAO)) { // kakao 로그인 유저
+		} else if (userStore.equals(UserStoreType.KAKAO)) { // kakao 로그인 유저
 			Map<String, String> params = new HashMap<>();
 			params.put("refresh_token", loginRequestRefreshToken);
 
