@@ -22,116 +22,117 @@ import AppLoading from '@/components/common/AppLoading';
 
 import { getFirestore, collection, query, orderBy, startAfter, onSnapshot, limit } from 'firebase/firestore';
 import { getAlertList } from '@/core/alert/alertAPI';
+import { SET_AUTH_TYPE_DB } from '@/core/common/commonSlice';
 
 declare global {
-  interface Window {
-    Kakao: any;
-  }
+	interface Window {
+		Kakao: any;
+	}
 }
 
 const onBeforeLift = () => {
-  // take some action before the gate lifts
+	// take some action before the gate lifts
 };
 
 function App() {
-  const dispatch = useAppDispatch();
-  const db = getFirestore();
+	const dispatch = useAppDispatch();
+	const db = getFirestore();
 
-  const page = useAppSelector((state) => state.alert.page);
-  const size = useAppSelector((state) => state.alert.size);
-  const authType = useAppSelector((state) => state.common.authType);
+	const page = useAppSelector((state) => state.alert.page);
+	const size = useAppSelector((state) => state.alert.size);
+	const authType = useAppSelector((state) => state.common.authType);
 
-  const alertInit = () => {
-    let lastPage = null;
-    let alertQuery = null;
+	const alertInit = () => {
+		let lastPage = null;
+		let alertQuery = null;
 
-    const nickname = 'test';
-    const alertRef = collection(db, nickname);
+		const nickname = 'test';
+		const alertRef = collection(db, nickname);
 
-    if (page) alertQuery = query(alertRef, orderBy('createdAt', 'desc'), startAfter(lastPage), limit(size));
-    else alertQuery = query(alertRef, orderBy('createdAt', 'desc'), limit(size));
+		if (page) alertQuery = query(alertRef, orderBy('createdAt', 'desc'), startAfter(lastPage), limit(size));
+		else alertQuery = query(alertRef, orderBy('createdAt', 'desc'), limit(size));
 
-    const alertSnapshot = onSnapshot(alertQuery, { includeMetadataChanges: true }, (snapShot: any) => {
-      snapShot.docChanges().forEach((change) => {
-        const payload = { nickname, page, size };
-        dispatch(getAlertList(payload));
-      });
-    });
-  };
+		const alertSnapshot = onSnapshot(alertQuery, { includeMetadataChanges: true }, (snapShot: any) => {
+			snapShot.docChanges().forEach((change) => {
+				const payload = { nickname, page, size };
+				dispatch(getAlertList(payload));
+			});
+		});
+	};
 
-  function sayHi() {
-    var styles = [
-      'background-image: radial-gradient( circle 1259px at 2.8% 48.8%,  rgba(255,243,110,1) 0%, rgba(30,204,214,1) 45.6%, rgba(5,54,154,1) 65.9% );',
-      // "border: 1px solid #3E0E02",
-      'color: black',
-      // "display: block",
-      // "text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3)",
-      // "box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255, 255, 255, 0.4) inset",
-      'line-height: 40px',
-      'border-radius: 10px',
-      'text-align: center',
-      'font-weight: bold',
-    ].join(';');
+	function sayHi() {
+		var styles = [
+			'background-image: radial-gradient( circle 1259px at 2.8% 48.8%,  rgba(255,243,110,1) 0%, rgba(30,204,214,1) 45.6%, rgba(5,54,154,1) 65.9% );',
+			// "border: 1px solid #3E0E02",
+			'color: black',
+			// "display: block",
+			// "text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3)",
+			// "box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255, 255, 255, 0.4) inset",
+			'line-height: 40px',
+			'border-radius: 10px',
+			'text-align: center',
+			'font-weight: bold'
+		].join(';');
 
-    console.log('%c  😀 Welcome To GREEN-CORE!  ', styles);
+		console.log('%c  😀 Welcome To GREEN-CORE!  ', styles);
 
-    // console.group("일해라일조");
-    // console.log("그룹 메시지");
-    // console.groupEnd();
-  }
+		// console.group("일해라일조");
+		// console.log("그룹 메시지");
+		// console.groupEnd();
+	}
 
-  useEffect(() => {
-    if (getCookieToken()) alertInit();
-    return () => {
-      alertInit();
-    };
-  }, [alertInit]);
+	useEffect(() => {
+		if (getCookieToken()) alertInit();
+		return () => {
+			alertInit();
+		};
+	}, [alertInit]);
 
-  useEffect(() => {
-    if (getCookieToken()) {
-      // dispatch(SET_IS_AUTH_TYPE_DB());
-      dispatch(getAccessToken(authType));
-    }
-    // sayHi();
-    return () => {};
-  }, [authType]);
+	useEffect(() => {
+		if (getCookieToken()) {
+			dispatch(getAccessToken(authType));
+		}
 
-  return <></>;
+		// sayHi();
+		return () => {};
+	}, [authType]);
+
+	return <></>;
 }
 
 export default function AppWraper({ Component, pageProps }: AppProps) {
-  function kakaoInit() {
-    window.Kakao.init(kakaoConfig.apiKey);
-    window.Kakao.isInitialized();
-  }
+	function kakaoInit() {
+		window.Kakao.init(kakaoConfig.apiKey);
+		window.Kakao.isInitialized();
+	}
 
-  return (
-    <CookiesProvider>
-      <Provider store={store}>
-        <PersistGate loading={<AppLoading />} onBeforeLift={onBeforeLift} persistor={persistor}>
-          <AxiosInterceptor>
-            <App />
-            <Component {...pageProps} />
+	return (
+		<CookiesProvider>
+			<Provider store={store}>
+				<PersistGate loading={<AppLoading />} onBeforeLift={onBeforeLift} persistor={persistor}>
+					<AxiosInterceptor>
+						<App />
+						<Component {...pageProps} />
 
-            <link
-              rel='stylesheet'
-              href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css'
-              integrity='sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=='
-              crossOrigin='anonymous'
-              referrerPolicy='no-referrer'
-            />
-            <link
-              href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
-              rel='stylesheet'
-            />
-            <Script
-              src='https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js'
-              integrity='sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB'
-              crossOrigin='anonymous'
-              onLoad={kakaoInit}></Script>
-          </AxiosInterceptor>
-        </PersistGate>
-      </Provider>
-    </CookiesProvider>
-  );
+						<link
+							rel="stylesheet"
+							href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+							integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+							crossOrigin="anonymous"
+							referrerPolicy="no-referrer"
+						/>
+						<link
+							href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+							rel="stylesheet"
+						/>
+						<Script
+							src="https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.js"
+							integrity="sha384-OfbOqPoV2XcfZpqrLgqYCNSNBJW4JU/lLrtKk0cpkWvCrDRotHaQ9SSMGeP7u8NB"
+							crossOrigin="anonymous"
+							onLoad={kakaoInit}></Script>
+					</AxiosInterceptor>
+				</PersistGate>
+			</Provider>
+		</CookiesProvider>
+	);
 }
