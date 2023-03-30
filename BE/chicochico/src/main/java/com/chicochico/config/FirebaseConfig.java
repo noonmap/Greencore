@@ -9,9 +9,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 // FirebaseAuth(인증 관련 모듈)을 초기화
@@ -26,8 +27,9 @@ public class FirebaseConfig {
 	@Bean
 	public FirebaseApp firebaseApp() throws IOException {
 		log.info("Initializing Firebase.");
-		FileInputStream serviceAccount =
-			new FileInputStream(firebaseConfig);
+		ClassPathResource firebase = new ClassPathResource("properties/firebaseAccountKey.json");
+		InputStream serviceAccount = firebase.getInputStream();
+		//		FileInputStream serviceAccount = new FileInputStream(firebaseConfig);
 		log.info("serviceAccount: {}", serviceAccount);
 
 		FirebaseOptions options = new FirebaseOptions.Builder()
