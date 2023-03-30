@@ -8,6 +8,7 @@ import toastifyCSS from '@/assets/toastify.json';
 
 import { PageType, SearchType } from '@/core/common/commonType';
 import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType } from './userType';
+import { hasRequestAnimationFrame } from 'swr/_internal';
 
 /** [POST] 회원가입  API
  * @url /user
@@ -197,11 +198,6 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
   try {
     const res = await http.post('/login', payload);
     const nickname = res.data.data.nickname;
-    console.log(res.headers);
-    console.log(res.headers.getAuthorization());
-    console.log(res.headers.get('authorization'));
-    console.log(res.headers.hasAuthorization());
-    console.log(res);
 
     let accessToken = null;
     let refreshToken = null;
@@ -217,7 +213,8 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 
       accessToken = res.headers['authorization'];
       refreshToken = res.headers['x-refresh-token'];
-      console.log('hihihi', accessToken, refreshToken);
+
+      console.log(accessToken);
 
       cookies.setRefreshToken(refreshToken);
     } else {
@@ -247,17 +244,21 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 /** [POST] 새롭게 access token 받는 API (refresh token)
  * @url /refresh
  */
-export const getAccessToken = createAsyncThunk('getAccessToken', async (payload) => {
+export const getAccessToken = createAsyncThunk('getAccessToken', async () => {
   try {
     if (cookies.getCookieToken()) {
-      const res = await http.post('/refresh', payload);
+      const headers = {
+        'x-refresh-token': cookies.getCookieToken(),
+      };
+
+      const res = await http.post('/refresh', { headers });
 
       let accessToken = null;
       let refreshToken = null;
 
       if (res.data.result == 'SUCCESS') {
         accessToken = res.headers['authorization'];
-        refreshToken = res.headers['x-refresh-token'];
+        // refreshToken = res.headers['x-refresh-token'];
 
         cookies.setRefreshToken(refreshToken);
       }

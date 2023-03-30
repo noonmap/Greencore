@@ -18,8 +18,8 @@ const instance = axios.create({
     'Access-Control-Allow-Credentials': true,
     'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
     'Access-Control-Allow-Headers': '*',
+    'Access-Control-Expose-Headers': '*',
     // 'X-CSRF-Token, X-Requested-With, X-Refresh-Token, Authorization, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
-    // 'Access-Control-Expose-Headers': '*',
   },
 
   withCredentials: true,
@@ -28,17 +28,20 @@ const instance = axios.create({
 const AxiosInterceptor = ({ children }) => {
   const router = useRouter();
   const accessToken = useAppSelector((state) => state.user.accessToken);
+  console.log(accessToken);
 
   useEffect(() => {
     const reqInterceptor = async (config) => {
-      console.log('cnofig', config.headers);
+      if (getCookieToken()) {
+        console.log(getCookieToken());
+      }
 
       if (accessToken != null) {
-        console.log(getCookieToken(), accessToken);
         config.headers['Content-Type'] = 'application/json; charset=utf-8';
         config.headers['X-Refresh-Token'] = getCookieToken();
-        config.headers['Authorization'] = accessToken;
+        config.headers['authorization'] = accessToken;
       }
+
       return config;
     };
 
@@ -52,8 +55,7 @@ const AxiosInterceptor = ({ children }) => {
       }
 
       if (error.response.status == 404) {
-        console.log('hi 404');
-        // router.push('/login');
+        router.push('/login');
       }
 
       return Promise.reject(error);
