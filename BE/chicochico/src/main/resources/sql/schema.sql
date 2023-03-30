@@ -48,7 +48,7 @@ CREATE TABLE `plant`
 (
     `id`            bigint       NOT NULL AUTO_INCREMENT,
     `name`          varchar(255) NOT NULL,
-    `image_path`    varchar(300) NOT NULL,
+    `image_path`    varchar(500) NOT NULL,
     `specific_name` varchar(255) DEFAULT NULL,
     `water`         varchar(255) DEFAULT NULL,
     `light`         varchar(255) DEFAULT NULL,

@@ -41,7 +41,7 @@ public class PlantEntity {
 	private String temperature;
 
 	//  식물 이미지 (ex, "imagePath":"https://huga.s3.ap-northeast-2.amazonaws.com/plantImages/16781037244642.jpg")
-	@Column(nullable = false)
+	@Column(nullable = false, length = 500)
 	private String imagePath;
 
 	@Column(nullable = false)
