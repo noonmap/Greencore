@@ -5,6 +5,7 @@ import { useAppDispatch } from '@/core/hooks';
 import { createComment, getCommentList } from '@/core/feed/feedAPI';
 import styles from './FeedCommentList.module.scss';
 import AppButton from './button/AppButton';
+import { checkInputFormToast } from '@/lib/utils';
 
 export default function FeedCommentList(feedId: any) {
   const [commentList, setCommentList] = useState([]);
@@ -59,6 +60,11 @@ export default function FeedCommentList(feedId: any) {
     e.preventDefault();
     const mentionRegex = /@[^\s@#]+/g;
     const mentionNickname = content.match(mentionRegex) || [];
+
+    if (content == '') {
+      checkInputFormToast();
+      return;
+    }
 
     const payload = { content, mentionNickname };
     const requestData = { feedId, payload };

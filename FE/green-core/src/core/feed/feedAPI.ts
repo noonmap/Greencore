@@ -79,7 +79,7 @@ export const createLike = async (feedId: number) => {
   try {
     const { data } = await http.post(`/feed/${feedId}/like`);
 
-    return data.data;
+    return data;
   } catch (error) {}
 };
 
@@ -88,7 +88,7 @@ export const deleteLike = async (feedId: number) => {
   try {
     const { data } = await http.delete(`/feed/${feedId}/like`);
 
-    return data.data;
+    return data;
   } catch (error) {}
 };
 

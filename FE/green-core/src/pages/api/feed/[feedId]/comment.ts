@@ -21,7 +21,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
           {
             commentId: 3 * page,
             user: {
-              nickname: ' 문동은',
+              nickname: '식집사입니다만',
               profileImagePath: 'http://placekitten.com/200/300',
               introduction: '내 꿈은 박연진',
               followingCount: 200,
