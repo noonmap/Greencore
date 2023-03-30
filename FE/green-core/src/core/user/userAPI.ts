@@ -196,10 +196,12 @@ export const deleteUser = createAsyncThunk('deleteUser', async () => {
 export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
   try {
     const res = await http.post('/login', payload);
-    console.log('hihi:', res);
     const nickname = res.data.data.nickname;
-    const profileImagePath = res.data.data.profileImagePath;
-    console.log('login data: ', res);
+    console.log(res.headers);
+    console.log(res.headers.getAuthorization());
+    console.log(res.headers.get('authorization'));
+    console.log(res.headers.hasAuthorization());
+    console.log(res);
 
     let accessToken = null;
     let refreshToken = null;
@@ -215,6 +217,7 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 
       accessToken = res.headers['authorization'];
       refreshToken = res.headers['x-refresh-token'];
+      console.log('hihihi', accessToken, refreshToken);
 
       cookies.setRefreshToken(refreshToken);
     } else {
@@ -229,7 +232,7 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
       if (cookies.getCookieToken()) cookies.removeCookieToken();
     }
 
-    return { accessToken, userInfo: { nickname, profileImagePath } };
+    return { accessToken, userInfo: { nickname } };
   } catch (error) {
     Toastify({
       text: message.LogInFail,
@@ -288,6 +291,8 @@ export const logOut = createAsyncThunk('logOut', async () => {
 
     console.log(data);
   } catch (error) {
+    if (cookies.getCookieToken()) cookies.removeCookieToken();
+
     Toastify({
       text: message.LogOutFail,
       duration: 1500,

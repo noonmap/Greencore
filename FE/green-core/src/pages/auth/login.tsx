@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getAuth, getRedirectResult, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signInWithCredential } from 'firebase/auth';
 
-import { signUp, logIn, logOut, checkEmailDuplicated, signUpByOAuth } from '@/core/user/userAPI';
+import { logIn, checkEmailDuplicated, signUpByOAuth } from '@/core/user/userAPI';
 import { SET_ACCESS_TOKEN, SET_IS_OAUTH_TRUE } from '@/core/user/userSlice';
 import { checkInputFormToast } from '@/lib/utils';
 import * as cookies from '@/lib/cookies';
@@ -28,9 +28,7 @@ const initialState: StateType = {
 
 export default function login() {
   const dispatch = useAppDispatch();
-  const firebase = useAppSelector((state) => state.common.firebase);
 
-  // oauth
   const auth = getAuth();
   const githubProvider = new GithubAuthProvider();
   const googleProvider = new GoogleAuthProvider();
@@ -41,12 +39,8 @@ export default function login() {
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [email, password] = getValues(['email', 'password']);
 
-  const accessToken = useAppSelector((state) => state.user.accessToken);
-
   useEffect(() => {
     watch();
-
-    return () => {};
   }, []);
 
   useEffect(() => {
@@ -58,8 +52,6 @@ export default function login() {
       checkInputFormToast();
       return;
     }
-
-    // if (files != null) console.log(files[0]);
 
     try {
       const payload = { email, password };
