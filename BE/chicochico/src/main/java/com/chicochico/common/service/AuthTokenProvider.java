@@ -196,7 +196,7 @@ public class AuthTokenProvider {
 	 * 리프레시 토큰 헤더 설정
 	 */
 	public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
-		response.setHeader("X-Refresh-Token", refreshToken);
+		response.setHeader("x-refresh-token", refreshToken);
 	}
 
 
