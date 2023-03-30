@@ -1,9 +1,11 @@
 package com.chicochico.domain.feed.service;
 
 
+import com.chicochico.common.code.FeedbackType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.FileService;
+import com.chicochico.common.service.RecommenderService;
 import com.chicochico.domain.feed.entity.*;
 import com.chicochico.domain.feed.repository.*;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -11,18 +13,21 @@ import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class FeedService {
@@ -38,6 +43,7 @@ public class FeedService {
 	private final CommentRepository commentRepository;
 
 	private final FileService fileService;
+	private final RecommenderService recommenderService;
 
 
 	/**
@@ -156,10 +162,14 @@ public class FeedService {
 	 * @param pageable 페이지네이션
 	 * @return 피드 조회 페이지
 	 */
-	public Page<FeedEntity> getFeedList(Pageable pageable) {
-
-		Page<FeedEntity> feedPage = feedRepository.findAllByIsDeleted(IsDeletedType.N, pageable);
-		return feedPage;
+	public Page<FeedEntity> getRecommendedFeedList(Pageable pageable) {
+		// Recommender System에서 추천받은 게시글의 id list
+		Long userId = authService.getUserId();
+		List<Long> recommendedFeedIds = recommenderService.getRecommendFeedIdList(userId, pageable.getPageNumber(), pageable.getPageSize());
+		log.info("[Recommened Feed Ids]" + recommendedFeedIds);
+		// id list를 feed로 변환
+		List<FeedEntity> feedList = feedRepository.findByIdInAndIsDeleted(recommendedFeedIds, IsDeletedType.N);
+		return new PageImpl<>(feedList, pageable, feedList.size());
 	}
 
 
@@ -241,6 +251,9 @@ public class FeedService {
 		}
 		LikeEntity like = LikeEntity.builder().feed(feed).user(user).build();
 		likeRepository.save(like);
+
+		// Recommender system에 positive feedback 추가
+		recommenderService.insertFeedback(FeedbackType.like, userId, feedId, LocalDateTime.now());
 	}
 
 

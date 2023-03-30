@@ -46,6 +46,10 @@ dependencies {
 
     // file upload
     implementation 'commons-io:commons-io:2.5'
+
+    // recommender system
+    implementation 'io.gorse:gorse-client:0.4.0'
+
 }
 
 tasks.named('test') {

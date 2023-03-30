@@ -109,7 +109,7 @@ public class FeedControllerTest extends FeedTestHelper {
 			Pageable pageable = PageRequest.of(0, 10);
 
 			// when
-			when(feedService.getFeedList(pageable)).thenReturn(new PageImpl<>(List.of(doPostEntity(0L, 0L)), pageable, 1));
+			when(feedService.getRecommendedFeedList(pageable)).thenReturn(new PageImpl<>(List.of(doPostEntity(0L, 0L)), pageable, 1));
 			when(feedService.isLikedFeed(any(Long.class))).thenReturn(true);
 			when(feedService.getCommentCount(any(Long.class))).thenReturn(0);
 

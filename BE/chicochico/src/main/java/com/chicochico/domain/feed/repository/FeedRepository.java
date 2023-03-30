@@ -18,4 +18,6 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 	Page<FeedEntity> findByUserIn(List<UserEntity> userIds, Pageable pageable);
 	Page<FeedEntity> findAllByIsDeleted(IsDeletedType isDeletedType, Pageable pageable);
 
+	List<FeedEntity> findByIdInAndIsDeleted(List<Long> feedIds, IsDeletedType isDeletedType);
+
 }

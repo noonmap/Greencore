@@ -15,9 +15,9 @@ import java.util.UUID;
 @Service
 public class FileService {
 
+	private final String DEFAULT_IMAGE_PATH = "default.jpg";
 	@Value("${file.dir}")
 	private String fileDir;
-
 	// GreenCore가 지원하는 이미지 확장자 종류
 	private String[] imageExtensions = { ".jpg", ".jpeg", ".jfif", ".gif", ".png" };
 
@@ -53,7 +53,10 @@ public class FileService {
 		}
 
 		// 파일이 비어있는지 확인
-		if (file == null || file.isEmpty()) throw new CustomException(ErrorCode.FILE_IS_EMPTY);
+		if (file == null || file.isEmpty()) {
+			return subFileDir + File.separator + DEFAULT_IMAGE_PATH;
+			//			throw new CustomException(ErrorCode.FILE_IS_EMPTY);
+		}
 
 		// 원래 파일 이름 추출
 		String origName = file.getOriginalFilename();
