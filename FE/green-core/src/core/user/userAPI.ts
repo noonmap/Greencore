@@ -244,22 +244,25 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 /** [POST] 새롭게 access token 받는 API (refresh token)
  * @url /refresh
  */
-export const getAccessToken = createAsyncThunk('getAccessToken', async () => {
+export const getAccessToken = createAsyncThunk('getAccessToken', async (authType: string) => {
   try {
     if (cookies.getCookieToken()) {
+      console.log('여기는:', cookies.getCookieToken());
+      console.log(authType);
+
       const headers = {
         'x-refresh-token': cookies.getCookieToken(),
       };
 
-      const res = await http.post('/refresh', { headers });
+      const res = await http.post('/refresh', { authType }, { headers });
+      console.log(res);
 
       let accessToken = null;
       let refreshToken = null;
 
       if (res.data.result == 'SUCCESS') {
         accessToken = res.headers['authorization'];
-        // refreshToken = res.headers['x-refresh-token'];
-
+        refreshToken = res.headers['x-refresh-token'];
         cookies.setRefreshToken(refreshToken);
       }
 
@@ -268,6 +271,7 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async () => {
       return false;
     }
   } catch (error) {
+    console.log('에러난다');
     console.log(error);
   }
 });

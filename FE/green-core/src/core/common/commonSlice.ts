@@ -14,6 +14,7 @@ interface CommonState {
   userInfo: UserInfoType;
   searchState: string;
   isAlert: boolean;
+  authType: string;
 }
 
 const firebase = initializeApp(firebaseConfig);
@@ -24,6 +25,7 @@ const initialState: CommonState = {
   userInfo: null,
   searchState: 'home',
   isAlert: false,
+  authType: 'DB',
 };
 
 const commonSlice = createSlice({
@@ -39,6 +41,15 @@ const commonSlice = createSlice({
     },
     SET_IS_SEARCH_STATE: (state, action: PayloadAction<string>) => {
       state.searchState = action.payload;
+    },
+    SET_IS_AUTH_TYPE_DB: (state) => {
+      state.authType = 'DB';
+    },
+    SET_IS_AUTH_TYPE_KAKAO: (state) => {
+      state.authType = 'KAKAO';
+    },
+    SET_IS_AUTH_TYPE_FIREBASE: (state) => {
+      state.authType = 'FIREBASE';
     },
   },
 
@@ -68,6 +79,13 @@ const commonSlice = createSlice({
   },
 });
 
-export const { SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, SET_IS_SEARCH_STATE } = commonSlice.actions;
+export const {
+  SET_IS_LOADING_TRUE,
+  SET_IS_LOADING_FALSE,
+  SET_IS_SEARCH_STATE,
+  SET_IS_AUTH_TYPE_DB,
+  SET_IS_AUTH_TYPE_KAKAO,
+  SET_IS_AUTH_TYPE_FIREBASE,
+} = commonSlice.actions;
 
 export default commonSlice.reducer;

@@ -22,6 +22,7 @@ import AppLoading from '@/components/common/AppLoading';
 
 import { getFirestore, collection, query, orderBy, startAfter, onSnapshot, limit } from 'firebase/firestore';
 import { getAlertList } from '@/core/alert/alertAPI';
+import { SET_IS_AUTH_TYPE_DB } from '@/core/common/commonSlice';
 
 declare global {
   interface Window {
@@ -37,9 +38,9 @@ function App() {
   const dispatch = useAppDispatch();
   const db = getFirestore();
 
-  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
   const page = useAppSelector((state) => state.alert.page);
   const size = useAppSelector((state) => state.alert.size);
+  const authType = useAppSelector((state) => state.common.authType);
 
   const alertInit = () => {
     let lastPage = null;
@@ -97,10 +98,13 @@ function App() {
   }, [alertInit]);
 
   useEffect(() => {
-    if (getCookieToken()) dispatch(getAccessToken());
+    if (getCookieToken()) {
+      dispatch(SET_IS_AUTH_TYPE_DB());
+      dispatch(getAccessToken(authType));
+    }
     // sayHi();
     return () => {};
-  }, []);
+  }, [authType]);
 
   return <></>;
 }
