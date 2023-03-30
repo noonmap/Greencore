@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 // FirebaseAuth(인증 관련 모듈)을 초기화
@@ -27,9 +27,9 @@ public class FirebaseConfig {
 	public FirebaseApp firebaseApp() throws IOException {
 		log.info("Initializing Firebase.");
 		ClassPathResource firebase = new ClassPathResource("properties/firebaseAccountKey.json");
-		//		InputStream serviceAccount = firebase.getInputStream();
+		InputStream serviceAccount = firebase.getInputStream();
 		//		FileInputStream serviceAccount = new FileInputStream(firebaseConfig);
-		FileInputStream serviceAccount = new FileInputStream(firebase.getFile());
+		//		FileInputStream serviceAccount = new FileInputStream(firebase.getFile());
 		log.info("serviceAccount: {}", serviceAccount.toString());
 
 		FirebaseOptions options = new FirebaseOptions.Builder()
