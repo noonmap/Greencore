@@ -1,9 +1,11 @@
 package com.chicochico.domain.feed.service;
 
 
+import com.chicochico.common.code.FeedbackType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.FileService;
+import com.chicochico.common.service.RecommenderService;
 import com.chicochico.domain.feed.dto.request.DiarySetRequestDto;
 import com.chicochico.domain.feed.entity.BookmarkEntity;
 import com.chicochico.domain.feed.entity.DiaryEntity;
@@ -17,6 +19,7 @@ import com.chicochico.domain.user.repository.UserPlantRepository;
 import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
+import io.gorse.gorse4j.Feedback;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +45,7 @@ public class DiarySetService {
 	private final AuthService authService;
 	private final FileService fileService;
 	private final UserPlantRepository userPlantRepository;
+	private final RecommenderService recommenderService;
 
 
 	public DiarySetEntity getDiarySet(Long diarySetId) {
@@ -234,6 +239,12 @@ public class DiarySetService {
 		// 관찰 일지에 북마크 카운트를 추가한다.
 		diarySet.increaseBookmarkCount();
 		diarySetRepository.save(diarySet);
+
+		// 하위의 모든 일지들에 대해 Recommender System에 positive feedback을 추가
+		List<Feedback> feedbacks = diarySet.getDiaryList().stream().map(
+			diary -> recommenderService.createFeedback(FeedbackType.bookmark, userId, diary.getId(), LocalDateTime.now())
+		).collect(Collectors.toList());
+		recommenderService.insertFeedback(feedbacks);
 	}
 
 

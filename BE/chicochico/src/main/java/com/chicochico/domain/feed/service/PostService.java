@@ -1,9 +1,11 @@
 package com.chicochico.domain.feed.service;
 
 
+import com.chicochico.common.code.FeedbackType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.FileService;
+import com.chicochico.common.service.RecommenderService;
 import com.chicochico.domain.feed.dto.request.PostRequestDto;
 import com.chicochico.domain.feed.entity.PostEntity;
 import com.chicochico.domain.feed.repository.PostRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -26,14 +29,11 @@ import java.util.List;
 public class PostService {
 
 	private final PostRepository postRepository;
-
 	private final UserRepository userRepository;
-
 	private final AuthService authService;
-
 	private final FileService fileService;
-
 	private final FeedService feedService;
+	private final RecommenderService recommenderService;
 
 	//	private Page<PostEntity> getUnDeletedPostPage(Page<PostEntity> postPage, Pageable pageable) {
 	//		List<PostEntity> postList = new ArrayList<>(postPage.toList());
@@ -71,6 +71,11 @@ public class PostService {
 
 		// 삭제된 게시글인지 확인
 		if (post.getIsDeleted() == IsDeletedType.Y) throw new CustomException(ErrorCode.POST_NOT_FOUND);
+
+		// Recommender System에 read Feedback 추가
+		Long userId = authService.getUserId();
+		recommenderService.insertFeedback(FeedbackType.read, userId, postId, LocalDateTime.now());
+
 		return post;
 	}
 
@@ -104,6 +109,9 @@ public class PostService {
 		// tags들 저장 & 연결
 		List<String> tags = postRequestDto.getTags();
 		feedService.createAndConnectTags(tags, post);
+
+		// Recommender system에 추가
+		recommenderService.insertItem(post.getId(), false, tags, null, post.getCreatedAt(), post.getContent().substring(0, Math.min(30, post.getContent().length())));
 	}
 
 
@@ -149,6 +157,10 @@ public class PostService {
 
 		// tags 새로 연결
 		feedService.createAndConnectTags(postRequestDto.getTags(), newPost);
+
+		// Recommender system에 삭제 후 새로 추가
+		recommenderService.deleteItem(newPost.getId());
+		recommenderService.insertItem(newPost.getId(), false, postRequestDto.getTags(), null, newPost.getCreatedAt(), newPost.getContent().substring(0, Math.min(30, newPost.getContent().length())));
 	}
 
 
@@ -170,6 +182,9 @@ public class PostService {
 
 		// feed(post)와 연결된 요소들 일괄 삭제 (이미지, 태그, 댓글, 좋아요)
 		feedService.deleteConnectedComponents(post);
+
+		// Recommender system에서 삭제
+		recommenderService.deleteItem(post.getId());
 
 		// post 삭제
 		post.setIsDeleted(IsDeletedType.Y);

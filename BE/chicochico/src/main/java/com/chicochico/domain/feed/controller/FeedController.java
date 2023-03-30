@@ -32,12 +32,12 @@ public class FeedController {
 	private final AuthService authService;
 
 	private final FollowService followService;
-	
+
 
 	@GetMapping
 	@ApiOperation(value = "피드 추천 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(@PageableDefault Pageable pageable) {
-		Page<FeedEntity> feedEntityPage = feedService.getFeedList(pageable);
+		Page<FeedEntity> feedEntityPage = feedService.getRecommendedFeedList(pageable);
 		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}

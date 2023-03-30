@@ -1,10 +1,12 @@
 package com.chicochico.domain.feed.service;
 
 
+import com.chicochico.common.code.FeedbackType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.IsEnabledType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.FileService;
+import com.chicochico.common.service.RecommenderService;
 import com.chicochico.domain.feed.dto.request.DiaryRequestDto;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -35,6 +38,7 @@ public class DiaryService {
 	private final AuthService authService;
 	private final FileService fileService;
 	private final FeedService feedService;
+	private final RecommenderService recommenderService;
 
 
 	/**
@@ -76,6 +80,9 @@ public class DiaryService {
 		// tags들 저장 & 연결
 		List<String> tags = diaryRequestDto.getTags();
 		feedService.createAndConnectTags(tags, diary);
+
+		// Recommender System에 추가
+		recommenderService.insertItem(diary.getId(), false, tags, null, diary.getCreatedAt(), diary.getContent().substring(0, Math.min(30, diary.getContent().length())));
 	}
 
 
@@ -105,6 +112,10 @@ public class DiaryService {
 	public DiaryEntity getDiary(Long diaryId) {
 		// 일지 조회
 		DiaryEntity diary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
+
+		// Recommender System에 read Feedback 추가
+		Long userId = authService.getUserId();
+		recommenderService.insertFeedback(FeedbackType.read, userId, diaryId, LocalDateTime.now());
 
 		return diary;
 	}
@@ -153,6 +164,12 @@ public class DiaryService {
 
 		// 새 tags들 저장 & 연결
 		feedService.createAndConnectTags(diaryRequestDto.getTags(), newDiary);
+
+		// Recommender System에 삭제 후 추가
+		recommenderService.deleteItem(newDiary.getId());
+		recommenderService.insertItem(newDiary.getId(), false, diaryRequestDto.getTags(), null, newDiary.getCreatedAt(),
+			newDiary.getContent().substring(0, Math.min(30, newDiary.getContent().length())));
+
 	}
 
 
@@ -178,6 +195,9 @@ public class DiaryService {
 		// DiarySetEntity 의 list에서 삭제 & count--
 		diarySet.decreaseDiaryCount();
 		diarySetRepository.save(diarySet);
+
+		// Recommender System에 삭제
+		recommenderService.deleteItem(diary.getId());
 
 		// DiaryEntity 삭제
 		diary.setIsDeleted(IsDeletedType.Y);
