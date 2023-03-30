@@ -1,6 +1,7 @@
 package com.chicochico.domain.feed.service;
 
 
+import com.chicochico.common.code.FeedbackType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.FileService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -69,6 +71,11 @@ public class PostService {
 
 		// 삭제된 게시글인지 확인
 		if (post.getIsDeleted() == IsDeletedType.Y) throw new CustomException(ErrorCode.POST_NOT_FOUND);
+
+		// Recommender System에 read Feedback 추가
+		Long userId = authService.getUserId();
+		recommenderService.insertFeedback(FeedbackType.read, userId, postId, LocalDateTime.now());
+
 		return post;
 	}
 

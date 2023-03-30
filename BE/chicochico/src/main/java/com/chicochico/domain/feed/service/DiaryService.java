@@ -1,6 +1,7 @@
 package com.chicochico.domain.feed.service;
 
 
+import com.chicochico.common.code.FeedbackType;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.IsEnabledType;
 import com.chicochico.common.service.AuthService;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -110,6 +112,10 @@ public class DiaryService {
 	public DiaryEntity getDiary(Long diaryId) {
 		// 일지 조회
 		DiaryEntity diary = diaryRepository.findByIdAndIsDeleted(diaryId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
+
+		// Recommender System에 read Feedback 추가
+		Long userId = authService.getUserId();
+		recommenderService.insertFeedback(FeedbackType.read, userId, diaryId, LocalDateTime.now());
 
 		return diary;
 	}
