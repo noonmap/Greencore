@@ -334,7 +334,7 @@ export default function plantDocs() {
                 {/* 컨텐츠 */}
                 <div className='p-5'>
                   {plantDocsDetailList.map((plantDocsDetail) => (
-                    <div key={plantDocsDetail.id} className={`flex flex-col`}>
+                    <div key={plantDocsDetail.plantId} className={`flex flex-col`}>
                       {/* 사진 */}
                       <div className={`flex pb-10`}>
                         <img className={`${styles.detailImage}`} src={plantDocsDetail.imagePath} alt='image' width='300' height='300'></img>
@@ -345,7 +345,7 @@ export default function plantDocs() {
                           <span>이름</span>
                         </div>
                         <div className='pb-2'>
-                          <span>{plantDocsDetail.name}</span>
+                          <span>{plantDocsDetail.plantName}</span>
                         </div>
                         <div className='text-sm'>
                           <span>학명</span>
