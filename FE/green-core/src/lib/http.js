@@ -28,12 +28,11 @@ const instance = axios.create({
 const AxiosInterceptor = ({ children }) => {
   const router = useRouter();
   const accessToken = useAppSelector((state) => state.user.accessToken);
-  console.log(accessToken);
 
   useEffect(() => {
     const reqInterceptor = async (config) => {
       if (getCookieToken()) {
-        console.log(getCookieToken());
+        console.log('refreshToken:', getCookieToken());
       }
 
       if (accessToken != null) {
