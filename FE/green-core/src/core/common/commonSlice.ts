@@ -42,13 +42,13 @@ const commonSlice = createSlice({
     SET_IS_SEARCH_STATE: (state, action: PayloadAction<string>) => {
       state.searchState = action.payload;
     },
-    SET_IS_AUTH_TYPE_DB: (state) => {
+    SET_AUTH_TYPE_DB: (state) => {
       state.authType = 'DB';
     },
-    SET_IS_AUTH_TYPE_KAKAO: (state) => {
+    SET_AUTH_TYPE_KAKAO: (state) => {
       state.authType = 'KAKAO';
     },
-    SET_IS_AUTH_TYPE_FIREBASE: (state) => {
+    SET_AUTH_TYPE_FIREBASE: (state) => {
       state.authType = 'FIREBASE';
     },
   },
@@ -79,13 +79,7 @@ const commonSlice = createSlice({
   },
 });
 
-export const {
-  SET_IS_LOADING_TRUE,
-  SET_IS_LOADING_FALSE,
-  SET_IS_SEARCH_STATE,
-  SET_IS_AUTH_TYPE_DB,
-  SET_IS_AUTH_TYPE_KAKAO,
-  SET_IS_AUTH_TYPE_FIREBASE,
-} = commonSlice.actions;
+export const { SET_IS_LOADING_TRUE, SET_IS_LOADING_FALSE, SET_IS_SEARCH_STATE, SET_AUTH_TYPE_DB, SET_AUTH_TYPE_KAKAO, SET_AUTH_TYPE_FIREBASE } =
+  commonSlice.actions;
 
 export default commonSlice.reducer;

@@ -108,10 +108,8 @@ export const checkEmail = async (payload: EmailType) => {
  * @url /user/email/${email}
  */
 export const checkEmailDuplicated = async (email: string) => {
-  try {
-    const { data } = await http.get(`/user/email/${email}`);
-    return data;
-  } catch (error) {}
+  const { data } = await http.get(`/user/email/${email}`);
+  return data;
 };
 
 /** [POST] 비밀번호 찾기, 이메일로 임시 비밀번호를 전송하는 API
@@ -214,9 +212,15 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
       accessToken = res.headers['authorization'];
       refreshToken = res.headers['x-refresh-token'];
 
-      console.log(accessToken);
-
       cookies.setRefreshToken(refreshToken);
+
+      console.group('<< accessToken >>');
+      console.log(accessToken);
+      console.groupEnd();
+
+      console.group('<< refreshToken >>');
+      console.log(refreshToken);
+      console.groupEnd();
     } else {
       Toastify({
         text: message.LogInFail,
@@ -247,15 +251,8 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 export const getAccessToken = createAsyncThunk('getAccessToken', async (authType: string) => {
   try {
     if (cookies.getCookieToken()) {
-      console.log('여기는:', cookies.getCookieToken());
-      console.log(authType);
-
-      const headers = {
-        'x-refresh-token': cookies.getCookieToken(),
-      };
-
+      const headers = { 'X-Refresh-Token': cookies.getCookieToken() };
       const res = await http.post('/refresh', { authType }, { headers });
-      console.log(res);
 
       let accessToken = null;
       let refreshToken = null;
@@ -264,6 +261,14 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (authType
         accessToken = res.headers['authorization'];
         refreshToken = res.headers['x-refresh-token'];
         cookies.setRefreshToken(refreshToken);
+
+        console.group('<< accessToken >>');
+        console.log(accessToken);
+        console.groupEnd();
+
+        console.group('<< refreshToken >>');
+        console.log(refreshToken);
+        console.groupEnd();
       }
 
       return { accessToken };

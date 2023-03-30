@@ -4,12 +4,15 @@ import { useRouter } from 'next/router';
 import { getCookieToken } from './cookies';
 import { useAppSelector } from '@/core/hooks';
 
-const serverUrl = process.env.NODE_ENV == 'production' ? process.env.APP_SERVER_URL : 'http://localhost:3000';
-const testUrl = 'http://localhost:8080';
+const serverUrl =
+  process.env.NODE_ENV == 'production'
+    ? process.env.APP_SERVER_URL
+    : process.env.NODE_ENV == 'local'
+    ? 'http://localhost:3000'
+    : 'http://localhost:8080';
 
 const instance = axios.create({
-  // baseURL: serverUrl + '/api',
-  baseURL: testUrl + '/api',
+  baseURL: serverUrl + '/api',
   // timeout: 1000,
 
   headers: {
@@ -31,16 +34,18 @@ const AxiosInterceptor = ({ children }) => {
 
   useEffect(() => {
     const reqInterceptor = async (config) => {
-      if (getCookieToken()) {
-        console.log('refreshToken:', getCookieToken());
-      }
+      console.log('config: ', config);
 
-      if (accessToken != null) {
-        config.headers['Content-Type'] = 'application/json; charset=utf-8';
-        config.headers['X-Refresh-Token'] = getCookieToken();
-        config.headers['authorization'] = accessToken;
-      }
+      // if (getCookieToken()) {
+      // console.log('refreshToken:', getCookieToken());
+      // }
 
+      // if (accessToken != null) {
+      // config.headers['Content-Type'] = 'application/json; charset=utf-8';
+      // config.headers['X-Refresh-Token'] = getCookieToken();
+      // config.headers['authorization'] = accessToken;
+      // }
+      //
       return config;
     };
 
