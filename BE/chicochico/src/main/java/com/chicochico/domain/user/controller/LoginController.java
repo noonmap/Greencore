@@ -3,6 +3,7 @@ package com.chicochico.domain.user.controller;
 
 import com.chicochico.common.dto.ResultDto;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
+import com.chicochico.domain.user.dto.request.RefreshRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.service.LoginService;
 import io.swagger.annotations.Api;
@@ -56,8 +57,8 @@ public class LoginController {
 
 	@PostMapping("/refresh")
 	@ApiOperation(value = "엑세스 토큰을 재발급합니다.", notes = "")
-	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response) {
-		loginService.createAccessToken(loginRequestHeader, response);
+	public ResponseEntity<ResultDto<Boolean>> createAccessToken(@RequestHeader Map<String, String> loginRequestHeader, HttpServletResponse response, @RequestBody RefreshRequestDto refreshRequestDto) {
+		loginService.createAccessToken(loginRequestHeader, response, refreshRequestDto);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());
 	}
