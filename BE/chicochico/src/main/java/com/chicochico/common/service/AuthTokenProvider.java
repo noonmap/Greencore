@@ -153,14 +153,6 @@ public class AuthTokenProvider {
 
 
 	/**
-	 * Redis에서 refresh token 삭제
-	 */
-	public void removeRefreshToken(String nickname) {
-		// TODO
-	}
-
-
-	/**
 	 * 토큰의 유효성 및 만료기간 검사
 	 */
 	public boolean validate(String token) {
