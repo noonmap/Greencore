@@ -14,6 +14,8 @@ export default function AppHeader() {
   const dispatch = useAppDispatch();
   const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 
+  const isAlert = useAppSelector((state) => state.common.isAlert);
+
   // github
   const githubAuth = GitHubGetAuth();
   const githubProvider = new GithubAuthProvider();
@@ -81,17 +83,42 @@ export default function AppHeader() {
             <div className={`${styles.navContainer} flex flex-col space-y-7`}>
               {nickname ? (
                 <>
-                  <Link href='/home'>Home</Link>
-                  <Link href='/plant/docs'>식물 검색</Link>
-                  <Link href='/schedule'>식물 스케줄링</Link>
-                  <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
-                  <Link href={`/user/alert/${nickname}`}>알림</Link>
-                  <Link href='/user/settings/password'>설정</Link>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    <span className='material-symbols-outlined'>home</span>
+                    <Link href='/'>Home</Link>
+                  </div>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    <span className='material-symbols-outlined'>search</span>
+                    <Link href='/'>식물 검색</Link>
+                  </div>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    <span className='material-symbols-outlined'>calendar_month</span>
+                    <Link href='/schedule'>식물 스케줄링</Link>
+                  </div>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    <span className='material-symbols-outlined'>group</span>
+                    <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
+                  </div>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    {isAlert ? <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span> : null}
+                    <span className='material-symbols-outlined'>notifications</span>
+                    <Link href={`/user/alert/${nickname}`}>알림</Link>
+                  </div>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    <span className='material-symbols-outlined'>settings</span>
+                    <Link href='/user/settings/password'>설정</Link>
+                  </div>
                 </>
               ) : (
                 <>
-                  <Link href='/'>Home</Link>
-                  <Link href='/'>식물 검색</Link>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    <span className='material-symbols-outlined'>home</span>
+                    <Link href='/'>Home</Link>
+                  </div>
+                  <div className='flex items-center space-x-2 cursor-pointer'>
+                    <span className='material-symbols-outlined'>search</span>
+                    <Link href='/'>식물 검색</Link>
+                  </div>
                   <Link href='/auth/login'>로그인</Link>
                   <Link href='/auth/signup'>회원가입</Link>
                 </>
@@ -103,8 +130,8 @@ export default function AppHeader() {
             <>
               <div className='gap-3'>
                 <Link href={`/user/feed/${nickname}`}>
-                  <div className='flex w-50 items-center rounded-full w-50 hover:bg-gray-100 p-3 gap-2'>
-                    <img src='/images/noProfile.png' width={50} height={50} />
+                  <div className='flex  mb-3 w-50 items-center rounded-full  hover:bg-gray-100 p-3 gap-2'>
+                    <img src='/images/noProfile.png' width={50} height={50} className='border rounded-full' />
                     <div>
                       <div className='font-bold text-ellipsis overflow-hidden text-sm'>{nickname}</div>
                     </div>

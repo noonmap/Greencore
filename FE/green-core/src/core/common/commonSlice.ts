@@ -6,12 +6,14 @@ import { initializeApp } from 'firebase/app';
 
 import { UserInfoType } from './commonType';
 import { logIn, deleteUser, logOut } from '@/core/user/userAPI';
+import { createAlert, updateAllAlert, checkIsAlert } from '@/core/alert/alertAPI';
 
 interface CommonState {
   firebase: any;
   isLoading: boolean;
   userInfo: UserInfoType;
   searchState: string;
+  isAlert: boolean;
 }
 
 const firebase = initializeApp(firebaseConfig);
@@ -21,6 +23,7 @@ const initialState: CommonState = {
   isLoading: false,
   userInfo: null,
   searchState: 'home',
+  isAlert: false,
 };
 
 const commonSlice = createSlice({
@@ -52,6 +55,15 @@ const commonSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state) => {
         state.userInfo = null;
+      })
+      .addCase(createAlert.fulfilled, (state) => {
+        state.isAlert = true;
+      })
+      .addCase(updateAllAlert.fulfilled, (state) => {
+        state.isAlert = false;
+      })
+      .addCase(checkIsAlert.fulfilled, (state, action) => {
+        state.isAlert = action.payload;
       });
   },
 });

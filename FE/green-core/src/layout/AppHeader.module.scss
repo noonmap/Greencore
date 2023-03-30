@@ -20,6 +20,25 @@
   // font-weight: var(--text-bold);
   // color: var(--title-light-color);
 
+  div {
+    // transition: all 0.15s var(--timing-func);
+
+    &:hover {
+      font-weight: var(--text-bold);
+      color: var(--main-color);
+    }
+  }
+
+  a {
+    // transition: var(--transition-nav);
+    // transition: --transition;
+    // transition: all 0.12s cubic-bezier(1, 0, 0.8, 1);
+
+    &:hover {
+      // font-weight: var(--text-bold);
+      // color: var(--main-color);
+    }
+  }
   a {
     transition: all 0.15s var(--timing-func);
     // transition: var(--transition-nav);
