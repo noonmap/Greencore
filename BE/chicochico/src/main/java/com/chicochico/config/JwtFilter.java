@@ -3,6 +3,7 @@ package com.chicochico.config;
 
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.common.service.OuathService;
+import com.chicochico.common.service.RedisService;
 import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +14,6 @@ import com.google.firebase.auth.FirebaseToken;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	public static final String BEARER_PREFIX = "Bearer ";
 
 	private final AuthTokenProvider tokenProvider;
-	private final RedisTemplate redisTemplate;
+	private final RedisService redisService;
 	private final FirebaseAuth firebaseAuth;
 	private final CustomUserDetailsService userDetailsService;
 	private final OuathService ouathService;
@@ -60,7 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 			if (tokenProvider.validate(token)) {
 				// 3. Redis에 해당 accessToken 로그아웃 여부 확인
-				String isLogout = (String) redisTemplate.opsForValue().get(token);
+				String isLogout = redisService.getData(token);
 				if (ObjectUtils.isEmpty(isLogout)) {
 					Authentication authentication = tokenProvider.getAuthentication(token);
 					SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -3,6 +3,7 @@ package com.chicochico.config;
 
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.common.service.OuathService;
+import com.chicochico.common.service.RedisService;
 import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,7 +13,6 @@ import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSe
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -29,7 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurity {
 
 	private final AuthTokenProvider tokenProvider;
-	private final RedisTemplate<String, String> redisTemplate;
+	private final RedisService redisService;
 	private final JwtExceptionFilter jwtExceptionFilter;
 	private final FirebaseAuth firebaseAuth;
 	private final CustomUserDetailsService userDetailsService;
@@ -85,7 +85,7 @@ public class SpringSecurity {
 
 			// JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider, redisTemplate, jwtExceptionFilter, firebaseAuth, userDetailsService, ouathService, objectMapper));
+			.apply(new JwtSecurityConfig(tokenProvider, redisService, jwtExceptionFilter, firebaseAuth, userDetailsService, ouathService, objectMapper));
 
 		http
 			.logout()
