@@ -1,26 +1,32 @@
 -- user 3 추가 (비밀번호 : 1234)
 INSERT INTO `chicochico`.`user_table`
-(`created_at`,`updated_at`,`email`,`follower_count`,`following_count`,`introduction`,`is_deleted`,`nickname`,`password`,`profile_image_path`)
-VALUES
-(now(),now(), "test1@test.com",2,2,"김씨의 한 줄 소개입니다",'N',"김씨","$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di","/user/default.jpg"),
-(now(),now(), "test2@test.com",1,1,"임씨의 한 줄 소개입니다",'N',"임씨","$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di","/user/default.jpg"),
-(now(),now(), "test3@test.com",1,1,"양씨의 한 줄 소개입니다",'N',"양씨","$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di","/user/default.jpg");
-SET @user1 := last_insert_id();
-SET @user2 := @user1 + 1;
-SET @user3 := @user2 + 1;
+(`created_at`, `updated_at`, `email`, `follower_count`, `following_count`, `introduction`, `is_deleted`, `nickname`,
+ `password`, `profile_image_path`, `user_store`)
+VALUES (now(), now(), "test1@test.com", 2, 2, "김씨의 한 줄 소개입니다", 'N', "김씨",
+        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "/user/default.jpg", "DB"),
+       (now(), now(), "test2@test.com", 1, 1, "임씨의 한 줄 소개입니다", 'N', "임씨",
+        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "/user/default.jpg", "DB"),
+       (now(), now(), "test3@test.com", 1, 1, "양씨의 한 줄 소개입니다", 'N', "양씨",
+        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "/user/default.jpg", "DB");
+SET
+@user1 := last_insert_id();
+SET
+@user2 := @user1 + 1;
+SET
+@user3 := @user2 + 1;
 
 -- 팔로우 추가
 INSERT INTO `chicochico`.`follow`
-(`follower_id`,`following_id`)
+    (`follower_id`, `following_id`)
 VALUES
 -- 유저1 -> 유저2
-(@user1,@user2),
+(@user1, @user2),
 -- 유저1 -> 유저3
-(@user1,@user3),
+(@user1, @user3),
 -- 유저2 -> 유저1
-(@user2,@user1),
+(@user2, @user1),
 -- 유저3 -> 유저1
-(@user3,@user1);
+(@user3, @user1);
 
 -- 식물 5 추가
 INSERT INTO `chicochico`.`plant`

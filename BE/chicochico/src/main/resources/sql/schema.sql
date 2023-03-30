@@ -15,19 +15,21 @@ DROP TABLE IF EXISTS `tag`;
 DROP TABLE IF EXISTS `plant`;
 DROP TABLE IF EXISTS `user_table`;
 
-CREATE TABLE `user_table` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `follower_count` int NOT NULL,
-  `following_count` int NOT NULL,
-  `introduction` varchar(255) NOT NULL,
-  `is_deleted` varchar(255) NOT NULL,
-  `nickname` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `profile_image_path` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE `user_table`
+(
+    `id`                 bigint       NOT NULL AUTO_INCREMENT,
+    `created_at`         datetime     NOT NULL,
+    `updated_at`         datetime     NOT NULL,
+    `email`              varchar(255) NOT NULL,
+    `follower_count`     int          NOT NULL,
+    `following_count`    int          NOT NULL,
+    `introduction`       varchar(255) NOT NULL,
+    `is_deleted`         varchar(255) NOT NULL,
+    `nickname`           varchar(255) NOT NULL,
+    `password`           varchar(255) NOT NULL,
+    `profile_image_path` varchar(255) NOT NULL,
+    `user_store`         varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `alert` (
@@ -42,24 +44,18 @@ CREATE TABLE `alert` (
   CONSTRAINT `FKf7a0a2h9v7oq5ix09aoul6gil` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `plant` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `growth_rate` varchar(255) DEFAULT NULL,
-  `growth_type` varchar(255) DEFAULT NULL,
-  `habitat` varchar(255) DEFAULT NULL,
-  `image_path` varchar(255) NOT NULL,
-  `light` varchar(255) DEFAULT NULL,
-  `management_level` varchar(255) DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  `origin` varchar(255) DEFAULT NULL,
-  `placement` varchar(255) DEFAULT NULL,
-  `root_form` varchar(255) DEFAULT NULL,
-  `specific_name` varchar(255) DEFAULT NULL,
-  `sunlight` varchar(255) DEFAULT NULL,
-  `temperature` varchar(255) DEFAULT NULL,
-  `user_count` int NOT NULL,
-  `water` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE `plant`
+(
+    `id`            bigint       NOT NULL AUTO_INCREMENT,
+    `name`          varchar(255) NOT NULL,
+    `image_path`    varchar(500) NOT NULL,
+    `specific_name` varchar(255) DEFAULT NULL,
+    `water`         varchar(255) DEFAULT NULL,
+    `light`         varchar(255) DEFAULT NULL,
+    `humidity`      varchar(255) DEFAULT NULL,
+    `temperature`   varchar(255) DEFAULT NULL,
+    `user_count`    int          NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `user_plant` (

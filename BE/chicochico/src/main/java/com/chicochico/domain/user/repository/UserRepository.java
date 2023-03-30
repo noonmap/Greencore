@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	Page<UserEntity> findAllByNicknameContainingIgnoreCase(String search, Pageable pageable);
 
+	Optional<UserEntity> findByEmailAndIsDeleted(String email, IsDeletedType isDeletedType);
+
 }

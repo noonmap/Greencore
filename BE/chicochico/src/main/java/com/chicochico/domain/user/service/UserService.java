@@ -58,6 +58,11 @@ public class UserService {
 	}
 
 
+	public Optional<UserEntity> getUserByEmail(String Email) {
+		return userRepository.findByEmailAndIsDeleted(Email, IsDeletedType.N);
+	}
+
+
 	/**
 	 * 회원을 생성합니다 (회원가입)
 	 *
@@ -272,6 +277,12 @@ public class UserService {
 			throw new CustomException(ErrorCode.NO_ACCESS);
 		}
 
+		PlantEntity plant = plantRepository.findById(userPlant.getPlant().getId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+
+		// 식물 userCount--
+		plant.decreaseUserCount();
+		plantRepository.save(plant);
+
 		userPlant.setIsDeleted(IsDeletedType.Y);
 		userPlantRepository.save(userPlant);
 
@@ -294,7 +305,14 @@ public class UserService {
 	@Transactional
 	public void deleteAllUserPlantsByUser(UserEntity user) {
 		List<UserPlantEntity> userPlants = userPlantRepository.findByUser(user);
-		userPlants.forEach(userPlant -> userPlant.setIsDeleted(IsDeletedType.Y));
+		userPlants.forEach((userPlant -> {
+			userPlant.setIsDeleted(IsDeletedType.Y);
+			PlantEntity plant = plantRepository.findById(userPlant.getPlant().getId()).orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+
+			// 식물 userCount--
+			plant.decreaseUserCount();
+			plantRepository.save(plant);
+		}));
 		userPlantRepository.saveAll(userPlants);
 	}
 

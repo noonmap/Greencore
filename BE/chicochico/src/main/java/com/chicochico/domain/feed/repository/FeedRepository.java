@@ -16,6 +16,7 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 
 	@Query("select f from FeedEntity f where f.user in (:userIds)")
 	Page<FeedEntity> findByUserIn(List<UserEntity> userIds, Pageable pageable);
+	Page<FeedEntity> findAllByIsDeleted(IsDeletedType isDeletedType, Pageable pageable);
 
 	List<FeedEntity> findByIdInAndIsDeleted(List<Long> feedIds, IsDeletedType isDeletedType);
 

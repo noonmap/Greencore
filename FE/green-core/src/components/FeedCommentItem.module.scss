@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  margin-block: 1rem;
+  // margin: 1rem;
+  align-items: center;
+  height: fit-content;
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.textareaBox {
+  outline: none;
+  border: 1px solid var(--light-color);
+  border-radius: 12px;
+  min-height: var(--min-height-input);
+  padding: var(--padding-input);
+  transition: all 0.3s ease;
+  width: 100%;
+
+  &:focus {
+    border: 1px solid var(--main-color);
+
+    &::placeholder {
+      color: var(--main-light-color);
+    }
+  }
+}
+
+.date {
+  color: #93a097;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  margin-inline: 1rem;
+  font-weight: 800;
+  min-width: 2.5rem;
+}
+
+.end {
+  margin-left: auto;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.editPopUp {
+  width: 100px;
+  position: absolute;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+  // top: 50px;
+  right: 20px;
+  z-index: 1;
+}
+
+.btn {
+  margin-left: 0.5rem;
+  min-width: 100px;
+  height: 100%;
+}

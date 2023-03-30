@@ -48,6 +48,11 @@ public class DiarySetService {
 	private final RecommenderService recommenderService;
 
 
+	public DiarySetEntity getDiarySet(Long diarySetId) {
+		return diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
+	}
+
+
 	/**
 	 * 관찰 일지 목록을 조회합니다
 	 *
