@@ -349,7 +349,7 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (authType
 export const logOut = createAsyncThunk('logOut', async () => {
 	try {
 		// const headers = { authorization: accessToken };
-		const { data } = await http.delete('/logout');
+		const { data } = await http.post('/logout');
 
 		if (cookies.getCookieToken()) cookies.removeCookieToken();
 
