@@ -167,7 +167,9 @@ export default function AppHeader() {
                       <span className='xl:block hidden'>병충해 분석</span>
                     </div>
                   </Link>
+
                   <Link href='/auth/login'>로그인</Link>
+
                   <Link href='/auth/signup'>회원가입</Link>
                 </>
               )}
