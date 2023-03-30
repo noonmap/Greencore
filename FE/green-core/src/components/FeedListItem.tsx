@@ -28,30 +28,42 @@ export default function FeedListItem(props: { feed: FeedType }) {
 
   function handlePostLike(event) {
     event.stopPropagation();
-    createLike(feed.feedId);
-    setIsLiked(true);
-    setLikeCount(likeCount + 1);
+    createLike(feed.feedId).then((res) => {
+      if (res.result === 'SUCCESS') {
+        setIsLiked(true);
+        setLikeCount(likeCount + 1);
+      }
+    });
   }
 
   function handleDeleteLike(event) {
     event.stopPropagation();
-    deleteLike(feed.feedId);
-    setIsLiked(false);
-    setLikeCount(likeCount - 1);
+    deleteLike(feed.feedId).then((res) => {
+      if (res.result === 'SUCCESS') {
+        setIsLiked(false);
+        setLikeCount(likeCount - 1);
+      }
+    });
   }
 
   function handlePostFollow(event) {
     event.stopPropagation();
-    updateFollow(feed.user.nickname);
-    setIsFollowed(true);
-    setFollowerCount(followerCount + 1);
+    updateFollow(feed.user.nickname).then((res) => {
+      if (res.result === 'SUCCESS') {
+        setIsFollowed(true);
+        setFollowerCount(followerCount + 1);
+      }
+    });
   }
 
   function handleDeleteFollow(event) {
     event.stopPropagation();
-    deleteFollow(feed.user.nickname);
-    setIsFollowed(false);
-    setFollowerCount(followerCount - 1);
+    deleteFollow(feed.user.nickname).then((res) => {
+      if (res.result === 'SUCCESS') {
+        setIsFollowed(false);
+        setFollowerCount(followerCount - 1);
+      }
+    });
   }
 
   function getData(createdAt: string) {
@@ -151,12 +163,12 @@ export default function FeedListItem(props: { feed: FeedType }) {
                 <div className='flex py-5'>{feed.user.introduction}</div>
                 <div className='flex justify-center rounded-lg overflow-hidden'>
                   {isfollowed ? (
-                    <button className={`text-white w-full `} onClick={handleDeleteFollow} style={{ backgroundColor: 'var(--main-color)' }}>
-                      팔로잉
+                    <button className={`w-full `} onClick={handleDeleteFollow} style={{ backgroundColor: 'var(--thin-color)' }}>
+                      팔로우 취소
                     </button>
                   ) : (
-                    <button className={`w-full`} onClick={handlePostFollow} style={{ backgroundColor: 'var(--thin-color)' }}>
-                      팔로우 하기
+                    <button className={`text-white w-full`} onClick={handlePostFollow} style={{ backgroundColor: 'var(--main-color)' }}>
+                      팔로우
                     </button>
                   )}
                 </div>
