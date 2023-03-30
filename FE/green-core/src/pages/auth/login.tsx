@@ -5,10 +5,12 @@ import Link from 'next/link';
 
 import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import { getAuth, getRedirectResult, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signInWithCredential } from 'firebase/auth';
+import { signInWithPopup, getRedirectResult, signInWithCredential } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
 import { logIn, checkEmailDuplicated, signUpByOAuth } from '@/core/user/userAPI';
-import { SET_ACCESS_TOKEN, SET_IS_OAUTH_TRUE } from '@/core/user/userSlice';
+import { SET_ACCESS_TOKEN, SET_IS_OAUTH_FALSE, SET_IS_OAUTH_TRUE } from '@/core/user/userSlice';
 import { checkInputFormToast } from '@/lib/utils';
 import * as cookies from '@/lib/cookies';
 
@@ -23,13 +25,14 @@ type StateType = {
 };
 
 const initialState: StateType = {
-  email: '',
-  password: '',
+  email: 'test1@test.com',
+  password: '1234',
 };
 
 export default function login() {
   const dispatch = useAppDispatch();
 
+  const storage = getStorage();
   const auth = getAuth();
   const githubProvider = new GithubAuthProvider();
   const googleProvider = new GoogleAuthProvider();
@@ -58,7 +61,6 @@ export default function login() {
     try {
       const payload = { email, password };
       dispatch(logIn(payload));
-      console.log(payload);
     } catch (error) {
       setValue('email', '');
       setValue('password', '');
@@ -82,30 +84,27 @@ export default function login() {
         const githubAccessToken = token.accessToken;
         const githubRefreshToken = token.refreshToken;
 
-        console.log(githubEmail, githubUID, githubNickname, githubPhotoUrl);
-        console.log(githubAccessToken, githubRefreshToken);
+        // console.log(githubEmail, githubUID, githubNickname, githubPhotoUrl);
+        // console.log(githubAccessToken, githubRefreshToken);
 
         try {
           const { data } = await checkEmailDuplicated(email);
 
-          if (!data.result) {
-            // 이미 있는 이메일이라면 그냥 로그인
-            console.log('있는 이메일');
-            dispatch(SET_IS_OAUTH_TRUE());
-            dispatch(SET_ACCESS_TOKEN(githubAccessToken));
-            cookies.setRefreshToken(githubRefreshToken);
-            dispatch(SET_AUTH_TYPE_FIREBASE());
-          } else {
-            // 만약 없는 이메일이라면 회원가입 진행
-            console.log('만약 없는 이메일');
+          if (data) {
+            // 없는 이메일이므로 회원가입 진행 후 로그인
             const payload = { email: githubEmail, password: githubUID + '!', nickname: githubNickname };
-            const { data } = await signUpByOAuth(payload);
+            // const { data } = await signUpByOAuth(payload);
 
-            if (data.result) {
+            if (data) {
               dispatch(SET_IS_OAUTH_TRUE());
               dispatch(SET_ACCESS_TOKEN(githubAccessToken));
               cookies.setRefreshToken(githubRefreshToken);
+              dispatch(SET_AUTH_TYPE_FIREBASE());
             }
+          } else {
+            dispatch(SET_IS_OAUTH_TRUE());
+            dispatch(SET_ACCESS_TOKEN(githubAccessToken));
+            cookies.setRefreshToken(githubRefreshToken);
           }
         } catch (error) {
           console.error(error);
@@ -137,29 +136,25 @@ export default function login() {
         const googleAccessToken = token.accessToken;
         const googleRefreshToken = token.refreshToken;
 
-        console.log(googleEmail, googleNickname, googleUID, googlePhotoUrl);
-        console.log(googleAccessToken, googleRefreshToken);
-
         try {
-          const { data } = await checkEmailDuplicated(email);
+          const { data } = await checkEmailDuplicated(googleEmail);
+          console.log(data);
 
-          if (!data.result) {
-            // 이미 있는 이메일이라면 그냥 로그인
-            console.log('있는 이메일');
-            dispatch(SET_IS_OAUTH_TRUE());
-            dispatch(SET_ACCESS_TOKEN(googleAccessToken));
-            cookies.setRefreshToken(googleRefreshToken);
-          } else {
-            // 만약 없는 이메일이라면 회원가입 진행
-            console.log('만약 없는 이메일');
+          if (data) {
+            // 없는 이메일이므로 회원가입 진행 후 로그인
             const payload = { email: googleEmail, password: googleUID + '!', nickname: googleNickname };
-            const { data } = await signUpByOAuth(payload);
+            // const { data } = await signUpByOAuth(payload);
 
-            if (data.result) {
+            if (data) {
               dispatch(SET_IS_OAUTH_TRUE());
               dispatch(SET_ACCESS_TOKEN(googleAccessToken));
               cookies.setRefreshToken(googleRefreshToken);
+              dispatch(SET_AUTH_TYPE_FIREBASE());
             }
+          } else {
+            dispatch(SET_IS_OAUTH_TRUE());
+            dispatch(SET_ACCESS_TOKEN(googleAccessToken));
+            cookies.setRefreshToken(googleRefreshToken);
           }
         } catch (error) {
           console.error(error);
@@ -184,6 +179,17 @@ export default function login() {
   function checkIsPossibleLogIn() {
     if (email != '' && password != '') setIsPossibleLogIn(true);
     else setIsPossibleLogIn(false);
+  }
+
+  /** 회원가입하면 firebase storage 에 프로필 이미지 초기 등록하도록 하는 함수 */
+  async function handleSetUserProfile(nickname, profileUrl) {
+    const res = await fetch(profileUrl);
+    const blob = await res.blob();
+    const file = new File([blob], 'noProfile', { type: 'image/png' });
+
+    const profileRef = ref(storage, `${nickname}/profileImage`);
+
+    uploadBytes(profileRef, file, { contentType: 'image/png' }).then(() => {});
   }
 
   return (

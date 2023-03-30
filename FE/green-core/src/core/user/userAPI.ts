@@ -7,7 +7,7 @@ import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 
 import { PageType, SearchType } from '@/core/common/commonType';
-import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType } from './userType';
+import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType, LogInOAuthDataType } from './userType';
 import { hasRequestAnimationFrame } from 'swr/_internal';
 
 /** [POST] 회원가입  API
@@ -195,6 +195,62 @@ export const deleteUser = createAsyncThunk('deleteUser', async () => {
 export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
   try {
     const res = await http.post('/login', payload);
+    const nickname = res.data.data.nickname;
+
+    let accessToken = null;
+    let refreshToken = null;
+
+    if (res.data.result == 'SUCCESS') {
+      Toastify({
+        text: message.LogInSuccess,
+        duration: 1500,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+
+      accessToken = res.headers['authorization'];
+      refreshToken = res.headers['x-refresh-token'];
+
+      cookies.setRefreshToken(refreshToken);
+
+      console.group('<< accessToken >>');
+      console.log(accessToken);
+      console.groupEnd();
+
+      console.group('<< refreshToken >>');
+      console.log(refreshToken);
+      console.groupEnd();
+    } else {
+      Toastify({
+        text: message.LogInFail,
+        duration: 1500,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+
+      if (cookies.getCookieToken()) cookies.removeCookieToken();
+    }
+
+    return { accessToken, userInfo: { nickname } };
+  } catch (error) {
+    Toastify({
+      text: message.LogInFail,
+      duration: 1500,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+  }
+});
+
+/** [POST] OAUTH 로그인 API
+ * @url /login/oauth
+ */
+export const logInByOAuth = createAsyncThunk('logInByOAuth', async (payload: LogInOAuthDataType) => {
+  try {
+    const res = await http.post('/login/oauth');
     const nickname = res.data.data.nickname;
 
     let accessToken = null;
