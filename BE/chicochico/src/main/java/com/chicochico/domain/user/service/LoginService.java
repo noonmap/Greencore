@@ -5,8 +5,7 @@ import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.UserStoreType;
 import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.AuthTokenProvider;
-import com.chicochico.common.service.KakaoService;
-import com.chicochico.common.service.OauthService;
+import com.chicochico.common.service.OuathService;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -50,8 +49,7 @@ public class LoginService {
 	private final AuthService authService;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final FirebaseAuth firebaseAuth;
-	private final KakaoService kakaoService;
-	private final OauthService oauthService;
+	private final OuathService ouathService;
 	private final ObjectMapper objectMapper;
 
 
@@ -67,7 +65,6 @@ public class LoginService {
 		UserEntity user = userRepository.findByIdAndIsDeleted(loginUserId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		String loginRequestRefreshToken = getHeader(loginRequestHeader, "x-refresh-token");
-		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
 
 		if (user.getUserStore().equals(UserStoreType.DB)) { // 로그인 유저가 db 유저라면
 
@@ -77,9 +74,9 @@ public class LoginService {
 				throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
 			}
 
-			// 2. AccessToken에서 UserId와 UserNickname 가져옵니다.
-			Long userId = authTokenProvider.getUserId(accessToken);
-			String userNickname = authTokenProvider.getUserNickname(accessToken);
+			// 2. Refresh Token에서 UserId와 UserNickname 가져옵니다.
+			Long userId = authTokenProvider.getUserId(loginRequestRefreshToken);
+			String userNickname = authTokenProvider.getUserNickname(loginRequestRefreshToken);
 
 			// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
 			String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
@@ -103,7 +100,7 @@ public class LoginService {
 			params.put("refresh_token", loginRequestRefreshToken);
 
 			// 새 access 토큰 생성
-			String result = oauthService.oauthRefreshToken(params);
+			String result = ouathService.firebaseRefreshToken(params);
 			JsonNode jsonNode = null;
 			try {
 				jsonNode = objectMapper.readTree(result);
@@ -112,7 +109,7 @@ public class LoginService {
 			}
 			FirebaseToken token = null;
 			// 새로운 토큰 header에 넣기
-			String newAccessToken = kakaoService.getStringValue(jsonNode, "id_token");
+			String newAccessToken = ouathService.getStringValue(jsonNode, "id_token");
 			authTokenProvider.setHeaderAccessToken(response, newAccessToken);
 			authTokenProvider.setHeaderRefreshToken(response, loginRequestRefreshToken);
 
@@ -121,7 +118,7 @@ public class LoginService {
 			params.put("refresh_token", loginRequestRefreshToken);
 
 			// 새 access 토큰 생성
-			String result = kakaoService.kakaoRefreshToken(params);
+			String result = ouathService.kakaoRefreshToken(params);
 			JsonNode jsonNode = null;
 			try {
 				jsonNode = objectMapper.readTree(result);
@@ -129,7 +126,7 @@ public class LoginService {
 				throw new CustomException(ErrorCode.TOKEN_ERROR);
 			}
 
-			String newAccessToken = kakaoService.getStringValue(jsonNode, "access_token");
+			String newAccessToken = ouathService.getStringValue(jsonNode, "access_token");
 
 			// 새 access token header 에 담기, 이전 refreshToken 다시 담아서 전달
 			// refreshToken 만료시 에러 발생 -> 다시 로그인해야함
@@ -248,8 +245,8 @@ public class LoginService {
 		String accessToken = extractAccessToken(getHeader(loginRequestHeader, "authorization"));
 
 		// 토큰 정보 가져오기
-		kakaoService.setAccessToken(accessToken);
-		String result = kakaoService.getKakaoUserAccessTokenInfo();
+		ouathService.setAccessToken(accessToken);
+		String result = ouathService.getKakaoUserAccessTokenInfo();
 
 		// ACCESS_TOKEN_ERROR에 문제가 있음
 		if (result == null) throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
@@ -259,7 +256,7 @@ public class LoginService {
 		String expiresInMillis = jsonObject.get("expiresInMillis").getAsString();
 
 		// 유저 정보 가져오기
-		String userInfo = kakaoService.kakaoMe();
+		String userInfo = ouathService.kakaoMe();
 		// 카카오로부터 유저 정보를 가져올 수 없음
 		if (userInfo == null) throw new CustomException(USER_NOT_FOUND);
 
@@ -272,10 +269,10 @@ public class LoginService {
 
 		JsonNode kakaoAccount = jsonNode.get("kakao_account");
 
-		String kakaoEmail = kakaoService.getStringValue(kakaoAccount, "email");
-		String kakaoNickname = kakaoService.getStringValue(kakaoAccount, "profile", "nickname");
-		String kakaoProfileImageUrl = kakaoService.getStringValue(kakaoAccount, "profile", "profile_image_url");
-		String kakaoUID = kakaoService.getStringValue(jsonNode, "id");
+		String kakaoEmail = ouathService.getStringValue(kakaoAccount, "email");
+		String kakaoNickname = ouathService.getStringValue(kakaoAccount, "profile", "nickname");
+		String kakaoProfileImageUrl = ouathService.getStringValue(kakaoAccount, "profile", "profile_image_url");
+		String kakaoUID = ouathService.getStringValue(jsonNode, "id");
 
 		// 회원가입 되지 않은 유저인가? -> 회원가입 (email, nickname, password)
 		if (userRepository.findByEmail(kakaoEmail).isEmpty()) {

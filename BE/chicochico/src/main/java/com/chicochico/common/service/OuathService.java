@@ -17,19 +17,21 @@ import java.util.Map;
 
 
 @Service
-public class KakaoService {
+public class OuathService {
 
-	private static final String API_SERVER_HOST = "https://kapi.kakao.com";
-
-	private static final String OAUTH_API_SERVER_HOST = "https://kauth.kakao.com";
-	private static final String USER_ACCESS_TOKEN_INFO = "/v1/user/access_token_info";
-	private static final String USER_ME_PATH = "/v2/user/me";
-	private static final String OAUTH_TOKEN = "/oauth/token";
+	private static final String KAKAO_API_SERVER_HOST = "https://kapi.kakao.com";
+	private static final String KAKAO_OAUTH_API_SERVER_HOST = "https://kauth.kakao.com";
+	private static final String KAKAO_USER_ACCESS_TOKEN_INFO = "/v1/user/access_token_info";
+	private static final String KAKAO_USER_ME_PATH = "/v2/user/me";
+	private static final String KAKAO_OAUTH_TOKEN = "/oauth/token";
+	private static final String FIREBASE_API_SERVER_HOST = "https://securetoken.googleapis.com/v1/token?key=";
 	@Value("${kakao.config.rest-api-key}")
 	private String KAKAO_REST_API_KEY;
 	@Value("${kakao.config.client-secret}")
 	private String KAKAO_CLIENT_SECRET;
-	private String accessToken;
+	private String accessToken;  // kakao accessToken임
+	@Value("${firebase.config.rest-api-key}")
+	private String FIREBASE_REST_API_KEY;
 
 
 	public void setAccessToken(final String accessToken) {
@@ -38,7 +40,7 @@ public class KakaoService {
 
 
 	/**
-	 * 토큰 정보 보기 (유효성 확인)
+	 * 카카오 토큰 정보 보기 (유효성 확인)
 	 *
 	 * @return {
 	 * "expiresInMillis": Long,
@@ -46,17 +48,17 @@ public class KakaoService {
 	 * }
 	 */
 	public String getKakaoUserAccessTokenInfo() {
-		return request(USER_ACCESS_TOKEN_INFO);
+		return request(KAKAO_API_SERVER_HOST + KAKAO_USER_ACCESS_TOKEN_INFO);
 	}
 
 
 	/**
-	 * 사용자 정보 가져오기
+	 * 카카오 사용자 정보 가져오기
 	 *
 	 * @return 사용자 정보
 	 */
 	public String kakaoMe() {
-		return request(USER_ME_PATH);
+		return request(KAKAO_API_SERVER_HOST + KAKAO_USER_ME_PATH);
 	}
 
 
@@ -70,23 +72,32 @@ public class KakaoService {
 		params.put("grant_type", "refresh_token");
 		params.put("client_id", KAKAO_REST_API_KEY);
 		params.put("client_secret", KAKAO_CLIENT_SECRET);
-		return request(HttpMethodType.POST, OAUTH_TOKEN, mapToParams(params));
+
+		String requestUrl = KAKAO_OAUTH_API_SERVER_HOST + KAKAO_OAUTH_TOKEN;
+		return request(HttpMethodType.POST, requestUrl, mapToParams(params), OauthType.KAKAO);
 	}
 
 
-	public String request(final String apiPath) {
-		return request(HttpMethodType.GET, apiPath, null);
+	/**
+	 * firebase refresh 토큰으로 access 토큰 갱신하기
+	 *
+	 * @param params params.put("refresh_token", "refresh_token");
+	 * @return 재발급된 access token
+	 */
+	public String firebaseRefreshToken(Map<String, String> params) {
+		params.put("grant_type", "refresh_token");
+		String requestUrl = FIREBASE_API_SERVER_HOST + FIREBASE_REST_API_KEY;
+		return request(HttpMethodType.POST, requestUrl, mapToParams(params), OauthType.FIREBASE);
 	}
 
 
-	public String request(final HttpMethodType httpMethod, final String apiPath) {
-		return request(httpMethod, apiPath, null);
+	public String request(final String requestUrl) {
+		return request(HttpMethodType.GET, requestUrl, null, OauthType.KAKAO);
 	}
 
 
-	public String request(HttpMethodType httpMethod, final String apiPath, final String params) {
+	public String request(HttpMethodType httpMethod, String requestUrl, final String params, final OauthType oauthType) {
 
-		String requestUrl = apiPath.equals(OAUTH_TOKEN) ? OAUTH_API_SERVER_HOST + apiPath : API_SERVER_HOST + apiPath;
 		if (httpMethod == null) {
 			httpMethod = HttpMethodType.GET;
 		}
@@ -105,7 +116,8 @@ public class KakaoService {
 			conn = (HttpsURLConnection) url.openConnection();
 			conn.setRequestMethod(httpMethod.toString());
 
-			conn.setRequestProperty("Authorization", "Bearer " + this.accessToken);
+			if (oauthType == OauthType.KAKAO)
+				conn.setRequestProperty("Authorization", "Bearer " + this.accessToken);
 
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			conn.setRequestProperty("charset", "utf-8");
@@ -185,5 +197,7 @@ public class KakaoService {
 
 
 	public enum HttpMethodType {POST, GET}
+
+	private enum OauthType {FIREBASE, KAKAO}
 
 }
