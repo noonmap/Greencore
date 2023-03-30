@@ -83,41 +83,56 @@ export default function AppHeader() {
             <div className={`${styles.navContainer} flex flex-col space-y-7`}>
               {nickname ? (
                 <>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
                     <span className='material-symbols-outlined'>home</span>
                     <Link href='/'>Home</Link>
                   </div>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
-                    <span className='material-symbols-outlined'>search</span>
-                    <Link href='/'>식물 검색</Link>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
+                    {/* <span className='material-symbols-outlined'>search</span> */}
+                    <span className='material-symbols-outlined'>auto_stories</span>
+                    <Link href='/'>식물 도감</Link>
                   </div>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
+                    <span className='material-symbols-outlined'>bug_report</span>
+                    <Link href='/'>병충해 분석</Link>
+                  </div>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
                     <span className='material-symbols-outlined'>calendar_month</span>
                     <Link href='/schedule'>식물 스케줄링</Link>
                   </div>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
                     <span className='material-symbols-outlined'>group</span>
                     <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
                   </div>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
+                    {isAlert ? <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span> : null}
+                    <span className='material-symbols-outlined'>book</span>
+                    <Link href={`/user/bookmark`}>북마크</Link>
+                  </div>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
                     {isAlert ? <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span> : null}
                     <span className='material-symbols-outlined'>notifications</span>
                     <Link href={`/user/alert/${nickname}`}>알림</Link>
                   </div>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
                     <span className='material-symbols-outlined'>settings</span>
                     <Link href='/user/settings/password'>설정</Link>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
                     <span className='material-symbols-outlined'>home</span>
                     <Link href='/'>Home</Link>
                   </div>
-                  <div className='flex items-center space-x-2 cursor-pointer'>
-                    <span className='material-symbols-outlined'>search</span>
-                    <Link href='/'>식물 검색</Link>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
+                    {/* <span className='material-symbols-outlined'>search</span> */}
+                    <span className='material-symbols-outlined'>auto_stories</span>
+                    <Link href='/'>식물 도감</Link>
+                  </div>
+                  <div className='flex items-center space-x-3 cursor-pointer'>
+                    <span className='material-symbols-outlined'>bug_report</span>
+                    <Link href='/'>병충해 분석</Link>
                   </div>
                   <Link href='/auth/login'>로그인</Link>
                   <Link href='/auth/signup'>회원가입</Link>
