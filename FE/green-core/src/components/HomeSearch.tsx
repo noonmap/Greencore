@@ -298,7 +298,7 @@ export default function HomeSearch() {
           <div className='flex justify-center items-center w-full h-full relative' style={{ color: 'var(--title-light-color' }}>
             <span>식물이나 사용자, 태그 등을 검색해 보세요!</span>
             <div>
-              <Image src='/images/leaf4.png' width={512} height={512} alt='' className={`${styles.leaf4}`} />
+              <Image priority src='/images/leaf4.png' width={512} height={512} alt='' className={`${styles.leaf4}`} />
             </div>
           </div>
         ) : // 검색 데이터 있을 때

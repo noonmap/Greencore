@@ -1,58 +1,54 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useAppDispatch } from '@/core/hooks';
-import { useForm } from 'react-hook-form';
-import { deleteAlert, getAlertList } from '@/core/alert/alertAPI';
+import { deleteAlert } from '@/core/alert/alertAPI';
 import { AlertType } from '@/core/alert/alertType';
 import styles from '@/styles/Alert.module.scss';
 
-type StateType = {
-  checkedPostList: Array<AlertType>;
-};
-
-const initialState: StateType = {
-  checkedPostList: [],
-};
-
-export default function UserAlertListItem({ alert }) {
+export default function UserAlertListItem({ alert, selectedAlertList }) {
   const dispatch = useAppDispatch();
-  const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
-  const [size, setSize] = useState<number>(10);
 
-  // 알림 삭제
-  async function handleDeleteAlert(alertId: number) {
+  /** 알림 단일 삭제하는 함수 */
+  async function handleDeleteAlert(alertId: string) {
     try {
-      const { result } = await deleteAlert(alertId);
-
-      if (result === 'SUCCESS') {
-        const params = {
-          page: 0,
-          size: size,
-        };
-        dispatch(getAlertList(params));
-      }
+      const payload = { nickname: 'test', alertId };
+      dispatch(deleteAlert(payload));
     } catch (err) {
       console.error(err);
     }
   }
 
+  /** 알림 리스트 선택 핸들링 함수 */
+  function handleSelctedAlertListChange(e) {
+    let selected = e.target.value;
+
+    if (!selectedAlertList.includes(selected)) {
+      selectedAlertList.push(selected);
+    } else {
+      let idx = selectedAlertList.indexOf(selected);
+      selectedAlertList.splice(idx, 1);
+    }
+  }
+
   return (
     <>
-      <div key={alert.alertId} className={`${styles.card} flex items-center justify-between space-x-20 mb-5`}>
+      <div key={alert.alertId} className={`${styles.card} flex items-center justify-between space-x-2 mb-5`}>
         <div className='flex items-center'>
-          {!true ? (
-            <span className='material-symbols-outlined fill-small like mr-2'>fiber_manual_record</span>
-          ) : (
-            <span className='material-symbols-outlined fill-small alertLight mr-2'>fiber_manual_record</span>
-          )}
-          <Link href={alert.urlPath} className='flex items-center space-x-3'>
-            <input type='checkbox' value={alert.alertId} className='w-1 h-1' {...register('checkedPostList')} />
-            <span className='w-50 hover:underline'>{alert.content}</span>
-          </Link>
+          <input type='checkbox' value={alert.alertId} className='w-1 h-1 mr-2' onChange={handleSelctedAlertListChange} />
+          <div className='flex items-center space-x-2'>
+            {alert.isRead ? (
+              <span className='material-symbols-outlined fill-small alertLight'>fiber_manual_record</span>
+            ) : (
+              <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span>
+            )}
+            <Link href={alert.urlPath} className='w-full hover:underline'>
+              {alert.content}
+            </Link>
+          </div>
         </div>
 
-        <div className='flex items-center space-x-2'>
-          <span className='introduction'>{alert.createdAt}</span>
+        <div className='flex items-center'>
+          <span className='introduction w-40'>{alert.createdAt}</span>
           <span className='material-symbols-outlined cursor-pointer close' onClick={() => handleDeleteAlert(alert.alertId)}>
             close
           </span>
