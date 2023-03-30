@@ -21,51 +21,29 @@ public class PlantEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	// 식물 이름 (ex, "name":"선인장")
+	// 식물 이름 (ex, "name":"삼색 달개비")
 	@Column(nullable = false)
 	private String name;
 
-	// TODO 아래 식물 특성은 변동 가능성 있음
-
-	// 식물 서식지 (ex, "habitat":"습지")
-	private String habitat;
-
-	// 적정 온도 환경 (ex, "temperature":"따뜻한 곳")
-	private String temperature;
-
-	// 물 주기 (ex, "water":"3일에 한번")
-	private String water;
-
-	// 햇빛 일조량 (ex, "sunlight":"햇빛이 잘 안드는 곳")
-	private String sunlight;
-
-	// 학명 (ex, "specificName":"선인장")
+	// 학명 (ex, "specificName":"Tradescantia albiflora 'Nanouk'")
 	private String specificName;
 
-	// 원산지 (ex, "origin":"사막")
-	private String origin;
+	// 물 주기 (ex, "water":"평균 주 1~2회 흙 표면부터 3cm까지 마르면, 듬뿍 주세요")
+	private String water;
 
-	// 뿌리 형태 (ex, "rootForm":"모름")
-	private String rootForm;
-
-	// 관리수준 (ex, "managementLevel":"쉬움")
-	private String managementLevel;
-
-	// 배치장소 (ex, "placement":"습한 곳")
-	private String placement;
-
-	// 광 (ex, "light":"안남")
+	// 빛 (ex, "light":"반양지 하루 2~3시간 정도의 은은한 햇빛이 필요해요")
 	private String light;
 
-	// 생장속도 (ex, "growthRate":"빠름")
-	private String growthRate;
+	// 습도 (ex, "humidity":"40~70% 주변 공기가 너무 축축하지 않게 관리해주세요")
+	private String humidity;
 
-	// 생장형 (ex, "growthType":"모름")
-	private String growthType;
+	// 적정 온도 환경 (ex, "temperature":"잘 자라는 온도 15~25℃의 온도에서 잘 자라요")
+	private String temperature;
 
-	@Column(nullable = false)
+	//  식물 이미지 (ex, "imagePath":"https://huga.s3.ap-northeast-2.amazonaws.com/plantImages/16781037244642.jpg")
+	@Column(nullable = false, length = 500)
 	private String imagePath;
-	
+
 	@Column(nullable = false)
 	private Integer userCount;
 
