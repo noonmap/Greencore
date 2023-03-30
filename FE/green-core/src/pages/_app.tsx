@@ -3,7 +3,7 @@ import { CookiesProvider } from 'react-cookie';
 import type { AppProps } from 'next/app';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Script from 'next/script';
 import store, { persistor } from '@/core/store';
 import { AxiosInterceptor } from '@/lib/http';
@@ -22,7 +22,6 @@ import AppLoading from '@/components/common/AppLoading';
 
 import { getFirestore, collection, query, orderBy, startAfter, onSnapshot, limit } from 'firebase/firestore';
 import { getAlertList } from '@/core/alert/alertAPI';
-import { SET_IS_AUTH_TYPE_DB } from '@/core/common/commonSlice';
 
 declare global {
   interface Window {
@@ -54,15 +53,6 @@ function App() {
 
     const alertSnapshot = onSnapshot(alertQuery, { includeMetadataChanges: true }, (snapShot: any) => {
       snapShot.docChanges().forEach((change) => {
-        // if (change.type === 'added') {
-        // 	console.log('New city: ', change.doc.data());
-        // }
-        // if (change.type === 'modified') {
-        // 	console.log('Modified city: ', change.doc.data());
-        // }
-        // if (change.type === 'removed') {
-        // 	console.log('Removed city: ', change.doc.data());
-        // }
         const payload = { nickname, page, size };
         dispatch(getAlertList(payload));
       });
@@ -99,7 +89,7 @@ function App() {
 
   useEffect(() => {
     if (getCookieToken()) {
-      dispatch(SET_IS_AUTH_TYPE_DB());
+      // dispatch(SET_IS_AUTH_TYPE_DB());
       dispatch(getAccessToken(authType));
     }
     // sayHi();

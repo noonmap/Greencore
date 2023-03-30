@@ -15,6 +15,7 @@ import * as cookies from '@/lib/cookies';
 import styles from '@/styles/Auth.module.scss';
 import AppButton from '@/components/button/AppButton';
 import FindPasswordModal from '@/components/modal/FindPasswordModal';
+import { SET_AUTH_TYPE_FIREBASE, SET_AUTH_TYPE_KAKAO } from '@/core/common/commonSlice';
 
 type StateType = {
   email: string;
@@ -36,7 +37,7 @@ export default function login() {
   const [isOpenFindPasswordModal, setIsOpenFindPasswordModal] = useState<boolean>(false);
   const [isPossibleLogIn, setIsPossibleLogIn] = useState<boolean>(false);
 
-  const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
+  const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [email, password] = getValues(['email', 'password']);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function login() {
     checkIsPossibleLogIn();
   }, [email, password, isPossibleLogIn]);
 
+  /** 로그인 함수 */
   async function handleLogIn() {
     if (email == '' || password == '') {
       checkInputFormToast();
@@ -58,6 +60,8 @@ export default function login() {
       dispatch(logIn(payload));
       console.log(payload);
     } catch (error) {
+      setValue('email', '');
+      setValue('password', '');
       console.error(error);
     }
   }
@@ -84,16 +88,13 @@ export default function login() {
         try {
           const { data } = await checkEmailDuplicated(email);
 
-          // FIXME: 토의가 필요함! 이메일이랑 비밀번호를 디비에 넣나?
-          // 그러면 그냥 로그인이 진행이 될려나..?
-          // oauth 인것은.. common 에서 persist 하게 저장해야하나? 구분하게..
-          // isAuth 인것은 refreshTOken 이 쿠키에 있으니까 알 수 있다
           if (!data.result) {
             // 이미 있는 이메일이라면 그냥 로그인
             console.log('있는 이메일');
             dispatch(SET_IS_OAUTH_TRUE());
             dispatch(SET_ACCESS_TOKEN(githubAccessToken));
             cookies.setRefreshToken(githubRefreshToken);
+            dispatch(SET_AUTH_TYPE_FIREBASE());
           } else {
             // 만약 없는 이메일이라면 회원가입 진행
             console.log('만약 없는 이메일');
@@ -142,10 +143,6 @@ export default function login() {
         try {
           const { data } = await checkEmailDuplicated(email);
 
-          // FIXME: 토의가 필요함! 이메일이랑 비밀번호를 디비에 넣나?
-          // 그러면 그냥 로그인이 진행이 될려나..?
-          // oauth 인것은.. common 에서 persist 하게 저장해야하나? 구분하게..
-          // isAuth 인것은 refreshTOken 이 쿠키에 있으니까 알 수 있다
           if (!data.result) {
             // 이미 있는 이메일이라면 그냥 로그인
             console.log('있는 이메일');
