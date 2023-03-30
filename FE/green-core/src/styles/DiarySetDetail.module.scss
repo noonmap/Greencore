@@ -1,0 +1,22 @@
+.diaryAddBtn {
+  background-color: var(--thin-color);
+  color: var(--main-color);
+  min-width: 120px;
+}
+.diaryAddBtn:hover {
+  background-color: var(--main-color);
+  color: white;
+}
+
+.materialSymbolsOutlined {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+}
+
+.editPopUp {
+  width: 100px;
+  position: absolute;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+  top: 30px;
+  right: 5px;
+  z-index: 1;
+}

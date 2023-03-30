@@ -16,7 +16,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
           nickname: '목마름',
           profileImagePath: 'http://placekitten.com/200/300',
         },
-        title: '사막의 수호신',
+        title: '금쪽같은 내새끼',
         startDate: '2023-03-01',
         diaryList: [
           {
@@ -25,8 +25,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             tags: ['해시태그', '좋아요'],
             opservationDate: '2023-03-01',
             createdAt: '2023-03-01T07:00:00',
-            imagePath: 'http://placekitten.com/200/300',
+            imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 0,
+            likeCount: 3,
           },
           {
             diaryId: 1,
@@ -34,8 +35,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             tags: ['하이', '광합성', '1', '2'],
             opservationDate: '2023-03-04',
             createdAt: '2023-03-03T11:00:11', // diary 생성 시간
-            imagePath: 'http://placekitten.com/200/300',
+            imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
+            likeCount: 3,
           },
           {
             diaryId: 2,
@@ -43,8 +45,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             tags: ['ㅋㅋㅋㅋ', '테스트 하는 중'],
             opservationDate: '2023-03-04',
             createdAt: '2023-03-03T11:00:11', // diary 생성 시간
-            imagePath: 'http://placekitten.com/200/300',
+            imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
+            likeCount: 3,
           },
           {
             diaryId: 3,
@@ -52,8 +55,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             tags: ['테스트', '테스트2'],
             opservationDate: '2023-03-04',
             createdAt: '2023-03-03T11:00:11', // diary 생성 시간
-            imagePath: 'http://placekitten.com/200/300',
+            imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
+            likeCount: 3,
           },
           {
             diaryId: 4,
@@ -61,8 +65,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             tags: ['커피', '마시고 싶다'],
             opservationDate: '2023-03-04',
             createdAt: '2023-03-03T11:00:11', // diary 생성 시간
-            imagePath: 'http://placekitten.com/200/300',
+            imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
+            likeCount: 3,
           },
           {
             diaryId: 5,
@@ -70,8 +75,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             tags: ['식물', '키우자'],
             opservationDate: '2023-03-04',
             createdAt: '2023-03-03T11:00:11', // diary 생성 시간
-            imagePath: 'http://placekitten.com/200/300',
+            imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
+            likeCount: 3,
           },
           {
             diaryId: 6,
@@ -79,8 +85,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             tags: ['식집사', '화이팅'],
             opservationDate: '2023-03-04',
             createdAt: '2023-03-03T11:00:11', // diary 생성 시간
-            imagePath: 'http://placekitten.com/200/300',
+            imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
+            likeCount: 3,
           },
         ],
       },

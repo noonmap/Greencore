@@ -8,7 +8,7 @@ import { CreateDiaryType, DeleteDiaryType, UpdateDiaryType } from './diaryType';
 // 일지 리스트 받기, {diarySetId}
 export const getDiaryList = createAsyncThunk('getDiaryList', async (diarySetId: number) => {
   try {
-    const { data } = await http.get(`/diaryset/${diarySetId}`);
+    const { data } = await http.get(`/diaryset/list/${diarySetId}`);
     return data;
   } catch (err) {
     console.log(err);
