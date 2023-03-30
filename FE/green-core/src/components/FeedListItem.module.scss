@@ -99,10 +99,10 @@
 
 .gradation {
   height: 200px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), grey);
-  width: 100%;
   position: absolute;
   bottom: 0px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), grey);
+  width: 100%;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
 }

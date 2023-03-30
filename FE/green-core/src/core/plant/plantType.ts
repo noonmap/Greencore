@@ -17,7 +17,12 @@ export type PlantType = {
 };
 
 export type SearchPlantDetailType = {
-  plantId: number;
+  id: number;
+  name: string;
+  specificName: string;
+  water: string;
+  light: string;
+  humidity: string;
+  temperature: string;
   imagePath: string;
-  plantName: string;
 };
