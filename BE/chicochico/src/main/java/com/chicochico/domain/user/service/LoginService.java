@@ -3,9 +3,9 @@ package com.chicochico.domain.user.service;
 
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.UserStoreType;
-import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.common.service.OuathService;
+import com.chicochico.common.service.RedisService;
 import com.chicochico.domain.user.dto.request.LoginRequestDto;
 import com.chicochico.domain.user.dto.request.RefreshRequestDto;
 import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
@@ -23,17 +23,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static com.chicochico.exception.ErrorCode.PASSWORD_NOT_MATCH;
 import static com.chicochico.exception.ErrorCode.USER_NOT_FOUND;
@@ -47,8 +44,7 @@ public class LoginService {
 	private final AuthTokenProvider authTokenProvider;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final AuthService authService;
-	private final RedisTemplate<String, String> redisTemplate;
+	private final RedisService redisService;
 	private final FirebaseAuth firebaseAuth;
 	private final OuathService ouathService;
 	private final ObjectMapper objectMapper;
@@ -80,7 +76,7 @@ public class LoginService {
 			String userNickname = authTokenProvider.getUserNickname(loginRequestRefreshToken);
 
 			// 3. Redis 에서 UserId 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
-			String refreshToken = redisTemplate.opsForValue().get("RT:" + userId);
+			String refreshToken = redisService.getData("RT:" + userId);
 			if (!StringUtils.hasText(refreshToken) || !refreshToken.equals(loginRequestRefreshToken)) {
 				// Refresh Token 정보가 일치하지 않습니다.
 				throw new CustomException(ErrorCode.REFRESH_TOKEN_ERROR);
@@ -93,8 +89,7 @@ public class LoginService {
 			authTokenProvider.setHeaderRefreshToken(response, newRefreshToken);
 
 			// 5. RefreshToken Redis 업데이트
-			redisTemplate.opsForValue()
-				.set("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
+			redisService.setDataExpireMilliseconds("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken));
 
 		} else if (userStore.equals(UserStoreType.FIREBASE)) { // firebase에 저장된 유저 (구글/깃헙)
 			Map<String, String> params = new HashMap<>();
@@ -108,7 +103,6 @@ public class LoginService {
 			} catch (JsonProcessingException e) {
 				throw new CustomException(ErrorCode.TOKEN_ERROR);
 			}
-			FirebaseToken token = null;
 			// 새로운 토큰 header에 넣기
 			String newAccessToken = ouathService.getStringValue(jsonNode, "id_token");
 			authTokenProvider.setHeaderAccessToken(response, newAccessToken);
@@ -169,8 +163,7 @@ public class LoginService {
 		authTokenProvider.setHeaderRefreshToken(response, refreshToken);
 
 		// refresh token Redis에 저장
-		redisTemplate.opsForValue().set("RT:" + user.getId(), refreshToken, authTokenProvider.getExpiration(refreshToken), TimeUnit.MILLISECONDS);
-
+		redisService.setDataExpireMilliseconds("RT:" + user.getId(), refreshToken, authTokenProvider.getExpiration(refreshToken));
 		return ProfileSimpleResponseDto.fromEntity(user);
 	}
 
@@ -219,11 +212,6 @@ public class LoginService {
 		// 있는 유저라면 계속 진행하기 or 회원가입 완료 후 db에 있는 유저
 		UserEntity user = userRepository.findByEmailAndIsDeleted(decodedToken.getEmail(), IsDeletedType.N).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-		Long expTime = ((Long) decodedToken.getClaims().get("exp") * 1000) - new Date().getTime();
-
-		// refresh token Redis에 저장
-		redisTemplate.opsForValue().set("RT:" + user.getId(), loginRequestRefreshToken, expTime, TimeUnit.MILLISECONDS);
-
 		// 다시 동일한 accessToken, refreshToken 담기
 		authTokenProvider.setHeaderAccessToken(response, accessToken);
 		authTokenProvider.setHeaderRefreshToken(response, loginRequestRefreshToken);
@@ -237,7 +225,7 @@ public class LoginService {
 	 *
 	 * @param loginRequestHeader 엑세스 토큰, 리프레시 토큰
 	 * @param response
-	 * @return
+	 * @return 사용자 정보
 	 */
 	@Transactional
 	public ProfileSimpleResponseDto kakaoLogin(Map<String, String> loginRequestHeader, HttpServletResponse response) {
@@ -296,9 +284,6 @@ public class LoginService {
 
 		log.info("[kakaoLogin] 토큰 생성 및 응답 {}", expiresInMillis);
 
-		// refresh token Redis에 저장
-		redisTemplate.opsForValue().set("RT:" + user.getId(), loginRequestRefreshToken, Long.parseLong(expiresInMillis), TimeUnit.MILLISECONDS);
-
 		// 다시 동일한 accessToken, refreshToken 담기
 		authTokenProvider.setHeaderAccessToken(response, accessToken);
 		authTokenProvider.setHeaderRefreshToken(response, loginRequestRefreshToken);
@@ -325,15 +310,14 @@ public class LoginService {
 		Long userId = authTokenProvider.getUserId(accessToken);
 
 		// 3. Redis 에서 해당 User id 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
-		if (redisTemplate.opsForValue().get("RT:" + userId) != null) {
+		if (redisService.getData("RT:" + userId) != null) {
 			// Refresh Token 삭제
-			redisTemplate.delete("RT:" + userId);
+			redisService.deleteData("RT:" + userId);
 		}
 
 		// 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
 		Long expiration = authTokenProvider.getExpiration(accessToken);
-		redisTemplate.opsForValue()
-			.set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+		redisService.setDataExpireMilliseconds(accessToken, "logout", expiration);
 
 	}
 

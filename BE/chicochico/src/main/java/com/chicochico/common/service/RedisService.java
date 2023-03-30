@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 
 @RequiredArgsConstructor
@@ -28,6 +29,13 @@ public class RedisService {
 		ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
 		Duration expireDuration = Duration.ofSeconds(duration);
 		valueOperations.set(key, value, expireDuration);
+	}
+
+
+	// 유효 시간 동안(key, value)저장
+	public void setDataExpireMilliseconds(String key, String value, long duration) {
+		ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+		valueOperations.set(key, value, duration, TimeUnit.MILLISECONDS);
 	}
 
 
