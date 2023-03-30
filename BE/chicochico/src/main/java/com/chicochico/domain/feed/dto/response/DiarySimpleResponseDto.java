@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -37,10 +38,13 @@ public class DiarySimpleResponseDto {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime craetedAt;
 	private String imagePath;
+	private Integer likeCount;
 	private Integer commentCount;
+	private Long growingDay;
 
 
 	public static DiarySimpleResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList) {
+		Long growingDay = ChronoUnit.DAYS.between(diary.getDiarySet().getStartDate(), diary.getObservationDate());
 		return DiarySimpleResponseDto.builder()
 			.diaryId(diary.getId())
 			.content(diary.getContent())
@@ -48,7 +52,9 @@ public class DiarySimpleResponseDto {
 			.observationDate(diary.getObservationDate())
 			.craetedAt(diary.getCreatedAt())
 			.imagePath(diary.getImagePath())
+			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
+			.growingDay(growingDay)
 			.build();
 	}
 
