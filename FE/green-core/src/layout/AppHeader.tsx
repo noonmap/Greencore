@@ -105,9 +105,8 @@ export default function AppHeader() {
                     <Link href={`/user/following/${nickname}`}>팔로우 관리</Link>
                   </div>
                   <div className='flex items-center space-x-3 cursor-pointer'>
-                    {isAlert ? <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span> : null}
                     <span className='material-symbols-outlined'>book</span>
-                    <Link href={`/user/bookmark`}>북마크</Link>
+                    <Link href={`/user/bookmark/${nickname}`}>북마크</Link>
                   </div>
                   <div className='flex items-center space-x-3 cursor-pointer'>
                     {isAlert ? <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span> : null}
