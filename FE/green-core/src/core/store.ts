@@ -2,9 +2,6 @@ import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/t
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import counterReduer from './temp/counter/counterSlice';
-import postReducer from './temp/post/postSlice';
-
 import commonReducer from './common/commonSlice';
 import userReducer from './user/userSlice';
 import diaryReducer from './diary/diarySlice';
@@ -15,9 +12,6 @@ import plantReducer from './plant/plantSlice';
 const persistConfig = { key: 'root', version: 1, storage, whitelist: ['common'] };
 
 const rootReducer = combineReducers({
-  counter: counterReduer,
-  post: postReducer,
-
   common: commonReducer,
   user: userReducer,
   diary: diaryReducer,
