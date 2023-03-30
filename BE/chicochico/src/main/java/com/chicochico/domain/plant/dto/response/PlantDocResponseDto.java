@@ -16,31 +16,20 @@ public class PlantDocResponseDto {
 
 	private Long plantId;
 	private String plantName;
-	private String habitat;
-	private String temperature;
-	private String water;
-	private String sunlight;
 	private String specificName;
-	private String origin;
-	private String rootForm;
-	private String managementLevel;
-	private String placement;
+	private String water;
 	private String light;
-	private String growthRate;
-	private String growthType;
+	private String humidity;
+	private String temperature;
 	private String imagePath;
 
 
 	public static PlantDocResponseDto fromEntity(PlantEntity xx) {
 		PlantDocResponseDto plantDocResponseDto = PlantDocResponseDto.builder()
 			.plantId(xx.getId()).plantName(xx.getName())
-			.habitat(xx.getHabitat()).temperature(xx.getTemperature())
-			.water(xx.getWater()).sunlight(xx.getSunlight())
-			.specificName(xx.getSpecificName()).origin(xx.getOrigin())
-			.rootForm(xx.getRootForm()).managementLevel(xx.getManagementLevel())
-			.placement(xx.getPlacement()).light(xx.getLight())
-			.growthRate(xx.getGrowthRate()).growthType(xx.getGrowthType())
-			.imagePath(xx.getImagePath()).build();
+			.specificName(xx.getSpecificName()).water(xx.getWater())
+			.light(xx.getLight()).humidity(xx.getHumidity())
+			.temperature(xx.getTemperature()).imagePath(xx.getImagePath()).build();
 		return plantDocResponseDto;
 	}
 

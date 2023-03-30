@@ -44,24 +44,18 @@ CREATE TABLE `alert` (
   CONSTRAINT `FKf7a0a2h9v7oq5ix09aoul6gil` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `plant` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `growth_rate` varchar(255) DEFAULT NULL,
-  `growth_type` varchar(255) DEFAULT NULL,
-  `habitat` varchar(255) DEFAULT NULL,
-  `image_path` varchar(255) NOT NULL,
-  `light` varchar(255) DEFAULT NULL,
-  `management_level` varchar(255) DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  `origin` varchar(255) DEFAULT NULL,
-  `placement` varchar(255) DEFAULT NULL,
-  `root_form` varchar(255) DEFAULT NULL,
-  `specific_name` varchar(255) DEFAULT NULL,
-  `sunlight` varchar(255) DEFAULT NULL,
-  `temperature` varchar(255) DEFAULT NULL,
-  `user_count` int NOT NULL,
-  `water` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE `plant`
+(
+    `id`            bigint       NOT NULL AUTO_INCREMENT,
+    `name`          varchar(255) NOT NULL,
+    `image_path`    varchar(500) NOT NULL,
+    `specific_name` varchar(255) DEFAULT NULL,
+    `water`         varchar(255) DEFAULT NULL,
+    `light`         varchar(255) DEFAULT NULL,
+    `humidity`      varchar(255) DEFAULT NULL,
+    `temperature`   varchar(255) DEFAULT NULL,
+    `user_count`    int          NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `user_plant` (
