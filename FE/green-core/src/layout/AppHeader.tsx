@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import AppButton from '@/components/button/AppButton';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 
@@ -73,11 +74,13 @@ export default function AppHeader() {
   return (
     <>
       <div className={`${styles.container} xl:w-56 w-20 flex-none fixed overflow-hidden h-full px-3 py-5`}>
-        <div className='flex flex-col justify-between h-full px-4'>
-          <div className=''>
-            <div className=''>
-              {/* <img src='/images/noProfile.png' width={50} className={`mb-7`} /> */}
-              <div className={`${styles.title} mb-10`}>GREENCORE</div>
+        <div className='flex flex-col justify-between h-full xl:px-4'>
+          <div className='flex flex-col items-center xl:items-start'>
+            <div className=' flex mb-10'>
+              <Image src='/images/leaf4.png' width={32} height={32} className={`xl:hidden block`} alt='logo' />
+              <Link href='/' className={`${styles.title} xl:block hidden`}>
+                GREENCORE
+              </Link>
             </div>
 
             <div className={`${styles.navContainer} flex flex-col space-y-7`}>
@@ -86,7 +89,7 @@ export default function AppHeader() {
                   <Link href='/'>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>home</span>
-                      <span>Home</span>
+                      <span className='xl:block hidden'>Home</span>
                     </div>
                   </Link>
 
@@ -94,35 +97,35 @@ export default function AppHeader() {
                     <div className='flex items-center space-x-3'>
                       {/* <span className='material-symbols-outlined'>search</span> */}
                       <span className='material-symbols-outlined'>auto_stories</span>
-                      <span>식물 도감</span>
+                      <span className='xl:block hidden'>식물 도감</span>
                     </div>
                   </Link>
 
                   <Link href='/'>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>bug_report</span>
-                      <span>병충해 분석</span>
+                      <span className='xl:block hidden'>병충해 분석</span>
                     </div>
                   </Link>
 
                   <Link href='/schedule'>
                     <div className='flex items-center space-x-3 '>
                       <span className='material-symbols-outlined'>calendar_month</span>
-                      <span>식물 스케줄링</span>
+                      <span className='xl:block hidden'>식물 스케줄링</span>
                     </div>
                   </Link>
 
                   <Link href={`/user/following/${nickname}`}>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>group</span>
-                      <span>팔로우 관리</span>
+                      <span className='xl:block hidden'>팔로우 관리</span>
                     </div>
                   </Link>
 
                   <Link href={`/user/bookmark/${nickname}`}>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>book</span>
-                      <span>북마크</span>
+                      <span className='xl:block hidden'>북마크</span>
                     </div>
                   </Link>
 
@@ -130,14 +133,14 @@ export default function AppHeader() {
                     <div className='flex items-center space-x-3'>
                       {isAlert ? <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span> : null}
                       <span className='material-symbols-outlined'>notifications</span>
-                      <span>알림</span>
+                      <span className='xl:block hidden'>알림</span>
                     </div>
                   </Link>
 
                   <Link href='/user/settings/password'>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>settings</span>
-                      <span>설정</span>
+                      <span className='xl:block hidden'>설정</span>
                     </div>
                   </Link>
                 </>
@@ -146,7 +149,7 @@ export default function AppHeader() {
                   <Link href='/'>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>home</span>
-                      <span>Home</span>
+                      <span className='xl:block hidden'>Home</span>
                     </div>
                   </Link>
 
@@ -154,14 +157,14 @@ export default function AppHeader() {
                     <div className='flex items-center space-x-3'>
                       {/* <span className='material-symbols-outlined'>search</span> */}
                       <span className='material-symbols-outlined'>auto_stories</span>
-                      <span>식물 도감</span>
+                      <span className='xl:block hidden'>식물 도감</span>
                     </div>
                   </Link>
 
                   <Link href='/'>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>bug_report</span>
-                      <span>병충해 분석</span>
+                      <span className='xl:block hidden'>병충해 분석</span>
                     </div>
                   </Link>
                   <Link href='/auth/login'>로그인</Link>
@@ -174,16 +177,21 @@ export default function AppHeader() {
           {nickname ? (
             <>
               <div className='gap-3'>
+                <div className='flex flex-col items-center'>
+                  <Image src='/images/noProfile.png' width={50} height={50} className='border rounded-full xl:hidden' alt='' />
+                </div>
                 <Link href={`/user/feed/${nickname}`}>
-                  <div className='flex  mb-3 w-50 items-center rounded-full  hover:bg-gray-100 p-3 gap-2'>
-                    <img src='/images/noProfile.png' width={50} height={50} className='border rounded-full' />
+                  <div className='flex mb-3 w-50 items-center rounded-full hover:bg-gray-100 p-3 gap-2'>
+                    <Image src='/images/noProfile.png' width={50} height={50} className='border rounded-full xl:block hidden' alt='' />
                     <div>
-                      <div className='font-bold text-ellipsis overflow-hidden text-sm'>{nickname}</div>
+                      <div className='font-bold text-ellipsis overflow-hidden text-sm xl:block hidden'>{nickname}</div>
                     </div>
                   </div>
                 </Link>
 
-                <AppButton text='로그아웃' handleClick={handleLogOut} bgColor='thin' className='mb-3 mt-3' />
+                <div className='xl:block hidden'>
+                  <AppButton text='로그아웃' handleClick={handleLogOut} bgColor='thin' className='mb-3 mt-3 ' />
+                </div>
               </div>
             </>
           ) : null}

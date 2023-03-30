@@ -15,7 +15,6 @@ type AppLayoutProps = {
 export default function AppLayout({ children, home }: AppLayoutProps) {
   const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
   const searchState = useAppSelector((state) => state.common.searchState || 'home');
-  console.log(getCookieToken());
 
   // 로그인 시
   if (getCookieToken()) {
