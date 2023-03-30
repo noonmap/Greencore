@@ -44,7 +44,7 @@ public class PostController {
 	@ApiOperation(value = "게시글 상세 내용을 조회합니다.")
 	public ResponseEntity<ResultDto<PostResponseDto>> getPost(@PathVariable("postId") Long postId) {
 		PostEntity post = postService.getPost(postId);
-		PostResponseDto postResponseDto = PostResponseDto.fromEntity(post, feedService::getCommentCount, feedService::getTagContentList, followService::isFollowed);
+		PostResponseDto postResponseDto = PostResponseDto.fromEntity(post, feedService::getCommentCount, feedService::getTagContentList, followService::isFollowed, feedService::isLikedFeed);
 		return ResponseEntity.ok().body(ResultDto.of(postResponseDto));
 	}
 

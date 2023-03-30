@@ -26,9 +26,11 @@ public class PostResponseDto {
 	private Integer commentCount;
 	private List<String> tags;
 	private LocalDateTime createdAt;
+	private Boolean isLiked;
 
 
-	public static PostResponseDto fromEntity(PostEntity post, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed) {
+	public static PostResponseDto fromEntity(PostEntity post, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed,
+		Function<Long, Boolean> isLiked) {
 		return PostResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(post.getUser(), isFollowed))
 			.postId(post.getId())
@@ -38,24 +40,26 @@ public class PostResponseDto {
 			.commentCount(getCommentCount.apply(post.getId()))
 			.tags(getTagsList.apply(post.getId())) //
 			.createdAt(post.getCreatedAt())
+			.isLiked(isLiked.apply(post.getId()))
 			.build();
 	}
 
 
 	public static List<PostResponseDto> fromEnityList(List<PostEntity> postList, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList,
-		Function<Long, Boolean> isFollowed) {
+		Function<Long, Boolean> isFollowed, Function<Long, Boolean> isLiked) {
 		List<PostResponseDto> result = new ArrayList<>();
 		for (PostEntity post : postList) {
-			PostResponseDto xxResponseDto = PostResponseDto.fromEntity(post, getCommentCount, getTagsList, isFollowed);
+			PostResponseDto xxResponseDto = PostResponseDto.fromEntity(post, getCommentCount, getTagsList, isFollowed, isLiked);
 			result.add(xxResponseDto);
 		}
 		return result;
 	}
 
 
-	public static Page<PostResponseDto> fromEntityPage(Page<PostEntity> page, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed) {
+	public static Page<PostResponseDto> fromEntityPage(Page<PostEntity> page, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed,
+		Function<Long, Boolean> isLiked) {
 		List<PostEntity> postList = new ArrayList<>(page.toList());
-		List<PostResponseDto> postResponseDtoList = PostResponseDto.fromEnityList(postList, getCommentCount, getTagsList, isFollowed);
+		List<PostResponseDto> postResponseDtoList = PostResponseDto.fromEnityList(postList, getCommentCount, getTagsList, isFollowed, isLiked);
 		Page<PostResponseDto> result = new PageImpl<>(postResponseDtoList, page.getPageable(), postResponseDtoList.size());
 		return result;
 	}

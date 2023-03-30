@@ -45,9 +45,10 @@ public class DiaryResponseDto {
 	private Integer commentCount;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime createdAt;
+	private Boolean isLiked;
 
 
-	public static DiaryResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed) {
+	public static DiaryResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed, Function<Long, Boolean> isLiked) {
 		return DiaryResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(diary.getUser(), isFollowed))
 			.diarySetId(diary.getDiarySet().getId())
@@ -58,6 +59,7 @@ public class DiaryResponseDto {
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.createdAt(diary.getCreatedAt())
+			.isLiked(isLiked.apply(diary.getId()))
 			.build();
 	}
 
