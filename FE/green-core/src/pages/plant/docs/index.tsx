@@ -313,9 +313,9 @@ export default function plantDocs() {
                   <div className={`p-5`}>
                     <span className={`text-xl font-bold`}>나와 같은 식물을 키우는 사람들 </span> <br />
                   </div>
-                  <div className={`px-5 flex justify-between`}>
+                  <div className={`px-5 flex`}>
                     {samePlantUserList?.map((samPlantUser) => (
-                      <div key={samPlantUser.nickname} className={``}>
+                      <div key={samPlantUser.nickname} className={`pr-10`}>
                         <Link href={`/user/feed/${samPlantUser.nickname}`}>
                           <img src={samPlantUser.profileImagePath} width={150} height={150} />
                         </Link>
