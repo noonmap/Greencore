@@ -42,7 +42,7 @@ export const deleteDiarySet = async (diarySetId: number) => {
 // 유저가 북마크한 관찰일지 목록 조회
 export const getBookmarkedDiarySet = async (nickname: string, params: PageType) => {
   const { data } = await http.get(`/diaryset/${nickname}/bookmark`, { params });
-  return data;
+  return data.data;
 };
 
 // 인기 관찰일지 목록 조회

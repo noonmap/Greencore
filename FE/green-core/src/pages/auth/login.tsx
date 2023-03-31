@@ -65,7 +65,6 @@ export default function login() {
 
     try {
       const payload = { email, password };
-      console.log(payload);
       dispatch(SET_AUTH_TYPE_DB());
       dispatch(logIn(payload));
     } catch (error) {
@@ -107,6 +106,7 @@ export default function login() {
             if (data) {
               dispatch(logInByOAuth(logInPayload));
               dispatch(SET_AUTH_TYPE_FIREBASE());
+              handleSetUserProfile(githubNickname, githubPhotoUrl);
             }
           } else {
             dispatch(logInByOAuth(logInPayload));
@@ -156,6 +156,7 @@ export default function login() {
             if (data) {
               dispatch(logInByOAuth(logInPayload));
               dispatch(SET_AUTH_TYPE_FIREBASE());
+              handleSetUserProfile(googleNickname, googlePhotoUrl);
             }
           } else {
             dispatch(logInByOAuth(logInPayload));

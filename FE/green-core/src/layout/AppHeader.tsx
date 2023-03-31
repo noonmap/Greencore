@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AppButton from '@/components/button/AppButton';
@@ -7,14 +7,19 @@ import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getAuth as GitHubGetAuth, signInWithPopup as GitHubSignInWithPopup, GithubAuthProvider, signOut as GitHubSignOut } from 'firebase/auth';
 import { getAuth as GoogleGetAuth, signInWithPopup as GoogleSignInWithPopup, GoogleAuthProvider, signOut as GoogleSignOut } from 'firebase/auth';
 import { logOut } from '@/core/user/userAPI';
+import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 import styles from './AppHeader.module.scss';
+import Skeleton from 'react-loading-skeleton';
 
 export default function AppHeader() {
   const dispatch = useAppDispatch();
-  const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
+  const storage = getStorage();
 
+  const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
   const isAlert = useAppSelector((state) => state.common.isAlert);
+
+  const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 
   // github
   const githubAuth = GitHubGetAuth();
@@ -23,6 +28,23 @@ export default function AppHeader() {
   // google
   const googleAuth = GoogleGetAuth();
   const googleProvider = new GoogleAuthProvider();
+
+  useEffect(() => {
+    if (nickname) getUserProfile();
+  }, [nickname, userProfileImagePath]);
+
+  /** 사용자 프로필 이미지 가져오는 함수 */
+  function getUserProfile() {
+    const profileRef = ref(storage, `${nickname}/profileImage`);
+
+    getDownloadURL(profileRef)
+      .then((downloadURL) => {
+        setUserProfileImagePath(downloadURL);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   /** 로그아웃: github, kakao, google, jwt */
   async function handleLogOut() {
@@ -179,19 +201,31 @@ export default function AppHeader() {
             <>
               <div className='gap-3'>
                 <div className='flex flex-col items-center'>
-                  <Image src='/images/noProfile.png' width={50} height={50} className='border rounded-full xl:hidden' alt='' />
+                  {userProfileImagePath ? (
+                    <Image src={userProfileImagePath} width={50} height={50} className='border rounded-full xl:hidden' alt='' />
+                  ) : (
+                    <div className='xl:hidden'>
+                      <Skeleton width={50} height={50} circle />
+                    </div>
+                  )}
                 </div>
                 <Link href={`/user/feed/${nickname}`}>
                   <div className='flex mb-3 w-50 items-center rounded-full hover:bg-gray-100 p-3 gap-2'>
-                    <Image src='/images/noProfile.png' width={50} height={50} className='border rounded-full xl:block hidden' alt='' />
-                    <div>
+                    {userProfileImagePath ? (
+                      <Image src={userProfileImagePath} width={50} height={50} className='border rounded-full xl:block hidden' alt='' />
+                    ) : (
+                      <div className='xl:block hidden'>
+                        <Skeleton width={50} height={50} circle />
+                      </div>
+                    )}
+                    <div className='xl:block hidden'>
                       <div className='font-bold text-ellipsis overflow-hidden text-sm xl:block hidden'>{nickname}</div>
                     </div>
                   </div>
                 </Link>
 
                 <div className='xl:block hidden'>
-                  <AppButton text='로그아웃' handleClick={handleLogOut} bgColor='thin' className='mb-3 mt-3 ' />
+                  <AppButton text='로그아웃' handleClick={handleLogOut} bgColor='thin' className='mb-3 mt-3 xl:block hidden' />
                 </div>
               </div>
             </>

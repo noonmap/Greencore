@@ -51,7 +51,7 @@ const AxiosInterceptor = ({ children }) => {
     const errInterceptor = (error) => {
       if (error.response.status === 401) {
         console.log('refresh token 만료!');
-        dispatch(getAccessToken(authType));
+        // dispatch(getAccessToken(authType));
         // router.push('/login');
       }
 
