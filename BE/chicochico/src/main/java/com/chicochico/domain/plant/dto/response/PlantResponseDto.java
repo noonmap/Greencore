@@ -7,12 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Data
@@ -55,11 +52,10 @@ public class PlantResponseDto {
 	//	}
 
 
-	public static Page<PlantResponseDto> fromEnityPage(Page<PlantEntity> xxList, Pageable pageable) {
-		List<PlantResponseDto> result = xxList.stream().map(PlantResponseDto::fromEntity).collect(Collectors.toList());
+	public static Page<PlantResponseDto> fromEnityPage(Page<PlantEntity> xxList) {
+		Page<PlantResponseDto> result = xxList.map(PlantResponseDto::fromEntity);
 
-		Page<PlantResponseDto> resultPage = new PageImpl<>(result, pageable, result.size());
-		return resultPage;
+		return result;
 	}
 
 }
