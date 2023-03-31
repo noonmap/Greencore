@@ -41,12 +41,8 @@ export const deleteDiarySet = async (diarySetId: number) => {
 
 // 유저가 북마크한 관찰일지 목록 조회
 export const getBookmarkedDiarySet = async (nickname: string, params: PageType) => {
-  try {
-    console.log(nickname, params);
-    const { data } = await http.get(`/diaryset/${nickname}/bookmark`, { params });
-    console.log(data);
-    return data;
-  } catch (error) {}
+  const { data } = await http.get(`/diaryset/${nickname}/bookmark`, { params });
+  return data;
 };
 
 // 인기 관찰일지 목록 조회

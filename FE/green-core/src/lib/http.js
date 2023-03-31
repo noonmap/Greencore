@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { getCookieToken, setRefreshToken } from './cookies';
+import { getCookieToken } from './cookies';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getAccessToken } from '@/core/user/userAPI';
-import { SET_ACCESS_TOKEN } from '@/core/user/userSlice';
 
 const serverUrl =
   process.env.NODE_ENV == 'production'
@@ -37,14 +36,11 @@ const AxiosInterceptor = ({ children }) => {
 
   useEffect(() => {
     const reqInterceptor = async (config) => {
-      console.log(accessToken);
-
       if (getCookieToken()) {
         config.headers['Content-Type'] = 'application/json; charset=utf-8';
         config.headers['X-Refresh-Token'] = getCookieToken();
         config.headers['authorization'] = `Bearer ${accessToken}`;
       }
-
       return config;
     };
 
@@ -54,8 +50,13 @@ const AxiosInterceptor = ({ children }) => {
 
     const errInterceptor = (error) => {
       if (error.response.status === 401) {
-        alert('권한 없음');
+        console.log('refresh token 만료!');
         dispatch(getAccessToken(authType));
+        // router.push('/login');
+      }
+
+      if (error.response.status === 403) {
+        // dispatch(getAccessToken(authType));
         // router.push('/login');
       }
 
@@ -74,7 +75,7 @@ const AxiosInterceptor = ({ children }) => {
       instance.interceptors.request.eject(requestInterceptor);
       instance.interceptors.response.eject(responseInterceptor);
     };
-  }, [accessToken]);
+  }, [authType, accessToken]);
 
   return children;
 };
