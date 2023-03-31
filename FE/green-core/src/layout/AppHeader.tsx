@@ -100,7 +100,7 @@ export default function AppHeader() {
                     </div>
                   </Link>
 
-                  <Link href='/'>
+                  <Link href='/plant/disease'>
                     <div className='flex items-center space-x-3'>
                       <span className='material-symbols-outlined'>bug_report</span>
                       <span className='xl:block hidden'>병충해 분석</span>
