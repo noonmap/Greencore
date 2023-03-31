@@ -2,7 +2,7 @@ package com.chicochico.config;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
-import com.chicochico.common.service.OuathService;
+import com.chicochico.common.service.OauthService;
 import com.chicochico.common.service.RedisService;
 import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,14 +25,14 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 	private final JwtExceptionFilter jwtExceptionFilter;
 	private final FirebaseAuth firebaseAuth;
 	private final CustomUserDetailsService userDetailsService;
-	private final OuathService ouathService;
+	private final OauthService oauthService;
 	private final ObjectMapper objectMapper;
 
 
 	// TokenProvider 를 주입받아서 JwtFilter 를 통해 Security 로직에 필터를 등록
 	@Override
 	public void configure(HttpSecurity http) {
-		JwtFilter customFilter = new JwtFilter(tokenProvider, redisService, firebaseAuth, userDetailsService, ouathService, objectMapper);
+		JwtFilter customFilter = new JwtFilter(tokenProvider, redisService, firebaseAuth, userDetailsService, oauthService, objectMapper);
 		http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(jwtExceptionFilter, customFilter.getClass());
 	}

@@ -2,7 +2,7 @@ package com.chicochico.config;
 
 
 import com.chicochico.common.service.AuthTokenProvider;
-import com.chicochico.common.service.OuathService;
+import com.chicochico.common.service.OauthService;
 import com.chicochico.common.service.RedisService;
 import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +33,7 @@ public class SpringSecurity {
 	private final JwtExceptionFilter jwtExceptionFilter;
 	private final FirebaseAuth firebaseAuth;
 	private final CustomUserDetailsService userDetailsService;
-	private final OuathService ouathService;
+	private final OauthService oauthService;
 	private final ObjectMapper objectMapper;
 
 
@@ -86,7 +86,7 @@ public class SpringSecurity {
 
 			// JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider, redisService, jwtExceptionFilter, firebaseAuth, userDetailsService, ouathService, objectMapper));
+			.apply(new JwtSecurityConfig(tokenProvider, redisService, jwtExceptionFilter, firebaseAuth, userDetailsService, oauthService, objectMapper));
 
 		http
 			.logout()
