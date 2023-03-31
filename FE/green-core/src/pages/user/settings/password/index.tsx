@@ -16,7 +16,7 @@ type StateType = {
 
 const initialState: StateType = {
   password: '',
-  isPossible: false,
+  isPossible: true,
 };
 
 export default function index() {
@@ -42,8 +42,8 @@ export default function index() {
 
   /** 비밀번호가 입력 완료되었는지 확인하는 함수 */
   function checkIsPossible() {
-    if (errors?.password || errors?.password?.type === 'required' || password === '') setValue('isPossible', false);
-    else setValue('isPossible', true);
+    // if (errors?.password || errors?.password?.type === 'required' || password === '') setValue('isPossible', false);
+    // else setValue('isPossible', true);
   }
 
   /** 비밀번호 확인하는 함수 */

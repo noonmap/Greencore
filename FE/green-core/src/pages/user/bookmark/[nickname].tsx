@@ -1,38 +1,31 @@
 import UserBookmarkListItem from '@/components/UserBookmarkListItem';
+import { getBookmarkedDiarySet } from '@/core/diarySet/diarySetAPI';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
+import { getAccessToken } from '@/core/user/userAPI';
 import AppLayout from '@/layout/AppLayout';
-import React, { useEffect, useState } from 'react';
+import { getCookieToken } from '@/lib/cookies';
+import { startOfYesterday } from 'date-fns';
+import React, { useCallback, useEffect, useState } from 'react';
 
 type BookmarkType = {};
 
 export default function Bookmark() {
-  const [bookmarkList, setBookMarkList] = useState([
-    {
-      diarySetId: 1,
-      imagePath: 'image1/jpg',
-      bookmarkCount: 32,
-      isBookmarked: true,
-      diaryCount: 10,
-      title: '제목1',
-    },
-    {
-      diarySetId: 2,
-      imagePath: 'image1/jpg',
-      bookmarkCount: 32,
-      isBookmarked: false,
-      diaryCount: 10,
-      title: '제목2',
-    },
-    {
-      diarySetId: 3,
-      imagePath: 'image1/jpg',
-      bookmarkCount: 32,
-      isBookmarked: false,
-      diaryCount: 10,
-      title: '제목3',
-    },
-  ]);
+  const dispatch = useAppDispatch();
+  const [bookmarkList, setBookMarkList] = useState([]);
+
+  const fetchBookmarkList = useCallback(async () => {
+    const { data } = await getBookmarkedDiarySet('김씨', { page: 0, size: 2 });
+    console.log(data);
+  }, []);
 
   useEffect(() => {
+    // if (getCookieToken()) dispatch(getAccessToken('DB'));
+    // console.log(isAuthLoading);
+    // if (isAuthLoading) {
+
+    fetchBookmarkList();
+    // }
+
     return () => {};
   }, []);
 
