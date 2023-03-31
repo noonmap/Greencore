@@ -1,3 +1,7 @@
+insert into user_table (created_at,updated_at,email,follower_count,following_count,introduction,is_deleted,nickname,password,profile_image_path,user_store) 
+values 
+(now(),now(),'gc@ssafy.com',0,0,'','N','재롱둥이','$2a$10$3wmpgdvR50myRYc2iIHhA.XZnuPBW1OxaHjlw3duQm/rxJAmzFvLG','/user/default.png','DB');
+
 insert into tag (created_at,updated_at,content,count) values 
 (now(),now(),'다육/선인장',0),
 (now(),now(),'초보자용',0),
@@ -343,8 +347,6 @@ insert into feed (feed_code,created_at,updated_at,comment_count,content,image_pa
 \r\n \r\n
 사진 출처 : 핀터레스트',
 'https://i.pinimg.com/736x/b6/80/eb/b680ebd7fdb2f64a34dbf0d917482718.jpg','N',0,1)
-
-
 ;
 
 
@@ -394,6 +396,55 @@ insert into feed_tag (feed_id,tag_id) values
 (43,4),(43,22),
 (44,22),(44,23),
 (45,15),(45,16),(45,22)
-
 ;
+
+SELECT @Cnt1:=COUNT(*) FROM feed_tag where tag_id=1;
+update tag set count=@Cnt1 where id=1;
+SELECT @Cnt2:=COUNT(*) FROM feed_tag where tag_id=2;
+update tag set count=@Cnt2 where id=2;
+SELECT @Cnt3:=COUNT(*) FROM feed_tag where tag_id=3;
+update tag set count=@Cnt3 where id=3;
+SELECT @Cnt4:=COUNT(*) FROM feed_tag where tag_id=4;
+update tag set count=@Cnt4 where id=4;
+SELECT @Cnt5:=COUNT(*) FROM feed_tag where tag_id=5;
+update tag set count=@Cnt5 where id=5;
+SELECT @Cnt6:=COUNT(*) FROM feed_tag where tag_id=6;
+update tag set count=@Cnt6 where id=6;
+SELECT @Cnt7:=COUNT(*) FROM feed_tag where tag_id=7;
+update tag set count=@Cnt7 where id=7;
+SELECT @Cnt8:=COUNT(*) FROM feed_tag where tag_id=8;
+update tag set count=@Cnt8 where id=8;
+SELECT @Cnt9:=COUNT(*) FROM feed_tag where tag_id=9;
+update tag set count=@Cnt9 where id=9;
+SELECT @Cnt10:=COUNT(*) FROM feed_tag where tag_id=10;
+update tag set count=@Cnt10 where id=10;
+SELECT @Cnt11:=COUNT(*) FROM feed_tag where tag_id=11;
+update tag set count=@Cnt11 where id=11;
+SELECT @Cnt12:=COUNT(*) FROM feed_tag where tag_id=12;
+update tag set count=@Cnt12 where id=12;
+SELECT @Cnt13:=COUNT(*) FROM feed_tag where tag_id=13;
+update tag set count=@Cnt13 where id=13;
+SELECT @Cnt14:=COUNT(*) FROM feed_tag where tag_id=14;
+update tag set count=@Cnt14 where id=14;
+SELECT @Cnt15:=COUNT(*) FROM feed_tag where tag_id=15;
+update tag set count=@Cnt15 where id=15;
+SELECT @Cnt16:=COUNT(*) FROM feed_tag where tag_id=16;
+update tag set count=@Cnt16 where id=16;
+SELECT @Cnt17:=COUNT(*) FROM feed_tag where tag_id=17;
+update tag set count=@Cnt17 where id=17;
+SELECT @Cnt18:=COUNT(*) FROM feed_tag where tag_id=18;
+update tag set count=@Cnt18 where id=18;
+SELECT @Cnt19:=COUNT(*) FROM feed_tag where tag_id=19;
+update tag set count=@Cnt19 where id=19;
+SELECT @Cnt20:=COUNT(*) FROM feed_tag where tag_id=20;
+update tag set count=@Cnt20 where id=20;
+SELECT @Cnt21:=COUNT(*) FROM feed_tag where tag_id=21;
+update tag set count=@Cnt21 where id=21;
+SELECT @Cnt22:=COUNT(*) FROM feed_tag where tag_id=22;
+update tag set count=@Cnt22 where id=22;
+SELECT @Cnt23:=COUNT(*) FROM feed_tag where tag_id=23;
+update tag set count=@Cnt23 where id=23;
+
+
+
 
