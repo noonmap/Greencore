@@ -44,7 +44,7 @@ export default function DiaryDetail() {
 
   // searchState 변경
   function changeSearchState() {
-    dispatch(SET_IS_SEARCH_STATE('home'));
+    dispatch(SET_IS_SEARCH_STATE('default'));
   }
 
   useEffect(() => {
@@ -266,7 +266,7 @@ export default function DiaryDetail() {
 
                         // 여기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 태그 검색 만들어야됨!!!!!!!!!!!!!!
 
-                        <span key={index}>#{tag}</span>
+                        <span key={index}>{tag}</span>
                       );
                     })}
                   </div>

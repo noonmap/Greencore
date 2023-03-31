@@ -60,7 +60,7 @@ export default function updatediary() {
 
   // searchState 변경
   function changeSearchState() {
-    dispatch(SET_IS_SEARCH_STATE('home'));
+    dispatch(SET_IS_SEARCH_STATE('default'));
   }
 
   // 초기값 설정
