@@ -93,7 +93,7 @@ public class PlantService {
 	 * @return 인기 식물 리스트
 	 */
 	public List<PlantEntity> getPopularPlantList() {
-		List<PlantEntity> plantList = plantRepository.findTop5ByOrderByUserCountDesc();
+		List<PlantEntity> plantList = plantRepository.findTop3ByOrderByUserCountDesc();
 		return plantList;
 	}
 
