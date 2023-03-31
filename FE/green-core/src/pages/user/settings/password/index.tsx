@@ -3,7 +3,8 @@ import SettingsLayout from '@/layout/SettingsLayout';
 import { useForm } from 'react-hook-form';
 import { checkPassword } from '@/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
-
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+import { useAppDispatch } from '@/core/hooks';
 import styles from '@/styles/Settings.module.scss';
 import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
@@ -21,6 +22,7 @@ const initialState: StateType = {
 
 export default function index() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -30,6 +32,11 @@ export default function index() {
     watch,
   } = useForm<StateType>({ defaultValues: initialState, mode: 'onChange' });
   const [password, isPossible] = getValues(['password', 'isPossible']);
+
+  // searchState 변경
+  useEffect(() => {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  });
 
   useEffect(() => {
     watch();

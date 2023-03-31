@@ -17,6 +17,8 @@ import AppButton from '@/components/button/AppButton';
 import FindPasswordModal from '@/components/modal/FindPasswordModal';
 import { SET_AUTH_TYPE_DB, SET_AUTH_TYPE_FIREBASE, SET_AUTH_TYPE_KAKAO } from '@/core/common/commonSlice';
 
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+
 type StateType = {
   email: string;
   password: string;
@@ -40,6 +42,11 @@ export default function login() {
 
   const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [email, password] = getValues(['email', 'password']);
+
+  // searchState 변경
+  useEffect(() => {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  });
 
   useEffect(() => {
     watch();

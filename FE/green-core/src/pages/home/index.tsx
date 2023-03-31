@@ -22,13 +22,12 @@ export default function feed() {
   const [isSelectRecomment, setIsSelectRecomment] = useState(true);
 
   // searchState 변경
-  function changeSearchState() {
-    dispatch(SET_IS_SEARCH_STATE('home'));
-  }
+  useEffect(() => {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  }, []);
 
   // 초기 웹 훅
   useEffect(() => {
-    changeSearchState();
     // feedList 초기화 하기
     dispatch(initFeedList());
     setIsLoaded(true);

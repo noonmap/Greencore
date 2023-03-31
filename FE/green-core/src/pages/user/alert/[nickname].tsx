@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { createAlert, deleteSelectedAlert, getAlertList, updateAllAlert, updateSelectedAlert, checkIsAlert } from '@/core/alert/alertAPI';
 import AppLoading from '@/components/common/AppLoading';
 import UserAlertListItem from '@/components/UserAlertListItem';
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 
 export default function Alert() {
   const dispatch = useAppDispatch();
@@ -15,6 +16,11 @@ export default function Alert() {
   const size = useAppSelector((state) => state.alert.size);
 
   const [selectedAlertList, setSelectedAlertList] = useState<Array<string>>([]);
+
+  // searchState 변경
+  useEffect(() => {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  });
 
   useEffect(() => {
     fetchAlertList();
