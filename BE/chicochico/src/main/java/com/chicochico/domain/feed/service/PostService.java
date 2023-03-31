@@ -14,8 +14,6 @@ import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,15 +46,14 @@ public class PostService {
 	 * 게시글 목록을 조회합니다.
 	 *
 	 * @param nickname
-	 * @param pageable
 	 * @return
 	 */
-	public Page<PostEntity> getPostList(String nickname, Pageable pageable) {
+	public List<PostEntity> getPostList(String nickname) {
 		UserEntity writer = userRepository.findByNickname(nickname).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		if (writer.getIsDeleted().equals(IsDeletedType.Y)) throw new CustomException(ErrorCode.USER_NOT_FOUND); // 이미 탈퇴한 유저
-		Page<PostEntity> postPage = postRepository.findByUserAndIsDeleted(writer, IsDeletedType.N, pageable);
+		List<PostEntity> postList = postRepository.findByUserAndIsDeleted(writer, IsDeletedType.N);
 
-		return postPage;
+		return postList;
 	}
 
 

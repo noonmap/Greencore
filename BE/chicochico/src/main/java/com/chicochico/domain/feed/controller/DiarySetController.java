@@ -42,14 +42,14 @@ public class DiarySetController {
 		 * 2. 서비스 메소드가 안 만들어져서 빨간 표시가 뜰텐데, 마우스 오버하면 "Create method 어쩌고" 문구가 뜬다. 그걸 클릭함
 		 * 3. 그럼 service 클래스에 메소드 구현체가 자동으로 생성된다!
 		 * */
-		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname, pageable);
+		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname, pageable);
 		UserEntity user = userService.getUserByNickname(nickname);
 		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, user, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
 	}
 
 
-	@PostMapping("/")
+	@PostMapping
 	@ApiOperation(value = "관찰 일지를 생성합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> createDiarySet(DiarySetRequestDto diarySetRequestDto) {
 		diarySetService.createDiarySet(diarySetRequestDto);
@@ -79,7 +79,7 @@ public class DiarySetController {
 	@GetMapping("/{nickname}/bookmark")
 	@ApiOperation(value = "유저가 북마크한 관찰 일지 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("nickname") String nickname, Pageable pageable) {
-		Page<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(nickname, pageable);
+		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(nickname, pageable);
 		UserEntity user = userService.getUserByNickname(nickname);
 		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, user, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
@@ -87,7 +87,7 @@ public class DiarySetController {
 
 
 	@GetMapping("/population")
-	@ApiOperation(value = "인기 관찰 일지를 2개 조회합니다.", notes = "")
+	@ApiOperation(value = "인기 관찰 일지를 5개 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<DiarySetSimpleResponseDto>>> getPopularDiarySetList() {
 		List<DiarySetEntity> diarySetList = diarySetService.getPopularDiarySetList();
 		List<DiarySetSimpleResponseDto> diarySetSimpleResponseDtoList = DiarySetSimpleResponseDto.fromEnityList(diarySetList);

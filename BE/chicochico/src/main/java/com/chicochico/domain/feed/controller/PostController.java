@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/post")
@@ -34,8 +36,8 @@ public class PostController {
 	@GetMapping(value = "/list/{nickname}")
 	@ApiOperation(value = "게시글 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<PostSimpleResponseDto>>> getPostList(@PathVariable("nickname") String nickname, Pageable pageable) {
-		Page<PostEntity> postPage = postService.getPostList(nickname, pageable);
-		Page<PostSimpleResponseDto> postSimpleResponseDtoPage = PostSimpleResponseDto.fromEntityPage(postPage, feedService::getCommentCount);
+		List<PostEntity> postList = postService.getPostList(nickname);
+		Page<PostSimpleResponseDto> postSimpleResponseDtoPage = PostSimpleResponseDto.fromEntityPage(postList, feedService::getCommentCount, pageable);
 		return ResponseEntity.ok().body(ResultDto.of(postSimpleResponseDtoPage));
 	}
 
