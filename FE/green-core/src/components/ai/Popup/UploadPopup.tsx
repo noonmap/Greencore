@@ -25,7 +25,7 @@ const UploadPopup = ({ onClose, onCapture }) => {
 
   // 이미지 미리보기
   const handlePreview = (e: any) => {
-    const fileReader = new FileReader();
+    const fileReader: any = new FileReader();
     if (e.target.files.length) {
       fileReader.readAsDataURL(e.target.files[0]);
       fileReader.onload = () => {

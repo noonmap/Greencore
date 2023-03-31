@@ -10,7 +10,6 @@ import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { useRouter } from 'next/router';
 
 export default function Homepage() {
-  const [showTryNow, setShowTryNow] = useState(false);
   const [showPrediction, setShowPrediction] = useState(false);
   const [image, setImage] = useState(null);
   const [tfModel, setTfModel] = useState(null);
@@ -73,12 +72,6 @@ export default function Homepage() {
     setImage(null);
   };
 
-  const tryAnotherClickHandler = () => {
-    setShowPrediction(false);
-    setImage(null);
-    setShowTryNow(true);
-  };
-
   const imageSelectHandler = async (image) => {
     const base64 = await new Promise((resolve, reject) => {
       var reader = new FileReader();
@@ -104,7 +97,7 @@ export default function Homepage() {
         }, 500);
       });
     }
-    let img = document.getElementById('plant-photo');
+    let img = document.getElementById('plant-photo') as HTMLImageElement;
 
     await new Promise((resolve, reject) => {
       img.onload = () => {
@@ -144,7 +137,7 @@ export default function Homepage() {
         <div className={`${styles.title}`}>병충해 분석</div>
 
         {showPrediction ? (
-          <ResultPage image={image} getDiseases={predictDisease} onTryAnotherClick={tryAnotherClickHandler} onClose={resultPageCloseHandler} />
+          <ResultPage image={image} getDiseases={predictDisease} onClose={resultPageCloseHandler} />
         ) : (
           <UploadPopup onClose={tryNowCloseHandler} onCapture={imageSelectHandler} />
         )}
