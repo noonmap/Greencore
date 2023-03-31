@@ -33,7 +33,7 @@ public class PlantController {
 	public ResponseEntity<ResultDto<Page<PlantWithImageResponseDto>>> getPlantWithImageList(@RequestParam("search") String search,
 		@PageableDefault(size = 12, sort = "name") Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantWithImageList(search, pageable);
-		Page<PlantWithImageResponseDto> plantWithImageResponseDtoPage = PlantWithImageResponseDto.fromEnityPage(plantList, pageable);
+		Page<PlantWithImageResponseDto> plantWithImageResponseDtoPage = PlantWithImageResponseDto.fromEnityPage(plantList);
 
 		return ResponseEntity.ok().body(ResultDto.of(plantWithImageResponseDtoPage));
 	}
@@ -44,7 +44,7 @@ public class PlantController {
 	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantListAtMyPage(@RequestParam("search") String search,
 		@PageableDefault(size = 12, sort = "name") Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantListAtMyPage(search, pageable);
-		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList, pageable);
+		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
 
 		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
@@ -55,7 +55,7 @@ public class PlantController {
 	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantList(@RequestParam("search") String search,
 		@PageableDefault(size = 12, sort = "name") Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantList(search, pageable);
-		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList, pageable);
+		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
 
 		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
@@ -66,7 +66,7 @@ public class PlantController {
 	public ResponseEntity<ResultDto<Page<PlantResponseDto>>> getPlantListByIndex(@RequestParam("index") String index,
 		@PageableDefault(size = 12, sort = "name") Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantListByIndex(index, pageable);
-		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList, pageable);
+		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
 
 		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
