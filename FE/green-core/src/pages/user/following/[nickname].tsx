@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import FollowLayout from '@/layout/FollowLayout';
 import { useRouter } from 'next/router';
-import { useAppSelector } from '@/core/hooks';
+import { useAppSelector, useAppDispatch } from '@/core/hooks';
 import Link from 'next/link';
 import Image from 'next/image';
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { getFollowingList } from '@/core/follow/followAPI';
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
@@ -11,6 +12,7 @@ import Skeleton from 'react-loading-skeleton';
 import AppButton from '@/components/button/AppButton';
 
 export default function following() {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const storage = getStorage();
 
@@ -26,6 +28,11 @@ export default function following() {
   const [target, setTarget] = useState(null); // 관찰 대상 target
   const [isLoaded, setIsLoaded] = useState(true); // 데이터 로딩 상태
   // -------------------------------------------------------------------
+
+  // searchState 변경
+  useEffect(() => {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  });
 
   useEffect(() => {
     if (!router.isReady) return;
