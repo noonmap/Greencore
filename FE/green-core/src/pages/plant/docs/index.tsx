@@ -127,7 +127,7 @@ export default function plantDocs() {
 
   // 페이지네이션 클릭
   const handlePageAtindexChange = (pageAtindex) => {
-    setPageAtindex(pageAtindex);
+    setPageAtindex(pageAtindex - 1);
   };
   // ----------------------------------- 검색 데이터 -----------------------------------
 
@@ -217,7 +217,7 @@ export default function plantDocs() {
 
             {/* index 검색 */}
             <div className={`flex-none flex flex-wrap px-5`}>
-              {indexList.map((index) => (
+              {indexList?.map((index) => (
                 <div key={index}>
                   <button
                     className={`${styles.indexBtn} rounded-full px-3 mr-1 my-1 ${indexList[selectedIndex] === index ? 'text-white' : 'text-black'}`}
@@ -230,12 +230,12 @@ export default function plantDocs() {
             </div>
 
             {/* 검색결과 */}
-            {plantDocsList.length === 0 ? (
+            {plantDocsList?.length === 0 ? (
               <div className={`p-5`}>조회된 식물이 없습니다</div>
             ) : (
               <div className={`grow flex flex-col p-5`}>
                 {/* 데이터 */}
-                {plantDocsList.map((plantDocs) => (
+                {plantDocsList?.map((plantDocs) => (
                   <div key={plantDocs.plantId} className={` p-5 ${styles.item}`} onClick={() => getDetail(plantDocs.plantId)}>
                     <span>{plantDocs.plantName}</span>
                   </div>
@@ -262,9 +262,10 @@ export default function plantDocs() {
 
           {/* 사이드바 */}
 
-          <div className={`${styles.sideContainer} lg:block hidden overflow-auto w-2/5`}>
+          <div className={`${styles.sideContainer} lg:block hidden overflow-auto grow`}>
             {!isDetailSearched ? (
-              <div className={`flex flex-col`} style={{ paddingTop: '76px' }}>
+              // 디폴트 정보
+              <div className={`flex flex-col`} style={{ paddingTop: '76px', marginRight: '20%' }}>
                 {/* 인기 식물 */}
                 <div className='pb-5'>
                   <div className='p-5'>
@@ -272,7 +273,7 @@ export default function plantDocs() {
                     <span>이번 주에 가장 많이 검색된 식물입니다</span>
                   </div>
                   <div className={`flex px-5 justify-between `}>
-                    {topPlantList.map((topPlant) => (
+                    {topPlantList?.map((topPlant) => (
                       <div key={topPlant.plantId} className={`overflow-hidden relative ${styles.topPlantImage}`}>
                         {topPlant.imagePath ? (
                           <img src={topPlant.imagePath} width={150} height={150} />
@@ -293,7 +294,7 @@ export default function plantDocs() {
                     <span>사용자에게 인기 있는 관찰일지입니다</span>
                   </div>
                   <div className={`flex px-5 justify-around `}>
-                    {topDiarySetList.map((topDiarySet) => (
+                    {topDiarySetList?.map((topDiarySet) => (
                       <div key={topDiarySet.diarySetId} className={`overflow-hidden relative ${styles.topDiarySetImage}`}>
                         <Link href={`/diarySet/${topDiarySet.diarySetId}`}>
                           <img src={topDiarySet.imagePath} width={200} height={200} style={{ width: '100%', height: '100%' }} />
