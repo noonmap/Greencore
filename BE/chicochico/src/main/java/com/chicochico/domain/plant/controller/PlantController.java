@@ -83,7 +83,7 @@ public class PlantController {
 
 
 	@GetMapping("/population")
-	@ApiOperation(value = "인기 식물을 조회합니다.", notes = "")
+	@ApiOperation(value = "인기 식물를 3개 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<PlantWithImageResponseDto>>> getPopularPlantList() {
 		List<PlantEntity> plantList = plantService.getPopularPlantList();
 		List<PlantWithImageResponseDto> plantWithImageResponseDtoList = PlantWithImageResponseDto.fromEnityList(plantList);

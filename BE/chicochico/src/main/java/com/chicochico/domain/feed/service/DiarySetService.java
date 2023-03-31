@@ -206,8 +206,8 @@ public class DiarySetService {
 	 */
 	public List<DiarySetEntity> getPopularDiarySetList() {
 		// 가장 북마크 수가 많은 관찰 일지 구함
-		List<DiarySetEntity> diarySetTop5 = diarySetRepository.findTop5ByOrderByBookmarkCountDesc();
-		return diarySetTop5;
+		List<DiarySetEntity> diarySetTop2 = diarySetRepository.findTop2ByOrderByBookmarkCountDesc();
+		return diarySetTop2;
 	}
 
 

@@ -30,6 +30,11 @@ export default function PostDetail() {
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
+  // searchState 변경
+  function changeSearchState() {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  }
+
   // 바깥 클릭시 닫기
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -38,16 +43,12 @@ export default function PostDetail() {
       }
     };
     document.addEventListener('click', handleClickOutside);
+
+    changeSearchState();
     return () => {};
   }, []);
 
-  // searchState 변경
-  function changeSearchState() {
-    dispatch(SET_IS_SEARCH_STATE('home'));
-  }
-
   useEffect(() => {
-    changeSearchState();
     if (!hasPost) {
       setIsLiked(post.data.isLiked);
       setLikeCount(post.data.likeCount);
