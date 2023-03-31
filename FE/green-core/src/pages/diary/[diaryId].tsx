@@ -20,7 +20,7 @@ export default function DiaryDetail() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const diaryId = Number(router.query.diaryId); // number
-  const { data: diary, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
+  const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
   const [isOpenDiaryDeleteModal, setIsOpenDiaryDeleteModal] = useState(false);
   const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
   const ref = useRef<HTMLDivElement>(null);
@@ -60,7 +60,7 @@ export default function DiaryDetail() {
   // 삭제
   const handleDeleteDiary = async () => {
     try {
-      const payload = { diaryId };
+      const payload = { diaryId, diarySetId: Number(diary.data.diarySetId) };
       const requestData = { router, payload };
       dispatch(deleteDiary(requestData));
     } catch (err) {
@@ -181,7 +181,7 @@ export default function DiaryDetail() {
             {/* 일지 작성자 정보 */}
             <div className='flex flex-col items-center'>
               <div className={`${styles.helpTip} flex`}>
-                <img src={diary.data.user.profileImagePath} className={`${styles.profileImg}`} alt='프로필 이미지' onClick={goProfile} />
+                <img src={diary?.data.user.profileImagePath} className={`${styles.profileImg}`} alt='프로필 이미지' onClick={goProfile} />
 
                 {/* 프로필 팝업 */}
                 <div className={`flex flex-col div ${styles.userInfo}`}>
@@ -259,11 +259,14 @@ export default function DiaryDetail() {
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
-                    {diary?.data?.tags.map((tag: string, i: number) => {
+                    {diary?.data?.tags.map((tag: string, index: number) => {
                       return (
-                        <Link href={`feed`} key={i} style={{ marginInline: '1px' }}>
-                          #{tag}
-                        </Link>
+                        // <Link href={``} key={index} style={{ marginInline: '1px' }}>
+                        // </Link>
+
+                        // 여기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 태그 검색 만들어야됨!!!!!!!!!!!!!!
+
+                        <span key={index}>#{tag}</span>
                       );
                     })}
                   </div>
@@ -283,11 +286,13 @@ export default function DiaryDetail() {
                   </span>
                   <div className={`${styles.dropdown}`}>
                     <div ref={ref} className={`${isOpenMenu ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
-                      <div className={`border-b border-slate-300 bg-white flex justify-center items-center cursor-pointer ${styles.dropdownMenu}`}>
-                        <Link href={`update/${diaryId}`}>
-                          <span className='text-lg p-2'>수정</span>
-                          <span className='material-symbols-outlined'>edit</span>
-                        </Link>
+                      <div
+                        className={`border-b border-slate-300 bg-white flex justify-center items-center cursor-pointer ${styles.dropdownMenu}`}
+                        onClick={() => {
+                          router.push(`update/${diaryId}`);
+                        }}>
+                        <span className='text-lg p-2'>수정</span>
+                        <span className='material-symbols-outlined'>edit</span>
                       </div>
                       <div
                         className={`border-b border-slate-300 bg-white flex justify-center items-center text-red-400 cursor-pointer ${styles.dropdownMenu}`}
