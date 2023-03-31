@@ -1,10 +1,9 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const CTA = ({ icon, text, onClick }) => {
   return (
     <div className='cta' onClick={onClick}>
-      {/* <FontAwesomeIcon icon={`${icon}`} /> */}
+      <span className='material-symbols-outlined'>{icon}</span>
       <p>{text}</p>
     </div>
   );

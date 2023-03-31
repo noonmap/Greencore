@@ -6,10 +6,7 @@ const Header = ({ onTryNowClick }) => {
   return (
     <div className='header'>
       <NavBar onTryNowClick={onTryNowClick} />
-      <h1 className='header-text'>
-        Try our AI Powered <br /> Disease Detection
-      </h1>
-      <CTA icon='cloud-upload-alt' text='Try Now' onClick={onTryNowClick} />
+      {/* <CTA icon='cloud-upload-alt' text='Try Now' onClick={onTryNowClick} /> */}
     </div>
   );
 };
