@@ -17,22 +17,16 @@ import 'toastify-js/src/toastify.css';
 
 import kakaoConfig from '~/config/kakaoConfig.json';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import { getAccessToken } from '@/core/user/userAPI';
 import AppLoading from '@/components/common/AppLoading';
 
 import { getFirestore, collection, query, orderBy, startAfter, onSnapshot, limit } from 'firebase/firestore';
 import { getAlertList } from '@/core/alert/alertAPI';
-import { SET_AUTH_TYPE_DB } from '@/core/common/commonSlice';
 
 declare global {
   interface Window {
     Kakao: any;
   }
 }
-
-const onBeforeLift = () => {
-  // take some action before the gate lifts
-};
 
 function App() {
   const dispatch = useAppDispatch();
@@ -73,7 +67,7 @@ function App() {
   }
 
   useEffect(() => {
-    sayHi();
+    // sayHi();
     return () => {};
   }, []);
 
@@ -96,11 +90,11 @@ export default function AppWraper({ Component, pageProps }: AppProps) {
   return (
     <CookiesProvider>
       <Provider store={store}>
-        <PersistGate loading={<AppLoading />} onBeforeLift={onBeforeLift} persistor={persistor}>
+        <PersistGate loading={<AppLoading />} persistor={persistor}>
           <AxiosInterceptor>
             <App />
-            <Component {...pageProps} />
           </AxiosInterceptor>
+          <Component {...pageProps} />
 
           <link
             rel='stylesheet'
