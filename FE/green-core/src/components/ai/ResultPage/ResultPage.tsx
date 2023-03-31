@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import IssueContainer from './IssueContainer';
-import loader from '@/../public/images/loader.gif';
 import AppButton from '@/components/button/AppButton';
 import styles from '../Popup/UploadPopup.module.scss';
 import Skeleton from 'react-loading-skeleton';
 
-const ResultPage = ({ image, getDiseases, onTryAnotherClick, onClose }) => {
+const ResultPage = ({ image, getDiseases, onClose }) => {
   const [diseases, setDiseases] = useState([]);
   const [loading, setLoading] = useState(true);
 
