@@ -87,7 +87,7 @@ public class DiarySetController {
 
 
 	@GetMapping("/population")
-	@ApiOperation(value = "인기 관찰 일지를 5개 조회합니다.", notes = "")
+	@ApiOperation(value = "인기 관찰 일지를 2개 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<List<DiarySetSimpleResponseDto>>> getPopularDiarySetList() {
 		List<DiarySetEntity> diarySetList = diarySetService.getPopularDiarySetList();
 		List<DiarySetSimpleResponseDto> diarySetSimpleResponseDtoList = DiarySetSimpleResponseDto.fromEnityList(diarySetList);
