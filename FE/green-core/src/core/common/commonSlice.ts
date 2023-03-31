@@ -65,6 +65,7 @@ const commonSlice = createSlice({
       })
       .addCase(logInByOAuth.fulfilled, (state, action) => {
         state.userInfo = action.payload?.userInfo;
+        console.log('hihi:', action.payload);
         state.accessToken = action.payload?.accessToken;
       })
       .addCase(logOut.fulfilled, (state) => {
