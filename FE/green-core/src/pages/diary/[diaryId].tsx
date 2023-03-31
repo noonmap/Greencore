@@ -58,7 +58,7 @@ export default function DiaryDetail() {
   }, [hasDiary]);
 
   // 삭제
-  const handleDeleteDiary = async () => {
+  const handleDeleteDiary = () => {
     try {
       const payload = { diaryId, diarySetId: Number(diary.data.diarySetId) };
       const requestData = { router, payload };

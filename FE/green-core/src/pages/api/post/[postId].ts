@@ -11,7 +11,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
       result: 'SUCCESS',
       data: {
         user: {
-          nickname: '싸피',
+          nickname: '식집사입니다만',
           profileImagePath: 'http://placekitten.com/200/300',
           introduction: '안녕, 나는 싸피야',
           followingCount: 2,
@@ -21,7 +21,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         postId: 0,
         content: '하이~',
         imagePath: 'http://placekitten.com/200/300',
-        tags: ['내', '이름은', '싸피', '탐정이죠'],
+        tags: ['#내', '#이름은', '#싸피', '#탐정이죠'],
         createdAt: '2023-03-20',
         likeCount: 2,
         commentCount: 3,
