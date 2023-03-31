@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { getCookieToken } from './cookies';
-import { useAppSelector } from '@/core/hooks';
+import { getCookieToken, setRefreshToken } from './cookies';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
+import { getAccessToken } from '@/core/user/userAPI';
+import { SET_ACCESS_TOKEN } from '@/core/user/userSlice';
 
 const serverUrl =
   process.env.NODE_ENV == 'production'
@@ -29,11 +31,14 @@ const instance = axios.create({
 });
 
 const AxiosInterceptor = ({ children }) => {
-  const router = useRouter();
-  const accessToken = useAppSelector((state) => state.user.accessToken);
+  const dispatch = useAppDispatch();
+  const authType = useAppSelector((state) => state.common.authType);
+  const accessToken = useAppSelector((state) => state.common.accessToken);
 
   useEffect(() => {
     const reqInterceptor = async (config) => {
+      console.log(accessToken);
+
       if (getCookieToken()) {
         config.headers['Content-Type'] = 'application/json; charset=utf-8';
         config.headers['X-Refresh-Token'] = getCookieToken();
@@ -50,6 +55,7 @@ const AxiosInterceptor = ({ children }) => {
     const errInterceptor = (error) => {
       if (error.response.status === 401) {
         alert('권한 없음');
+        dispatch(getAccessToken(authType));
         // router.push('/login');
       }
 
@@ -69,6 +75,7 @@ const AxiosInterceptor = ({ children }) => {
       instance.interceptors.response.eject(responseInterceptor);
     };
   }, [accessToken]);
+
   return children;
 };
 

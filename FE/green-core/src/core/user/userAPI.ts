@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import http from '@/lib/http';
+import axios from 'axios';
 import * as cookies from '@/lib/cookies';
 
 import Toastify from 'toastify-js';
@@ -8,7 +9,6 @@ import toastifyCSS from '@/assets/toastify.json';
 
 import { PageType, SearchType } from '@/core/common/commonType';
 import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType, LogInOAuthDataType } from './userType';
-import { hasRequestAnimationFrame } from 'swr/_internal';
 
 /** [POST] 회원가입  API
  * @url /user
@@ -313,7 +313,9 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (authType
   try {
     if (cookies.getCookieToken()) {
       const headers = { 'X-Refresh-Token': cookies.getCookieToken() };
-      const res = await http.post('/refresh', { authType }, { headers });
+      const url = 'http://localhost:8080/api/refresh';
+      const res = await axios.post(url, { authType }, { headers });
+      // const res = await http.post('/refresh', { authType }, { headers });
 
       let accessToken = null;
       let refreshToken = null;
