@@ -19,7 +19,7 @@ public interface DiarySetRepository extends JpaRepository<DiarySetEntity, Long> 
 
 	Optional<DiarySetEntity> findByIdAndIsDeleted(Long id, IsDeletedType isDeletedType);
 
-	List<DiarySetEntity> findTop5ByOrderByBookmarkCountDesc();
+	List<DiarySetEntity> findTop2ByOrderByBookmarkCountDesc();
 
 	Optional<DiarySetEntity> findByUserAndUserPlant(UserEntity user, UserPlantEntity userPlant);
 
