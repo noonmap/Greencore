@@ -68,7 +68,7 @@ const feedSlice = createSlice({
           state.isStopedAtTag = true;
         }
         state.pageAtTag = 1;
-        state.tagFeedList = action.payload;
+        state.tagFeedList = action.payload.content;
       })
       // 태그 검색 아이템 더 불러오기
       .addCase(getTagFeedListMore.pending, (state) => {})

@@ -13,6 +13,7 @@ import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import styles from '@/styles/Diary.module.scss';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
+import { SET_SEARCH_TAG } from '@/core/search/searchSlice';
 
 const fetcher = (url: string) => http.get(url).then((res) => res.data);
 
@@ -152,6 +153,12 @@ export default function DiaryDetail() {
     router.push(`/user/feed/${diary.data.user.nickname}`);
   };
 
+  // 태그 클릭 이벤트
+  function handleTagClick(e) {
+    const searchValue = e.target.innerText.slice(1);
+    dispatch(SET_SEARCH_TAG(searchValue));
+  }
+
   return (
     <AppLayout>
       {isOpenDiaryDeleteModal && (
@@ -261,12 +268,11 @@ export default function DiaryDetail() {
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
                     {diary?.data?.tags.map((tag: string, index: number) => {
                       return (
-                        // <Link href={``} key={index} style={{ marginInline: '1px' }}>
-                        // </Link>
-
-                        // 여기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 태그 검색 만들어야됨!!!!!!!!!!!!!!
-
-                        <span key={index}>{tag}</span>
+                        <div className='pr-2'>
+                          <span key={index} onClick={handleTagClick} className={`${styles.tagBtn}`}>
+                            {tag}
+                          </span>
+                        </div>
                       );
                     })}
                   </div>
