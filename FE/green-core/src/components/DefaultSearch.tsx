@@ -4,13 +4,16 @@ import { getTagFeedList, getTagFeedListMore } from '@/core/feed/feedAPI';
 import { searchByUser, searchByUserMore } from '@/core/user/userAPI';
 import { searchByPlantName, searchByPlantNameMore } from '@/core/plant/plantAPI';
 import Image from 'next/image';
-import styles from './HomeSearch.module.scss';
+import styles from './DefaultSearch.module.scss';
 import SearchFedListItem from '@/components/SearchFeedListItem';
 import SearchUserListItem from '@/components/SearchUserListItem';
 import SearchPlantListItem from '@/components/SearchPlantListItem';
 
-export default function HomeSearch() {
+export default function DefaultSearch() {
   const dispatch = useAppDispatch();
+
+  // 태그 클릭 이벤트
+  const searchTagValue = useAppSelector((state) => state.search.searchTag);
 
   // 검색창
   const [isSearched, setIsSearched] = useState<boolean>(false);
@@ -47,12 +50,26 @@ export default function HomeSearch() {
 
   // -------------------------- 태그 -------------------------------
 
+  // 태그 클릭 이벤트
+  useEffect(() => {
+    if (searchTagValue !== '') {
+      setIsSearched(true);
+      setInputData(searchTagValue);
+      // setSearchTypeTemp(searchType); // 결과 디브 재렌더링 하기!
+
+      searchTag(searchTagValue);
+    }
+  }, [searchTagValue]);
+
+  // -----------------------------------
+
   function searchTag(search: string) {
     const params = {
       search: search,
       page: 0,
       size: sizeAtTag,
     };
+    console.log(params);
     dispatch(getTagFeedList(params));
     setIsLoadedAtTag(false);
   }
@@ -311,7 +328,7 @@ export default function HomeSearch() {
               <div className='text-xl p-5 font-bold'>
                 <span>게시글 검색</span>
               </div>
-              {tagFeedList.map((tagFeed) => (
+              {tagFeedList?.map((tagFeed) => (
                 <SearchFedListItem key={tagFeed.feedId} tagFeed={tagFeed}></SearchFedListItem>
               ))}
               <div ref={setTargetAtTag} />
@@ -327,7 +344,7 @@ export default function HomeSearch() {
               <div className='text-xl pr-5  font-bold'>
                 <span>사용자 검색</span>
               </div>
-              {searchUserList.map((user) => (
+              {searchUserList?.map((user) => (
                 <SearchUserListItem key={user.nickname} searchUser={user}></SearchUserListItem>
               ))}
               <div ref={setTargetAtUser} />
@@ -342,7 +359,7 @@ export default function HomeSearch() {
             <div className='text-xl p-5 font-bold'>
               <span>식물검색</span>
             </div>
-            {searchPlantList.map((plant) => (
+            {searchPlantList?.map((plant) => (
               <SearchPlantListItem key={plant.plantId} searchPlant={plant}></SearchPlantListItem>
             ))}
             <div ref={setTargetAtPlant} />

@@ -8,6 +8,7 @@ import diaryReducer from './diary/diarySlice';
 import alertReducer from './alert/alertSlice';
 import feedReducer from './feed/feedSlice';
 import plantReducer from './plant/plantSlice';
+import searchReducer from './search/searchSlice';
 
 const persistConfig = { key: 'root', version: 1, storage, whitelist: ['common'] };
 
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   alert: alertReducer,
   feed: feedReducer,
   plant: plantReducer,
+  search: searchReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

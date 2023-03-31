@@ -9,6 +9,7 @@ import styles from '@/styles/Diary.module.scss';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { deletePost } from '@/core/post/postAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+import { SET_SEARCH_TAG } from '@/core/search/searchSlice';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import CommentDeleteModal from '@/components/modal/CommentDeleteModal';
@@ -151,6 +152,12 @@ export default function PostDetail() {
     router.push(`/user/feed/${post.data.user.nickname}`);
   };
 
+  // 태그 클릭 이벤트
+  function handleTagClick(e) {
+    const searchValue = e.target.innerText.slice(1);
+    dispatch(SET_SEARCH_TAG(searchValue));
+  }
+
   return (
     <AppLayout>
       {isOpenPostDeleteModal && (
@@ -255,12 +262,12 @@ export default function PostDetail() {
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
                     {post?.data?.tags.map((tag: string, index: number) => {
                       return (
-                        // <Link href={``} key={index} style={{ marginInline: '1px' }}>
-                        // </Link>
-
-                        // 여기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 태그 검색 만들어야됨!!!!!!!!!!!!!!
-
-                        <span key={index}>{tag}</span>
+                        // TODO : 태그 검색
+                        <div className='pr-2'>
+                          <span key={index} onClick={handleTagClick} className={`${styles.tagBtn}`}>
+                            {tag}
+                          </span>
+                        </div>
                       );
                     })}
                   </div>
