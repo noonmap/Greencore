@@ -3,6 +3,8 @@ import { SearchUserType } from './userType';
 import * as userAPI from './userAPI';
 
 interface UserState {
+  isPossibleUpdateUser: boolean;
+
   // 검색용
   searchUserList: Array<SearchUserType>;
   isStopedAtUser: boolean;
@@ -10,6 +12,8 @@ interface UserState {
 }
 
 const initialState: UserState = {
+  isPossibleUpdateUser: false,
+
   // 검색용
   searchUserList: [],
   isStopedAtUser: false,
@@ -20,7 +24,14 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
 
-  reducers: {},
+  reducers: {
+    SET_IS_POSSIBLE_UPDATE_USER_TRUE: (state) => {
+      state.isPossibleUpdateUser = true;
+    },
+    SET_IS_POSSIBLE_UPDATE_USER_FALSE: (state) => {
+      state.isPossibleUpdateUser = false;
+    },
+  },
 
   extraReducers(builder) {
     builder
@@ -41,4 +52,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { SET_IS_POSSIBLE_UPDATE_USER_TRUE, SET_IS_POSSIBLE_UPDATE_USER_FALSE } = userSlice.actions;
 export default userSlice.reducer;
