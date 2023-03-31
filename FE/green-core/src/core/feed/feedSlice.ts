@@ -46,9 +46,10 @@ const feedSlice = createSlice({
         if (action.payload.length === 0) {
           state.isStoped = true;
         }
+        console.log(action.payload);
         state.page = state.page + 1;
         state.isLoading = false;
-        state.feedList = [...state.feedList, ...action.payload];
+        state.feedList = [...state.feedList, ...action.payload.content];
       })
       // 팔로우 피드 조회
       .addCase(getFollowFeedList.pending, (state) => {})
@@ -58,7 +59,7 @@ const feedSlice = createSlice({
         }
         state.page = state.page + 1;
         state.isLoading = false;
-        state.feedList = [...state.feedList, ...action.payload];
+        state.feedList = [...state.feedList, ...action.payload.content];
       })
       // 태그 검색 초기 요청
       .addCase(getTagFeedList.pending, (state) => {})
@@ -76,7 +77,7 @@ const feedSlice = createSlice({
           state.isStopedAtTag = true;
         }
         state.pageAtTag = state.pageAtTag + 1;
-        state.tagFeedList = [...state.tagFeedList, ...action.payload];
+        state.tagFeedList = [...state.tagFeedList, ...action.payload.content];
       });
   },
 });

@@ -12,6 +12,7 @@ import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
 import { SearchUserType } from '@/core/user/userType';
 import Pagination from 'react-js-pagination';
 import styles from './plantDocs.module.scss';
+import Skeleton from 'react-loading-skeleton';
 
 export default function plantDocs() {
   const dispatch = useAppDispatch();
@@ -272,7 +273,11 @@ export default function plantDocs() {
                   <div className={`flex px-5 justify-between `}>
                     {topPlantList.map((topPlant) => (
                       <div key={topPlant.plantId} className={`overflow-hidden relative ${styles.topPlantImage}`}>
-                        <img src={topPlant.imagePath} width={150} height={150} />
+                        {topPlant.imagePath ? (
+                          <img src={topPlant.imagePath} width={150} height={150} />
+                        ) : (
+                          <Skeleton width={150} height={150}></Skeleton>
+                        )}
                         <div className={`${styles.gradation} flex items-end pl-3 pb-2 text-white`}>
                           <span>{topPlant.plantName}</span>
                         </div>
