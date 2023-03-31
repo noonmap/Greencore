@@ -71,7 +71,7 @@ export default function updatediary() {
       setValue('diarysetId', diary.data.diarySetId);
       setValue('content', diary.data.content);
       setValue('opservationDate', diary.data.observationDate);
-      fetch(preview)
+      fetch(diary.data.imagePath)
         .then((res) => res.blob())
         .then((blob) => {
           const arr = preview.split('/');

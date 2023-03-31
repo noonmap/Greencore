@@ -92,7 +92,7 @@ export default function creatediary() {
   };
 
   // 이미지 미리보기
-  const handlerPreview = (e: any) => {
+  const handlePreview = (e: any) => {
     const fileReader = new FileReader();
     if (e.target.files.length) {
       fileReader.readAsDataURL(e.target.files[0]);
@@ -196,7 +196,7 @@ export default function creatediary() {
               {
                 onChange(event) {
                   setValue('image', event.target.files);
-                  handlerPreview(event);
+                  handlePreview(event);
                 },
               })}
               id='image'
