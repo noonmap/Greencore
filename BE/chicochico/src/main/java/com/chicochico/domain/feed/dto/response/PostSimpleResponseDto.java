@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,10 +52,11 @@ public class PostSimpleResponseDto {
 	}
 
 
-	public static Page<PostSimpleResponseDto> fromEntityPage(Page<PostEntity> page, Function<Long, Integer> getCommentCount) {
-		List<PostEntity> postList = new ArrayList<>(page.toList());
+	public static Page<PostSimpleResponseDto> fromEntityPage(List<PostEntity> postList, Function<Long, Integer> getCommentCount, Pageable pageable) {
+		int start = (int) pageable.getOffset();
+		int end = Math.min(start + pageable.getPageSize(), postList.size());
 		List<PostSimpleResponseDto> postSimpleResponseDtoList = fromEnityList(postList, getCommentCount);
-		Page<PostSimpleResponseDto> result = new PageImpl<>(postSimpleResponseDtoList, page.getPageable(), postSimpleResponseDtoList.size());
+		Page<PostSimpleResponseDto> result = new PageImpl<>(postSimpleResponseDtoList.subList(start, end), pageable, postSimpleResponseDtoList.size());
 		return result;
 	}
 

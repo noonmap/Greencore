@@ -21,8 +21,6 @@ import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import io.gorse.gorse4j.Feedback;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,15 +55,14 @@ public class DiarySetService {
 	 * 관찰 일지 목록을 조회합니다
 	 *
 	 * @param nickname 관찰일지 작성자 닉네임
-	 * @param pageable 페이지네이션
 	 * @return
 	 */
-	public Page<DiarySetEntity> getDiarySetList(String nickname, Pageable pageable) {
+	public List<DiarySetEntity> getDiarySetList(String nickname, Pageable pageable) {
 		// 작성자 조회
 		UserEntity writer = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		// 삭제된 관찰일지를 제외한 것 조회
-		Page<DiarySetEntity> diarySetPage = diarySetRepository.findByUserAndIsDeleted(writer, IsDeletedType.N, pageable);
+		List<DiarySetEntity> diarySetPage = diarySetRepository.findByUserAndIsDeleted(writer, IsDeletedType.N);
 		return diarySetPage;
 	}
 
@@ -184,7 +181,7 @@ public class DiarySetService {
 	 * @param pageable 페이지네이션
 	 * @return
 	 */
-	public Page<DiarySetEntity> getDiarySetBookmarkList(String nickname, Pageable pageable) {
+	public List<DiarySetEntity> getDiarySetBookmarkList(String nickname, Pageable pageable) {
 		// 유저 조회
 		UserEntity user = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -192,10 +189,7 @@ public class DiarySetService {
 		List<BookmarkEntity> bookmarkList = bookmarkRepository.findByUser(user);
 		List<DiarySetEntity> diarySetList = bookmarkList.stream().map(BookmarkEntity::getDiarySet).collect(Collectors.toList());
 
-		// 관찰 일지 페이지로 변환
-		Page<DiarySetEntity> diarySetPage = new PageImpl<>(diarySetList, pageable, diarySetList.size());
-
-		return diarySetPage;
+		return diarySetList;
 	}
 
 
@@ -206,8 +200,8 @@ public class DiarySetService {
 	 */
 	public List<DiarySetEntity> getPopularDiarySetList() {
 		// 가장 북마크 수가 많은 관찰 일지 구함
-		List<DiarySetEntity> diarySetTop2 = diarySetRepository.findTop2ByOrderByBookmarkCountDesc();
-		return diarySetTop2;
+		List<DiarySetEntity> diarySetTop5 = diarySetRepository.findTop5ByOrderByBookmarkCountDesc();
+		return diarySetTop5;
 	}
 
 

@@ -37,8 +37,8 @@ public class FeedController {
 	@GetMapping
 	@ApiOperation(value = "피드 추천 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(@PageableDefault Pageable pageable) {
-		Page<FeedEntity> feedEntityPage = feedService.getRecommendedFeedList(pageable);
-		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed);
+		List<FeedEntity> feedEntityList = feedService.getRecommendedFeedList(pageable);
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityList, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed, pageable);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 
@@ -49,8 +49,8 @@ public class FeedController {
 		String nickname = authService.getUserNickname();
 		List<UserEntity> followingList = followService.getFollowingList(nickname, Pageable.unpaged()).getContent();
 
-		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList, pageable);
-		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed);
+		List<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList, pageable);
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed, pageable);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 

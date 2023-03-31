@@ -162,14 +162,14 @@ public class FeedService {
 	 * @param pageable 페이지네이션
 	 * @return 피드 조회 페이지
 	 */
-	public Page<FeedEntity> getRecommendedFeedList(Pageable pageable) {
+	public List<FeedEntity> getRecommendedFeedList(Pageable pageable) {
 		// Recommender System에서 추천받은 게시글의 id list
 		Long userId = authService.getUserId();
 		List<Long> recommendedFeedIds = recommenderService.getRecommendFeedIdList(userId, pageable.getPageNumber(), pageable.getPageSize());
 		log.info("[Recommened Feed Ids]" + recommendedFeedIds);
 		// id list를 feed로 변환
-		List<FeedEntity> feedList = feedRepository.findByIdInAndIsDeleted(recommendedFeedIds, IsDeletedType.N);
-		return new PageImpl<>(feedList, pageable, feedList.size());
+		List<FeedEntity> feedList = feedRepository.findByIdInAndIsDeleted(recommendedFeedIds, IsDeletedType.N, pageable);
+		return feedList;
 	}
 
 
@@ -193,6 +193,20 @@ public class FeedService {
 	 * feedList에서 삭제되지 않은(IsDeletedType.N인) 피드 페이지를 얻음
 	 *
 	 * @param _feedList
+	 * @return
+	 */
+	private List<FeedEntity> getUnDeletedFeedPage(List<FeedEntity> _feedList) {
+		List<FeedEntity> feedList = new ArrayList<>(_feedList); // 입력 list는 unmodifidable list라서 한번 복사를 거쳐줘야한다.
+		// 삭제된 피드 삭제
+		feedList.removeIf(feed -> feed.getIsDeleted().equals(IsDeletedType.Y));
+		return feedList;
+	}
+
+
+	/**
+	 * feedList에서 삭제되지 않은(IsDeletedType.N인) 피드 페이지를 얻음
+	 *
+	 * @param _feedList
 	 * @param pageable
 	 * @return
 	 */
@@ -208,13 +222,12 @@ public class FeedService {
 	/**
 	 * 팔로우한 사람의 최신 피드를 조회합니다.
 	 *
-	 * @param pageable
 	 * @return
 	 */
-	public Page<FeedEntity> getFeedListByFollowUser(List<UserEntity> followingUserList, Pageable pageable) {
+	public List<FeedEntity> getFeedListByFollowUser(List<UserEntity> followingUserList, Pageable pageable) {
 		// 팔로우하고 있는 유저들의 피드
-		Page<FeedEntity> feedPage = feedRepository.findByUserIn(followingUserList, pageable);
-		return getUnDeletedFeedPage(feedPage, pageable);
+		List<FeedEntity> feedList = feedRepository.findByUserIn(followingUserList);
+		return getUnDeletedFeedPage(feedList);
 	}
 
 

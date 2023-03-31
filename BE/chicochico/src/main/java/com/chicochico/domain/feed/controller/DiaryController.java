@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -43,9 +45,9 @@ public class DiaryController {
 	@GetMapping("/diaryset/list/{diarySetId}")
 	@ApiOperation(value = "해당 관찰일지의 일지 목록을 조회한다.", notes = "")
 	public ResponseEntity<ResultDto<DiaryListResponseDto>> getDiaryList(@PathVariable Long diarySetId, Pageable pageable) {
-		Page<DiaryEntity> diaryEntityPage = diaryService.getDiaryList(diarySetId, pageable);
+		List<DiaryEntity> diaryEntityPage = diaryService.getDiaryList(diarySetId);
 		DiarySetEntity diarySet = diarySetService.getDiarySet(diarySetId);
-		Page<DiarySimpleResponseDto> diarySimpleResponseDtoList = DiarySimpleResponseDto.fromEnityPage(diaryEntityPage, pageable, feedService::getTagContentList);
+		Page<DiarySimpleResponseDto> diarySimpleResponseDtoList = DiarySimpleResponseDto.fromEnityPage(diaryEntityPage, feedService::getTagContentList, pageable);
 		DiaryListResponseDto diaryListResponseDto = DiaryListResponseDto.fromEntity(diarySet, diarySimpleResponseDtoList, followService::isFollowed);
 		return ResponseEntity.ok().body(ResultDto.of(diaryListResponseDto));
 	}

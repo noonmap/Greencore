@@ -17,9 +17,6 @@ import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,14 +89,13 @@ public class DiaryService {
 	 * @param diarySetId
 	 * @return
 	 */
-	public Page<DiaryEntity> getDiaryList(Long diarySetId, Pageable pageable) {
+	public List<DiaryEntity> getDiaryList(Long diarySetId) {
 		// 관찰 일지 조회
 		DiarySetEntity diarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
 		List<DiaryEntity> list = diarySet.getDiaryList();
 		// OneToMany 해놓으면 알아서 list에 추가해 주는 듯 -> delete된 거 빼야 한다
 		list.removeIf(diary -> diary.getIsDeleted().equals(IsDeletedType.Y));
-		Page<DiaryEntity> page = new PageImpl<>(list, pageable, list.size());
-		return page;
+		return list;
 	}
 
 

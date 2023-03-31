@@ -48,10 +48,11 @@ public class DiarySetResponseDto {
 	}
 
 
-	public static Page<DiarySetResponseDto> fromEntityPage(Page<DiarySetEntity> page, Pageable pageable, UserEntity user, BiFunction<UserEntity, DiarySetEntity, Boolean> isBookmarked) {
-		List<DiarySetEntity> entityList = new ArrayList<>(page.toList());
-		List<DiarySetResponseDto> dtoList = DiarySetResponseDto.fromEnityList(entityList, user, isBookmarked);
-		Page<DiarySetResponseDto> result = new PageImpl<>(dtoList, pageable, dtoList.size());
+	public static Page<DiarySetResponseDto> fromEntityPage(List<DiarySetEntity> list, Pageable pageable, UserEntity user, BiFunction<UserEntity, DiarySetEntity, Boolean> isBookmarked) {
+		int start = (int) pageable.getOffset();
+		int end = Math.min((start + pageable.getPageSize()), list.size());
+		List<DiarySetResponseDto> dtoList = DiarySetResponseDto.fromEnityList(list, user, isBookmarked);
+		Page<DiarySetResponseDto> result = new PageImpl<>(dtoList.subList(start, end), pageable, dtoList.size());
 		return result;
 	}
 

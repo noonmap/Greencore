@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -87,10 +88,12 @@ public class FeedResponseDto implements Serializable {
 	}
 
 
-	public static Page<FeedResponseDto> fromEnityPage(Page<FeedEntity> page, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
-		List<FeedEntity> feedList = new ArrayList<>(page.toList());
+	public static Page<FeedResponseDto> fromEnityPage(List<FeedEntity> feedList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
+		Pageable pageable) {
+		int start = (int) pageable.getOffset();
+		int end = Math.min(start + pageable.getPageSize(), feedList.size());
 		List<FeedResponseDto> feedResponseDtoList = fromEnityList(feedList, isLiked, getCommentCount, isFollowed);
-		Page<FeedResponseDto> result = new PageImpl<>(feedResponseDtoList, page.getPageable(), feedResponseDtoList.size());
+		Page<FeedResponseDto> result = new PageImpl<>(feedResponseDtoList.subList(start, end), pageable, feedResponseDtoList.size());
 		return result;
 	}
 
