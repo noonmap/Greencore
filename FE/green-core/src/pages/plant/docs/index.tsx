@@ -25,18 +25,18 @@ export default function plantDocs() {
   // 식물도감 리스트 인덱스 검색
   const indexList = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
-  const [pageAtindex, setPageAtindex] = useState<number>(1);
+  const [pageAtindex, setPageAtindex] = useState<number>(0);
   const [sizeAtindex, setSizeAtindex] = useState<number>(5);
 
   // 식물도감 이름 리스트 검색
   const [inputData, setInputData] = useState<string>(''); // 인풋데이터
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
   const [totalItemCount, setTotalItemCount] = useState<number>(0);
   const [size, setSize] = useState<number>(5);
   const [plantDocsList, setPlantDocsList] = useState<Array<PlantType>>([]);
 
   // 식물도감 디테일 조회
-  const [plantDocsDetailList, setPlantDocsDetailList] = useState<Array<SearchPlantDetailType>>([]);
+  const [plantDocsDetail, setPlantDocsDetail] = useState<SearchPlantDetailType>();
   const [isDetailSearched, setIsDetailSearched] = useState<boolean>(false);
 
   // ----------------------------------- 초기 데이터 -----------------------------------
@@ -86,7 +86,7 @@ export default function plantDocs() {
   // 웹 훅
   useEffect(() => {
     if (selectedIndex !== null) {
-      fetchPlantListByIndex(1);
+      fetchPlantListByIndex(0);
     }
   }, [selectedIndex]);
 
@@ -99,7 +99,7 @@ export default function plantDocs() {
 
   // 식물도감 리스트 index 버튼 클릭
   function handleIndexBtnCLick(e) {
-    setPageAtindex(1);
+    setPageAtindex(0);
     setInputData('');
     const search = e.target.innerText;
     const data = indexList.findIndex((index) => {
@@ -119,6 +119,7 @@ export default function plantDocs() {
       const { data } = await getPlantListByIndex(params);
       setPlantDocsList(data.content);
       setTotalItemCount(data.totalElements);
+      console.log('totalElements', data.totalElements);
     } catch (error) {
       console.error(error);
     }
@@ -156,7 +157,7 @@ export default function plantDocs() {
   // 검색창 Enter 입력
   async function handleKeyUp(event) {
     if (event.key === 'Enter') {
-      setPage(1);
+      setPage(0);
       handleSearch();
     }
   }
@@ -169,7 +170,7 @@ export default function plantDocs() {
 
   // 페이지네이션 클릭
   const handlePageChange = (page) => {
-    setPage(page);
+    setPage(page - 1);
   };
 
   // 식물도감 클릭
@@ -177,8 +178,8 @@ export default function plantDocs() {
     setIsDetailSearched(true);
     try {
       const { data } = await getPlant(plantId);
-      // console.log(data);
-      setPlantDocsDetailList(data);
+      console.log(data);
+      setPlantDocsDetail(data);
     } catch (error) {
       console.error(error);
     }
@@ -244,7 +245,7 @@ export default function plantDocs() {
             {/* 페이지네이션 */}
             <div className={`${styles.pagination} pb-10`}>
               <Pagination
-                activePage={selectedIndex === null ? page : pageAtindex}
+                activePage={selectedIndex === null ? page + 1 : pageAtindex + 1}
                 itemsCountPerPage={selectedIndex === null ? size : sizeAtindex}
                 totalItemsCount={totalItemCount}
                 pageRangeDisplayed={5}
@@ -312,7 +313,7 @@ export default function plantDocs() {
                     <span className={`text-xl font-bold`}>나와 같은 식물을 키우는 사람들 </span> <br />
                   </div>
                   <div className={`px-5 flex justify-between`}>
-                    {samePlantUserList.map((samPlantUser) => (
+                    {samePlantUserList?.map((samPlantUser) => (
                       <div key={samPlantUser.nickname} className={``}>
                         <Link href={`/user/feed/${samPlantUser.nickname}`}>
                           <img src={samPlantUser.profileImagePath} width={150} height={150} />
@@ -322,7 +323,7 @@ export default function plantDocs() {
                   </div>
                 </div>
               </div>
-            ) : plantDocsList.length === 0 ? (
+            ) : plantDocsList?.length === 0 ? (
               <div className={`p-5`}>조회된게 없어요</div>
             ) : (
               // 식물 도감 상세 검색
@@ -338,58 +339,56 @@ export default function plantDocs() {
                 </div>
                 {/* 컨텐츠 */}
                 <div className='p-5'>
-                  {plantDocsDetailList.map((plantDocsDetail) => (
-                    <div key={plantDocsDetail.plantId} className={`flex flex-col`}>
-                      {/* 사진 */}
-                      <div className={`flex pb-10`}>
-                        <img className={`${styles.detailImage}`} src={plantDocsDetail.imagePath} alt='image' width='300' height='300'></img>
+                  <div key={plantDocsDetail?.plantId} className={`flex flex-col`}>
+                    {/* 사진 */}
+                    <div className={`flex pb-10`}>
+                      <img className={`${styles.detailImage}`} src={plantDocsDetail?.imagePath} alt='image' width='300' height='300'></img>
+                    </div>
+                    {/* 정보 */}
+                    <div className='flex flex-col'>
+                      <div className='text-sm'>
+                        <span>이름</span>
                       </div>
-                      {/* 정보 */}
+                      <div className='pb-2'>
+                        <span>{plantDocsDetail?.plantName}</span>
+                      </div>
+                      <div className='text-sm'>
+                        <span>학명</span>
+                      </div>
+                      <div className='pb-10'>
+                        <span>{plantDocsDetail?.specificName}</span>
+                      </div>
+                    </div>
+                    {/* 가이드 */}
+                    <div>
+                      <div className='flex items-center text-xl'>
+                        <span style={{ color: 'var(--main-color)' }}>가이드 </span>
+                        <span className='px-3'>💡</span>
+                      </div>
                       <div className='flex flex-col'>
-                        <div className='text-sm'>
-                          <span>이름</span>
+                        <div className='py-5'>
+                          <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
+                            {plantDocsDetail?.water}
+                          </span>
                         </div>
-                        <div className='pb-2'>
-                          <span>{plantDocsDetail.plantName}</span>
+                        <div className='py-5'>
+                          <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
+                            {plantDocsDetail?.light}
+                          </span>
                         </div>
-                        <div className='text-sm'>
-                          <span>학명</span>
+                        <div className='py-5'>
+                          <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
+                            {plantDocsDetail?.temperature}
+                          </span>
                         </div>
-                        <div className='pb-10'>
-                          <span>{plantDocsDetail.specificName}</span>
-                        </div>
-                      </div>
-                      {/* 가이드 */}
-                      <div>
-                        <div className='flex items-center text-xl'>
-                          <span style={{ color: 'var(--main-color)' }}>가이드 </span>
-                          <span className='px-3'>💡</span>
-                        </div>
-                        <div className='flex flex-col'>
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail.water}
-                            </span>
-                          </div>
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail.light}
-                            </span>
-                          </div>
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail.temperature}
-                            </span>
-                          </div>
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail.humidity}
-                            </span>
-                          </div>
+                        <div className='py-5'>
+                          <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
+                            {plantDocsDetail?.humidity}
+                          </span>
                         </div>
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
             )}
