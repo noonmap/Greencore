@@ -6,12 +6,18 @@ import AppLayout from '@/layout/AppLayout';
 import { getCookieToken } from '@/lib/cookies';
 import { startOfYesterday } from 'date-fns';
 import React, { useCallback, useEffect, useState } from 'react';
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 
 type BookmarkType = {};
 
 export default function Bookmark() {
   const dispatch = useAppDispatch();
   const [bookmarkList, setBookMarkList] = useState([]);
+
+  // searchState 변경
+  useEffect(() => {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  });
 
   const fetchBookmarkList = useCallback(async () => {
     const { data } = await getBookmarkedDiarySet('김씨', { page: 0, size: 2 });
