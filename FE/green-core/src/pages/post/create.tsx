@@ -33,7 +33,7 @@ export default function post() {
 
   // searchState 변경
   function changeSearchState() {
-    dispatch(SET_IS_SEARCH_STATE('home'));
+    dispatch(SET_IS_SEARCH_STATE('default'));
   }
 
   useEffect(() => {
