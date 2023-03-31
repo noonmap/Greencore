@@ -28,6 +28,7 @@ export type DeleteDiaryType = {
   router: NextRouter;
   payload: {
     diaryId: number;
+    diarySetId: number;
   };
 };
 
