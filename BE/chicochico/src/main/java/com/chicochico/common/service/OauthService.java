@@ -17,7 +17,7 @@ import java.util.Map;
 
 
 @Service
-public class OuathService {
+public class OauthService {
 
 	private static final String KAKAO_API_SERVER_HOST = "https://kapi.kakao.com";
 	private static final String KAKAO_OAUTH_API_SERVER_HOST = "https://kauth.kakao.com";

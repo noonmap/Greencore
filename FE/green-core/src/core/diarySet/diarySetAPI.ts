@@ -18,7 +18,7 @@ export const createDiarySet = async (payload: DiarySetType) => {
 // 관찰일지 리스트 조회
 export const getDiarySetList = async (nickname: string | string[], params: PageType) => {
   try {
-    const { data } = await http.get(`/diaryset/${nickname}`, { params });
+    const { data } = await http.get(`/diaryset/${nickname}/list`, { params });
     return data;
   } catch (error) {}
 };

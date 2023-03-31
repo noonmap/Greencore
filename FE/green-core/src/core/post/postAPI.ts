@@ -47,7 +47,7 @@ export const updatePost = createAsyncThunk('updatePost', async (requestData: Upd
         stopOnFocus: true,
         style: toastifyCSS.success,
       }).showToast();
-      router.push(`/post/${data.data.postId}`);
+      router.push(`/post/${requestData.postId}`);
     } else {
       Toastify({
         text: message.UpdatePostFail,
@@ -76,7 +76,7 @@ export const deletePost = createAsyncThunk('deletePost', async (requestData: Del
         stopOnFocus: true,
         style: toastifyCSS.success,
       }).showToast();
-      router.push(`/feed`);
+      router.push(`/home`);
     } else {
       Toastify({
         text: message.DeletePostFail,

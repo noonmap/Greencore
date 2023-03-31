@@ -92,7 +92,7 @@ export default function AppHeader() {
                     </div>
                   </Link>
 
-                  <Link href='/'>
+                  <Link href='/plant/docs'>
                     <div className='flex items-center space-x-3'>
                       {/* <span className='material-symbols-outlined'>search</span> */}
                       <span className='material-symbols-outlined'>auto_stories</span>

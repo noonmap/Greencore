@@ -315,6 +315,7 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (authType
       const headers = { 'X-Refresh-Token': cookies.getCookieToken() };
       const url = 'http://localhost:8080/api/refresh';
       const res = await axios.post(url, { authType }, { headers });
+      // const res = await http.post('/refresh', { authType }, { headers });
 
       let accessToken = null;
       let refreshToken = null;
