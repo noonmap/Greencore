@@ -11,4 +11,4 @@ RUN ./gradlew bootJAR
 FROM adoptopenjdk/openjdk11
 COPY --from=builder build/libs/*.jar app.jar
 EXPOSE 5000
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=local", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=dev", "/app.jar"]
