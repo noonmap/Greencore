@@ -2,6 +2,8 @@ package com.chicochico.domain.feed.dto.response;
 
 
 import com.chicochico.domain.feed.entity.DiaryEntity;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -73,8 +75,13 @@ public class DiarySimpleResponseDto {
 		int start = (int) pageable.getOffset();
 		int end = Math.min((start + pageable.getPageSize()), entityList.size());
 		List<DiarySimpleResponseDto> dtoList = DiarySimpleResponseDto.fromEnityList(entityList, getTagsList);
-		Page<DiarySimpleResponseDto> result = new PageImpl<>(dtoList.subList(start, end), pageable, dtoList.size());
-		return result;
+
+		try {
+			Page<DiarySimpleResponseDto> result = new PageImpl<>(dtoList.subList(start, end), pageable, dtoList.size());
+			return result;
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
 	}
 
 }

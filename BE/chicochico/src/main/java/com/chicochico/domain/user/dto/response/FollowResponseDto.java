@@ -2,6 +2,8 @@ package com.chicochico.domain.user.dto.response;
 
 
 import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -48,8 +50,14 @@ public class FollowResponseDto {
 	public static Page<FollowResponseDto> fromEntityPage(Page<UserEntity> page, Function<Long, Boolean> isFollowed) {
 		List<UserEntity> userList = new ArrayList<>(page.toList());
 		List<FollowResponseDto> postSimpleResponseDtoList = fromEnityList(userList, isFollowed);
-		Page<FollowResponseDto> result = new PageImpl<>(postSimpleResponseDtoList, page.getPageable(), postSimpleResponseDtoList.size());
-		return result;
+
+		try {
+			Page<FollowResponseDto> result = new PageImpl<>(postSimpleResponseDtoList, page.getPageable(), postSimpleResponseDtoList.size());
+			return result;
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 	}
 
 }

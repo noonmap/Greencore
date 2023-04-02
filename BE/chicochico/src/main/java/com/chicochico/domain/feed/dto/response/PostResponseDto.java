@@ -3,6 +3,8 @@ package com.chicochico.domain.feed.dto.response;
 
 import com.chicochico.domain.feed.entity.PostEntity;
 import com.chicochico.domain.user.dto.response.ProfileResponseDto;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -60,8 +62,14 @@ public class PostResponseDto {
 		Function<Long, Boolean> isLiked) {
 		List<PostEntity> postList = new ArrayList<>(page.toList());
 		List<PostResponseDto> postResponseDtoList = PostResponseDto.fromEnityList(postList, getCommentCount, getTagsList, isFollowed, isLiked);
-		Page<PostResponseDto> result = new PageImpl<>(postResponseDtoList, page.getPageable(), postResponseDtoList.size());
-		return result;
+
+		try {
+			Page<PostResponseDto> result = new PageImpl<>(postResponseDtoList, page.getPageable(), postResponseDtoList.size());
+			return result;
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 	}
 
 }

@@ -62,7 +62,7 @@ public class ProfileController {
 	@ApiOperation(value = "사용자를 검색합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<ProfileSimpleResponseDto>>> getUserProfileList(@RequestParam("search") String search, Pageable pageable) {
 		Page<UserEntity> userProfileList = profileService.getUserProfileList(search, pageable);
-		Page<ProfileSimpleResponseDto> profileSimpleResponseDtoPage = ProfileSimpleResponseDto.fromEnityPage(userProfileList, pageable);
+		Page<ProfileSimpleResponseDto> profileSimpleResponseDtoPage = ProfileSimpleResponseDto.fromEnityPage(userProfileList);
 
 		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDtoPage));
 	}

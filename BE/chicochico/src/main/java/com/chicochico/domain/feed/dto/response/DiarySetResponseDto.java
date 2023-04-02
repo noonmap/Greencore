@@ -3,6 +3,8 @@ package com.chicochico.domain.feed.dto.response;
 
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -52,8 +54,13 @@ public class DiarySetResponseDto {
 		int start = (int) pageable.getOffset();
 		int end = Math.min((start + pageable.getPageSize()), list.size());
 		List<DiarySetResponseDto> dtoList = DiarySetResponseDto.fromEnityList(list, user, isBookmarked);
-		Page<DiarySetResponseDto> result = new PageImpl<>(dtoList.subList(start, end), pageable, dtoList.size());
-		return result;
+		try {
+			Page<DiarySetResponseDto> result = new PageImpl<>(dtoList.subList(start, end), pageable, dtoList.size());
+			return result;
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 	}
 
 }
