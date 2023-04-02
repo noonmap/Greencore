@@ -4,12 +4,9 @@ package com.chicochico.domain.feed.dto.response;
 import com.chicochico.domain.feed.entity.CommentEntity;
 import lombok.Data;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Data
@@ -40,10 +37,9 @@ public class CommentResponseDto {
 	}
 
 
-	public static Page<CommentResponseDto> fromEnityPage(Page<CommentEntity> commentEntityPage,
-		Pageable pageable) {
-		List<CommentResponseDto> result = commentEntityPage.stream().map(CommentResponseDto::fromEntity).collect(Collectors.toList());
-		return new PageImpl<>(result, pageable, result.size());
+	public static Page<CommentResponseDto> fromEnityPage(Page<CommentEntity> commentEntityPage) {
+		Page<CommentResponseDto> result = commentEntityPage.map(CommentResponseDto::fromEntity);
+		return result;
 	}
 
 }

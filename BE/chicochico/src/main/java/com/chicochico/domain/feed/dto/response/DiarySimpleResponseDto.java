@@ -69,10 +69,11 @@ public class DiarySimpleResponseDto {
 	}
 
 
-	public static Page<DiarySimpleResponseDto> fromEnityPage(Page<DiaryEntity> page, Pageable pageable, Function<Long, List<String>> getTagsList) {
-		List<DiaryEntity> entityList = new ArrayList<>(page.toList());
+	public static Page<DiarySimpleResponseDto> fromEnityPage(List<DiaryEntity> entityList, Function<Long, List<String>> getTagsList, Pageable pageable) {
+		int start = (int) pageable.getOffset();
+		int end = Math.min((start + pageable.getPageSize()), entityList.size());
 		List<DiarySimpleResponseDto> dtoList = DiarySimpleResponseDto.fromEnityList(entityList, getTagsList);
-		Page<DiarySimpleResponseDto> result = new PageImpl<>(dtoList, pageable, dtoList.size());
+		Page<DiarySimpleResponseDto> result = new PageImpl<>(dtoList.subList(start, end), pageable, dtoList.size());
 		return result;
 	}
 

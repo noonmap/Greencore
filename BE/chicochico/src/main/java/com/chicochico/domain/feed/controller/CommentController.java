@@ -30,7 +30,7 @@ public class CommentController {
 	public ResponseEntity<ResultDto<Page<CommentResponseDto>>> getCommentList(@PathVariable Long feedId, Pageable pageable) {
 		Page<CommentEntity> commentList = service.getCommentList(feedId, pageable);
 		//entity page를 dto page로 변환 필요합니다.
-		Page<CommentResponseDto> responseDto = CommentResponseDto.fromEnityPage(commentList, pageable);
+		Page<CommentResponseDto> responseDto = CommentResponseDto.fromEnityPage(commentList);
 		return ResponseEntity.status(HttpStatus.OK).body(ResultDto.of(responseDto));
 	}
 
