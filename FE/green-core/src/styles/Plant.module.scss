@@ -4,3 +4,53 @@
   color: var(--main-color);
   margin-bottom: 2.5rem;
 }
+
+.issueCounter {
+  font-weight: 800;
+}
+
+.issueBox {
+  margin-left: 1.5rem;
+}
+
+.issue {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.issueName {
+  width: 5.5rem;
+  flex-wrap: wrap;
+}
+
+.progressBar {
+  background-color: var(--thin-color);
+  height: 1rem;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.pregress {
+  width: 100%;
+  background-color: var(--main-color);
+  height: 1rem;
+  border-radius: 16px;
+}
+
+.issuePercent {
+  width: 3rem;
+  margin-left: 0.5rem;
+}
+
+.guide {
+  cursor: pointer;
+  color: var(--title-light-color);
+  // font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.guide:hover {
+  color: var(--title-color);
+}
