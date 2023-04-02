@@ -6,6 +6,8 @@ import com.chicochico.domain.feed.dto.request.CommentRequestDto;
 import com.chicochico.domain.feed.dto.response.CommentResponseDto;
 import com.chicochico.domain.feed.entity.CommentEntity;
 import com.chicochico.domain.feed.service.CommentService;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +31,14 @@ public class CommentController {
 	@ApiOperation(value = "해당 피드의 댓글을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<CommentResponseDto>>> getCommentList(@PathVariable Long feedId, Pageable pageable) {
 		Page<CommentEntity> commentList = service.getCommentList(feedId, pageable);
-
 		//entity page를 dto page로 변환 필요합니다.
 		Page<CommentResponseDto> responseDto = CommentResponseDto.fromEnityPage(commentList);
+
+		int page = pageable.getPageNumber();
+		if (page != 0 && pageable.getPageSize() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(ResultDto.of(responseDto));
 	}
 

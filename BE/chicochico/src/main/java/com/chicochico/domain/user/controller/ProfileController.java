@@ -8,6 +8,8 @@ import com.chicochico.domain.user.dto.response.ProfileSimpleResponseDto;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.service.FollowService;
 import com.chicochico.domain.user.service.ProfileService;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,11 @@ public class ProfileController {
 	public ResponseEntity<ResultDto<Page<ProfileSimpleResponseDto>>> getUserProfileList(@RequestParam("search") String search, Pageable pageable) {
 		Page<UserEntity> userProfileList = profileService.getUserProfileList(search, pageable);
 		Page<ProfileSimpleResponseDto> profileSimpleResponseDtoPage = ProfileSimpleResponseDto.fromEnityPage(userProfileList);
+
+		int page = pageable.getPageNumber();
+		if (page != 0 && pageable.getPageSize() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
 
 		return ResponseEntity.ok().body(ResultDto.of(profileSimpleResponseDtoPage));
 	}
