@@ -38,8 +38,7 @@ const UploadPopup = ({ onClose, onCapture }) => {
 
   return (
     <>
-      <div className='py-4'>
-        {/* <FontAwesomeIcon icon='images' /> */}
+      <div>
         <div className='flex justify-center mb-4'>
           {/* 사진 */}
           <div className='w-2/3'>

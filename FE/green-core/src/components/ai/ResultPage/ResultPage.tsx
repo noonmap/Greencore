@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import IssueContainer from './IssueContainer';
 import AppButton from '@/components/button/AppButton';
 import styles from '../Popup/UploadPopup.module.scss';
-import Skeleton from 'react-loading-skeleton';
+// import Skeleton from 'react-loading-skeleton';
 
 const ResultPage = ({ image, getDiseases, onClose }) => {
   const [diseases, setDiseases] = useState([]);
@@ -23,7 +23,9 @@ const ResultPage = ({ image, getDiseases, onClose }) => {
           <img src={image} alt='Plant' id='plant-photo' className={`${styles.inputImage}`} />
 
           {loading ? (
-            <Skeleton height={200} className='mt-4' />
+            <div className='flex justify-center'>
+              <img src='/images/loader.gif' alt='loader' className='mt-4' />
+            </div>
           ) : (
             <>
               <IssueContainer diseases={diseases} />

@@ -185,7 +185,7 @@ export default function ScheduleModal({
   const checkIsPossible = () => {
     if (
       userPlantId >= 0 &&
-      (scheduleDate !== '' || (day !== '' && day <= 31 && day >= 1)) &&
+      (scheduleDate !== '' || (day !== '' && Number(day) <= 31 && Number(day) >= 1)) &&
       scheduleCode !== '' &&
       content !== '' &&
       regularScheduleCode
