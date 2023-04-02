@@ -8,12 +8,14 @@ import styles from '@/styles/Plant.module.scss';
 import { useAppDispatch } from '@/core/hooks';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { useRouter } from 'next/router';
+import UploadGuideModal from '@/components/modal/UploadGuideModal';
 
 export default function Homepage() {
   const [showPrediction, setShowPrediction] = useState(false);
   const [image, setImage] = useState(null);
   const [tfModel, setTfModel] = useState(null);
   const [labels, setLabels] = useState<any>({});
+  const [isOpenGuideModal, setIsOpenGuideModal] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -110,22 +112,21 @@ export default function Homepage() {
     let tensorImg_scaled = tensorImg.div(offset);
     let prediction = await tfModel.predict(tensorImg_scaled).data();
 
-    let predicted_class = tf.argMax(prediction);
-    let class_idxs = Array.from(predicted_class.dataSync());
+    const diseases: { [x: string]: number } = {};
 
-    const diseases = [];
-
-    for (const class_idx of class_idxs as Array<number>) {
-      const predictedDisease = labels[class_idx];
-      let [name, disease] = predictedDisease.split('___');
-      name = name.replaceAll('_', ' ');
-      disease = disease.replaceAll('_', ' ');
-      diseases.push({
-        name,
-        disease,
-        // image: `https://coverimages.blob.core.windows.net/disease-cover-images/${predictedDisease}.JPG`,
-        // cureURL: encodeURI(`https://www.google.com/search?q=How to cure ${disease} in ${name}`),
-      });
+    for (let i = 0; i < prediction.length; i++) {
+      if (prediction[i] * 100 >= 10) {
+        const predictedDisease = labels[i];
+        let disease = predictedDisease.split('___')[1];
+        disease = disease.replaceAll('_', ' ');
+        if (!(disease in diseases)) {
+          diseases[disease] = 0;
+        }
+        diseases[disease] += prediction[i] * 100;
+      }
+    }
+    if ('건강함' in diseases && diseases['건강함'] < 50) {
+      delete diseases['건강함'];
     }
 
     return diseases;
@@ -133,9 +134,18 @@ export default function Homepage() {
 
   return (
     <AppLayout>
+      {isOpenGuideModal && (
+        <UploadGuideModal isOpen={isOpenGuideModal} modalTitle='이미지 업로드 가이드' handleModalClose={() => setIsOpenGuideModal(false)} />
+      )}
       <div className='p-6 h-full'>
         <div className={`${styles.title}`}>병충해 분석</div>
-
+        <div className='flex justify-center'>
+          <div className='w-2/3 flex justify-end'>
+            <span className={`${styles.guide}`} onClick={() => setIsOpenGuideModal(true)}>
+              이미지 업로드 가이드
+            </span>
+          </div>
+        </div>
         {showPrediction ? (
           <ResultPage image={image} getDiseases={predictDisease} onClose={resultPageCloseHandler} />
         ) : (
