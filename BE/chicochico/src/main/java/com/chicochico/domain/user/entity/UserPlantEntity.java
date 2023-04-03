@@ -35,7 +35,7 @@ public class UserPlantEntity extends CommonEntity {
 	@Column(nullable = false)
 	private String plantNickname;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 500)
 	private String plantImagePath;
 
 	@Enumerated(EnumType.STRING)
