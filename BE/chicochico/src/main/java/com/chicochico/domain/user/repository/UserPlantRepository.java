@@ -4,6 +4,7 @@ package com.chicochico.domain.user.repository;
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ import java.util.Set;
 public interface UserPlantRepository extends JpaRepository<UserPlantEntity, Long> {
 
 	Optional<UserPlantEntity> findByIdAndIsDeleted(Long id, IsDeletedType isDeletedType);
-	List<UserPlantEntity> findByUserAndIsDeleted(UserEntity user, IsDeletedType isDeletedType);
+	Page<UserPlantEntity> findByUserAndIsDeleted(UserEntity user, IsDeletedType isDeletedType, Pageable pageable);
 	List<UserPlantEntity> findByUserIdAndIsDeleted(Long userId, IsDeletedType isDeleted);
 
 	List<UserPlantEntity> findByUser(UserEntity user);

@@ -9,14 +9,17 @@ import com.chicochico.domain.user.dto.request.UserPlantSimpleRequestDto;
 import com.chicochico.domain.user.dto.response.UserPlantResponseDto;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import com.chicochico.domain.user.service.UserService;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -105,9 +108,14 @@ public class UserController {
 
 	@GetMapping("/plant/{nickname}")
 	@ApiOperation(value = "유저가 키우는 식물 목록을 조회합니다.", notes = "")
-	public ResponseEntity<ResultDto<List<UserPlantResponseDto>>> getUserPlantList(@PathVariable("nickname") String nickname) {
-		List<UserPlantEntity> userPlantEntityList = userService.getUserPlantList(nickname);
-		List<UserPlantResponseDto> userPlantResponseDtoList = UserPlantResponseDto.fromEnityList(userPlantEntityList);
+	public ResponseEntity<ResultDto<Page<UserPlantResponseDto>>> getUserPlantList(@PathVariable("nickname") String nickname, Pageable pageable) {
+		Page<UserPlantEntity> userPlantEntityList = userService.getUserPlantList(nickname, pageable);
+		Page<UserPlantResponseDto> userPlantResponseDtoList = UserPlantResponseDto.fromEnityPage(userPlantEntityList);
+
+		int page = pageable.getPageNumber();
+		if (page != 0 && userPlantResponseDtoList.getTotalPages() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
 
 		return ResponseEntity.ok().body(ResultDto.of(userPlantResponseDtoList));
 	}

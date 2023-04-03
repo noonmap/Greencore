@@ -24,6 +24,8 @@ import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -209,9 +211,9 @@ public class UserService {
 	 * @param nickname 유저 닉네임
 	 * @return 유저가 키우는 식물 목록
 	 */
-	public List<UserPlantEntity> getUserPlantList(String nickname) {
+	public Page<UserPlantEntity> getUserPlantList(String nickname, Pageable pageable) {
 		UserEntity user = getUserByNickname(nickname);
-		List<UserPlantEntity> userPlantList = userPlantRepository.findByUserAndIsDeleted(user, IsDeletedType.N);
+		Page<UserPlantEntity> userPlantList = userPlantRepository.findByUserAndIsDeleted(user, IsDeletedType.N, pageable);
 
 		return userPlantList;
 	}

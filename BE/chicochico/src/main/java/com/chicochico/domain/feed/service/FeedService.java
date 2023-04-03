@@ -224,7 +224,7 @@ public class FeedService {
 	 *
 	 * @return
 	 */
-	public List<FeedEntity> getFeedListByFollowUser(List<UserEntity> followingUserList, Pageable pageable) {
+	public List<FeedEntity> getFeedListByFollowUser(List<UserEntity> followingUserList) {
 		// 팔로우하고 있는 유저들의 피드
 		List<FeedEntity> feedList = feedRepository.findByUserIn(followingUserList);
 		return getUnDeletedFeedPage(feedList);

@@ -7,6 +7,8 @@ import com.chicochico.domain.plant.dto.response.PlantResponseDto;
 import com.chicochico.domain.plant.dto.response.PlantWithImageResponseDto;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import com.chicochico.domain.plant.service.PlantService;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,11 @@ public class PlantController {
 		Page<PlantEntity> plantList = plantService.getPlantWithImageList(search, pageable);
 		Page<PlantWithImageResponseDto> plantWithImageResponseDtoPage = PlantWithImageResponseDto.fromEnityPage(plantList);
 
+		int page = pageable.getPageNumber();
+		if (page != 0 && plantWithImageResponseDtoPage.getTotalPages() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 		return ResponseEntity.ok().body(ResultDto.of(plantWithImageResponseDtoPage));
 	}
 
@@ -45,6 +52,11 @@ public class PlantController {
 		@PageableDefault(size = 12, sort = "name") Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantListAtMyPage(search, pageable);
 		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
+
+		int page = pageable.getPageNumber();
+		if (page != 0 && plantResponseDtoPage.getTotalPages() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
 
 		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
@@ -57,6 +69,11 @@ public class PlantController {
 		Page<PlantEntity> plantList = plantService.getPlantList(search, pageable);
 		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
 
+		int page = pageable.getPageNumber();
+		if (page != 0 && plantResponseDtoPage.getTotalPages() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}
 
@@ -67,6 +84,11 @@ public class PlantController {
 		@PageableDefault(size = 12, sort = "name") Pageable pageable) {
 		Page<PlantEntity> plantList = plantService.getPlantListByIndex(index, pageable);
 		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
+
+		int page = pageable.getPageNumber();
+		if (page != 0 && plantResponseDtoPage.getTotalPages() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
 
 		return ResponseEntity.ok().body(ResultDto.of(plantResponseDtoPage));
 	}

@@ -8,7 +8,6 @@ import com.chicochico.domain.feed.dto.response.DiarySetResponseDto;
 import com.chicochico.domain.feed.dto.response.DiarySetSimpleResponseDto;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import com.chicochico.domain.feed.service.DiarySetService;
-import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,8 +43,7 @@ public class DiarySetController {
 		 * 2. 서비스 메소드가 안 만들어져서 빨간 표시가 뜰텐데, 마우스 오버하면 "Create method 어쩌고" 문구가 뜬다. 그걸 클릭함
 		 * 3. 그럼 service 클래스에 메소드 구현체가 자동으로 생성된다!
 		 * */
-		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname, pageable);
-		UserEntity user = userService.getUserByNickname(authService.getUserNickname());
+		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname);
 		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
 	}
@@ -82,7 +80,6 @@ public class DiarySetController {
 	@ApiOperation(value = "유저가 북마크한 관찰 일지 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("nickname") String nickname, Pageable pageable) {
 		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(nickname, pageable);
-		UserEntity user = userService.getUserByNickname(authService.getUserNickname());
 		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
 	}

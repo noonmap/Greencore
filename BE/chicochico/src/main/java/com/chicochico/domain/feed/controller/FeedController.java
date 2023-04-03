@@ -9,6 +9,8 @@ import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.feed.service.FeedService;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.service.FollowService;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +49,9 @@ public class FeedController {
 	@ApiOperation(value = "팔로우한 사람의 최신 피드 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedListByFollowUser(Pageable pageable) {
 		String nickname = authService.getUserNickname();
-		List<UserEntity> followingList = followService.getFollowingList(nickname, Pageable.unpaged()).getContent();
+		List<UserEntity> followingList = followService.getFollowingList(nickname);
 
-		List<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList, pageable);
+		List<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList);
 		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed, pageable);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
@@ -60,6 +62,12 @@ public class FeedController {
 	public ResponseEntity<ResultDto<Page<FeedSimpleResponseDto>>> getFeedList(@RequestParam("search") String tag, Pageable pageable) {
 		Page<FeedEntity> feedEntityPage = feedService.getFeedListByTag(tag, pageable);
 		Page<FeedSimpleResponseDto> feedResponseDtoPage = FeedSimpleResponseDto.fromEnityPage(feedEntityPage);
+
+		int page = pageable.getPageNumber();
+		if (page != 0 && feedResponseDtoPage.getTotalPages() <= page) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 

@@ -57,7 +57,7 @@ public class DiarySetService {
 	 * @param nickname 관찰일지 작성자 닉네임
 	 * @return
 	 */
-	public List<DiarySetEntity> getDiarySetList(String nickname, Pageable pageable) {
+	public List<DiarySetEntity> getDiarySetList(String nickname) {
 		// 작성자 조회
 		UserEntity writer = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
