@@ -28,6 +28,7 @@ public class ProfileRequestDto {
 			.followerCount(user.getFollowerCount())
 			.followingCount(user.getFollowingCount())
 			.isDeleted(user.getIsDeleted())
+			.userStore(user.getUserStore())
 			.build();
 	}
 
