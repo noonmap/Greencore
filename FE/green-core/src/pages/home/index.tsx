@@ -17,7 +17,7 @@ export default function feed() {
   const size = useAppSelector((state) => state.feed.size);
 
   const [target, setTarget] = useState(null); // 관찰 대상 target
-  const [isLoaded, setIsLoaded] = useState(true); // 데이터 로딩 상태
+  const [isLoaded, setIsLoaded] = useState(false); // 데이터 로딩 상태
 
   const [isSelectRecomment, setIsSelectRecomment] = useState(true);
 
