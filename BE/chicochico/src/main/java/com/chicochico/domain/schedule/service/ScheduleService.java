@@ -279,7 +279,7 @@ public class ScheduleService {
 		LocalDate lastDate = LocalDate.of(date.getYear(), date.getMonth(), date.lengthOfMonth());
 
 		//현재 달력기준의 날짜에 만들어지지 않은 모든 정기 일정을 조회
-		List<RegularScheduleEntity> regularScheduleList = regularScheduleRepository.findAllByUserAndLastDateBefore(user, date);
+		List<RegularScheduleEntity> regularScheduleList = regularScheduleRepository.findAllByUserAndLastDateBeforeAndIsDeleted(user, date, IsDeletedType.N);
 
 		//각 일정들에 대한 로직 처리
 		for (RegularScheduleEntity regularSchedule : regularScheduleList) {
