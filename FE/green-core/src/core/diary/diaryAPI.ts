@@ -51,7 +51,7 @@ export const deleteDiary = createAsyncThunk('deleteDiary', async (requestData: D
   try {
     const { data } = await http.delete(`/diary/${requestData.payload.diaryId}`);
     if (data.result === 'SUCCESS') {
-      router.push(`/diaryset/${requestData.payload.diarySetId}`);
+      router.push(`/diaryset/list/${requestData.payload.diarySetId}`);
       Toastify({
         text: message.DeleteDiarySuccess,
         duration: 1000,
