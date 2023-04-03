@@ -8,9 +8,10 @@ import toastifyCSS from '@/assets/toastify.json';
 import { PageType } from '../common/commonType';
 
 // 관찰일지 생성
-export const createDiarySet = async (payload: DiarySetType) => {
+export const createDiarySet = async (payload: FormData) => {
   try {
-    const { data } = await http.post(`/diaryset`, payload);
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    const { data } = await http.post(`/diaryset`, payload, { headers });
     return data;
   } catch (error) {}
 };
@@ -24,9 +25,11 @@ export const getDiarySetList = async (nickname: string | string[], params: PageT
 };
 
 // 관찰일지 수정
-export const updateDiarySet = async (diarySetId: number, payload: DiarySetType) => {
+export const updateDiarySet = async (diarySetId: number, payload: FormData) => {
   try {
-    const { data } = await http.put(`/diaryset/${diarySetId}`, payload);
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    payload.forEach((e) => console.log(e));
+    const { data } = await http.put(`/diaryset/${diarySetId}`, payload, { headers });
     return data;
   } catch (error) {}
 };
@@ -42,7 +45,7 @@ export const deleteDiarySet = async (diarySetId: number) => {
 // 유저가 북마크한 관찰일지 목록 조회
 export const getBookmarkedDiarySet = async (nickname: string, params: PageType) => {
   const { data } = await http.get(`/diaryset/${nickname}/bookmark`, { params });
-  return data;
+  return data.data;
 };
 
 // 인기 관찰일지 목록 조회

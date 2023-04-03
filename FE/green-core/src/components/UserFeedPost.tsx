@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import AppModal from './common/AppModal';
 import styles from './UserFeedPost.module.scss';
 import ReactPaginate from 'react-paginate';
+import { deletePost, deleteSelectedPost, getPostList } from '@/core/post/postAPI';
 
 type PostType = {
   postId: number;
@@ -23,63 +24,37 @@ const initialState: StateType = {
   checkedPostList: [],
 };
 
-export default function UserFeedPost() {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const { nickname } = router.query;
-
+export default function UserFeedPost({ nickname }) {
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [checkedPostList] = getValues(['checkedPostList']);
 
   const [isOpenPostDeleteModal, setIsOpenPostDeleteModal] = useState(false);
   const [isOpenSelectedPostDeleteModal, setIsOpenSelectedPostDeleteModal] = useState(false);
 
-  const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(5);
-
-  const [diarySetPage, setDiarySetPage] = useState(1);
-  const [diarySetSize, setDiarySetSize] = useState(5);
-  const [diarySetListTotalCount, setDiarySetListTotalCount] = useState(5);
-
   const [postList, setPostList] = useState([]);
-  const [postListTotalCount, setPostListTotalCount] = useState(5);
+  const [postListTotalCount, setPostListTotalCount] = useState(0);
   const [postPage, setPostPage] = useState(0);
+  const [postSize, setPostSize] = useState(3);
+  const [postId, setPostId] = useState<number>();
 
   useEffect(() => {
     watch();
+    return () => {};
+  }, [nickname, checkedPostList]);
+
+  useEffect(() => {
     fetchPostList();
     return () => {};
-  }, [nickname, checkedPostList, userPlantListTotalCount, diarySetSize, postPage]);
+  }, [postPage]);
 
   async function fetchPostList() {
     try {
-      // const { data } = await getPostList(nickname);
-      const data = [
-        {
-          postId: 1,
-          content: '내 아기방토 입으로 호로...', // 잘린 글자
-          commentCount: 2,
-          likeCount: 0,
-          createdAt: '2023-03-03',
-        },
-        {
-          postId: 2,
-          content: '내 아기방토 입으로 호로록 하...',
-          commentCount: 5,
-          likeCount: 9,
-          createdAt: '2023-03-03',
-        },
-        {
-          postId: 3,
-          content: '아기방토 내 입에 저장',
-          commentCount: 22,
-          likeCount: 17,
-          createdAt: '2023-03-03',
-        },
-      ];
-
-      // FIXME: 확인
-      let temp = data.slice(postPage, postPage + 3);
-      setPostList(temp);
+      const params = { page: postPage, size: postSize };
+      const { data } = await getPostList(nickname, params);
+      const content = data.content;
+      const totalElements = data.totalElements;
+      setPostList(content);
+      setPostListTotalCount(totalElements / postSize);
     } catch (error) {
       console.error(error);
     }
@@ -87,32 +62,29 @@ export default function UserFeedPost() {
 
   async function handlePostPageClick(e) {
     setPostPage(e.selected);
-    // console.log(e.selected);
-    // setPostPage((e.selected / 2) * postListTotalCount);
-    // const newOffset = (e.selected * itemsPerPage) % items.length;
-    // setItemOffset(newOffset);
   }
 
-  function handleIsOpenPostDelete() {
+  function handleIsOpenPostDelete(postId) {
+    setPostId(postId);
     setIsOpenPostDeleteModal(true);
   }
 
   async function handlePostDelete() {
     try {
-      // const {data} = await deletePost(postId);
+      const { data } = await deleteSelectedPost(postId);
+      setIsOpenPostDeleteModal(false);
+      await fetchPostList();
     } catch (error) {
       console.error(error);
     }
   }
 
   async function handleSelectedPostDelete() {
-    checkedPostList.forEach((postId) => {
-      try {
-        // const { data } = await deletePost(postId);
-      } catch (error) {
-        console.error(error);
-      }
+    checkedPostList.forEach(async (postId) => {
+      const { data } = await deleteSelectedPost(postId);
     });
+    setIsOpenSelectedPostDeleteModal(false);
+    await fetchPostList();
   }
 
   return (
@@ -159,7 +131,7 @@ export default function UserFeedPost() {
                 </div>
               </div>
 
-              <span className='material-symbols-outlined cursor-pointer close' onClick={handleIsOpenPostDelete}>
+              <span className='material-symbols-outlined cursor-pointer close' onClick={() => handleIsOpenPostDelete(p.postId)}>
                 close
               </span>
             </div>

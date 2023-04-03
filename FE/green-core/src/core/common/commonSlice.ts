@@ -47,6 +47,9 @@ const commonSlice = createSlice({
     SET_ACCESS_TOKEN: (state, action) => {
       state.accessToken = action.payload;
     },
+    SET_USER_INFO: (state, action) => {
+      state.userInfo = action.payload;
+    },
   },
 
   extraReducers(builder) {
@@ -65,6 +68,7 @@ const commonSlice = createSlice({
       })
       .addCase(logInByOAuth.fulfilled, (state, action) => {
         state.userInfo = action.payload?.userInfo;
+        console.log('hihi:', action.payload);
         state.accessToken = action.payload?.accessToken;
       })
       .addCase(logOut.fulfilled, (state) => {
@@ -98,6 +102,7 @@ const commonSlice = createSlice({
   },
 });
 
-export const { SET_ACCESS_TOKEN, SET_IS_SEARCH_STATE, SET_AUTH_TYPE_DB, SET_AUTH_TYPE_KAKAO, SET_AUTH_TYPE_FIREBASE } = commonSlice.actions;
+export const { SET_ACCESS_TOKEN, SET_IS_SEARCH_STATE, SET_AUTH_TYPE_DB, SET_AUTH_TYPE_KAKAO, SET_AUTH_TYPE_FIREBASE, SET_USER_INFO } =
+  commonSlice.actions;
 
 export default commonSlice.reducer;

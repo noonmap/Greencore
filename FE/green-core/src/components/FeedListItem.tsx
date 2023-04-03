@@ -16,6 +16,27 @@ export default function FeedListItem(props: { feed: FeedType }) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
+  // 이미지 스켈레톤
+  const [isLoadingErrorAtProfileImage, setIsLoadingErrorAtProfileImage] = useState<boolean>(false);
+  const [isLoadingErrorAtFeedImage, setIsLoadingErrorAtFeedImage] = useState<boolean>(false);
+
+  const handleImageLoadAtProfileImage = () => {
+    setIsLoadingErrorAtProfileImage(false);
+  };
+
+  const handleImageErrorAtProfileImage = () => {
+    setIsLoadingErrorAtProfileImage(true);
+  };
+
+  const handleImageLoadAtFeedImage = () => {
+    setIsLoadingErrorAtFeedImage(false);
+  };
+
+  const handleImageErrorAtFeedImage = () => {
+    setIsLoadingErrorAtFeedImage(true);
+  };
+  //
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (event.target.innerText != 'more_vert') {
@@ -125,23 +146,33 @@ export default function FeedListItem(props: { feed: FeedType }) {
           <div className={`pt-5 pl-5`}>
             {/* 프로필 사진 */}
             <div className={`${styles.helpTip} flex `}>
-              <div onClick={goProfile}>
-                {feed.user.profileImagePath ? (
-                  <img className='mb-3' src={feed.user.profileImagePath} alt='로고' width='80' height='80'></img>
-                ) : (
-                  <Skeleton width={80} height={80} />
-                )}
+              <div onClick={goProfile} className={`overflow-hidden`} style={{ borderRadius: '40px' }}>
+                {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
+                <img
+                  className='mb-3'
+                  src={feed.user.profileImagePath}
+                  alt='로고'
+                  width='80'
+                  height='80'
+                  onLoad={() => handleImageLoadAtProfileImage()}
+                  onError={() => handleImageErrorAtProfileImage()}
+                  style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></img>
               </div>
 
               {/* 프로필 팝업 */}
               <div className={`flex flex-col div ${styles.userInfo}`} onClick={goProfile}>
                 <div className={`flex`}>
-                  <div className={`flex flex-col justify-center items-center pr-5`}>
-                    {feed.user.profileImagePath ? (
-                      <img className='mb-3' src={feed.user.profileImagePath} alt='로고' width='80' height='80'></img>
-                    ) : (
-                      <Skeleton width={80} height={80} />
-                    )}
+                  <div className={`flex flex-col justify-center items-center mr-5 overflow-hidden`} style={{ borderRadius: '40px' }}>
+                    {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
+                    <img
+                      className='mb-3'
+                      src={feed.user.profileImagePath}
+                      alt='로고'
+                      width='80'
+                      height='80'
+                      onLoad={() => handleImageLoadAtProfileImage}
+                      onError={() => handleImageErrorAtProfileImage}
+                      style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></img>
                   </div>
 
                   <div className='flex flex-col justify-center items-center'>
@@ -236,9 +267,19 @@ export default function FeedListItem(props: { feed: FeedType }) {
                 {/* 다이어리일때 사진 */}
                 <div className={`relative`}>
                   <div className={`${styles.imageWarrper}`}>
-                    {feed.imagePath ? <img className={``} src={feed.imagePath} alt='로고' width='100%'></img> : <Skeleton width={400} height={400} />}
+                    {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
+                    <img
+                      className='mb-3'
+                      src={feed.imagePath}
+                      alt='로고'
+                      width='80'
+                      height='80'
+                      onLoad={() => handleImageLoadAtFeedImage()}
+                      onError={() => handleImageErrorAtFeedImage()}
+                      style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
+                    {/* {feed.imagePath ? <img className={``} src={feed.imagePath} alt='로고' width='100%'></img> : <Skeleton width={400} height={400} />} */}
                   </div>
-                  <div className={`${styles.gradation}`}>
+                  <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}>
                     <div className={`p-5 flex justify-between h-full`}>
                       <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
                         <p>{feed.diarySetTitle}</p>
@@ -255,16 +296,21 @@ export default function FeedListItem(props: { feed: FeedType }) {
               </>
             ) : (
               <>
-                {/* 일지일 때 사진 */}
+                {/* 포스트일 때 사진 */}
                 {feed.imagePath ? (
                   <>
                     <div className={`relative`}>
                       <div className={`${styles.imageWarrper}`}>
-                        {feed.imagePath ? (
-                          <img className={``} src={feed.imagePath} alt='로고' width='100%'></img>
-                        ) : (
-                          <Skeleton width={400} height={400} />
-                        )}
+                        {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
+                        <img
+                          className='mb-3'
+                          src={feed.imagePath}
+                          alt='로고'
+                          width='80'
+                          height='80'
+                          onLoad={() => handleImageLoadAtFeedImage()}
+                          onError={() => handleImageErrorAtFeedImage()}
+                          style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
                       </div>
                     </div>
                   </>

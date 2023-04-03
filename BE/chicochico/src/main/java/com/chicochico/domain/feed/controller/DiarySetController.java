@@ -2,12 +2,12 @@ package com.chicochico.domain.feed.controller;
 
 
 import com.chicochico.common.dto.ResultDto;
+import com.chicochico.common.service.AuthService;
 import com.chicochico.domain.feed.dto.request.DiarySetRequestDto;
 import com.chicochico.domain.feed.dto.response.DiarySetResponseDto;
 import com.chicochico.domain.feed.dto.response.DiarySetSimpleResponseDto;
 import com.chicochico.domain.feed.entity.DiarySetEntity;
 import com.chicochico.domain.feed.service.DiarySetService;
-import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +29,7 @@ public class DiarySetController {
 	private final DiarySetService diarySetService;
 
 	private final UserService userService;
+	private final AuthService authService;
 
 
 	@GetMapping("/{nickname}/list") // notion의 API docs를 참고해서 url 매핑을 해준다.
@@ -43,8 +44,7 @@ public class DiarySetController {
 		 * 3. 그럼 service 클래스에 메소드 구현체가 자동으로 생성된다!
 		 * */
 		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname);
-		UserEntity user = userService.getUserByNickname(nickname);
-		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, user, diarySetService::isBookmarked);
+		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
 	}
 
@@ -80,8 +80,7 @@ public class DiarySetController {
 	@ApiOperation(value = "유저가 북마크한 관찰 일지 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<DiarySetResponseDto>>> getDiarySetBookmarkList(@PathVariable("nickname") String nickname, Pageable pageable) {
 		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetBookmarkList(nickname, pageable);
-		UserEntity user = userService.getUserByNickname(nickname);
-		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, user, diarySetService::isBookmarked);
+		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
 	}
 

@@ -4,6 +4,9 @@ import { checkNickname, updateProfile } from '@/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
 import { ProfileType } from '@/core/user/userType';
 import AppButton from '../button/AppButton';
+import { getStorage, ref, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useRouter } from 'next/router';
+import { SET_USER_INFO } from '@/core/common/commonSlice';
 
 type PropsType = {
   isOpen: boolean;
@@ -22,6 +25,8 @@ const initialState: StateType = {
 };
 
 export default function AppModal({ isOpen, userProfile, handleModalClose }: PropsType) {
+  const router = useRouter();
+  const storage = getStorage();
   const modalRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -32,6 +37,8 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
     watch,
   } = useForm<StateType>({ defaultValues: initialState, mode: 'onChange' });
 
+  const [prevNickname, setPrevNickname] = useState('');
+  const [prevProfileImagePath, setProfileImagePath] = useState('');
   const [nickname, introduction] = getValues(['nickname', 'introduction']);
   const [isCheckedNickname, setIsCheckedNickname] = useState<boolean>(false);
 
@@ -55,6 +62,7 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
   /** 사용자 정보 세팅하는 함수 (nickname, introduction) */
   function setUserProfile() {
     try {
+      setPrevNickname(userProfile?.nickname);
       setValue('nickname', userProfile?.nickname);
       setValue('introduction', userProfile?.introduction);
     } catch (error) {
@@ -88,16 +96,42 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
     try {
       const payload = { nickname, introduction };
       const { data } = await updateProfile(payload);
-      // getUserProfile();
-      // TODO: 닉네임 수정하고 -> 게터해서 다시 profile 가져오기 (새 닉네임으로) (백에서 새 닉네임 내려달라고 해야할듯)
+
+      if (data) {
+        handleSetUserProfileImage();
+        SET_USER_INFO({ nickname });
+        router.push(`${nickname}`);
+      }
+
       console.log(data);
     } catch (error) {
       console.error(error);
     }
   }
 
+  /** 이미지 파일 등록하는 함수 */
+  async function handleSetUserProfileImage() {
+    const prevProfileRef = ref(storage, `${prevNickname}/profileImage`);
+    const newProfileRef = ref(storage, `${nickname}/profileImage`);
+
+    // 1. 이전 프로필 이미지 다운
+    getDownloadURL(prevProfileRef).then((url) => {
+      setProfileImagePath(url);
+    });
+
+    // 2. 이전 프로필 삭제
+    deleteObject(ref(storage, `${prevNickname}/profileImage`)).then(() => {});
+
+    // 3. 새로운 프로필 이미지 등록
+    // const res = await fetch(prevProfileImagePath);
+    const res = await fetch('/images/noProfile.png');
+    const blob = await res.blob();
+    const file = new File([blob], 'noProfile', { type: 'image/png' });
+    uploadBytes(newProfileRef, file, { contentType: 'image/png' }).then(() => {});
+  }
+
   return (
-    <>
+    <div>
       {isOpen ? (
         <div className='modalContainer'>
           <div className='modalWrap' ref={modalRef}>
@@ -157,7 +191,7 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
           </div>
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
 

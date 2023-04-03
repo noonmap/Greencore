@@ -250,7 +250,7 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
  */
 export const logInByOAuth = createAsyncThunk('logInByOAuth', async (payload: LogInOAuthDataType) => {
   try {
-    const { accessToken, refreshToken } = payload;
+    const { accessToken, refreshToken, nickname } = payload;
     const headers = {
       headers: {
         'X-Refresh-Token': refreshToken,
@@ -258,11 +258,7 @@ export const logInByOAuth = createAsyncThunk('logInByOAuth', async (payload: Log
       },
     };
 
-    console.log(headers);
     const res = await http.post('/login/oauth', {}, headers);
-    const nickname = res.data.data.nickname;
-    console.log(res);
-    console.log(nickname);
 
     if (res.data.result == 'SUCCESS') {
       Toastify({
@@ -528,8 +524,7 @@ export const updateProfileImage = createAsyncThunk('updateProfileImage', async (
  * @url /user/plant/${nickname}
  */
 export const getUserPlantList = async (nickname: string | string[], params: PageType) => {
-  // const headers = { authorization: accessToken, ...params };
-  const { data } = await http.get(`/user/plant/${nickname}`);
+  const { data } = await http.get(`/user/plant/${nickname}`, { params });
   return data;
 };
 

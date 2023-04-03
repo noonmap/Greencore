@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { UserPlantType } from '@/core/user/userType';
 import { useForm } from 'react-hook-form';
 import { createDiarySet, updateDiarySet } from '@/core/diarySet/diarySetAPI';
+import AppButton from '../button/AppButton';
 
 type PropsType = {
   isOpen: boolean;
@@ -25,11 +26,20 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
   const { register, getValues, watch } = useForm({ defaultValues: initialState, mode: 'onChange' });
   const [userPlantId, title, startDate, image] = getValues(['userPlantId', 'title', 'startDate', 'image']);
 
+  useEffect(() => {
+    watch();
+    document.addEventListener('mousedown', handleModalOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+    };
+  }, []);
+
   function handleModalOutsideClick(e) {
     // 모달 바깥 클릭 시
     if (modalRef.current && !modalRef.current.contains(e.target)) handleModalClose();
   }
 
+  /** 관찰일지 생성 함수 */
   async function handleDiarySetCreate() {
     try {
       const formData = new FormData();
@@ -37,12 +47,7 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
       formData.append('image', image[0]);
       formData.append('title', title);
       formData.append('startDate', startDate);
-      formData.forEach((e) => console.log(e));
-
-      const payload = { userPlantId, image: image[0], startDate, title };
-      const { data } = await createDiarySet(payload);
-      console.log(payload);
-      console.log(data);
+      const { data } = await createDiarySet(formData);
     } catch (error) {
       console.error(error);
     }
@@ -55,25 +60,11 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
       formData.append('image', image[0]);
       formData.append('title', title);
       formData.append('startDate', startDate);
-      formData.forEach((e) => console.log(e));
-
-      const payload = { userPlantId, image: image[0], startDate, title };
-      const { data } = await updateDiarySet(diarySetId, payload);
-      console.log(payload);
-      console.log(data);
+      const { data } = await updateDiarySet(diarySetId, formData);
     } catch (error) {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    watch();
-    document.addEventListener('mousedown', handleModalOutsideClick);
-
-    return () => {
-      document.removeEventListener('mousedown', handleModalOutsideClick);
-    };
-  }, []);
 
   return (
     <>
@@ -81,37 +72,43 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
         <div className='modalContainer'>
           <div className='modalWrap' ref={modalRef}>
             {/* 모달 내부 */}
-            <div onClick={() => handleModalClose()}>X</div>
+            <div className='relative'>
+              <span className='modSSSalClose material-symbols-outlined' onClick={() => handleModalClose()}>
+                close
+              </span>
+            </div>
 
             {/* 모달 컨텐츠 */}
             <div className='modalContent'>
-              <div>{modalTitle}</div>
-              <input type='file' {...register('image')} />
-              <input type='date' {...register('startDate')} />
-              <input type='text' {...register('title')} placeholder='관찰일지명' />
+              <div className='modalTitle mb-5'>{modalTitle}</div>
 
-              {create ? (
-                <div>
-                  {userPlantList ? (
-                    <>
-                      <select {...register('userPlantId')}>
+              <div className='flex flex-col space-y-2'>
+                {create ? (
+                  <div>
+                    {userPlantList ? (
+                      <select {...register('userPlantId')} className='w-full'>
                         {userPlantList.map((p) => (
                           <option key={p.userPlantId} value={p.userPlantId}>
                             {p.plantNickname}
                           </option>
                         ))}
+                        S
                       </select>
-                    </>
-                  ) : (
-                    <>내가 키우는 식물을 생성하세요</>
-                  )}
-                </div>
-              ) : null}
+                    ) : (
+                      <>내가 키우는 식물을 생성하세요</>
+                    )}
+                  </div>
+                ) : null}
 
-              <div className='flex'>
-                <button onClick={() => handleModalClose()}>취소</button>
+                <input type='file' {...register('image')} />
+                <input type='date' {...register('startDate')} />
+                <input type='text' {...register('title')} placeholder='관찰일지명' />
+              </div>
 
-                {create ? <button onClick={handleDiarySetCreate}>확인</button> : <button onClick={handleDiarySetUpdate}>확인</button>}
+              <div className='flex mt-20 space-x-2'>
+                <AppButton text='취소' bgColor='thin' className='w-full' handleClick={handleModalClose} />
+                {create ? <AppButton text='확인' className='w-full' handleClick={handleDiarySetCreate} /> : null}
+                {update ? <AppButton text='확인' className='w-full' handleClick={handleDiarySetUpdate} /> : null}
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ import styles from './SettingsLayout.module.scss';
 
 export default function FllowLayout({ children }) {
   const router = useRouter();
-  const { nickname } = useAppSelector((state) => state.common?.userInfo);
+  const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
   const [isFollowing, setIsFollowing] = useState<boolean>(true);
 
   useEffect(() => {

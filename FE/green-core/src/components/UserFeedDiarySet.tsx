@@ -17,163 +17,70 @@ type UserPlantType = {
   userPlantId: number;
 };
 
-export default function UserFeedDiarySet() {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  const { nickname } = router.query;
-
+export default function UserFeedDiarySet({ nickname }) {
   const [isOpenDiarySetCreateModal, setIsOpenDiarySetCreateModal] = useState(false);
-  const [isOpenDiarySetUpdateModal, setIsOpenDiarySetUpdateModal] = useState(false);
-  const [isOpenDiarySetDeleteModal, setIsOpenDiarySetDeleteModal] = useState(false);
-
-  const [diarySetId, setDiarySetId] = useState(null);
   const [diarySetList, setDiarySetList] = useState([]);
-
   const [diarySetPage, setDiarySetPage] = useState(0);
-  const [diarySetSize, setDiarySetSize] = useState(2);
-  const [diarySetListTotalCount, setDiarySetListTotalCount] = useState(3);
+  const [diarySetSize, setDiarySetSize] = useState(3);
 
-  const [diarySetListAll, setDiarySetListAll] = useState([]);
-  const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(8);
+  const [diarySetListTotalCount, setDiarySetListTotalCount] = useState(5);
+  const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(5);
   const [userPlantListAll, setUserPlantListAll] = useState<Array<UserPlantType>>();
 
-  const [isEditPopUp, setIsEditPopUp] = useState(false);
+  useEffect(() => {
+    fetchUserPlantListAll();
+    return () => {};
+  }, [userPlantListTotalCount]);
 
   useEffect(() => {
     fetchDiarySetList();
-    fetchDiarySetListAll();
     return () => {};
-  }, [userPlantListTotalCount, diarySetSize]); // 해당 변수가 업데이트 되면 한번 더 불러짐
+  }, [diarySetSize]);
 
+  /** 키우는 식물 리스트 모두 가져오기 함수 */
   async function fetchUserPlantListAll() {
     try {
-      const params = { page: 0, size: userPlantListTotalCount };
+      const params = { page: 0, size: 1 };
       const { data } = await getUserPlantList(nickname, params);
+      const content = data.content;
+      const totalElements = data.totalElements;
+      setUserPlantListTotalCount(totalElements);
       setUserPlantListAll(data);
     } catch (error) {
       console.error(error);
     }
   }
 
+  /** 사용자 관찰일지 가져오는 함수 */
   const fetchDiarySetList = useCallback(async () => {
     try {
       const params = { page: diarySetPage, size: diarySetSize };
-      // const { data } = await getDiarySetList(nickname, params);
-
-      const data = [
-        {
-          diarySetId: 1,
-          imagePath: 'image1/jpg',
-          bookmarkCount: 32,
-          isBookmarked: false,
-          diaryCount: 10,
-          title: '제목1',
-        },
-        {
-          diarySetId: 2,
-          imagePath: 'image1/jpg',
-          bookmarkCount: 32,
-          isBookmarked: false,
-          diaryCount: 10,
-          title: '제목2',
-        },
-        {
-          diarySetId: 3,
-          imagePath: 'image1/jpg',
-          bookmarkCount: 32,
-          isBookmarked: false,
-          diaryCount: 10,
-          title: '제목3',
-        },
-      ];
-
-      // FIXME: 확인
-      let temp = data.slice(diarySetPage, diarySetPage + diarySetSize);
-      setDiarySetList(temp);
+      console.log(params);
+      const { data } = await getDiarySetList(nickname, params);
+      const content = data.content;
+      const totalElements = data.totalElements;
+      console.log(content);
+      setDiarySetList(content);
+      setDiarySetListTotalCount(totalElements);
     } catch (error) {
       console.error(error);
     }
   }, [nickname, diarySetPage, diarySetSize]);
 
-  async function fetchDiarySetListAll() {
-    try {
-      const params = { page: 0, size: diarySetListTotalCount };
-      // const { data } = await getDiarySetList(nickname, params);
-
-      const data = [
-        {
-          diarySetId: 1,
-          imagePath: 'image1/jpg',
-          bookmarkCount: 32,
-          isBookmarked: false,
-          diaryCount: 10,
-          title: '제목1',
-        },
-        {
-          diarySetId: 2,
-          imagePath: 'image1/jpg',
-          bookmarkCount: 32,
-          isBookmarked: false,
-          diaryCount: 10,
-          title: '제목2',
-        },
-        {
-          diarySetId: 3,
-          imagePath: 'image1/jpg',
-          bookmarkCount: 32,
-          isBookmarked: false,
-          diaryCount: 10,
-          title: '제목3',
-        },
-      ];
-
-      setDiarySetListAll(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  function handleIsOpenDiarySetUpdate(diarySetId: number) {
-    setDiarySetId(diarySetId);
-    setIsOpenDiarySetUpdateModal(true);
-  }
-
-  function handleIsOpenDiarySetDelete(diarySetId: number) {
-    setDiarySetId(diarySetId);
-    setIsOpenDiarySetDeleteModal(true);
-  }
-
-  async function handleDiarySetDelete(diarySetId: number) {
-    try {
-      const { data } = await deleteDiarySet(diarySetId);
-      console.log(data);
-      setIsOpenDiarySetDeleteModal(false);
-    } catch (error) {
-      console.error(error);
-      setIsOpenDiarySetDeleteModal(false);
-    }
-  }
-
+  /** 관찰일지 이전 페이지 */
   async function prevDiarySetListPage() {
     let page = diarySetPage - diarySetSize;
     if (page < 0) return;
-
     setDiarySetPage(page);
     await fetchDiarySetList();
   }
 
+  /** 관찰일지 다음 페이지 */
   async function nextDiarySetListPage() {
     let page = diarySetPage + diarySetSize;
     if (page >= userPlantListTotalCount) return;
-
     setDiarySetPage(page);
     await fetchDiarySetList();
-  }
-
-  /** 수정/삭제 팝업 띄우는 함수 */
-  function handleisEditToggle() {
-    setIsEditPopUp(!isEditPopUp);
   }
 
   return (
@@ -186,44 +93,30 @@ export default function UserFeedDiarySet() {
         userPlantList={userPlantListAll}
         handleModalClose={() => setIsOpenDiarySetCreateModal(false)}
       />
-      <DiarySetModal
-        isOpen={isOpenDiarySetUpdateModal}
-        update
-        modalTitle='관찰일지 수정'
-        diarySetId={diarySetId}
-        handleModalClose={() => setIsOpenDiarySetUpdateModal(false)}
-      />
-      <AppModal
-        isOpen={isOpenDiarySetDeleteModal}
-        title='관찰일지 삭제'
-        handleModalClose={() => setIsOpenDiarySetDeleteModal(false)}
-        handleModalConfirm={handleDiarySetDelete}
-      />
 
       <div className='space-y-2 px-10 py-5'>
         <div className='flex justify-between space-y-2 mb-5'>
           <div className='text-xl font-semibold'>관찰일지</div>
-          <div className='flex main cursor-pointer'>
+          <div className='flex main cursor-pointer' onClick={() => setIsOpenDiarySetCreateModal(true)}>
             <span className='material-symbols-outlined'>add</span>
-            <div className='hover:underline' onClick={() => setIsOpenDiarySetCreateModal(true)}>
-              추가하기
-            </div>
+            <div className='hover:underline'>추가하기</div>
           </div>
         </div>
 
-        {/* <button className="bg-blue-500 rounded" onClick={prevDiarySetListPage}>
-						이전
-					</button> */}
+        <div className='flex items-center'>
+          <span className='material-symbols-outlined cursor-pointer' onClick={prevDiarySetListPage}>
+            arrow_back_ios
+          </span>
 
-        {/* <button className="bg-blue-500 rounded" onClick={nextDiarySetListPage}>
-						다음
-					</button> */}
+          <div className='flex space-x-10 mx-10'>
+            {diarySetList.map((diarySet) => (
+              <UserFeedDiarySetListItem key={diarySet.diarySetId} nickname={nickname} diarySet={diarySet} />
+            ))}
+          </div>
 
-        {/*  */}
-        <div className='flex space-x-10 mx-10'>
-          {diarySetList.map((diarySet) => (
-            <UserFeedDiarySetListItem key={diarySet.diarySetId} diarySet={diarySet} />
-          ))}
+          <span className='material-symbols-outlined cursor-pointer' onClick={nextDiarySetListPage}>
+            arrow_forward_ios
+          </span>
         </div>
       </div>
     </>

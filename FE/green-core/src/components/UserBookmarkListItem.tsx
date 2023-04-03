@@ -1,17 +1,21 @@
-import { createBookmark, deleteBookmark } from '@/core/diarySet/diarySetAPI';
-import Image from 'next/image';
 import React from 'react';
+import Image from 'next/image';
+import { createBookmark, deleteBookmark } from '@/core/diarySet/diarySetAPI';
 
 export default function UserBookmarkListItem({ bookmark }) {
   async function handleBookmarkCreate() {
     try {
+      console.log('handleBookmarkCreate');
       const { data } = await createBookmark(bookmark.diarysetId);
+      console.log(data);
     } catch (error) {}
   }
 
   async function handleBookmarkDelete() {
     try {
+      console.log('handleBookmarkDelete');
       const { data } = await deleteBookmark(bookmark.diarysetId);
+      console.log(data);
     } catch (error) {}
   }
 
@@ -19,7 +23,7 @@ export default function UserBookmarkListItem({ bookmark }) {
     <>
       {/* {JSON.stringify(bookmark)} */}
       <div className='flex'>
-        <Image src={'/images/noProfile.png'} width={100} height={100} alt='' />
+        <Image src={bookmark.imagePath} width={100} height={100} alt='' />
         <div>{bookmark.title}</div>
         <div className='flex items-center cursor-pointer'>
           {bookmark.isBookmarked ? (

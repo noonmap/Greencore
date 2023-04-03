@@ -36,19 +36,18 @@ const initialState: StateType = {
   uploadProfileImage: null,
 };
 
-export default function UserFeedProfile() {
+export default function UserFeedProfile({ nickname }) {
   const router = useRouter();
   const storage = getStorage();
 
-  const { nickname } = router.query;
   const myNickname = useAppSelector((state) => state.common.userInfo?.nickname);
 
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
+  const [uploadProfileImage] = getValues(['uploadProfileImage']);
 
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [isOpenUserProfileUpdateModal, setIsOpenUserProfileUpdateModal] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<ProfileType>(null);
-  const [uploadProfileImage] = getValues(['uploadProfileImage']);
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
 
   useEffect(() => {
@@ -236,7 +235,7 @@ export default function UserFeedProfile() {
             </div>
 
             <div className='flex flex-col items-center justify-around'>
-              <div className='flex justify-evenly w-full'>
+              <div className='flex justify-evenly w-full space-x-5'>
                 <div className='flex flex-col items-center justify-center'>
                   {userProfile ? (
                     <>
@@ -260,17 +259,19 @@ export default function UserFeedProfile() {
                 </div>
               </div>
 
-              <div className='flex items-center'>
-                {userProfile ? (
-                  <>
-                    {userProfile?.isFollowed ? (
-                      <AppButton text='팔로우 중' className='w-2 h-1' handleClick={handleFollowDelete} />
-                    ) : (
-                      <AppButton text='팔로우 하기' size='small' className='w-3 h-0.5' handleClick={handleFollowUpdate} />
-                    )}
-                  </>
-                ) : null}
-              </div>
+              {!isSameUser ? (
+                <div className='flex items-center'>
+                  {userProfile ? (
+                    <>
+                      {userProfile?.isFollowed ? (
+                        <AppButton text='팔로우 중' className='w-2 h-1' handleClick={handleFollowDelete} />
+                      ) : (
+                        <AppButton text='팔로우 하기' size='small' className='w-3 h-0.5' handleClick={handleFollowUpdate} />
+                      )}
+                    </>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

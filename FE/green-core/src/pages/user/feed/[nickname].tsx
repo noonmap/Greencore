@@ -18,19 +18,21 @@ export default function FeedDetail() {
         <h1 className='main'>프로필</h1>
 
         <div className={`${styles.wrap}`}>
-          <div className={`${styles.content} space-y-5`}>
-            {/* 프로필 라인 */}
-            <UserFeedProfile />
+          {nickname ? (
+            <div className={`${styles.content} space-y-5`}>
+              {/* 프로필 라인 */}
+              <UserFeedProfile nickname={nickname} />
 
-            {/* 키우는 식물 라인 */}
-            <UserFeedPlant nickname={nickname} />
+              {/* 키우는 식물 라인 */}
+              <UserFeedPlant nickname={nickname} />
 
-            {/* 관찰일지 라인 */}
-            <UserFeedDiarySet />
+              {/* 관찰일지 라인 */}
+              <UserFeedDiarySet nickname={nickname} />
 
-            {/* 포스트 라인 */}
-            <UserFeedPost />
-          </div>
+              {/* 포스트 라인 */}
+              <UserFeedPost nickname={nickname} />
+            </div>
+          ) : null}
         </div>
       </div>
     </AppLayout>

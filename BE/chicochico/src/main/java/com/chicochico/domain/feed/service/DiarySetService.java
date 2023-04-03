@@ -75,6 +75,7 @@ public class DiarySetService {
 	@Transactional
 	public void createDiarySet(DiarySetRequestDto diarySetRequestDto) {
 		// 작성자 조회
+		System.out.println(diarySetRequestDto);
 		Long userId = authService.getUserId();
 		UserEntity writer = userRepository.findByIdAndIsDeleted(userId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -107,6 +108,7 @@ public class DiarySetService {
 	 */
 	@Transactional
 	public void modifyDiarySet(Long diarySetId, DiarySetRequestDto diarySetRequestDto) {
+		System.out.println("diarySetId = " + diarySetId + ", diarySetRequestDto = " + diarySetRequestDto);
 		// 삭제된 관찰일지인지 확인
 		DiarySetEntity originDiarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
 
@@ -131,6 +133,7 @@ public class DiarySetService {
 			.user(originDiarySet.getUser())
 			.userPlant(originDiarySet.getUserPlant())
 			.imagePath(newImagePath)
+			.startDate(diarySetRequestDto.getStartDate())
 			.diaryCount(originDiarySet.getDiaryCount())
 			.title(diarySetRequestDto.getTitle())
 			.isDeleted(originDiarySet.getIsDeleted())
@@ -272,9 +275,10 @@ public class DiarySetService {
 	}
 
 
-	public boolean isBookmarked(UserEntity userId, DiarySetEntity diarySetId) {
+	public boolean isBookmarked(DiarySetEntity diarySet) {
+		UserEntity user = userRepository.findByIdAndIsDeleted(authService.getUserId(), IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		// 북마크 있는지 확인
-		Optional<BookmarkEntity> bookmark = bookmarkRepository.findByDiarySetAndUser(diarySetId, userId);
+		Optional<BookmarkEntity> bookmark = bookmarkRepository.findByDiarySetAndUser(diarySet, user);
 		if (bookmark.isPresent()) return true;
 		return false;
 	}

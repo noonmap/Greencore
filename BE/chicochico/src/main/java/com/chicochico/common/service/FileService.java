@@ -47,14 +47,14 @@ public class FileService {
 		if (!fileDirFile.exists()) {
 			fileDirFile.mkdir();
 		}
-		File fileSubDirFile = new File(fileDir + File.separator + subFileDir);
+		File fileSubDirFile = new File(fileDir + '/' + subFileDir);
 		if (!fileSubDirFile.exists()) {
 			fileSubDirFile.mkdir();
 		}
 
 		// 파일이 비어있는지 확인
 		if (file == null || file.isEmpty()) {
-			return subFileDir + File.separator + DEFAULT_IMAGE_PATH;
+			return subFileDir + '/' + DEFAULT_IMAGE_PATH;
 			//			throw new CustomException(ErrorCode.FILE_IS_EMPTY);
 		}
 
@@ -71,10 +71,10 @@ public class FileService {
 		if (isImageFile(extension) == false) throw new CustomException(ErrorCode.FILE_IS_NOT_IMAGE);
 
 		// uuid와 확장자 결합
-		String savedName = subFileDir + File.separator + uuid + extension;
+		String savedName = subFileDir + '/' + uuid + extension;
 
 		// 파일을 불러올 때 사용할 파일 경로
-		String savedPath = fileDir + File.separator + savedName;
+		String savedPath = fileDir + '/' + savedName;
 
 		try {
 			// 실제로 로컬에 uuid를 파일명으로 저장
@@ -89,7 +89,7 @@ public class FileService {
 
 
 	public void deleteImageFile(String savedName) {
-		String savedPath = fileDir + File.separator + savedName;
+		String savedPath = fileDir + '/' + savedName;
 		File savedFile = new File(savedPath);
 		if (savedFile.exists()) {
 			savedFile.delete();
