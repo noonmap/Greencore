@@ -13,6 +13,7 @@ import com.chicochico.domain.user.repository.UserRepository;
 import com.chicochico.exception.CustomException;
 import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
@@ -63,8 +66,11 @@ public class ProfileService {
 		UserEntity user = getUserProfile(userNickname);
 
 		// 새로운 nickname이 이미 존재하는 닉네임인지 (unique) 확인
-		if (userRepository.findByNickname(profileRequestDto.getNickname()).isPresent()) {
-			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+		Optional<UserEntity> userByNickname = userRepository.findByNickname(profileRequestDto.getNickname());
+		if (userByNickname.isPresent()) {
+			// 존재하는 닉네임이 본인이 아닐때
+			if (!userByNickname.get().getNickname().equals(user.getNickname()))
+				throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 		}
 
 		// 로그인한 유저 정보 수정 (nickname, introduction 수정)
