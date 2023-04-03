@@ -36,6 +36,8 @@ export default function UserFeedPlant({ nickname }) {
     try {
       const params = { page: userPlantPage, size: userPlantSize };
       const { data } = await getUserPlantList(nickname, params);
+      // const content = data.content;
+      // console.log(data);
       setUserPlantList(data);
     } catch (error) {
       console.error(error);
@@ -46,7 +48,6 @@ export default function UserFeedPlant({ nickname }) {
   async function prevUserPlantListPage() {
     let page = userPlantPage - userPlantSize;
     if (page < 0) return;
-
     setUserPlantPage(page);
     await fetchUserPlantList();
   }
@@ -68,6 +69,7 @@ export default function UserFeedPlant({ nickname }) {
         create
         title={'키우는 식물 생성'}
         handleModalClose={() => setIsOpenUserPlantCreateModal(false)}
+        fetchUserPlantList={fetchUserPlantList}
       />
 
       {/* 내키식 라인 */}
@@ -91,7 +93,7 @@ export default function UserFeedPlant({ nickname }) {
 
               <div className='flex mx-7'>
                 {userPlantList.map((userPlant) => (
-                  <UserFeedPlantListItem key={userPlant.userPlantId} userPlant={userPlant} />
+                  <UserFeedPlantListItem key={userPlant.userPlantId} userPlant={userPlant} fetchUserPlantList={fetchUserPlantList} />
                 ))}
               </div>
 

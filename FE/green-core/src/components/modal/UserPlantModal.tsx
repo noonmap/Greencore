@@ -14,6 +14,7 @@ type PropsType = {
   create?: boolean;
   update?: boolean;
   handleModalClose: () => void;
+  fetchUserPlantList: () => void;
 };
 
 type PlantType = {
@@ -34,6 +35,7 @@ export default function UserPlantModal({
   userPlantNickname,
   title,
   handleModalClose,
+  fetchUserPlantList,
 }: PropsType) {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +47,9 @@ export default function UserPlantModal({
 
   useEffect(() => {
     watch();
-    return () => {};
+    return () => {
+      setValue('searchPlantName', '');
+    };
   }, []);
 
   useEffect(() => {
@@ -99,6 +103,9 @@ export default function UserPlantModal({
       const payload = { plantId, plantNickname };
       const { data } = await createUserPlant(payload);
       handleModalClose();
+      fetchUserPlantList();
+      setValue('plantNickname', '');
+      setValue('searchPlantName', '');
     } catch (error) {
       console.error(error);
     }
@@ -114,6 +121,7 @@ export default function UserPlantModal({
     const payload = { plantNickname };
     const { data } = await updateUserPlant(userPlantId, payload);
     handleModalClose();
+    fetchUserPlantList();
   }
 
   return (

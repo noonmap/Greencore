@@ -23,10 +23,9 @@ const initialState: StateType = {
   checkedPostList: [],
 };
 
-export default function UserFeedPost() {
+export default function UserFeedPost({ nickname }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { nickname } = router.query;
 
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [checkedPostList] = getValues(['checkedPostList']);

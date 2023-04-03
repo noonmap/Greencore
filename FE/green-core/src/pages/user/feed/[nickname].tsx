@@ -27,10 +27,10 @@ export default function FeedDetail() {
               <UserFeedPlant nickname={nickname} />
 
               {/* 관찰일지 라인 */}
-              <UserFeedDiarySet />
+              <UserFeedDiarySet nickname={nickname} />
 
               {/* 포스트 라인 */}
-              <UserFeedPost />
+              <UserFeedPost nickname={nickname} />
             </div>
           ) : null}
         </div>
