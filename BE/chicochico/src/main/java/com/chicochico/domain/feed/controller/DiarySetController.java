@@ -42,7 +42,7 @@ public class DiarySetController {
 		 * 2. 서비스 메소드가 안 만들어져서 빨간 표시가 뜰텐데, 마우스 오버하면 "Create method 어쩌고" 문구가 뜬다. 그걸 클릭함
 		 * 3. 그럼 service 클래스에 메소드 구현체가 자동으로 생성된다!
 		 * */
-		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname, pageable);
+		List<DiarySetEntity> diarySetPage = diarySetService.getDiarySetList(nickname);
 		UserEntity user = userService.getUserByNickname(nickname);
 		Page<DiarySetResponseDto> diarySetResponseDtos = DiarySetResponseDto.fromEntityPage(diarySetPage, pageable, user, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diarySetResponseDtos));
