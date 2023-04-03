@@ -20,3 +20,8 @@
   right: 5px;
   z-index: 1;
 }
+
+.editPopUp div:hover {
+  background-color: var(--thin-color);
+  cursor: pointer;
+}

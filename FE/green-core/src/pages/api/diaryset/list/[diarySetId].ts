@@ -26,6 +26,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 0,
             likeCount: 3,
+            growingDay: 100,
           },
           {
             diaryId: 1,
@@ -36,6 +37,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
             likeCount: 3,
+            growingDay: 99,
           },
           {
             diaryId: 2,
@@ -46,6 +48,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
             likeCount: 3,
+            growingDay: 96,
           },
           {
             diaryId: 3,
@@ -56,6 +59,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
             likeCount: 3,
+            growingDay: 50,
           },
           {
             diaryId: 4,
@@ -66,6 +70,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
             likeCount: 3,
+            growingDay: 44,
           },
           {
             diaryId: 5,
@@ -76,6 +81,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
             likeCount: 3,
+            growingDay: 21,
           },
           {
             diaryId: 6,
@@ -86,6 +92,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             imagePath: 'https://cdn.agrinet.co.kr/news/photo/202103/183852_35812_5935.jpg',
             commentCount: 10,
             likeCount: 3,
+            growingDay: 11,
           },
         ],
       },
