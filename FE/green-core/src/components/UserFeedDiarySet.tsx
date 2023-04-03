@@ -35,15 +35,15 @@ export default function UserFeedDiarySet({ nickname }) {
   useEffect(() => {
     fetchDiarySetList();
     return () => {};
-  }, [diarySetSize]);
+  }, [diarySetPage]);
 
   /** 키우는 식물 리스트 모두 가져오기 함수 */
   async function fetchUserPlantListAll() {
     try {
       const params = { page: 0, size: 1 };
       const { data } = await getUserPlantList(nickname, params);
-      const content = data.content;
-      const totalElements = data.totalElements;
+      const content = data?.content;
+      const totalElements = data?.totalElements;
       setUserPlantListTotalCount(totalElements);
       setUserPlantListAll(data);
     } catch (error) {
@@ -55,11 +55,9 @@ export default function UserFeedDiarySet({ nickname }) {
   const fetchDiarySetList = useCallback(async () => {
     try {
       const params = { page: diarySetPage, size: diarySetSize };
-      console.log(params);
       const { data } = await getDiarySetList(nickname, params);
       const content = data.content;
       const totalElements = data.totalElements;
-      console.log(content);
       setDiarySetList(content);
       setDiarySetListTotalCount(totalElements);
     } catch (error) {
@@ -69,18 +67,16 @@ export default function UserFeedDiarySet({ nickname }) {
 
   /** 관찰일지 이전 페이지 */
   async function prevDiarySetListPage() {
-    let page = diarySetPage - diarySetSize;
+    let page = diarySetPage - 1;
     if (page < 0) return;
     setDiarySetPage(page);
-    await fetchDiarySetList();
   }
 
   /** 관찰일지 다음 페이지 */
   async function nextDiarySetListPage() {
-    let page = diarySetPage + diarySetSize;
-    if (page >= userPlantListTotalCount) return;
+    let page = diarySetPage + 1;
+    if (page >= userPlantListTotalCount / diarySetSize) return;
     setDiarySetPage(page);
-    await fetchDiarySetList();
   }
 
   return (
