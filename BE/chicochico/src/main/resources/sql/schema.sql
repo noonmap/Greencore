@@ -50,10 +50,10 @@ CREATE TABLE `plant`
     `name`          varchar(100) NOT NULL,
     `image_path`    varchar(500) NOT NULL,
     `specific_name` varchar(100) DEFAULT NULL,
-    `water`         varchar(50) DEFAULT NULL,
-    `light`         varchar(50) DEFAULT NULL,
-    `humidity`      varchar(50) DEFAULT NULL,
-    `temperature`   varchar(50) DEFAULT NULL,
+    `water`         varchar(300) DEFAULT NULL,
+    `light`         varchar(300) DEFAULT NULL,
+    `humidity`      varchar(300) DEFAULT NULL,
+    `temperature`   varchar(300) DEFAULT NULL,
     `user_count`    int          NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
