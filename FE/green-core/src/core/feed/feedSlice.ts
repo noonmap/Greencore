@@ -43,7 +43,7 @@ const feedSlice = createSlice({
       // 추천 피드 조회
       .addCase(getFeedList.pending, (state) => {})
       .addCase(getFeedList.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload.content.length === 0) {
           state.isStoped = true;
         }
         console.log(action.payload);
@@ -54,7 +54,7 @@ const feedSlice = createSlice({
       // 팔로우 피드 조회
       .addCase(getFollowFeedList.pending, (state) => {})
       .addCase(getFollowFeedList.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload.content.length === 0) {
           state.isStoped = true;
         }
         state.page = state.page + 1;
@@ -64,7 +64,7 @@ const feedSlice = createSlice({
       // 태그 검색 초기 요청
       .addCase(getTagFeedList.pending, (state) => {})
       .addCase(getTagFeedList.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload.content.length === 0) {
           state.isStopedAtTag = true;
         }
         state.pageAtTag = 1;
@@ -73,7 +73,7 @@ const feedSlice = createSlice({
       // 태그 검색 아이템 더 불러오기
       .addCase(getTagFeedListMore.pending, (state) => {})
       .addCase(getTagFeedListMore.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload.content.length === 0) {
           state.isStopedAtTag = true;
         }
         state.pageAtTag = state.pageAtTag + 1;
