@@ -470,6 +470,7 @@ export const getProfile = async (nickname: string | string[]) => {
 export const updateProfile = async (payload: ProfileType) => {
   try {
     // const headers = { authorization: accessToken };
+    console.log(payload);
     const { data } = await http.put(`/profile`, payload);
 
     Toastify({
@@ -524,8 +525,8 @@ export const updateProfileImage = createAsyncThunk('updateProfileImage', async (
  * @url /user/plant/${nickname}
  */
 export const getUserPlantList = async (nickname: string | string[], params: PageType) => {
-  // const headers = { authorization: accessToken, ...params };
-  const { data } = await http.get(`/user/plant/${nickname}`);
+  console.log(params);
+  const { data } = await http.get(`/user/plant/${nickname}`, { params });
   return data;
 };
 

@@ -9,7 +9,7 @@ import { createBookmark, deleteBookmark } from '@/core/diarySet/diarySetAPI';
 export default function UserFeedDiarySetListItem({ diarySet }) {
   const router = useRouter();
   const { nickname } = router.query;
-  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
+  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [isEditPopUp, setIsEditPopUp] = useState<boolean>(false);

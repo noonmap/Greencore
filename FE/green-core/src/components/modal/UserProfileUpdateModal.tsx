@@ -97,7 +97,7 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
   }
 
   return (
-    <>
+    <div>
       {isOpen ? (
         <div className='modalContainer'>
           <div className='modalWrap' ref={modalRef}>
@@ -157,7 +157,7 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
           </div>
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
 
