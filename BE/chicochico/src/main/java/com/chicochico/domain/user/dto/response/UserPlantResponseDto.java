@@ -4,9 +4,7 @@ package com.chicochico.domain.user.dto.response;
 import com.chicochico.domain.user.entity.UserPlantEntity;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 
 @Data
@@ -31,12 +29,9 @@ public class UserPlantResponseDto {
 	}
 
 
-	public static List<UserPlantResponseDto> fromEnityList(List<UserPlantEntity> userPlantList) {
-		List<UserPlantResponseDto> result = new ArrayList<>();
-		for (UserPlantEntity userPlant : userPlantList) {
-			UserPlantResponseDto userPlantResponseDto = UserPlantResponseDto.fromEntity(userPlant);
-			result.add(userPlantResponseDto);
-		}
+	public static Page<UserPlantResponseDto> fromEnityPage(Page<UserPlantEntity> page) {
+		Page<UserPlantResponseDto> result = page.map(UserPlantResponseDto::fromEntity);
+
 		return result;
 	}
 
