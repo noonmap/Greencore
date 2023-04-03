@@ -26,6 +26,14 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
   const { register, getValues, watch } = useForm({ defaultValues: initialState, mode: 'onChange' });
   const [userPlantId, title, startDate, image] = getValues(['userPlantId', 'title', 'startDate', 'image']);
 
+  useEffect(() => {
+    watch();
+    document.addEventListener('mousedown', handleModalOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+    };
+  }, []);
+
   function handleModalOutsideClick(e) {
     // 모달 바깥 클릭 시
     if (modalRef.current && !modalRef.current.contains(e.target)) handleModalClose();
@@ -40,7 +48,6 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
       formData.append('title', title);
       formData.append('startDate', startDate);
       const { data } = await createDiarySet(formData);
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -54,20 +61,10 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
       formData.append('title', title);
       formData.append('startDate', startDate);
       const { data } = await updateDiarySet(diarySetId, formData);
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    watch();
-    document.addEventListener('mousedown', handleModalOutsideClick);
-
-    return () => {
-      document.removeEventListener('mousedown', handleModalOutsideClick);
-    };
-  }, []);
 
   return (
     <>
@@ -76,7 +73,7 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
           <div className='modalWrap' ref={modalRef}>
             {/* 모달 내부 */}
             <div className='relative'>
-              <span className='modalClose material-symbols-outlined' onClick={() => handleModalClose()}>
+              <span className='modSSSalClose material-symbols-outlined' onClick={() => handleModalClose()}>
                 close
               </span>
             </div>
@@ -95,6 +92,7 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
                             {p.plantNickname}
                           </option>
                         ))}
+                        S
                       </select>
                     ) : (
                       <>내가 키우는 식물을 생성하세요</>

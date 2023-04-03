@@ -4,6 +4,7 @@ import { CreatePostType, DeletePostType, UpdatePostType } from './postType';
 import Toastify from 'toastify-js';
 import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
+import { PageType } from '@/core/common/commonType';
 
 // 포스트 생성, {content, image, tags}
 export const createPost = createAsyncThunk('createPost', async (requestData: CreatePostType) => {
@@ -91,3 +92,15 @@ export const deletePost = createAsyncThunk('deletePost', async (requestData: Del
     console.log(err);
   }
 });
+
+/** 포스트 조회하는 함수 */
+export const getPostList = async (nickname: string | string[], params: PageType) => {
+  const { data } = await http.get(`/post/list/${nickname}`, { params });
+  return data;
+};
+
+/** 포스트 삭제하는 함수 (without router) */
+export const deleteSelectedPost = async (postId: any) => {
+  const { data } = await http.delete(`/post/${postId}`);
+  return data;
+};

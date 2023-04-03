@@ -18,38 +18,30 @@ type UserPlantType = {
 };
 
 export default function UserFeedDiarySet({ nickname }) {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
   const [isOpenDiarySetCreateModal, setIsOpenDiarySetCreateModal] = useState(false);
-  const [isOpenDiarySetUpdateModal, setIsOpenDiarySetUpdateModal] = useState(false);
-  const [isOpenDiarySetDeleteModal, setIsOpenDiarySetDeleteModal] = useState(false);
-
-  const [diarySetId, setDiarySetId] = useState(null);
   const [diarySetList, setDiarySetList] = useState([]);
-
   const [diarySetPage, setDiarySetPage] = useState(0);
-  const [diarySetSize, setDiarySetSize] = useState(2);
-  const [diarySetListTotalCount, setDiarySetListTotalCount] = useState(3);
+  const [diarySetSize, setDiarySetSize] = useState(3);
 
-  const [diarySetListAll, setDiarySetListAll] = useState([]);
-  const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(8);
+  const [diarySetListTotalCount, setDiarySetListTotalCount] = useState(5);
+  const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(5);
   const [userPlantListAll, setUserPlantListAll] = useState<Array<UserPlantType>>();
 
-  const [isEditPopUp, setIsEditPopUp] = useState(false);
+  useEffect(() => {
+    fetchUserPlantListAll();
+    return () => {};
+  }, [userPlantListTotalCount]);
 
   useEffect(() => {
     fetchDiarySetList();
-    fetchUserPlantListAll();
     return () => {};
-  }, [userPlantListTotalCount, diarySetSize]);
+  }, [diarySetSize]);
 
   /** 키우는 식물 리스트 모두 가져오기 함수 */
   async function fetchUserPlantListAll() {
     try {
       const params = { page: 0, size: 1 };
       const { data } = await getUserPlantList(nickname, params);
-      console.log(data);
       const content = data.content;
       const totalElements = data.totalElements;
       setUserPlantListTotalCount(totalElements);
@@ -63,9 +55,11 @@ export default function UserFeedDiarySet({ nickname }) {
   const fetchDiarySetList = useCallback(async () => {
     try {
       const params = { page: diarySetPage, size: diarySetSize };
+      console.log(params);
       const { data } = await getDiarySetList(nickname, params);
       const content = data.content;
       const totalElements = data.totalElements;
+      console.log(content);
       setDiarySetList(content);
       setDiarySetListTotalCount(totalElements);
     } catch (error) {
@@ -73,18 +67,18 @@ export default function UserFeedDiarySet({ nickname }) {
     }
   }, [nickname, diarySetPage, diarySetSize]);
 
+  /** 관찰일지 이전 페이지 */
   async function prevDiarySetListPage() {
     let page = diarySetPage - diarySetSize;
     if (page < 0) return;
-
     setDiarySetPage(page);
     await fetchDiarySetList();
   }
 
+  /** 관찰일지 다음 페이지 */
   async function nextDiarySetListPage() {
     let page = diarySetPage + diarySetSize;
     if (page >= userPlantListTotalCount) return;
-
     setDiarySetPage(page);
     await fetchDiarySetList();
   }
