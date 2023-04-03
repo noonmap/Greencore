@@ -18,7 +18,7 @@ export default function schedule() {
   const [monthSchedule, setMonthSchedule] = useState([]);
   const [weekSchedule, setWeekSchedule] = useState({});
   const [marks, setMarks] = useState([]);
-  const [reload, setReload] = useState(false);
+  const [reload, setReload] = useState(0);
   const [isOpenScheduleCreateModal, setIsOpenScheduleCreateModal] = useState(false);
   const [isOpenScheduleManageModal, setIsOpenScheduleManageModal] = useState(false);
 
@@ -72,7 +72,7 @@ export default function schedule() {
           isOpen={isOpenScheduleCreateModal}
           modalTitle='스케줄 생성'
           create
-          handleReload={() => setReload((prev) => !prev)}
+          handleReload={() => setReload((prev) => prev + 1)}
           handleModalClose={() => setIsOpenScheduleCreateModal(false)}
         />
       )}
@@ -80,7 +80,7 @@ export default function schedule() {
         <ScheduleManageModal
           isOpen={isOpenScheduleManageModal}
           weekSchedule={weekSchedule}
-          handleReload={() => setReload((prev) => !prev)}
+          handleReload={() => setReload((prev) => prev + 1)}
           handleModalClose={() => setIsOpenScheduleManageModal(false)}
         />
       )}

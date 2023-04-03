@@ -117,13 +117,13 @@ export const Calender = ({ marks, monthSchedule, date, setDate, setReload, setIs
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const prevMonth = () => {
-    setReload((prev: boolean) => !prev);
+    setReload((prev: number) => prev + 1);
     setCurrentMonth(subMonths(currentMonth, 1));
     const prevMonthFirstDate = new Date(date.getFullYear(), date.getMonth() - 1, 1);
     setDate(new Date(prevMonthFirstDate.getFullYear(), prevMonthFirstDate.getMonth() + 1, 0));
   };
   const nextMonth = () => {
-    setReload((prev: boolean) => !prev);
+    setReload((prev: number) => prev + 1);
     setCurrentMonth(addMonths(currentMonth, 1));
     setDate(new Date(date.getFullYear(), date.getMonth() + 1, 1));
   };

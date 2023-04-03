@@ -8,6 +8,7 @@ import { CreateDiaryType, DeleteDiaryType, UpdateDiaryType } from './diaryType';
 // 일지 리스트 받기, {diarySetId}
 export const getDiaryList = createAsyncThunk('getDiaryList', async (diarySetId: number) => {
   try {
+    console.log(diarySetId);
     const { data } = await http.get(`/diaryset/list/${diarySetId}`);
     return data;
   } catch (err) {
@@ -16,11 +17,24 @@ export const getDiaryList = createAsyncThunk('getDiaryList', async (diarySetId: 
   }
 });
 
+// 일지 상세 받기, {diaryId}
+export const getDiaryDetail = async (diaryId: number) => {
+  try {
+    const { data } = await http.get(`/diary/${diaryId}`);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
+};
+
 // 일지 생성, {diaryId, content, opservationDate, image, tags}
 export const createDiary = createAsyncThunk('createDiary', async (requestData: CreateDiaryType) => {
   try {
     const router = requestData.router;
-    const { data } = await http.post(`/diaryset/${requestData.payload.diarysetId}`, requestData.payload);
+    const payload = requestData.payload;
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    const { data } = await http.post(`/diaryset/${requestData.diarySetId}`, payload, { headers });
     if (data.result === 'SUCCESS') {
       Toastify({
         text: message.CreateDiarySuccess,

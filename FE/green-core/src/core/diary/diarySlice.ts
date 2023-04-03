@@ -29,7 +29,7 @@ const diarySlice = createSlice({
       })
       .addCase(diaryAPI.getDiaryList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.diaryList = action.payload.data.diaryList;
+        state.diaryList = [...state.diaryList, ...action.payload.data.diaryList.content];
         state.diarySet = action.payload.data;
       });
   },
