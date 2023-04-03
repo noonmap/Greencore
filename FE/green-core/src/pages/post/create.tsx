@@ -18,7 +18,7 @@ export default function post() {
   // react-hook-form 설정
   type StateType = {
     content: string;
-    image: Object;
+    image: any;
     tagItem: string;
   };
   const initialState: StateType = {
@@ -53,9 +53,9 @@ export default function post() {
   // 태그 생성
   const handleChangeTagList = () => {
     const updatedTagList = [...tagList];
-    let filteredTagList = updatedTagList.filter((item) => item.split('#')[1] !== tagItem);
+    let filteredTagList = updatedTagList.filter((item) => item !== tagItem);
     if (tagItem.trim()) {
-      filteredTagList.push('#' + tagItem.trim());
+      filteredTagList.push(tagItem.trim());
     }
     setTagList(filteredTagList);
     setValue('tagItem', '');
@@ -64,7 +64,7 @@ export default function post() {
   // 태그 삭제
   const handleDeleteTagItem = (e: any) => {
     const deleteTagItem = e.target.parentElement.firstChild.innerText;
-    const filteredTagList = tagList.filter((item) => item.split('#')[1] !== deleteTagItem);
+    const filteredTagList = tagList.filter((item) => item !== deleteTagItem);
     setTagList(filteredTagList);
   };
 
@@ -99,8 +99,11 @@ export default function post() {
   const handleCreatePost = async (e: any) => {
     e.preventDefault();
     if (CheckPossible()) {
-      const payload = { content, image, tags: tagList };
-      const requestData = { router, payload };
+      const formData = new FormData();
+      formData.append('content', content);
+      formData.append('image', image[0]);
+      formData.append('tags', String(tagList));
+      const requestData = { router, payload: formData };
       try {
         dispatch(createPost(requestData));
       } catch (err) {
@@ -116,7 +119,7 @@ export default function post() {
           <span className={`material-symbols-outlined ${styles.backIcon} cursor-pointer`} onClick={handleGoBack}>
             arrow_back_ios
           </span>
-          <div>일지 생성</div>
+          <div>게시글 생성</div>
         </div>
         <div className='flex justify-center mb-4'>
           {/* 사진 */}
@@ -127,7 +130,7 @@ export default function post() {
               ) : (
                 <div className={`${styles.inputImage}`}>
                   <span style={{ color: 'var(--title-light-color', fontSize: '1.5rem' }}>이곳을 클릭하여</span>
-                  <span style={{ color: 'var(--title-light-color', fontSize: '1.5rem' }}>일지의 사진을 추가해주세요!</span>
+                  <span style={{ color: 'var(--title-light-color', fontSize: '1.5rem' }}>게시글의 사진을 추가해주세요!</span>
                 </div>
               )}
             </label>
@@ -160,7 +163,7 @@ export default function post() {
             {tagList.map((tagItem, index) => {
               return (
                 <div key={index} className={`${styles.tagComponent} flex`}>
-                  <div className={`w-fit ${styles.tagName}`}>{tagItem.split('#')[1]}</div>
+                  <div className={`w-fit ${styles.tagName}`}>{tagItem}</div>
                   <button onClick={handleDeleteTagItem} className={`material-symbols-outlined w-fit ${styles.tagDelete}`}>
                     close
                   </button>
@@ -182,7 +185,7 @@ export default function post() {
         {/* 버튼 */}
         <div className='flex mt-16'>
           <AppButton text='취소' bgColor='thin' handleClick={handleGoBack} className={`flex-1 mr-8 ${styles.btn}`} />
-          <AppButton text='일지 생성' handleClick={handleCreatePost} className={`flex-1 ${styles.btn}`} />
+          <AppButton text='게시글 생성' handleClick={handleCreatePost} className={`flex-1 ${styles.btn}`} />
         </div>
       </div>
     </AppLayout>

@@ -4,32 +4,32 @@ import React from 'react';
 
 export default function ScheduleCode({ scheduleCode, size }) {
   const items = {
-    WATER: (
+    SCHEDULE_WATER: (
       <>
         <FontAwesomeIcon icon={faDroplet} size={size} style={{ color: '#94b9ff' }} />
       </>
     ),
-    REPOT: (
+    SCHEDULE_REPOT: (
       <>
         <FontAwesomeIcon icon={faSeedling} size={size} />
       </>
     ),
-    PRUNING: (
+    SCHEDULE_PRUNING: (
       <>
         <FontAwesomeIcon icon={faCut} size={size} />
       </>
     ),
-    NUTRITION: (
+    SCHEDULE_NUTRITION: (
       <>
         <FontAwesomeIcon icon={faSyringe} size={size} />
       </>
     ),
-    VENTILATION: (
+    SCHEDULE_VENTILATION: (
       <>
         <FontAwesomeIcon icon={faFan} size={size} />
       </>
     ),
-    SPRAY: (
+    SCHEDULE_SPRAY: (
       <>
         <FontAwesomeIcon icon={faSprayCanSparkles} size={size} />
       </>

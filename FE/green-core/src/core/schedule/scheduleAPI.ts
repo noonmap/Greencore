@@ -41,7 +41,7 @@ export const CompleteToDo = createAsyncThunk('CompleteToDo', async (requestData:
 // ToDo 취소, {scheduleId}
 export const CancelToDo = createAsyncThunk('CancelToDo', async (requestData: { scheduleId: number }) => {
   try {
-    const { data } = await http.put(`/schedule/${requestData.scheduleId}/done`);
+    const { data } = await http.delete(`/schedule/${requestData.scheduleId}/done`);
     return data;
   } catch (err) {
     console.log(err);

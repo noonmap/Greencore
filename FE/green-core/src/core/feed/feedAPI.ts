@@ -99,6 +99,7 @@ export const getCommentList = createAsyncThunk('getCommentList', async (requestD
     const page = requestData.page;
     const size = requestData.size;
     const { data } = await http.get(`/feed/${feedId}/comment`, { params: { page, size } });
+    console.log(data);
     return data;
   } catch (err) {
     console.log(err);
@@ -110,6 +111,7 @@ export const createComment = createAsyncThunk('createComment', async (requestDat
   try {
     const feedId = requestData.feedId;
     const payload = requestData.payload;
+    console.log(feedId, payload);
     const { data } = await http.post(`/feed/${feedId}/comment`, payload);
     if (data.result === 'SUCCESS') {
       Toastify({

@@ -10,7 +10,9 @@ import { PageType } from '@/core/common/commonType';
 export const createPost = createAsyncThunk('createPost', async (requestData: CreatePostType) => {
   try {
     const router = requestData.router;
-    const { data } = await http.post('/post', requestData.payload);
+    const payload = requestData.payload;
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    const { data } = await http.post('/post', payload, { headers });
     if (data.result === 'SUCCESS') {
       Toastify({
         text: message.CreatePostSuccess,

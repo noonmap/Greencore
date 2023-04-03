@@ -22,6 +22,7 @@ export type FeedType = {
   createdAt: string;
   commentCount: number;
   diarySetTitle?: string;
+  diarySetId?: number;
   growingDay?: number;
 };
 

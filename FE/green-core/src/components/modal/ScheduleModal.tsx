@@ -44,11 +44,11 @@ export default function ScheduleModal({
 }: PropsType) {
   const initialState: StateType = {
     userPlantId: schedule ? schedule.plant.userPlantId : 0,
-    scheduleDate: schedule ? schedule.scheduleDate : '',
-    scheduleCode: schedule ? schedule.scheduleCode : 'WATER',
+    scheduleDate: schedule ? (schedule.scheduleDate ? schedule.scheduleDate : null) : null,
+    scheduleCode: schedule ? schedule.scheduleCode : 'SCHEDULE_WATER',
     content: schedule ? schedule.content : '',
-    regularScheduleCode: schedule ? (schedule.regularScheduleCode ? schedule.regularScheduleCode : '0') : '0',
-    day: '',
+    regularScheduleCode: schedule ? (schedule.regularScheduleCode ? schedule.regularScheduleCode : null) : 'MONTHLY_SCHEDULE',
+    day: schedule ? (schedule.regularScheduleCode ? schedule.day : null) : null,
   };
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -66,13 +66,13 @@ export default function ScheduleModal({
 
   // 할일 종류
   const scheduleCodeList = [
-    ['물갈이', 'WATER'],
-    ['분갈이', 'REPOT'],
-    ['가지치기', 'PRUNING'],
-    ['영양제', 'NUTRITION'],
-    ['환기', 'VENTILATION'],
-    ['분무', 'SPRAY'],
-    ['기타', 'ETC'],
+    ['물갈이', 'SCHEDULE_WATER'],
+    ['분갈이', 'SCHEDULE_REPOT'],
+    ['가지치기', 'SCHEDULE_PRUNING'],
+    ['영양제', 'SCHEDULE_NUTRITION'],
+    ['환기', 'SCHEDULE_VENTILATION'],
+    ['분무', 'SCHEDULE_SPRAY'],
+    // ['기타', 'ETC'],
   ];
   const [userPlantList, setUserPlantList] = useState([]);
 
@@ -106,7 +106,7 @@ export default function ScheduleModal({
     console.log('스케줄 생성');
     e.preventDefault();
     if (isPossible) {
-      const payload = { userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day: Number(day) };
+      const payload = { userPlantId, scheduleDate, scheduleCode, content, regularScheduleCode, day };
       try {
         console.log(payload);
         const data = await createSchedule(payload);
@@ -172,9 +172,16 @@ export default function ScheduleModal({
   useEffect(() => {
     watch();
     // 유저가 키우는 식물 리스트 가져오기
-    http.get(`/user/plant/${myNickname}?page=0&size=100`).then((res) => setUserPlantList(res.data.data));
+    http.get(`/user/plant/${myNickname}`).then((res) => {
+      setUserPlantList(res.data.data);
+      setValue('userPlantId', res.data.data[0].userPlantId);
+    });
 
     document.addEventListener('mousedown', handleModalOutsideClick);
+
+    if (regularScheduleCode === 'WEEKLY_SCHEDULE') {
+      handleClick(Number(day) - 1);
+    }
 
     return () => {
       document.removeEventListener('mousedown', handleModalOutsideClick);
@@ -185,10 +192,9 @@ export default function ScheduleModal({
   const checkIsPossible = () => {
     if (
       userPlantId >= 0 &&
-      (scheduleDate !== '' || (day !== '' && Number(day) <= 31 && Number(day) >= 1)) &&
+      (scheduleDate !== null || (day !== null && Number(day) <= 31 && Number(day) >= 1)) &&
       scheduleCode !== '' &&
-      content !== '' &&
-      regularScheduleCode
+      content !== ''
     ) {
       setIsPossible(true);
     } else {
@@ -221,9 +227,13 @@ export default function ScheduleModal({
                   <label id='plant' className={`${styles.label}`}>
                     스케줄링 식물 선택
                   </label>
-                  <select className={`${styles.selectBox}`} {...register('userPlantId')} id='plant' defaultValue={userPlantList[0]}>
-                    {userPlantList?.map((plant) => {
-                      return <option key={plant.userPlantId}>{plant.plantNickname}</option>;
+                  <select className={`${styles.selectBox}`} {...register('userPlantId')} id='plant' defaultValue={userPlantList[0]?.userPlantId}>
+                    {userPlantList?.map((plant, index) => {
+                      return (
+                        <option key={index} value={plant.userPlantId}>
+                          {plant.plantNickname}
+                        </option>
+                      );
                     })}
                   </select>
                 </div>
@@ -253,22 +263,23 @@ export default function ScheduleModal({
                   <div style={{ display: 'flex' }}>
                     <select
                       className={`${styles.selectBox}`}
+                      defaultValue={regularScheduleCode}
                       {...(register('regularScheduleCode'),
                       {
                         onChange(event) {
-                          setValue('regularScheduleCode', event.target.value);
-                          setValue('scheduleDate', '');
+                          setValue('regularScheduleCode', event.target.value ? event.target.value : null);
+                          setValue('scheduleDate', null);
                           setIsSelectedList(Array(dayList.length).fill(false));
-                          setValue('day', '');
+                          setValue('day', null);
                         },
                       })}>
-                      <option value='0'>매월</option>
-                      <option value='1'>매주</option>
-                      <option value='2'>하루</option>
+                      <option value='MONTHLY_SCHEDULE'>매월</option>
+                      <option value='WEEKLY_SCHEDULE'>매주</option>
+                      {!regular && <option value=''>하루</option>}
                     </select>
 
                     {/* 매월 */}
-                    {regularScheduleCode == '0' && (
+                    {regularScheduleCode == 'MONTHLY_SCHEDULE' && (
                       <div className='flex items-center w-full'>
                         <input
                           type='number'
@@ -277,25 +288,26 @@ export default function ScheduleModal({
                           {...register('day')}
                           id='period'
                           placeholder='ex) 1'
-                          className={`${styles.inputBox}`}
-                          style={{ marginInline: '0.5rem', width: '100%' }}
+                          className={`${styles.inputBox} flex-1 ml-2`}
                         />
                         <div>일</div>
                       </div>
                     )}
 
                     {/* 매주 */}
-                    <div className='flex ml-auto'>
-                      {regularScheduleCode == '1' &&
-                        dayList.map((day, index) => (
-                          <div key={index} className='flex justify-center items-center'>
+                    {regularScheduleCode == 'WEEKLY_SCHEDULE' &&
+                      dayList.map((day, index) => (
+                        <div className='flex ml-auto' key={index}>
+                          <div className='flex justify-center items-center'>
                             <DayButton isSelected={isSelectedList[index]} handleClick={handleClick} elementIndex={index} content={day[0]} />
                           </div>
-                        ))}
-                    </div>
+                        </div>
+                      ))}
 
                     {/* 개별 */}
-                    {regularScheduleCode === '2' && <input type='date' {...register('scheduleDate')} id='period' className={`${styles.inputBox}`} />}
+                    {regularScheduleCode === null && (
+                      <input type='date' {...register('scheduleDate')} id='period' className={`${styles.inputBox} flex-1 ml-2`} />
+                    )}
                   </div>
                 </>
               )}
@@ -304,7 +316,7 @@ export default function ScheduleModal({
                   <label className={`${styles.label}`} id='scheduleDate'>
                     날짜
                   </label>
-                  <input type='date' {...register('scheduleDate')} id='scheduleDate' className={`${styles.inputBox}`} />
+                  <input type='date' {...register('scheduleDate')} id='scheduleDate' className={`${styles.inputBox} flex-1 ml-2`} />
                 </>
               )}
               {regular ? (

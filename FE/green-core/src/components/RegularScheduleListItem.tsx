@@ -23,6 +23,7 @@ export default function RegularScheduleListItem({ item, handleReload }: PropsTyp
           modalTitle='정기스케줄 수정'
           regularId={item.regularScheduleId}
           regular
+          schedule={item}
           handleReload={handleReload}
           handleModalClose={() => setIsOpenRegularScheduleUpdateModal(false)}
         />
