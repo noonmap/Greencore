@@ -2,6 +2,8 @@ package com.chicochico.domain.feed.dto.response;
 
 
 import com.chicochico.domain.feed.entity.PostEntity;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -56,8 +58,14 @@ public class PostSimpleResponseDto {
 		int start = (int) pageable.getOffset();
 		int end = Math.min(start + pageable.getPageSize(), postList.size());
 		List<PostSimpleResponseDto> postSimpleResponseDtoList = fromEnityList(postList, getCommentCount);
-		Page<PostSimpleResponseDto> result = new PageImpl<>(postSimpleResponseDtoList.subList(start, end), pageable, postSimpleResponseDtoList.size());
-		return result;
+
+		try {
+			Page<PostSimpleResponseDto> result = new PageImpl<>(postSimpleResponseDtoList.subList(start, end), pageable, postSimpleResponseDtoList.size());
+			return result;
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 	}
 
 }

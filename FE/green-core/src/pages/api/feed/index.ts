@@ -22,13 +22,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
           content: [
             {
               user: {
-                nickname: '닉네임',
+                nickname: '식집사입니다만',
                 profileImagePath: '/images/noProfile.png',
                 introduction: '한 줄 자기소개',
                 followingCount: 1,
                 followerCount: 1,
                 isFollowed: true,
               },
+              diarySetId: 1,
               feedCode: 'FEED_DIARY',
               opservationDate: '2023-03-13', // 일지에만
               feedId: page * 2 + 1,

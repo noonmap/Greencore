@@ -27,3 +27,10 @@ export type DeletePostType = {
   router: NextRouter;
   postId: number;
 };
+
+// 포스트 조회
+export type GetPostListType = {
+  nickname: string;
+  page: number;
+  size: number;
+};

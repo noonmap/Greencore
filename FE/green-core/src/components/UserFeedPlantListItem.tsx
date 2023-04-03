@@ -5,7 +5,7 @@ import UserPlantModal from '@/components/modal/UserPlantModal';
 import AppModal from './common/AppModal';
 import styles from './UserFeedProfile.module.scss';
 
-export default function UserFeedPlantListItem({ userPlant }) {
+export default function UserFeedPlantListItem({ userPlant, fetchUserPlantList }) {
   const [userPlantId, setUserPlantId] = useState(null);
   const [userPlantNickname, setUserPlantNickname] = useState('');
   const [isEditPopUp, setIsEditPopUp] = useState(false);
@@ -18,12 +18,14 @@ export default function UserFeedPlantListItem({ userPlant }) {
     setUserPlantId(userPlantId);
     setUserPlantNickname(plantNickname);
     setIsOpenUserPlantUpdateModal(true);
+    setIsEditPopUp(false);
   }
 
   /** 키우는 식물 삭제 모달 열기 함수 */
   function handleIsOpenUserPlantDelete(userPlantId: number) {
     setUserPlantId(userPlantId);
     setIsOpenUserPlantDeleteModal(true);
+    setIsEditPopUp(false);
   }
 
   /** 키우는 식물 삭제 함수 */
@@ -31,7 +33,7 @@ export default function UserFeedPlantListItem({ userPlant }) {
     try {
       const { data } = await deleteUserPlant(userPlantId);
       setIsOpenUserPlantDeleteModal(false);
-      console.log(data);
+      fetchUserPlantList();
     } catch (error) {
       console.error(error);
       setIsOpenUserPlantDeleteModal(false);
@@ -53,6 +55,7 @@ export default function UserFeedPlantListItem({ userPlant }) {
         userPlantNickname={userPlantNickname}
         title={'키우는 식물 정보 수정'}
         handleModalClose={() => setIsOpenUserPlantUpdateModal(false)}
+        fetchUserPlantList={fetchUserPlantList}
       />
 
       {/* 키우는 식물 삭제 모달 */}

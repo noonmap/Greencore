@@ -2,10 +2,13 @@ package com.chicochico.domain.user.dto.response;
 
 
 import com.chicochico.domain.user.entity.UserEntity;
+import com.chicochico.exception.CustomException;
+import com.chicochico.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +48,18 @@ public class FollowResponseDto {
 	}
 
 
-	public static Page<FollowResponseDto> fromEntityPage(Page<UserEntity> page, Function<Long, Boolean> isFollowed) {
-		List<UserEntity> userList = new ArrayList<>(page.toList());
-		List<FollowResponseDto> postSimpleResponseDtoList = fromEnityList(userList, isFollowed);
-		Page<FollowResponseDto> result = new PageImpl<>(postSimpleResponseDtoList, page.getPageable(), postSimpleResponseDtoList.size());
-		return result;
+	public static Page<FollowResponseDto> fromEntityPage(List<UserEntity> list, Function<Long, Boolean> isFollowed, Pageable pageable) {
+		int start = (int) pageable.getOffset();
+		int end = Math.min(start + pageable.getPageSize(), list.size());
+		List<FollowResponseDto> followResponseDtoList = fromEnityList(list, isFollowed);
+
+		try {
+			Page<FollowResponseDto> result = new PageImpl<>(followResponseDtoList.subList(start, end), pageable, followResponseDtoList.size());
+			return result;
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
+
 	}
 
 }

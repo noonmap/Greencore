@@ -7,7 +7,6 @@ import com.chicochico.domain.feed.entity.FeedEntity;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +52,9 @@ public class FeedSimpleResponseDto {
 
 
 	public static Page<FeedSimpleResponseDto> fromEnityPage(Page<FeedEntity> page) {
-		List<FeedEntity> feedList = new ArrayList<>(page.toList());
-		List<FeedSimpleResponseDto> feedResponseDtoList = fromEnityList(feedList);
-		Page<FeedSimpleResponseDto> result = new PageImpl<>(feedResponseDtoList, page.getPageable(), feedResponseDtoList.size());
+		Page<FeedSimpleResponseDto> result = page.map(FeedSimpleResponseDto::fromEntity);
 		return result;
+
 	}
 
 }

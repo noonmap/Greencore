@@ -2,14 +2,18 @@ package com.chicochico.domain.schedule.dto.request;
 
 
 import com.chicochico.common.code.IsCompletedType;
+import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.RegularScheduleType;
 import com.chicochico.common.code.ScheduleType;
 import com.chicochico.domain.schedule.entity.RegularScheduleEntity;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -19,8 +23,11 @@ import java.time.LocalDate;
  */
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ScheduleRequestDto {
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	private LocalDate scheduleDate;
 	private ScheduleType scheduleCode;
 	private Long userPlantId;
@@ -52,6 +59,7 @@ public class ScheduleRequestDto {
 			.scheduleCode(scheduleCode)
 			.userPlant(userPlant)
 			.lastDate(date)
+			.isDeleted(IsDeletedType.N)
 			.build();
 	}
 
@@ -66,6 +74,7 @@ public class ScheduleRequestDto {
 			.scheduleCode(scheduleCode)
 			.userPlant(userPlant)
 			.lastDate(date)
+			.isDeleted(IsDeletedType.N)
 			.build();
 	}
 

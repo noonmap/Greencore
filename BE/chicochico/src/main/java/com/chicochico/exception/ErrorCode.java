@@ -47,6 +47,7 @@ public enum ErrorCode {
 	POST_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다."),
 	DIARY_NOT_FOUND(NOT_FOUND, "일지가 존재하지 않습니다."),
 	DIARY_SET_NOT_FOUND(NOT_FOUND, "관찰 일지가 존재하지 않습니다."),
+	PAGE_NOT_FOUND(NOT_FOUND, "페이지가 존재하지 않습니다."),
 
 	/* 500 INTERNAL_SERVER_ERROR : 서버 오류 - 정말 필요한 거 외엔 되도록 쓰지 않는 걸 권장*/
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드를 실패하였습니다."),
