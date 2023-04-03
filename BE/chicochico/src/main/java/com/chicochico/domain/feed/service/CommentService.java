@@ -85,6 +85,12 @@ public class CommentService {
 	}
 
 
+	public String findMentionNickname(CommentEntity comment) {
+		UserEntity user = comment.getUser();
+		return user.getNickname();
+	}
+
+
 	/**
 	 * 해당 피드의 댓글을 생성합니다.
 	 *
