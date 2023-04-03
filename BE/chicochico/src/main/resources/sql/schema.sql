@@ -58,20 +58,21 @@ CREATE TABLE `plant`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `user_plant` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `is_deleted` varchar(255) NOT NULL,
-  `plant_image_path` varchar(255) NOT NULL,
-  `plant_nickname` varchar(255) NOT NULL,
-  `plant_id` bigint NOT NULL,
-  `user_id` bigint NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK5k0ey84cknl8qgd36tw6ara86` (`plant_id`),
-  KEY `FKbaw2l85ueq1jk59ga6ia8bp5n` (`user_id`),
-  CONSTRAINT `FK5k0ey84cknl8qgd36tw6ara86` FOREIGN KEY (`plant_id`) REFERENCES `plant` (`id`),
-  CONSTRAINT `FKbaw2l85ueq1jk59ga6ia8bp5n` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`)
+CREATE TABLE `user_plant`
+(
+    `id`               bigint       NOT NULL AUTO_INCREMENT,
+    `created_at`       datetime     NOT NULL,
+    `updated_at`       datetime     NOT NULL,
+    `is_deleted`       varchar(255) NOT NULL,
+    `plant_image_path` varchar(500) NOT NULL,
+    `plant_nickname`   varchar(255) NOT NULL,
+    `plant_id`         bigint       NOT NULL,
+    `user_id`          bigint       NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY                `FK5k0ey84cknl8qgd36tw6ara86` (`plant_id`),
+    KEY                `FKbaw2l85ueq1jk59ga6ia8bp5n` (`user_id`),
+    CONSTRAINT `FK5k0ey84cknl8qgd36tw6ara86` FOREIGN KEY (`plant_id`) REFERENCES `plant` (`id`),
+    CONSTRAINT `FKbaw2l85ueq1jk59ga6ia8bp5n` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `feed` (
