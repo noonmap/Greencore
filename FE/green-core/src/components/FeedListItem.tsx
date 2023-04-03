@@ -290,13 +290,11 @@ export default function FeedListItem(props: { feed: FeedType }) {
                   more_vert
                 </span>
                 <div ref={ref} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
-                  {/* TODO : 수정 페이지 이동 */}
                   <div className='border-b border-slate-300 bg-white flex justify-center items-center' onClick={handleUpdateFeed}>
                     <span className='text-lg p-2'>수정</span>
                     <span className='material-symbols-outlined'>edit</span>
                   </div>
 
-                  {/* TODO : 삭제 하기, 삭제 경고 모달 */}
                   <div className='bg-white flex justify-center items-center text-red-400' onClick={handleDeleteFeed}>
                     <span className='text-lg p-2'>삭제</span>
                     <span className='material-symbols-outlined'>delete</span>
@@ -322,7 +320,6 @@ export default function FeedListItem(props: { feed: FeedType }) {
                       onLoad={() => handleImageLoadAtFeedImage()}
                       onError={() => handleImageErrorAtFeedImage()}
                       style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
-                    {/* {feed.imagePath ? <img className={``} src={feed.imagePath} alt='로고' width='100%'></img> : <Skeleton width={400} height={400} />} */}
                   </div>
                   <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}>
                     <div className={`p-5 flex justify-between h-full`}>
