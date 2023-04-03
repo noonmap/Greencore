@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Skeleton from 'react-loading-skeleton';
 import styles from './DiaryListItem.module.scss';
 
 export default function DiaryListItem({ diary, title, isLast }: any) {
+  const [isLoadingErrorAtimagePath, setIsLoadingErrorAtimagePath] = useState<boolean>(false);
+
+  const handleImageLoadAtimagePath = () => {
+    setIsLoadingErrorAtimagePath(false);
+  };
+
+  const handleImageErrorAtimagePath = () => {
+    setIsLoadingErrorAtimagePath(true);
+  };
+
   return (
     <ul className=''>
       <li>
@@ -13,15 +23,25 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
             <div className='relative'>
               {/* 바디 */}
               <div className='w-full overflow-hidden' style={{ borderRadius: '30px' }}>
-                {diary.imagePath ? (
+                {isLoadingErrorAtimagePath && <Skeleton height={300} />}
+                <img
+                  className='mb-3'
+                  src={diary.imagePath}
+                  alt='로고'
+                  width='100%'
+                  height='100%'
+                  onLoad={() => handleImageLoadAtimagePath()}
+                  onError={() => handleImageErrorAtimagePath()}
+                  style={{ display: isLoadingErrorAtimagePath ? 'none' : 'block' }}></img>
+                {/* {diary.imagePath ? (
                   <img src={diary.imagePath} alt='image' style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
                 ) : (
                   <Skeleton width={300} height={300} />
-                )}
+                )} */}
               </div>
 
               {/* 그라데이션 */}
-              <div className={`${styles.gradation}`}>
+              <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtimagePath ? 'none' : 'block' }}>
                 <div className={`p-5 flex justify-between h-full`}>
                   <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
                     <p>{title || <Skeleton />}</p>
