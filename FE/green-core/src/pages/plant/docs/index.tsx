@@ -344,12 +344,13 @@ export default function plantDocs() {
                         <div>
                           {isLoadingErrorAtTopPlant[index] && <Skeleton width={150} height={150} />}
                           <img
+                            className={`${styles.img}`}
                             src={topPlant.imagePath}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtTopPlant(index)}
                             onError={() => handleImageErrorAtTopPlant(index)}
-                            style={{ display: isLoadingErrorAtTopPlant[index] ? 'none' : 'block' }}
+                            style={{ display: isLoadingErrorAtTopPlant[index] ? 'none' : 'block', width: '150px', height: '150px' }}
                           />
                         </div>
 
@@ -374,12 +375,13 @@ export default function plantDocs() {
                             <div>
                               {isLoadingErrorAtTopDiarySet[index] && <Skeleton width={200} height={200} />}
                               <img
+                                className={`${styles.img}`}
                                 src={topDiarySet.imagePath}
                                 width={200}
                                 height={200}
                                 onLoad={() => handleImageLoadAtTopDiarySet(index)}
                                 onError={() => handleImageErrorAtTopDiarySet(index)}
-                                style={{ display: isLoadingErrorAtTopDiarySet[index] ? 'none' : 'block' }}
+                                style={{ display: isLoadingErrorAtTopDiarySet[index] ? 'none' : 'block', width: '200px', height: '200px' }}
                               />
                             </div>
                           </div>
@@ -404,12 +406,13 @@ export default function plantDocs() {
                         <Link href={`/user/feed/${samPlantUser.nickname}`}>
                           {isLoadingErrorAtSamePlantUser[index] && <Skeleton width={150} height={150} />}
                           <img
+                            className={`${styles.img}`}
                             src={samPlantUser.profileImagePath}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtSamePlantUser(index)}
                             onError={() => handleImageErrorAtSamePlantUser(index)}
-                            style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block' }}
+                            style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block', width: '150px', height: '150px' }}
                           />
                         </Link>
                       </div>
