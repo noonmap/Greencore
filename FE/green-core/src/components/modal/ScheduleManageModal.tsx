@@ -38,7 +38,7 @@ export default function ScheduleManage({ isOpen, weekSchedule, handleReload, han
     return () => {
       document.removeEventListener('mousedown', handleModalOutsideClick);
     };
-  }, []);
+  }, [handleReload]);
 
   return (
     <>

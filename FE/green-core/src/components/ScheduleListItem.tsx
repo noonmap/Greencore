@@ -16,7 +16,7 @@ type PropsType = {
 
 export default function ScheduleListItem({ item, check, handleReload }: PropsType) {
   const dispatch = useAppDispatch();
-  const [isCompleted, setIsCompleted] = useState(item.isCompleted);
+  const [isCompleted, setIsCompleted] = useState(item.isCompleted === 'N' ? false : true);
   const [isOpenCheckDeleteModal, setIsOpenCheckDeleteModal] = useState(false);
   const [isOpenScheduleUpdateModal, setIsOpenScheduleUpdateModal] = useState(false);
 
