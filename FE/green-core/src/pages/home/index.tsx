@@ -14,8 +14,8 @@ export default function feed() {
   const feedList = useAppSelector((state) => state.feed.feedList);
   const isStoped = useAppSelector((state) => state.feed.isStoped);
   const page = useAppSelector((state) => state.feed.page);
+  const size = useAppSelector((state) => state.feed.size);
 
-  const [size, setSize] = useState<number>(10);
   const [target, setTarget] = useState(null); // 관찰 대상 target
   const [isLoaded, setIsLoaded] = useState(true); // 데이터 로딩 상태
 
@@ -46,11 +46,11 @@ export default function feed() {
         page: page,
         size: size,
       };
-
       // 전역 상태관리
       if (isSelectRecomment) {
         await dispatch(getFeedList(params));
       } else {
+        console.log(params);
         await dispatch(getFollowFeedList(params));
       }
       setIsLoaded(false);
