@@ -15,6 +15,7 @@ export default function diarySet() {
   const diarySet = useAppSelector<any>((state) => state.diary.diarySet);
   const [isBookmarked, setIsBookmarked] = useState<boolean | null>(diarySet.isBookmarked);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
+  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { diarySetId } = router.query;
@@ -118,6 +119,7 @@ export default function diarySet() {
                 {/* 닉네임, 아이콘 */}
                 <div className='text-lg flex justify-between pr-5 pt-5 '>
                   <div className='font-bold text-xl'>{diarySet?.user?.nickname}</div>
+
                   <div className='relative'>
                     <span
                       className={`material-symbols-outlined cursor-pointer ${
@@ -127,23 +129,26 @@ export default function diarySet() {
                       bookmark
                     </span>
 
-                    {/* TODO : 작성자만 보이게 */}
-                    <span className='material-symbols-outlined px-2' onClick={openEditPopUp} style={{ cursor: 'pointer' }}>
-                      more_vert
-                    </span>
-                    <div ref={ref} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
-                      {/* TODO : 수정 페이지 이동 */}
-                      <div className='border-b border-slate-300 bg-white flex justify-center items-center'>
-                        <span className='text-lg p-2'>수정</span>
-                        <span className='material-symbols-outlined'>edit</span>
-                      </div>
+                    {myNickname === diarySet?.user?.nickname && (
+                      <>
+                        <span className='material-symbols-outlined px-2' onClick={openEditPopUp} style={{ cursor: 'pointer' }}>
+                          more_vert
+                        </span>
+                        <div ref={ref} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
+                          {/* TODO : 수정 페이지 모달 */}
+                          <div className='border-b border-slate-300 bg-white flex justify-center items-center'>
+                            <span className='text-lg p-2'>수정</span>
+                            <span className='material-symbols-outlined'>edit</span>
+                          </div>
 
-                      {/* TODO : 삭제 하기, 삭제 경고 모달 */}
-                      <div className='bg-white flex justify-center items-center text-red-400'>
-                        <span className='text-lg p-2'>삭제</span>
-                        <span className='material-symbols-outlined'>delete</span>
-                      </div>
-                    </div>
+                          {/* TODO : 삭제 하기, 삭제 경고 모달 */}
+                          <div className='bg-white flex justify-center items-center text-red-400'>
+                            <span className='text-lg p-2'>삭제</span>
+                            <span className='material-symbols-outlined'>delete</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 {/* 일지리스트 */}
