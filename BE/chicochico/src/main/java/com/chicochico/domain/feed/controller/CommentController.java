@@ -35,7 +35,7 @@ public class CommentController {
 		Page<CommentResponseDto> responseDto = CommentResponseDto.fromEnityPage(commentList);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && responseDto.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 

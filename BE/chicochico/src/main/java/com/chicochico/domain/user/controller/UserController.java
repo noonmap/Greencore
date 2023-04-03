@@ -113,10 +113,10 @@ public class UserController {
 		Page<UserPlantResponseDto> userPlantResponseDtoList = UserPlantResponseDto.fromEnityPage(userPlantEntityList);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && userPlantResponseDtoList.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
-		
+
 		return ResponseEntity.ok().body(ResultDto.of(userPlantResponseDtoList));
 	}
 

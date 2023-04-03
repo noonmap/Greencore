@@ -38,7 +38,7 @@ public class PlantController {
 		Page<PlantWithImageResponseDto> plantWithImageResponseDtoPage = PlantWithImageResponseDto.fromEnityPage(plantList);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && plantWithImageResponseDtoPage.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 
@@ -54,7 +54,7 @@ public class PlantController {
 		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && plantResponseDtoPage.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 
@@ -70,7 +70,7 @@ public class PlantController {
 		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && plantResponseDtoPage.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 
@@ -86,7 +86,7 @@ public class PlantController {
 		Page<PlantResponseDto> plantResponseDtoPage = PlantResponseDto.fromEnityPage(plantList);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && plantResponseDtoPage.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 

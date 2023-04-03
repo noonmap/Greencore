@@ -64,7 +64,7 @@ public class FeedController {
 		Page<FeedSimpleResponseDto> feedResponseDtoPage = FeedSimpleResponseDto.fromEnityPage(feedEntityPage);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && feedResponseDtoPage.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 

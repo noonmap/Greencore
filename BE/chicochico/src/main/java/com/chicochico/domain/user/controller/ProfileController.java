@@ -67,7 +67,7 @@ public class ProfileController {
 		Page<ProfileSimpleResponseDto> profileSimpleResponseDtoPage = ProfileSimpleResponseDto.fromEnityPage(userProfileList);
 
 		int page = pageable.getPageNumber();
-		if (page != 0 && pageable.getPageSize() <= page) {
+		if (page != 0 && profileSimpleResponseDtoPage.getTotalPages() <= page) {
 			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 
