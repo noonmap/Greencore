@@ -133,6 +133,7 @@ public class DiarySetService {
 			.user(originDiarySet.getUser())
 			.userPlant(originDiarySet.getUserPlant())
 			.imagePath(newImagePath)
+			.startDate(diarySetRequestDto.getStartDate())
 			.diaryCount(originDiarySet.getDiaryCount())
 			.title(diarySetRequestDto.getTitle())
 			.isDeleted(originDiarySet.getIsDeleted())
