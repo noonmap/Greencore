@@ -275,9 +275,10 @@ public class DiarySetService {
 	}
 
 
-	public boolean isBookmarked(UserEntity userId, DiarySetEntity diarySetId) {
+	public boolean isBookmarked(DiarySetEntity diarySet) {
+		UserEntity user = userRepository.findByIdAndIsDeleted(authService.getUserId(), IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		// 북마크 있는지 확인
-		Optional<BookmarkEntity> bookmark = bookmarkRepository.findByDiarySetAndUser(diarySetId, userId);
+		Optional<BookmarkEntity> bookmark = bookmarkRepository.findByDiarySetAndUser(diarySet, user);
 		if (bookmark.isPresent()) return true;
 		return false;
 	}
