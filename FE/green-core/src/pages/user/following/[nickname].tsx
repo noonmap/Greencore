@@ -10,6 +10,7 @@ import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
 import Skeleton from 'react-loading-skeleton';
 import AppButton from '@/components/button/AppButton';
+import { UserFollowingListItem } from '@/components/UserFollowingListItem';
 
 export default function following() {
   const dispatch = useAppDispatch();
@@ -91,38 +92,20 @@ export default function following() {
     try {
       const params = { page: page, size: size };
       const { data } = await getFollowingList(nickname, params);
+      const content = data?.content;
+      // console.log(data, totalElements);
 
-      for (let i = 0; i < data.length; i++) {
-        getUserProfile(data[i].nickname);
-        if (i == data.length - 1) setIsLoading(true);
+      for (let i = 0; i < content.length; i++) {
+        getUserProfile(content[i].nickname);
+        if (i == content.length - 1) setIsLoading(true);
       }
 
       // 종료 시그널
-      if (data.length !== size) setIsStoped(true);
+      if (content.length !== size) setIsStoped(true);
       else setPage(page + 1);
 
       setIsLoaded(false);
-      setFollowingList((prev) => [...prev, ...data]);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  /** 팔로우 하는 함수 */
-  async function handleFollowUpdate(e, nickname) {
-    try {
-      const { data } = await updateFollow(nickname);
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  /** 언팔로우 함수 */
-  async function handleFollowDelete(e, nickname) {
-    try {
-      const { data } = await deleteFollow(nickname);
-      console.log(data);
+      setFollowingList((prev) => [...prev, ...content]);
     } catch (error) {
       console.error(error);
     }
@@ -134,40 +117,8 @@ export default function following() {
         <div className='space-y-5 divide-y divide-slate-200'>
           {isLoading ? (
             <>
-              {followingList.map((f) => (
-                <div key={f.nickname} className='flex pt-4 space-x-2 items-center justify-between'>
-                  {userProfileList[f.nickname] ? (
-                    <Link href={`/user/feed/${f.nickname}`}>
-                      <Image
-                        src={userProfileList[f.nickname]}
-                        alt='사용자 프로필 이미지'
-                        width={60}
-                        height={60}
-                        className='rounded-full bg-cover'
-                        priority
-                      />
-                    </Link>
-                  ) : (
-                    <Skeleton width={60} height={60} circle />
-                  )}
-
-                  <div className='flex flex-col'>
-                    {f.nickname ? <Link href={`/user/feed/${f.nickname}`}>{f.nickname}</Link> : <Skeleton width={50} />}
-                    {f.introduction ? <div className='w-80 introduction'>{f.introduction}</div> : <Skeleton width={150} />}
-                  </div>
-
-                  {f.isFollowed ? (
-                    <AppButton
-                      text='언팔로우'
-                      className='hover:bg-red-100'
-                      bgColor='thin'
-                      size='small'
-                      handleClick={(e) => handleFollowDelete(e, f.nickname)}
-                    />
-                  ) : (
-                    <AppButton text='팔로우 하기' size='small' handleClick={(e) => handleFollowUpdate(e, f.nickname)} />
-                  )}
-                </div>
+              {followingList.map((following) => (
+                <UserFollowingListItem key={following.nickname} following={following} userProfileList={userProfileList} />
               ))}
               <div ref={setTarget} />
             </>

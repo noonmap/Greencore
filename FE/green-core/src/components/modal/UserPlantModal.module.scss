@@ -1,0 +1,24 @@
+.searchContainer {
+  position: relative;
+}
+.searchContent {
+  position: absolute;
+  top: 0;
+  background-color: #fff;
+  border-radius: var(--border-radius-input);
+  box-shadow: var(--box-shadow-card);
+  padding: var(--padding-input);
+  height: 100px;
+  width: 100%;
+  overflow-y: auto;
+
+  div {
+    border-bottom: 1px solid var(--light-color);
+    padding: 0.5rem 0;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--thin-color);
+    }
+  }
+}

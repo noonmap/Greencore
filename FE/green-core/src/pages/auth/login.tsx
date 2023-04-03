@@ -65,7 +65,6 @@ export default function login() {
 
     try {
       const payload = { email, password };
-      console.log(payload);
       dispatch(SET_AUTH_TYPE_DB());
       dispatch(logIn(payload));
     } catch (error) {
@@ -93,10 +92,11 @@ export default function login() {
 
         // console.log(githubEmail, githubUID, githubNickname, githubPhotoUrl);
         // console.log(githubAccessToken, githubRefreshToken);
+        console.log('githubNickname', githubNickname);
 
         try {
           const { data } = await checkEmailDuplicated(githubEmail);
-          const logInPayload = { accessToken: githubAccessToken, refreshToken: githubRefreshToken };
+          const logInPayload = { accessToken: githubAccessToken, refreshToken: githubRefreshToken, nickname: githubNickname };
           console.log(data);
 
           if (data) {
@@ -107,6 +107,7 @@ export default function login() {
             if (data) {
               dispatch(logInByOAuth(logInPayload));
               dispatch(SET_AUTH_TYPE_FIREBASE());
+              handleSetUserProfile(githubNickname, githubPhotoUrl);
             }
           } else {
             dispatch(logInByOAuth(logInPayload));
@@ -142,10 +143,11 @@ export default function login() {
         const googleAccessToken = token.accessToken;
         const googleRefreshToken = token.refreshToken;
 
+        console.log('googleNickname', googleNickname);
+
         try {
           const { data } = await checkEmailDuplicated(googleEmail);
-          const logInPayload = { accessToken: googleAccessToken, refreshToken: googleRefreshToken };
-          console.log(data);
+          const logInPayload = { accessToken: googleAccessToken, refreshToken: googleRefreshToken, nickname: googleNickname };
 
           if (data) {
             // 없는 이메일이므로 회원가입 진행 후 로그인
@@ -156,6 +158,7 @@ export default function login() {
             if (data) {
               dispatch(logInByOAuth(logInPayload));
               dispatch(SET_AUTH_TYPE_FIREBASE());
+              handleSetUserProfile(googleNickname, googlePhotoUrl);
             }
           } else {
             dispatch(logInByOAuth(logInPayload));

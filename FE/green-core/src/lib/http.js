@@ -37,7 +37,7 @@ const AxiosInterceptor = ({ children }) => {
   useEffect(() => {
     const reqInterceptor = async (config) => {
       if (getCookieToken()) {
-        config.headers['Content-Type'] = 'application/json; charset=utf-8';
+        // config.headers['Content-Type'] = 'application/json; charset=utf-8';
         config.headers['X-Refresh-Token'] = getCookieToken();
         config.headers['authorization'] = `Bearer ${accessToken}`;
       }
@@ -51,7 +51,7 @@ const AxiosInterceptor = ({ children }) => {
     const errInterceptor = (error) => {
       if (error.response.status === 401) {
         console.log('refresh token 만료!');
-        dispatch(getAccessToken(authType));
+        // dispatch(getAccessToken(authType));
         // router.push('/login');
       }
 

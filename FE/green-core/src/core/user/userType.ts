@@ -14,6 +14,7 @@ export type LogInDataType = {
 export type LogInOAuthDataType = {
   accessToken: string;
   refreshToken: string;
+  nickname?: string;
 };
 
 export type EmailType = {

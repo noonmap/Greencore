@@ -4,6 +4,7 @@ import { searchByPlantNameAndUser } from '@/core/plant/plantAPI';
 import { createUserPlant, updateUserPlant } from '@/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
 import AppButton from '../button/AppButton';
+import styles from './UserPlantModal.module.scss';
 
 type PropsType = {
   isOpen: boolean;
@@ -13,6 +14,7 @@ type PropsType = {
   create?: boolean;
   update?: boolean;
   handleModalClose: () => void;
+  fetchUserPlantList: () => void;
 };
 
 type PlantType = {
@@ -22,6 +24,7 @@ type PlantType = {
 
 const initialState = {
   plantNickname: '',
+  searchPlantName: '',
 };
 
 export default function UserPlantModal({
@@ -32,31 +35,64 @@ export default function UserPlantModal({
   userPlantNickname,
   title,
   handleModalClose,
+  fetchUserPlantList,
 }: PropsType) {
   const modalRef = useRef<HTMLDivElement>(null);
+
   const { register, setValue, getValues, watch } = useForm({ defaultValues: initialState, mode: 'onBlur' });
-  const [plantNickname] = getValues(['plantNickname']);
+  const [plantNickname, searchPlantName] = getValues(['plantNickname', 'searchPlantName']);
+
   const [plantId, setPlantId] = useState<number>(-1);
-  const [plantList, setPlantList] = useState<Array<PlantType>>([]);
+  const [plantList, setPlantList] = useState<Array<PlantType>>(null);
 
-  async function searchByPlantName(searchPlant) {
-    const { data } = await searchByPlantNameAndUser({ search: searchPlant });
-    setPlantList(data);
+  useEffect(() => {
+    watch();
+    return () => {
+      setValue('searchPlantName', '');
+    };
+  }, []);
 
-    plantList.forEach((p) => {
-      if (p.plantName == searchPlant) {
-        setPlantId(p.plantId);
-      }
-    });
+  useEffect(() => {
+    setValue('plantNickname', userPlantNickname);
+    return () => {};
+  }, [userPlantNickname, plantId]);
 
-    console.log(data);
-  }
+  useEffect(() => {
+    document.addEventListener('mousedown', handleModalOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+    };
+  }, []);
 
+  /** 모달 바깥 클릭 시 */
   function handleModalOutsideClick(e) {
-    // 모달 바깥 클릭 시
     if (modalRef.current && !modalRef.current.contains(e.target)) handleModalClose();
   }
 
+  /** 식물 이름으로 검색하는 함수 */
+  async function searchByPlantName(searchPlant) {
+    const { data } = await searchByPlantNameAndUser({ search: searchPlant });
+    const content = data.content;
+    const totalElements = data.totalElements;
+    setPlantList(content);
+
+    if (plantList) {
+      plantList.forEach((p) => {
+        if (p.plantName == searchPlant) {
+          setPlantId(p.plantId);
+        }
+      });
+    }
+  }
+
+  /** 검색한 식물 선택하는 함수 */
+  async function handleUserPlantIdClick(selectPlantId, selectPlantName) {
+    setPlantId(selectPlantId);
+    setValue('searchPlantName', selectPlantName);
+    setPlantList(null);
+  }
+
+  /** 키우는 식물 생성하는 함수 */
   async function handleUserPlantCreate() {
     if (plantId == -1 || !plantNickname) {
       checkInputFormToast();
@@ -66,13 +102,16 @@ export default function UserPlantModal({
     try {
       const payload = { plantId, plantNickname };
       const { data } = await createUserPlant(payload);
-      console.log('payload:', payload);
-      console.log(data);
+      handleModalClose();
+      fetchUserPlantList();
+      setValue('plantNickname', '');
+      setValue('searchPlantName', '');
     } catch (error) {
       console.error(error);
     }
   }
 
+  /** 키우는 식물 별명 수정하는 함수 */
   async function handleUserPlantNicknameUpdate() {
     if (plantNickname == '') {
       checkInputFormToast();
@@ -81,17 +120,9 @@ export default function UserPlantModal({
 
     const payload = { plantNickname };
     const { data } = await updateUserPlant(userPlantId, payload);
-    console.log(data);
+    handleModalClose();
+    fetchUserPlantList();
   }
-
-  useEffect(() => {
-    watch();
-    setValue('plantNickname', userPlantNickname);
-    document.addEventListener('mousedown', handleModalOutsideClick);
-    return () => {
-      document.removeEventListener('mousedown', handleModalOutsideClick);
-    };
-  }, [userPlantNickname, plantId]);
 
   return (
     <div className='absolute top-0 left-0'>
@@ -117,16 +148,26 @@ export default function UserPlantModal({
                       type='text'
                       className='border-2 border-slate-200'
                       placeholder='식물 검색'
+                      {...register('searchPlantName')}
                       onChange={(e) => searchByPlantName(e.target.value)}
                     />
-                    <div>
-                      {plantList.map((plant) => (
-                        <div key={plant.plantId}>
-                          {plantId}
-                          {JSON.stringify(plant)}
+                    {plantList ? (
+                      plantList.length == 0 ? (
+                        <div className={`${styles.searchContainer}`}>
+                          <div className={`${styles.searchContent}`}>검색되는 식물이 없습니다</div>
                         </div>
-                      ))}
-                    </div>
+                      ) : (
+                        <div className={`${styles.searchContainer}`}>
+                          <div className={`${styles.searchContent}`}>
+                            {plantList.map((plant) => (
+                              <div key={plant.plantId} onClick={() => handleUserPlantIdClick(plant.plantId, plant.plantName)}>
+                                {plant.plantName}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    ) : null}
                   </div>
 
                   <div className='flex flex-col space-y-2'>

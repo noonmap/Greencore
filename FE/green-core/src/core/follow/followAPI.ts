@@ -26,6 +26,7 @@ export const deleteFollow = async (nickname: string | string[]) => {
 export const getFollowingList = async (nickname: string | string[], params: scrollType) => {
   try {
     const { data } = await http.get(`/following/${nickname}`, { params });
+    console.log(data);
     return data;
   } catch (error) {
     console.error(error);

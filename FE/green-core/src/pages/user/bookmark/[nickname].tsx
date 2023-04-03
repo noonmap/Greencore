@@ -7,12 +7,22 @@ import { getCookieToken } from '@/lib/cookies';
 import { startOfYesterday } from 'date-fns';
 import React, { useCallback, useEffect, useState } from 'react';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+import styles from '@/styles/UserFeed.module.scss';
 
-type BookmarkType = {};
+type BookmarkType = {
+  bookmarkCount: number;
+  diaryCount: number;
+  diarySetId: number;
+  imagePath: string;
+  isBookmarked: boolean;
+  title: string;
+};
 
 export default function Bookmark() {
   const dispatch = useAppDispatch();
-  const [bookmarkList, setBookMarkList] = useState([]);
+  const [bookmarkList, setBookMarkList] = useState<Array<BookmarkType>>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const nickname = useAppSelector((state) => state.common.userInfo?.nickname);
 
   // searchState 변경
   useEffect(() => {
@@ -20,25 +30,23 @@ export default function Bookmark() {
   });
 
   const fetchBookmarkList = useCallback(async () => {
-    const { data } = await getBookmarkedDiarySet('김씨', { page: 0, size: 2 });
-    console.log(data);
-  }, []);
+    const payload = { page: 0, size: 5 };
+    const { content, totalElements } = await getBookmarkedDiarySet(nickname, payload);
+
+    setBookMarkList(content);
+    setTotalCount(totalElements);
+    console.log(content, totalElements);
+  }, [nickname]);
 
   useEffect(() => {
-    // if (getCookieToken()) dispatch(getAccessToken('DB'));
-    // console.log(isAuthLoading);
-    // if (isAuthLoading) {
-
     fetchBookmarkList();
-    // }
-
     return () => {};
   }, []);
 
   return (
     <AppLayout>
       <div>
-        <h1 className='main'>북마크</h1>
+        <h1 className={`title p-5`}>북마크</h1>
 
         {bookmarkList.length > 0 ? (
           <>
@@ -46,7 +54,9 @@ export default function Bookmark() {
               <UserBookmarkListItem key={bookmark.diarySetId} bookmark={bookmark} />
             ))}
           </>
-        ) : null}
+        ) : (
+          <div>북마크 리스트가 없습니다</div>
+        )}
       </div>
     </AppLayout>
   );
