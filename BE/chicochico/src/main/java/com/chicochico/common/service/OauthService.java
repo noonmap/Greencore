@@ -2,6 +2,7 @@ package com.chicochico.common.service;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 
+@Log4j2
 @Service
 public class OauthService {
 
@@ -147,7 +149,7 @@ public class OauthService {
 			return buffer.toString();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.info(oauthType + "의 유효한 토큰이 아님");
 
 		} finally {
 			if (writer != null) try {
