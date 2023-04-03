@@ -14,13 +14,8 @@ export type DiaryType = {
 // 일지 생성 타입
 export type CreateDiaryType = {
   router: NextRouter;
-  payload: {
-    diarysetId: number;
-    content: string;
-    opservationDate: string;
-    image: Object;
-    tags: Array<string>;
-  };
+  diarySetId: number;
+  payload: FormData;
 };
 
 // 일지 삭제

@@ -7,7 +7,7 @@ import styles from './FeedCommentList.module.scss';
 import AppButton from './button/AppButton';
 import { checkInputFormToast } from '@/lib/utils';
 
-export default function FeedCommentList(feedId: any) {
+export default function FeedCommentList({ feedId }) {
   const [commentList, setCommentList] = useState([]);
   const [isStop, setIsStop] = useState(false);
   const size = useRef<number>(3);
@@ -97,9 +97,9 @@ export default function FeedCommentList(feedId: any) {
         return <FeedCommentItem key={comment.commentId} comment={comment} feedId={feedId} deleteCommentList={deleteCommentList} />;
       })}
       {!isStop ? (
-        <AppButton text='더보기' handleClick={handleGetCommentList} />
+        <AppButton text='더보기' handleClick={handleGetCommentList} className='mt-4' />
       ) : (
-        <AppButton text='더 이상 불러올 댓글이 없습니다' bgColor='thin' handleClick={handleGetCommentList} />
+        <AppButton text='더 이상 불러올 댓글이 없습니다' bgColor='thin' handleClick={handleGetCommentList} className='mt-4' />
       )}
     </>
   );

@@ -28,7 +28,7 @@ export default function updatediary() {
     diarysetId: number;
     content: string;
     opservationDate: string;
-    image: Object;
+    image: any;
     tagItem: string;
   };
 

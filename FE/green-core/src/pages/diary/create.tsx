@@ -22,22 +22,22 @@ export default function creatediary() {
   type StateType = {
     diarysetId: number;
     content: string;
-    opservationDate: string;
-    image: Object;
+    observationDate: string;
+    image: any;
     tagItem: string;
   };
 
   const initialState: StateType = {
     diarysetId: null,
     content: '',
-    opservationDate: new Date().toISOString().substring(0, 10),
+    observationDate: new Date().toISOString().substring(0, 10),
     image: null,
     tagItem: '',
   };
 
   const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
-  const [diarysetId, content, opservationDate, image, tagItem] = getValues(['diarysetId', 'content', 'opservationDate', 'image', 'tagItem']);
+  const [diarysetId, content, observationDate, image, tagItem] = getValues(['diarysetId', 'content', 'observationDate', 'image', 'tagItem']);
 
   const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
 
@@ -76,9 +76,9 @@ export default function creatediary() {
   // 태그 생성
   const handleChangeTagList = () => {
     const updatedTagList = [...tagList];
-    let filteredTagList = updatedTagList.filter((item) => item.split('#')[1] !== tagItem);
+    let filteredTagList = updatedTagList.filter((item) => item !== tagItem);
     if (tagItem.trim()) {
-      filteredTagList.push('#' + tagItem.trim());
+      filteredTagList.push(tagItem.trim());
     }
     setTagList(filteredTagList);
     setValue('tagItem', '');
@@ -87,7 +87,7 @@ export default function creatediary() {
   // 태그 삭제
   const handleDeleteTagItem = (e: any) => {
     const deleteTagItem = e.target.parentElement.firstChild.innerText;
-    const filteredTagList = tagList.filter((item) => item.split('#')[1] !== deleteTagItem);
+    const filteredTagList = tagList.filter((item) => item !== deleteTagItem);
     setTagList(filteredTagList);
   };
 
@@ -145,7 +145,7 @@ export default function creatediary() {
 
   // 생성 가능한지 체크
   const CheckPossible = () => {
-    if (!diarysetId || !isValidDate(opservationDate) || content == '' || image == null) {
+    if (!diarysetId || !isValidDate(observationDate) || content == '' || image == null) {
       checkInputFormToast();
       return false;
     }
@@ -156,8 +156,12 @@ export default function creatediary() {
   const handleCreateDiary = async (e: any) => {
     e.preventDefault();
     if (CheckPossible()) {
-      const payload = { diarysetId, content, opservationDate, image, tags: tagList };
-      const requestData = { router, payload };
+      const formData = new FormData();
+      formData.append('content', content);
+      formData.append('observationDate', observationDate);
+      formData.append('image', image[0]);
+      formData.append('tags', String(tagList));
+      const requestData = { router, payload: formData, diarySetId: Number(diarysetId) };
       try {
         dispatch(createDiary(requestData));
       } catch (err) {
@@ -227,8 +231,8 @@ export default function creatediary() {
                 required
                 max={moment(new Date()).format('yyyy-MM-DD')}
                 type='date'
-                defaultValue={opservationDate}
-                {...register('opservationDate')}
+                defaultValue={observationDate}
+                {...register('observationDate')}
                 className={`w-full text-lg ${styles.inputBox}`}
               />
             </div>
@@ -248,7 +252,7 @@ export default function creatediary() {
             {tagList.map((tagItem, index) => {
               return (
                 <div key={index} className={`${styles.tagComponent} flex`}>
-                  <div className={`w-fit ${styles.tagName}`}>{tagItem.split('#')[1]}</div>
+                  <div className={`w-fit ${styles.tagName}`}>{tagItem}</div>
                   <button onClick={handleDeleteTagItem} className={`material-symbols-outlined w-fit ${styles.tagDelete}`}>
                     close
                   </button>

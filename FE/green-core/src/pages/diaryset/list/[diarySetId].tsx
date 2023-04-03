@@ -17,7 +17,7 @@ export default function diarySet() {
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const diarySetId: number = 0; // TODO : 여기 바꿔야 돼 최 형 뀨
+  const { diarySetId } = router.query;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -30,14 +30,17 @@ export default function diarySet() {
   }, []);
 
   useEffect(() => {
-    dispatch(getDiaryList(diarySetId));
-    if (!isLoading) {
+    if (diarySetId) {
+      dispatch(getDiaryList(Number(diarySetId)));
     }
 
     return () => {
       console.log('unmounted');
     };
-  }, []);
+  }, [diarySetId]);
+
+  console.log(diaryList); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  console.log(diarySet);
 
   // 뒤로가기
   function goBack() {
@@ -48,14 +51,14 @@ export default function diarySet() {
   function postBookmark() {
     if (isBookmarked) {
       // 북마크 취소
-      deleteBookmark(diarySetId).then((res) => {
+      deleteBookmark(Number(diarySetId)).then((res) => {
         if (res.result === 'SUCCESS') {
           setIsBookmarked(false);
         }
       });
     } else {
       // 북마크 설정
-      createBookmark(diarySetId).then((res) => {
+      createBookmark(Number(diarySetId)).then((res) => {
         if (res.result === 'SUCCESS') {
           setIsBookmarked(true);
         }
@@ -93,7 +96,11 @@ export default function diarySet() {
                 {/* 프로필 */}
                 <div>
                   <Link href={`/user/feed/${diarySet?.user?.nickname}`}>
-                    <img src={diarySet?.user?.profileImagePath} style={{ borderRadius: '100%', width: '80px', height: '80px' }} />
+                    <img
+                      src={`http://localhost:8080/api${diarySet?.user?.profileImagePath}`}
+                      style={{ borderRadius: '50%', width: '80px', height: '80px' }}
+                      alt='프로필 사진'
+                    />
                   </Link>
                 </div>
                 {/* 일지생성 */}
