@@ -50,7 +50,6 @@ export default function plantDocs() {
     setIsLoadingErrorAtTopPlant((prev) => {
       const nextState = [...prev];
       nextState[index] = false;
-      console.log(nextState);
       return nextState;
     });
   };
@@ -58,7 +57,6 @@ export default function plantDocs() {
     setIsLoadingErrorAtTopPlant((prev) => {
       const nextState = [...prev];
       nextState[index] = true;
-      console.log(nextState);
       return nextState;
     });
   };
@@ -68,7 +66,6 @@ export default function plantDocs() {
     setIsLoadingErrorAtTopDiarySet((prev) => {
       const nextState = [...prev];
       nextState[index] = false;
-      console.log('nextState', nextState);
       return nextState;
     });
   };
@@ -76,7 +73,6 @@ export default function plantDocs() {
     setIsLoadingErrorAtTopDiarySet((prev) => {
       const nextState = [...prev];
       nextState[index] = true;
-      console.log('nextState', nextState);
       return nextState;
     });
   };
@@ -86,7 +82,6 @@ export default function plantDocs() {
     setIsLoadingErrorAtSamPlantUser((prev) => {
       const nextState = [...prev];
       nextState[index] = false;
-      console.log(nextState);
       return nextState;
     });
   };
@@ -94,7 +89,6 @@ export default function plantDocs() {
     setIsLoadingErrorAtSamPlantUser((prev) => {
       const nextState = [...prev];
       nextState[index] = true;
-      console.log(nextState);
       return nextState;
     });
   };
