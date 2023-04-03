@@ -194,14 +194,14 @@ public class DiarySetService {
 
 
 	/**
-	 * 인기 관찰 일지를 5개 조회합니다
+	 * 인기 관찰 일지를 2개 조회합니다
 	 *
-	 * @return 인기 관찰 일기 5개 리스트
+	 * @return 인기 관찰 일기 2개 리스트
 	 */
 	public List<DiarySetEntity> getPopularDiarySetList() {
 		// 가장 북마크 수가 많은 관찰 일지 구함
-		List<DiarySetEntity> diarySetTop5 = diarySetRepository.findTop5ByOrderByBookmarkCountDesc();
-		return diarySetTop5;
+		List<DiarySetEntity> diarySetTop2 = diarySetRepository.findTop2ByOrderByBookmarkCountDesc();
+		return diarySetTop2;
 	}
 
 
