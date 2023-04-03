@@ -34,6 +34,7 @@ public class ScheduleResponseDto {
 		ScheduleResponseDto scheduleResponseDto = ScheduleResponseDto.builder()
 			.scheduleId(scheduleEntity.getId())
 			.scheduleDate(scheduleEntity.getDate())
+			.isCompleted(scheduleEntity.getIsCompleted())
 			.scheduleCode(scheduleEntity.getScheduleCode())
 			.content(scheduleEntity.getContent())
 			.plant(plant).build();
@@ -49,6 +50,7 @@ public class ScheduleResponseDto {
 			.scheduleDate(scheduleEntity.getDate())
 			.scheduleCode(scheduleEntity.getScheduleCode())
 			.isCompleted(scheduleEntity.getIsCompleted())
+			.content(scheduleEntity.getContent())
 			.plant(plant).build();
 		return scheduleResponseDto;
 	}

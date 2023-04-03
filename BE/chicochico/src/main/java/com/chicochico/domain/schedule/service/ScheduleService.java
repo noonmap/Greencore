@@ -49,7 +49,7 @@ public class ScheduleService {
 		//해당 월의 첫날부터 끝날까지 (between의 경우 마지막은 포함 안됨)
 		//1일부터 해당 월에 있는 날만큼 더하면 됨
 		LocalDate localdateSt = LocalDate.of(year, month, 1);
-		LocalDate localdateEd = localdateSt.plusDays(localdateSt.lengthOfMonth());
+		LocalDate localdateEd = LocalDate.of(year, month, localdateSt.lengthOfMonth());
 
 		List<ScheduleEntity> scheduleList = scheduleRepository.findAllByDateBetweenAndUserOrderByDate(localdateSt, localdateEd, user);
 
@@ -279,11 +279,11 @@ public class ScheduleService {
 		Long userId = authService.getUserId();
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		//다음달 1일
-		LocalDate lastDate = date.plusMonths(1);
+		//해당월 마지막 날
+		LocalDate lastDate = LocalDate.of(date.getYear(), date.getMonth(), date.lengthOfMonth());
 
-		//유저의 삭제되지 않은 && 현재 달력기준의 날짜에 만들어지지 않은 모든 정기 일정을 조회
-		List<RegularScheduleEntity> regularScheduleList = regularScheduleRepository.findAllByUserAndLastDateBefore(user, lastDate);
+		//현재 달력기준의 날짜에 만들어지지 않은 모든 정기 일정을 조회
+		List<RegularScheduleEntity> regularScheduleList = regularScheduleRepository.findAllByUserAndLastDateBefore(user, date);
 
 		//각 일정들에 대한 로직 처리
 		for (RegularScheduleEntity regularSchedule : regularScheduleList) {
