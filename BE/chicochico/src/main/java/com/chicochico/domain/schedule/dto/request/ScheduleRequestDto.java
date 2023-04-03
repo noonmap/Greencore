@@ -8,7 +8,6 @@ import com.chicochico.domain.schedule.entity.RegularScheduleEntity;
 import com.chicochico.domain.schedule.entity.ScheduleEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,8 +24,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleRequestDto {
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+	
 	private LocalDate scheduleDate;
 	private ScheduleType scheduleCode;
 	private Long userPlantId;
