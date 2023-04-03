@@ -1,6 +1,7 @@
 package com.chicochico.domain.schedule.entity;
 
 
+import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.RegularScheduleType;
 import com.chicochico.common.code.ScheduleType;
 import com.chicochico.domain.user.entity.UserEntity;
@@ -50,9 +51,17 @@ public class RegularScheduleEntity {
 	@Column
 	private LocalDate lastDate;
 
+	@Column(nullable = false)
+	private IsDeletedType isDeleted;
+
 
 	public void setLastDate(LocalDate lastDate) {
 		this.lastDate = lastDate;
+	}
+
+
+	public void setIsDeleted(IsDeletedType isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 }
