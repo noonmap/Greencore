@@ -172,11 +172,12 @@ public class FeedService {
 		List<FeedEntity> feedList;
 		if (recommendedFeedIds.isEmpty()) {
 			log.info("[Recommend] 추천된 피드가 없습니다.");
-			feedList = feedRepository.findByIsDeletedOrOrderByRandom(IsDeletedType.N, pageable);
+			//			feedList = feedRepository.findByIsDeletedOrderByRandom(IsDeletedType.N, pageable);
+			feedList = feedRepository.findByIsDeleted(IsDeletedType.N);
 		} else {
 			// id list를 feed로 변환
 			log.info("[Recommend] 추천된 피드 입니다.");
-			feedList = feedRepository.findByIdInAndIsDeleted(recommendedFeedIds, IsDeletedType.N, pageable);
+			feedList = feedRepository.findByIdInAndIsDeleted(recommendedFeedIds, IsDeletedType.N);
 		}
 		return feedList;
 	}
