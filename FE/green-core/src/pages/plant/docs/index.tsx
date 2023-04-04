@@ -13,7 +13,6 @@ import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
 import { SearchUserType } from '@/core/user/userType';
 import Pagination from 'react-js-pagination';
 import styles from './plantDocs.module.scss';
-import Image from 'next/image';
 
 export default function plantDocs() {
   const dispatch = useAppDispatch();
@@ -346,7 +345,7 @@ export default function plantDocs() {
                           {isLoadingErrorAtTopPlant[index] && <Skeleton width={150} height={150} />}
                           <img
                             className={`${styles.img}`}
-                            src={topPlant.imagePath}
+                            src={`${topPlant.imagePath}`}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtTopPlant(index)}
@@ -377,7 +376,7 @@ export default function plantDocs() {
                               {isLoadingErrorAtTopDiarySet[index] && <Skeleton width={200} height={200} />}
                               <img
                                 className={`${styles.img}`}
-                                src={`/images${topDiarySet.imagePath}`}
+                                src={`${topDiarySet.imagePath}`}
                                 width={200}
                                 height={200}
                                 onLoad={() => handleImageLoadAtTopDiarySet(index)}
@@ -406,12 +405,9 @@ export default function plantDocs() {
                       <div key={samPlantUser.nickname} className={`overflow-hidden`} style={{ borderRadius: '75px' }}>
                         <Link href={`/user/feed/${samPlantUser.nickname}`}>
                           {isLoadingErrorAtSamePlantUser[index] && <Skeleton width={150} height={150} />}
-                          <Image
+                          <img
                             className={`${styles.img}`}
-                            // src={samPlantUser.profileImagePath}
-                            src={`/images${samPlantUser.profileImagePath}`}
-                            // src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlro_RlMefznuVrMWcA3SZyNW1t9dl9Z9jqA&usqp=CAU`}
-                            alt={''}
+                            src={`${samPlantUser.profileImagePath}`}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtSamePlantUser(index)}

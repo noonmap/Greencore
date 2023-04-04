@@ -31,7 +31,7 @@ public class FollowResponseDto {
 	public static FollowResponseDto fromEntity(UserEntity user, Function<Long, Boolean> isFollowed) {
 		return FollowResponseDto.builder()
 			.nickname(user.getNickname())
-			.profileImagePath(user.getProfileImagePath())
+			.profileImagePath("/images/" + user.getProfileImagePath())
 			.introduction(user.getIntroduction())
 			.isFollowed(isFollowed.apply(user.getId()))
 			.build();
