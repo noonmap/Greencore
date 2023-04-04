@@ -24,7 +24,7 @@ public class UserPlantResponseDto {
 			.plantId(userPlant.getPlant().getId())
 			.plantNickname(userPlant.getPlantNickname())
 			.plantName(userPlant.getPlant().getName())
-			.plantImagePath(userPlant.getPlantImagePath())
+			.plantImagePath("/images/" + userPlant.getPlantImagePath())
 			.build();
 	}
 

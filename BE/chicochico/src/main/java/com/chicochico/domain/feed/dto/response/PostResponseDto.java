@@ -37,7 +37,7 @@ public class PostResponseDto {
 			.user(ProfileResponseDto.fromEntity(post.getUser(), isFollowed))
 			.postId(post.getId())
 			.content(post.getContent())
-			.imagePath(post.getImagePath())
+			.imagePath("/images/" + post.getImagePath())
 			.likeCount(post.getLikeCount())
 			.commentCount(getCommentCount.apply(post.getId()))
 			.tags(getTagsList.apply(post.getId())) //

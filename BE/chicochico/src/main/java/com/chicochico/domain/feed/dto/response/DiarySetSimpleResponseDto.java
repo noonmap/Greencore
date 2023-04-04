@@ -24,7 +24,7 @@ public class DiarySetSimpleResponseDto {
 		return DiarySetSimpleResponseDto.builder()
 			.diarySetId(diarySet.getId())
 			.startDate(diarySet.getCreatedAt().toLocalDate())
-			.imagePath(diarySet.getImagePath())
+			.imagePath("/images" + diarySet.getImagePath())
 			.title(diarySet.getTitle())
 			.build();
 	}
