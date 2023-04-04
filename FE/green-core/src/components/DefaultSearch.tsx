@@ -354,7 +354,7 @@ export default function DefaultSearch() {
           )
         ) : searchPlantList?.length === 0 ? (
           // 식물 검색일 때
-          <div>조호된 식물이 없습니다</div>
+          <div>조회된 식물이 없습니다</div>
         ) : (
           <div className={`overflow-auto rounded-xl mt-5`} style={{ backgroundColor: 'var(--thin-color)' }}>
             <div className='text-xl p-5 font-bold'>
