@@ -6,6 +6,7 @@ import io.gorse.gorse4j.Feedback;
 import io.gorse.gorse4j.Gorse;
 import io.gorse.gorse4j.Item;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class RecommenderService {
 
 	private final Gorse client;
@@ -119,7 +121,11 @@ public class RecommenderService {
 		List<Long> feedIdList = new ArrayList<>();
 		try {
 			List<String> feedIdStrList = this.client.getRecommend(userId);
-			feedIdList = feedIdStrList.stream().map(m -> Long.valueOf(m)).collect(Collectors.toList());
+			if (feedIdStrList != null && feedIdStrList.isEmpty() == false)
+				feedIdList = feedIdStrList.stream().map(m -> Long.valueOf(m)).collect(Collectors.toList());
+		} catch (NullPointerException e) {
+			log.warn("[Recommender] 추천된 피드가 없습니다.");
+			return feedIdList;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
