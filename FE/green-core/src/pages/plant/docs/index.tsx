@@ -409,7 +409,7 @@ export default function plantDocs() {
                           <Image
                             className={`${styles.img}`}
                             // src={samPlantUser.profileImagePath}
-                            src={`/feed/default.jpg`}
+                            src={`/feed/default.png`}
                             alt={''}
                             width={150}
                             height={150}
