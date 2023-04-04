@@ -30,6 +30,7 @@ export default function PostDetail() {
   const [isfollowed, setIsFollowed] = useState<boolean>(false);
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [commentCount, setCommentCount] = useState<number>(0);
 
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 
@@ -69,6 +70,7 @@ export default function PostDetail() {
       getPost(Number(postId)).then((res) => {
         if (res.result === 'SUCCESS') {
           setPost(res.data);
+          setCommentCount(res.data.commentCount);
           getUserProfile(res.data.user.nickname);
           setIsLiked(res.data.isLiked);
           setLikeCount(res.data.likeCount);
@@ -287,7 +289,7 @@ export default function PostDetail() {
               </div>
               <div className={`${styles.infoItem} flex`}>
                 <span className={`material-symbols-outlined flex-1 flex text-right`}>chat</span>
-                <div className='font-extrabold flex-1 flex justify-start ml-3'>{post.commentCount}</div>
+                <div className='font-extrabold flex-1 flex justify-start ml-3'>{commentCount}</div>
               </div>
             </div>
 
@@ -318,7 +320,7 @@ export default function PostDetail() {
                 <div className='mb-7'>{post?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
-                <div>{!Number.isNaN(postId) && <FeedCommentList feedId={postId} />}</div>
+                <div>{!Number.isNaN(postId) && <FeedCommentList feedId={postId} setCommentCount={setCommentCount} />}</div>
               </div>
 
               {/* 옵션 버튼 */}
