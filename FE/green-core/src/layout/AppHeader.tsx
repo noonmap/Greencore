@@ -219,7 +219,7 @@ export default function AppHeader() {
               <div className='gap-3'>
                 <div className='flex flex-col items-center'>
                   {userProfileImagePath ? (
-                    <Image src={userProfileImagePath} width={50} height={50} className='border rounded-full xl:hidden' alt='' />
+                    <Image src={userProfileImagePath} width={50} height={50} className={`${styles.image} border rounded-full xl:hidden`} alt='' />
                   ) : (
                     <div className='xl:hidden'>
                       <Skeleton width={50} height={50} circle />
@@ -229,7 +229,13 @@ export default function AppHeader() {
                 <Link href={`/user/feed/${nickname}`}>
                   <div className='flex mb-3 w-50 items-center rounded-full hover:bg-gray-100 p-3 gap-2'>
                     {userProfileImagePath ? (
-                      <Image src={userProfileImagePath} width={50} height={50} className='border rounded-full xl:block hidden' alt='' />
+                      <Image
+                        src={userProfileImagePath}
+                        width={50}
+                        height={50}
+                        className={`${styles.image} border rounded-full xl:block hidden`}
+                        alt=''
+                      />
                     ) : (
                       <div className='xl:block hidden'>
                         <Skeleton width={50} height={50} circle />

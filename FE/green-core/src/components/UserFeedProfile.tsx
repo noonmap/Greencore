@@ -76,29 +76,34 @@ export default function UserFeedProfile({ nickname }) {
 
   /** storage 에서 유저 프로필 이미지 가져오는 함수 */
   const fetchUserProfile = useCallback(async () => {
-    const { data } = await getProfile(nickname);
-    setUserProfile(data);
+    console.log(nickname);
+    try {
+      const { data } = await getProfile(nickname);
+      setUserProfile(data);
 
-    if (nickname) {
-      const profileRef = ref(storage, `${nickname}/profileImage`);
+      if (nickname) {
+        const profileRef = ref(storage, `${nickname}/profileImage`);
 
-      getDownloadURL(profileRef)
-        .then((downloadURL) => {
-          setUserProfileImagePath(downloadURL);
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case 'storage/object-not-found':
-              setUserProfileImagePath(null);
-              break;
-            case 'storage/unauthorized':
-              break;
-            case 'storage/canceled':
-              break;
-            case 'storage/unknown':
-              break;
-          }
-        });
+        getDownloadURL(profileRef)
+          .then((downloadURL) => {
+            setUserProfileImagePath(downloadURL);
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case 'storage/object-not-found':
+                setUserProfileImagePath(null);
+                break;
+              case 'storage/unauthorized':
+                break;
+              case 'storage/canceled':
+                break;
+              case 'storage/unknown':
+                break;
+            }
+          });
+      }
+    } catch (error) {
+      alert('프로필 에러가 납니다');
     }
   }, [nickname]);
 
@@ -195,15 +200,16 @@ export default function UserFeedProfile({ nickname }) {
               {/* 프로필 이미지 라인 */}
               <input type='file' accept='image/*' hidden className='profileImageInput' {...register('uploadProfileImage')} />
               {userProfile ? (
-                <div onClick={handleImageExploerOpen}>
+                <div onClick={handleImageExploerOpen} className='rounded-full'>
                   {userProfileImagePath ? (
                     (
                       <Image
                         src={userProfileImagePath}
                         alt='사용자 프로필 이미지'
+                        // className='rounded-full bg-cover'
+                        className={styles.image}
                         width={120}
                         height={120}
-                        className='rounded-full bg-cover'
                         onClick={handleProfileImageUpdate}
                         priority
                       />
