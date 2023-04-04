@@ -86,7 +86,9 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
     const requestData = { feedId: Number(feedId), commentId: Number(comment.commentId), payload };
 
     const data = await dispatch(updateComment(requestData));
-    setIsUpdated((prev) => !prev);
+    if (data.payload.result === 'SUCCESS') {
+      setIsUpdated((prev) => !prev);
+    }
   };
 
   // 댓글 삭제
@@ -94,7 +96,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
     const requestData = { feedId: Number(feedId), commentId: Number(comment.commentId) };
     const data = await dispatch(deleteComment(requestData));
     if (data.payload.result === 'SUCCESS') {
-      deleteCommentList(comment.commentId);
+      deleteCommentList();
     }
   };
 
