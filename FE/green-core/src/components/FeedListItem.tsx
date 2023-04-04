@@ -8,7 +8,9 @@ import { FeedType } from '../core/feed/feedType';
 import CommentDeleteModal from '@/components/modal/CommentDeleteModal';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import styles from './FeedListItem.module.scss';
+import Image from 'next/image';
 
 export default function FeedListItem(props: { feed: FeedType }) {
   const feed = props.feed;
@@ -20,8 +22,25 @@ export default function FeedListItem(props: { feed: FeedType }) {
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [isOpenFeedDeleteModal, setIsOpenFeedDeleteModal] = useState(false);
   const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
-  const ref = useRef<HTMLDivElement>(null);
+  const reff = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const storage = getStorage();
+
+  // 이미지 불러오기
+  const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
+  /** 사용자 프로필 이미지 가져오는 함수 */
+  function getUserProfile(nickname: string) {
+    const profileRef = ref(storage, `${nickname}/profileImage`);
+
+    getDownloadURL(profileRef)
+      .then((downloadURL) => {
+        setUserProfileImagePath(downloadURL);
+        return downloadURL;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   // 이미지 스켈레톤
   const [isLoadingErrorAtProfileImage, setIsLoadingErrorAtProfileImage] = useState<boolean>(false);
@@ -193,15 +212,15 @@ export default function FeedListItem(props: { feed: FeedType }) {
             <div className={`${styles.helpTip} flex `}>
               <div onClick={goProfile} className={`overflow-hidden`} style={{ borderRadius: '40px' }}>
                 {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
-                <img
+                <Image
                   className='mb-3'
-                  src={feed.user.profileImagePath}
+                  src={userProfileImagePath}
                   alt='로고'
                   width='80'
                   height='80'
                   onLoad={() => handleImageLoadAtProfileImage()}
                   onError={() => handleImageErrorAtProfileImage()}
-                  style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></img>
+                  style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></Image>
               </div>
 
               {/* 프로필 팝업 */}
@@ -209,15 +228,15 @@ export default function FeedListItem(props: { feed: FeedType }) {
                 <div className={`flex`}>
                   <div className={`flex flex-col justify-center items-center mr-5 overflow-hidden`} style={{ borderRadius: '40px' }}>
                     {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
-                    <img
+                    <Image
                       className='mb-3'
-                      src={feed.user.profileImagePath}
+                      src={userProfileImagePath}
                       alt='로고'
                       width='80'
                       height='80'
-                      onLoad={() => handleImageLoadAtProfileImage}
-                      onError={() => handleImageErrorAtProfileImage}
-                      style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></img>
+                      onLoad={() => handleImageLoadAtProfileImage()}
+                      onError={() => handleImageErrorAtProfileImage()}
+                      style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></Image>
                   </div>
 
                   <div className='flex flex-col justify-center items-center'>
@@ -289,7 +308,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
                 <span className='material-symbols-outlined px-2' onClick={openEditPopUp} style={{ cursor: 'pointer' }}>
                   more_vert
                 </span>
-                <div ref={ref} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
+                <div ref={reff} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
                   <div className='border-b border-slate-300 bg-white flex justify-center items-center' onClick={handleUpdateFeed}>
                     <span className='text-lg p-2'>수정</span>
                     <span className='material-symbols-outlined'>edit</span>
