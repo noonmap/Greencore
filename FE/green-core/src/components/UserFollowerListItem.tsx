@@ -1,4 +1,7 @@
+import { createAlert } from '@/core/alert/alertAPI';
 import { deleteFollow, deleteFollower, updateFollow } from '@/core/follow/followAPI';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
+import { getTodayDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -7,12 +10,27 @@ import Skeleton from 'react-loading-skeleton';
 import AppButton from './button/AppButton';
 
 export default function UserFollowerListItem({ follower, userProfileList }) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
+  const myNickname = useAppSelector((state) => state.common.userInfo?.nickname);
 
   /** 팔로우 하는 함수 */
   async function handleFollowUpdate(e, nickname) {
     try {
       const { data } = await updateFollow(nickname);
+
+      if (data) {
+        const payload = {
+          nickname,
+          mentionNickname: myNickname,
+          type: 'ALERT_FOLLOW',
+          urlPath: `/user/feed/${myNickname}`,
+          createdAt: getTodayDate(),
+          isRead: false,
+        };
+        dispatch(createAlert(payload));
+      }
+
       console.log(data);
       router.reload();
     } catch (error) {

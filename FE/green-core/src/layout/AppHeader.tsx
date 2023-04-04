@@ -169,7 +169,7 @@ export default function AppHeader() {
 
                   <Link href={`/user/alert/${nickname}`}>
                     <div className='flex items-center space-x-3'>
-                      {isAlert ? <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span> : null}
+                      {!isAlert ? null : <span className='material-symbols-outlined fill-small like'>fiber_manual_record</span>}
                       <span className='material-symbols-outlined'>notifications</span>
                       <span className='xl:block hidden'>알림</span>
                     </div>
