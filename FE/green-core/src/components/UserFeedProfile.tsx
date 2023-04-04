@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppSelector } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -18,6 +18,8 @@ import AppLoading from './common/AppLoading';
 import styles from './UserFeedProfile.module.scss';
 import AppButton from './button/AppButton';
 import UserProfileUpdateModal from '@/components/modal/UserProfileUpdateModal';
+import { createAlert } from '@/core/alert/alertAPI';
+import { getTodayDate } from '@/lib/utils';
 
 type ProfileType = {
   followerCount: number;
@@ -37,6 +39,7 @@ const initialState: StateType = {
 };
 
 export default function UserFeedProfile({ nickname }) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const storage = getStorage();
 
@@ -155,13 +158,26 @@ export default function UserFeedProfile({ nickname }) {
   /** 팔로우하기 함수 */
   async function handleFollowUpdate() {
     const { data } = await updateFollow(nickname);
-    console.log(data);
+
+    if (data) {
+      const payload = {
+        nickname,
+        mentionNickname: myNickname,
+        type: 'ALERT_FOLLOW',
+        urlPath: `/user/feed/${myNickname}`,
+        createdAt: getTodayDate(),
+        isRead: false,
+      };
+      dispatch(createAlert(payload));
+    }
+
+    await fetchUserProfile();
   }
 
   /** 언팔로우 함수 */
   async function handleFollowDelete() {
     const { data } = await deleteFollow(nickname);
-    console.log(data);
+    await fetchUserProfile();
   }
 
   return (
@@ -264,7 +280,7 @@ export default function UserFeedProfile({ nickname }) {
                   {userProfile ? (
                     <>
                       {userProfile?.isFollowed ? (
-                        <AppButton text='팔로우 중' className='w-2 h-1' handleClick={handleFollowDelete} />
+                        <AppButton text='팔로우 중' bgColor='thin' className='w-2 h-1' handleClick={handleFollowDelete} />
                       ) : (
                         <AppButton text='팔로우 하기' size='small' className='w-3 h-0.5' handleClick={handleFollowUpdate} />
                       )}

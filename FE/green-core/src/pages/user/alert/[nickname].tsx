@@ -29,16 +29,16 @@ export default function Alert() {
 
   /** 알림 리스트 가져오는 함수 */
   async function fetchAlertList() {
-    const payload = { nickname: 'test', page, size };
+    const payload = { nickname, page, size };
     dispatch(getAlertList(payload));
   }
 
   /** 알림 읽음 확인 함수 */
   async function handleSelectedAlertRead() {
     try {
-      const payload = { nickname: 'test', selectedAlertList };
+      const payload = { nickname, selectedAlertList };
       dispatch(updateSelectedAlert(payload));
-      dispatch(checkIsAlert('test'));
+      dispatch(checkIsAlert(nickname));
     } catch (error) {
       console.error(error);
     }
@@ -47,7 +47,7 @@ export default function Alert() {
   /** 알림 전체 읽음 확인 함수 */
   async function handleAllAlertRead() {
     try {
-      dispatch(updateAllAlert('test'));
+      dispatch(updateAllAlert(nickname));
     } catch (error) {
       console.error(error);
     }
@@ -56,7 +56,7 @@ export default function Alert() {
   /** 알림 리스트 선택 삭제 함수 */
   async function handleSelectedAlertDelete() {
     try {
-      const payload = { nickname: 'test', selectedAlertList };
+      const payload = { nickname, selectedAlertList };
       dispatch(deleteSelectedAlert(payload));
     } catch (error) {
       console.error(error);
@@ -67,6 +67,7 @@ export default function Alert() {
   async function handleAlertCreate() {
     try {
       const payload = {
+        nickname,
         mentionNickname: 'hi',
         type: 'ALERT_FOLLOW',
         urlPath: '/',
@@ -82,7 +83,7 @@ export default function Alert() {
   /** 알림 체크하기 기능 */
   async function handleIsAlertCheck() {
     try {
-      dispatch(checkIsAlert('test'));
+      dispatch(checkIsAlert(nickname));
     } catch (error) {
       console.error(error);
     }
