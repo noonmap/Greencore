@@ -5,6 +5,7 @@ const nextConfig = {
   reactStrictMode: false, // useEffect twice
   images: {
     domains: ['firebasestorage.googleapis.com', 'j8e101.p.ssafy.io'],
+    unoptimized: true,
   },
   // basePath: '',
   // assetPrefix: './',

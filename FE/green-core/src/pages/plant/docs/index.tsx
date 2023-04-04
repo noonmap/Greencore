@@ -409,10 +409,9 @@ export default function plantDocs() {
                           <Image
                             className={`${styles.img}`}
                             // src={samPlantUser.profileImagePath}
-                            src={`/feed/default.png`}
+                            src={`/images${`/feed/default.png`}`}
                             // src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlro_RlMefznuVrMWcA3SZyNW1t9dl9Z9jqA&usqp=CAU`}
                             alt={''}
-                            unoptimized={true}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtSamePlantUser(index)}
