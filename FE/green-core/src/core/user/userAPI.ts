@@ -310,15 +310,18 @@ export const logInByOAuth = createAsyncThunk('logInByOAuth', async (requestData:
  * @url /refresh
  */
 export const getAccessToken = createAsyncThunk('getAccessToken', async (authType: string) => {
-  console.log('하이');
+  const serverUrl =
+    process.env.NODE_ENV == 'production'
+      ? process.env.APP_SERVER_URL
+      : process.env.LOCAL_TYPE == 'development'
+      ? 'http://localhost:8080'
+      : 'http://localhost:3000';
+
   try {
-    console.log('픔');
     if (cookies.getCookieToken()) {
-      console.log('안뇽');
       const headers = { 'X-Refresh-Token': cookies.getCookieToken() };
-      const url = 'http://localhost:8080/api/refresh';
+      const url = `${serverUrl}/api/refresh`;
       const res = await axios.post(url, { authType }, { headers });
-      // const res = await http.post('/refresh', { authType }, { headers });
 
       let accessToken = null;
       let refreshToken = null;
