@@ -62,7 +62,7 @@ public class DiarySetService {
 		UserEntity writer = userRepository.findByNicknameAndIsDeleted(nickname, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		// 삭제된 관찰일지를 제외한 것 조회
-		List<DiarySetEntity> diarySetPage = diarySetRepository.findByUserAndIsDeleted(writer, IsDeletedType.N);
+		List<DiarySetEntity> diarySetPage = diarySetRepository.findByUserAndIsDeletedOrderByTitle(writer, IsDeletedType.N);
 		return diarySetPage;
 	}
 

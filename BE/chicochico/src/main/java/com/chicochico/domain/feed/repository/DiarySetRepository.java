@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface DiarySetRepository extends JpaRepository<DiarySetEntity, Long> { // <Entity 객체, ID 타입>
 
-	List<DiarySetEntity> findByUserAndIsDeleted(UserEntity user, IsDeletedType isDeletedType);
+	List<DiarySetEntity> findByUserAndIsDeletedOrderByTitle(UserEntity user, IsDeletedType isDeletedType);
 
 	Optional<DiarySetEntity> findByIdAndIsDeleted(Long id, IsDeletedType isDeletedType);
 
