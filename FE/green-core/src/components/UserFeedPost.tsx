@@ -54,7 +54,7 @@ export default function UserFeedPost({ nickname }) {
       const content = data.content;
       const totalElements = data.totalElements;
       setPostList(content);
-      setPostListTotalCount(totalElements / postSize);
+      setPostListTotalCount(Math.ceil(totalElements / postSize));
     } catch (error) {
       console.error(error);
     }

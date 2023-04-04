@@ -46,7 +46,7 @@ public class UserController {
 	}
 
 
-	@GetMapping("/{nickname}")
+	@GetMapping("/nickname/{nickname}")
 	@ApiOperation(value = "닉네임 중복확인을 합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> checkNickname(@PathVariable("nickname") String nickname) {
 		Boolean checkNickname = userService.checkNickname(nickname);

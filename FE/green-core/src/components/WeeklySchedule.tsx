@@ -33,7 +33,7 @@ export default function WeeklySchedule({ weekSchedule, setIsOpenScheduleManageMo
                   ) : moment(new Date().setDate(new Date().getDate() + 2)).format('YYYY-MM-DD') === weekSchedule[day][0].scheduleDate ? (
                     <div className={`${styles.day}`}>모레</div>
                   ) : (
-                    <div className={`${styles.day}`}>{moment(weekSchedule[day][0].scheduleDate).format('DD일')}</div>
+                    <div className={`${styles.day}`}>{moment(weekSchedule[day][0].scheduleDate).format('MM월 DD일')}</div>
                   )}
                   {weekSchedule[day].map((toDo: any, index: React.Key) => {
                     return (

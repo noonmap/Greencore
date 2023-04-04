@@ -17,7 +17,7 @@ export default function AppHeader() {
   const storage = getStorage();
 
   const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
-  const isAlert = useAppSelector((state) => state.common.isAlert);
+  const isAlert = useAppSelector((state) => state.common?.isAlert);
 
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 

@@ -45,8 +45,7 @@ export default function UserSettingsPassword() {
     }
 
     try {
-      const { data } = await updatePassword({ newPassword: password });
-      console.log(data);
+      const { data } = await updatePassword({ password: password });
     } catch (error) {
       console.error(error);
     }

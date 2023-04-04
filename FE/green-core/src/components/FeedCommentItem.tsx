@@ -7,18 +7,23 @@ import styles from './FeedCommentItem.module.scss';
 import AppButton from './button/AppButton';
 import CommentDeleteModal from './modal/CommentDeleteModal';
 import { checkInputFormToast } from '@/lib/utils';
+import Image from 'next/image';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import Skeleton from 'react-loading-skeleton';
 
 export default function FeedCommentItem({ comment, feedId, deleteCommentList }) {
   const [isUpdated, setIsUpdated] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isOpenCommentDeleteModal, setIsOpenCommentDeleteModal] = useState(false);
+  const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
   const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
-  const ref = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const storage = getStorage();
   const dispatch = useAppDispatch();
 
   // 모달 바깥 클릭 시
   function handleModalOutsideClick(e: any) {
-    if (ref.current && !ref.current.contains(e.target)) {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
       setIsOpenMenu(false);
     }
   }
@@ -38,6 +43,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
 
   useEffect(() => {
     watch();
+    getUserProfile(comment.user.nickname);
 
     document.addEventListener('mousedown', handleModalOutsideClick);
 
@@ -45,6 +51,19 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
       document.removeEventListener('mousedown', handleModalOutsideClick);
     };
   });
+
+  /** 사용자 프로필 이미지 가져오는 함수 */
+  function getUserProfile(nickname: string) {
+    const profileRef = ref(storage, `${nickname}/profileImage`);
+
+    getDownloadURL(profileRef)
+      .then((downloadURL) => {
+        setUserProfileImagePath(downloadURL);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   // 댓글 수정 토글
   const handleUpdateCommentToggle = (e: any) => {
@@ -56,7 +75,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
   // 댓글 수정
   const handleUpdateComment = async () => {
     const mentionRegex = /@[^\s@#]+/g;
-    const mentionNickname = content.match(mentionRegex) || [];
+    const mentionNickname = null;
 
     if (content == '') {
       checkInputFormToast();
@@ -117,7 +136,17 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
       <div key={comment.commentId} className={`${styles.container}`}>
         <div>
           <Link href={`/user/feed/${comment.user.nickname}`}>
-            <img src={comment.user.profileImagePath} alt='프로필사진' style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+            {userProfileImagePath ? (
+              <Image
+                src={userProfileImagePath}
+                alt='프로필사진'
+                width={100}
+                height={100}
+                style={{ width: '50px', height: '50px', borderRadius: '50%' }}
+              />
+            ) : (
+              <Skeleton width={50} height={50} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+            )}
           </Link>
         </div>
         {isUpdated ? (
@@ -168,7 +197,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
                   more_vert
                 </span>
                 <div className={`${styles.dropdown}`}>
-                  <div ref={ref} className={`${isOpenMenu ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
+                  <div ref={modalRef} className={`${isOpenMenu ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
                     <div
                       className={`border-b border-slate-300 bg-white flex justify-center items-center cursor-pointer ${styles.dropdownMenu}`}
                       onClick={handleUpdateCommentToggle}>
