@@ -18,8 +18,8 @@ import java.util.Set;
 public interface UserPlantRepository extends JpaRepository<UserPlantEntity, Long> {
 
 	Optional<UserPlantEntity> findByIdAndIsDeleted(Long id, IsDeletedType isDeletedType);
-	Page<UserPlantEntity> findByUserAndIsDeleted(UserEntity user, IsDeletedType isDeletedType, Pageable pageable);
-	List<UserPlantEntity> findByUserIdAndIsDeleted(Long userId, IsDeletedType isDeleted);
+	Page<UserPlantEntity> findByUserAndIsDeletedOrderByPlantNickname(UserEntity user, IsDeletedType isDeletedType, Pageable pageable);
+	List<UserPlantEntity> findByUserIdAndIsDeletedOrderByPlantNickname(Long userId, IsDeletedType isDeleted);
 
 	List<UserPlantEntity> findByUser(UserEntity user);
 

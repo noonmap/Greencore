@@ -81,7 +81,7 @@ public class FollowService {
 		}
 
 		// 피드 주인이 follower 인 Page 조회
-		List<FollowEntity> followList = followRepository.findByFollower(follower.get());
+		List<FollowEntity> followList = followRepository.findByFollowerOrderByIdDesc(follower.get());
 		return followList.stream().map(FollowEntity::getFollowing).collect(Collectors.toList());
 
 	}
@@ -135,7 +135,7 @@ public class FollowService {
 		}
 
 		// 피드 주인이 following 인 List 조회
-		List<FollowEntity> followList = followRepository.findByFollowing(following.get());
+		List<FollowEntity> followList = followRepository.findByFollowingOrderByIdDesc(following.get());
 		return followList.stream().map(FollowEntity::getFollower).collect(Collectors.toList());
 	}
 
