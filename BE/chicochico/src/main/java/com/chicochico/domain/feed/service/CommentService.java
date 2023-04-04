@@ -47,7 +47,7 @@ public class CommentService {
 		// 피드 찾기
 		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
 		// comment page 형식으로 가지고 오기
-		Page<CommentEntity> commentEntityPage = commentRepository.findByFeedAndIsDeleted(feed, pageable, IsDeletedType.N);
+		Page<CommentEntity> commentEntityPage = commentRepository.findByFeedAndIsDeletedOrderByIdDesc(feed, pageable, IsDeletedType.N);
 		return commentEntityPage;
 	}
 

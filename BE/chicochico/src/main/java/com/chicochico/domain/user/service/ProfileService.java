@@ -126,7 +126,7 @@ public class ProfileService {
 		Long userId = authService.getUserId();
 
 		// 로그인한 유저의 userPlantList 가져오기
-		List<UserPlantEntity> userPlantList = userPlantRepository.findByUserIdAndIsDeleted(userId, IsDeletedType.N);
+		List<UserPlantEntity> userPlantList = userPlantRepository.findByUserIdAndIsDeletedOrderByPlantNickname(userId, IsDeletedType.N);
 		// 로그인한 유저의 plantId Set 생성 (내가 키우는 식물 종류 (distinct))
 		Set<Long> distinctPlantIds = userPlantList.stream()
 			.map(UserPlantEntity::getPlant)

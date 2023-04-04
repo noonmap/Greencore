@@ -213,7 +213,7 @@ public class UserService {
 	 */
 	public Page<UserPlantEntity> getUserPlantList(String nickname, Pageable pageable) {
 		UserEntity user = getUserByNickname(nickname);
-		Page<UserPlantEntity> userPlantList = userPlantRepository.findByUserAndIsDeleted(user, IsDeletedType.N, pageable);
+		Page<UserPlantEntity> userPlantList = userPlantRepository.findByUserAndIsDeletedOrderByPlantNickname(user, IsDeletedType.N, pageable);
 
 		return userPlantList;
 	}
