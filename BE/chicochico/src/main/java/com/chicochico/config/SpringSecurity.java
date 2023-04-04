@@ -51,7 +51,9 @@ public class SpringSecurity {
 				"/v2/api-docs", "/configuration/ui",
 				"/swagger-resources", "/configuration/security",
 				"/swagger-ui.html", "/webjars/**", "/swagger/**",
-				"/swagger-ui/**");
+				"/swagger-ui/**")
+			.antMatchers("/api/login/oauth", "/api/login/kakao")
+			.antMatchers("/login/**", "/user", "/user/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type");
 	}
 
 
