@@ -22,7 +22,7 @@ public class ProfileSimpleResponseDto {
 
 
 	public static ProfileSimpleResponseDto fromEntity(UserEntity user) {
-		return new ProfileSimpleResponseDto(user.getNickname(), user.getProfileImagePath());
+		return new ProfileSimpleResponseDto(user.getNickname(), "/images/" + user.getProfileImagePath());
 	}
 
 
