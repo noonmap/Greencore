@@ -173,8 +173,8 @@ export default function ScheduleModal({
     watch();
     // 유저가 키우는 식물 리스트 가져오기
     http.get(`/user/plant/${myNickname}`).then((res) => {
-      setUserPlantList(res.data.data);
-      setValue('userPlantId', res.data.data[0].userPlantId);
+      setUserPlantList(res.data.data.content);
+      setValue('userPlantId', res.data.data.content[0].userPlantId);
     });
 
     document.addEventListener('mousedown', handleModalOutsideClick);
@@ -316,7 +316,7 @@ export default function ScheduleModal({
                   <label className={`${styles.label}`} id='scheduleDate'>
                     날짜
                   </label>
-                  <input type='date' {...register('scheduleDate')} id='scheduleDate' className={`${styles.inputBox} flex-1 ml-2`} />
+                  <input type='date' {...register('scheduleDate')} id='scheduleDate' className={`${styles.inputBox}`} />
                 </>
               )}
               {regular ? (

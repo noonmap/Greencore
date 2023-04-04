@@ -78,7 +78,7 @@ export const getTagFeedListMore = createAsyncThunk('getTagFeedListMore', async (
 export const createLike = async (feedId: number) => {
   try {
     const { data } = await http.post(`/feed/${feedId}/like`);
-
+    console.log(data);
     return data;
   } catch (error) {}
 };
@@ -99,12 +99,21 @@ export const getCommentList = createAsyncThunk('getCommentList', async (requestD
     const page = requestData.page;
     const size = requestData.size;
     const { data } = await http.get(`/feed/${feedId}/comment`, { params: { page, size } });
-    console.log(data);
     return data;
   } catch (err) {
     console.log(err);
   }
 });
+
+// 댓글 언급 리스트 조회
+export const getUserList = async (nickname: string) => {
+  try {
+    const { data } = await http.get(`/mention`, { params: { nickname } });
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // 댓글 생성
 export const createComment = createAsyncThunk('createComment', async (requestData: createCommentType) => {

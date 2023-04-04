@@ -45,7 +45,7 @@ export type createCommentType = {
   feedId: number;
   payload: {
     content: string;
-    mentionNickname: Array<string>;
+    mentionNickname: string;
   };
 };
 
@@ -55,7 +55,7 @@ export type updateCommentType = {
   commentId: number;
   payload: {
     content: string;
-    mentionNickname: Array<string>;
+    mentionNickname: string;
   };
 };
 

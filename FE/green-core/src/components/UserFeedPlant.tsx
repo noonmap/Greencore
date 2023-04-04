@@ -15,30 +15,27 @@ type UserPlantType = {
 };
 
 export default function UserFeedPlant({ nickname }) {
-  const [userPlantId, setUserPlantId] = useState(null);
-  const [userPlantNickname, setUserPlantNickname] = useState('');
-  const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>();
+  const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>([]);
 
   const [userPlantPage, setUserPlantPage] = useState(0);
-  const [userPlantSize, setUserPlantSize] = useState(2);
+  const [userPlantSize, setUserPlantSize] = useState(3);
   const [userPlantListTotalCount, setUserPlantListTotalCount] = useState(8);
 
   const [isOpenUserPlantCreateModal, setIsOpenUserPlantCreateModal] = useState(false);
-  const [isOpenUserPlantUpdateModal, setIsOpenUserPlantUpdateModal] = useState(false);
-  const [isOpenUserPlantDeleteModal, setIsOpenUserPlantDeleteModal] = useState(false);
 
   useEffect(() => {
     fetchUserPlantList();
-  }, []);
+  }, [userPlantPage]);
 
   /** 키우는 식물 리스트 가져오기 */
   const fetchUserPlantList = useCallback(async () => {
     try {
       const params = { page: userPlantPage, size: userPlantSize };
       const { data } = await getUserPlantList(nickname, params);
-      // const content = data.content;
-      // console.log(data);
-      setUserPlantList(data);
+      const content = data?.content;
+      const totalElements = data?.totalElements;
+      setUserPlantList(content);
+      setUserPlantListTotalCount(totalElements);
     } catch (error) {
       console.error(error);
     }
@@ -46,19 +43,17 @@ export default function UserFeedPlant({ nickname }) {
 
   /** 키우는 식물 리스트 이전 페이지 */
   async function prevUserPlantListPage() {
-    let page = userPlantPage - userPlantSize;
+    let page = userPlantPage - 1;
     if (page < 0) return;
-    setUserPlantPage(page);
-    await fetchUserPlantList();
+    else setUserPlantPage(page);
   }
 
   /** 키우는 식물 리스트 다음 페이지 */
   async function nextUserPlantListPage() {
-    let page = userPlantPage + userPlantSize;
-    if (page >= userPlantListTotalCount) return;
+    let page = userPlantPage + 1;
 
-    setUserPlantPage(page);
-    await fetchUserPlantList();
+    if (page >= Math.ceil(Number(userPlantListTotalCount) / Number(userPlantSize))) return;
+    else setUserPlantPage(page);
   }
 
   return (
@@ -92,7 +87,7 @@ export default function UserFeedPlant({ nickname }) {
               </span>
 
               <div className='flex mx-7'>
-                {userPlantList.map((userPlant) => (
+                {userPlantList?.map((userPlant) => (
                   <UserFeedPlantListItem key={userPlant.userPlantId} userPlant={userPlant} fetchUserPlantList={fetchUserPlantList} />
                 ))}
               </div>

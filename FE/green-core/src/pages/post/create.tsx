@@ -150,7 +150,7 @@ export default function post() {
             />
           </div>
         </div>
-        {/* 일지 내용 */}
+        {/* 게시글 내용 */}
         <div className='mb-4'>
           <div className={`${styles.label}`}>게시글 내용 입력</div>
           <textarea required className={`${styles.textareaBox}`} {...register('content')} placeholder='게시글의 내용을 입력해주세요' />

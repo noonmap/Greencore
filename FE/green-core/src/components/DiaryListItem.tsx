@@ -14,7 +14,7 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
   const handleImageErrorAtimagePath = () => {
     setIsLoadingErrorAtimagePath(true);
   };
-
+  console.log(diary?.imagePath);
   return (
     <ul className=''>
       <li>
@@ -24,15 +24,16 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
               {/* 바디 */}
               <div className='w-full overflow-hidden' style={{ borderRadius: '30px' }}>
                 {isLoadingErrorAtimagePath && <Skeleton height={300} />}
-                <img
-                  className='mb-3'
-                  src={diary.imagePath}
+                <Image
+                  className='mb-3 w-full h-full'
+                  src={`/images${diary.imagePath[0] === '/' ? diary.imagePath : '/' + diary.imagePath}`}
                   alt='로고'
-                  width='100%'
-                  height='100%'
+                  width={100}
+                  height={100}
                   onLoad={() => handleImageLoadAtimagePath()}
                   onError={() => handleImageErrorAtimagePath()}
-                  style={{ display: isLoadingErrorAtimagePath ? 'none' : 'block' }}></img>
+                  style={{ display: isLoadingErrorAtimagePath ? 'none' : 'block' }}
+                />
                 {/* {diary.imagePath ? (
                   <img src={diary.imagePath} alt='image' style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
                 ) : (
