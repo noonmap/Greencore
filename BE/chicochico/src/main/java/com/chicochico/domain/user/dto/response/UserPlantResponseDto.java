@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -24,7 +26,7 @@ public class UserPlantResponseDto {
 			.plantId(userPlant.getPlant().getId())
 			.plantNickname(userPlant.getPlantNickname())
 			.plantName(userPlant.getPlant().getName())
-			.plantImagePath("/images/" + userPlant.getPlantImagePath())
+			.plantImagePath(NGINX_PATH + userPlant.getPlantImagePath())
 			.build();
 	}
 

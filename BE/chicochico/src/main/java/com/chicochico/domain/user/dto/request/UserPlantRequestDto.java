@@ -5,8 +5,10 @@ import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.domain.plant.entity.PlantEntity;
 import com.chicochico.domain.user.entity.UserEntity;
 import com.chicochico.domain.user.entity.UserPlantEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -14,6 +16,8 @@ import lombok.Data;
  */
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserPlantRequestDto {
 
 	private Long plantId;
