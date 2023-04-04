@@ -8,11 +8,13 @@ import com.chicochico.domain.user.service.CustomUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -36,6 +38,9 @@ public class SpringSecurity {
 	private final OauthService oauthService;
 	private final ObjectMapper objectMapper;
 
+	@Value("${spring.config.activate.on-profile}")
+	private String onProfile;
+
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -53,7 +58,8 @@ public class SpringSecurity {
 				"/swagger-ui.html", "/webjars/**", "/swagger/**",
 				"/swagger-ui/**")
 			.antMatchers("/api/login/oauth", "/api/login/kakao")
-			.antMatchers("/login/**", "/user/nickname/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type");
+			.antMatchers("/login/**", "/user/nickname/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type")
+			.antMatchers(HttpMethod.POST, "/user");
 	}
 
 
@@ -93,10 +99,24 @@ public class SpringSecurity {
 		http
 			.logout()
 			.logoutUrl("/logout") // 로그아웃 요청 처리를 위한 URL 설정
-			.logoutSuccessUrl("/logout/redirect") // 로그아웃 성공 후 리다이렉트될 URL 설정
+			.logoutSuccessUrl(getLogoutSuccessUrl()) // 로그아웃 성공 후 리다이렉트될 URL 설정
 			.invalidateHttpSession(true); // 세션 무효화 여부 설정
 
 		return http.build();
+	}
+
+
+	private String getLogoutSuccessUrl() {
+		if (isLocal()) {
+			return "http://localhost:8080/api/logout/redirect";
+		} else {
+			return "https://j8e101.p.ssafy.io/api/logout/redirect";
+		}
+	}
+
+
+	private boolean isLocal() {
+		return "local".equals(onProfile);
 	}
 
 }

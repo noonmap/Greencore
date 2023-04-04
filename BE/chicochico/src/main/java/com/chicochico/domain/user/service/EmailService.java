@@ -98,7 +98,11 @@ public class EmailService {
 		log.info("[createMessage] emailSender: {}", to);
 
 		message.addRecipients(MimeMessage.RecipientType.TO, to);// 보내는 대상
-		message.setSubject("GreenCore 회원가입 이메일 인증");// 제목
+		if (type.equals(MESSAGE_EMAIL)) {
+			message.setSubject("GreenCore 회원가입 이메일 인증");// 제목
+		} else if (type.equals(MESSAGE_PASSWORD)) {
+			message.setSubject("GreenCore 임시비밀번호 발급");// 제목
+		}
 
 		log.info("[createMessage] emailSender: {}", id);
 		String msgg = "";
