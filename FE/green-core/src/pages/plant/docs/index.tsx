@@ -377,7 +377,7 @@ export default function plantDocs() {
                               {isLoadingErrorAtTopDiarySet[index] && <Skeleton width={200} height={200} />}
                               <img
                                 className={`${styles.img}`}
-                                src={topDiarySet.imagePath}
+                                src={`/images${topDiarySet.imagePath}`}
                                 width={200}
                                 height={200}
                                 onLoad={() => handleImageLoadAtTopDiarySet(index)}
@@ -409,7 +409,7 @@ export default function plantDocs() {
                           <Image
                             className={`${styles.img}`}
                             // src={samPlantUser.profileImagePath}
-                            src={`/images${`/feed/default.png`}`}
+                            src={`/images${samPlantUser.profileImagePath}`}
                             // src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlro_RlMefznuVrMWcA3SZyNW1t9dl9Z9jqA&usqp=CAU`}
                             alt={''}
                             width={150}
