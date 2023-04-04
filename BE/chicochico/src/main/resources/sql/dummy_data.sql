@@ -3,11 +3,11 @@ INSERT INTO `chicochico`.`user_table`
 (`created_at`, `updated_at`, `email`, `follower_count`, `following_count`, `introduction`, `is_deleted`, `nickname`,
  `password`, `profile_image_path`, `user_store`)
 VALUES (now(), now(), "test1@test.com", 2, 2, "김씨의 한 줄 소개입니다", 'N', "김씨",
-        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "/user/default.jpg", "DB"),
+        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "user/default.png", "DB"),
        (now(), now(), "test2@test.com", 1, 1, "임씨의 한 줄 소개입니다", 'N', "임씨",
-        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "/user/default.jpg", "DB"),
+        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "user/default.png", "DB"),
        (now(), now(), "test3@test.com", 1, 1, "양씨의 한 줄 소개입니다", 'N', "양씨",
-        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "/user/default.jpg", "DB");
+        "$2a$10$EhMcbc0IBbz9SNcKOlImDuTUpEFO1BeR8KyRcu8PXTPN0zFXtI2di", "user/default.png", "DB");
 SET
     @user1 := last_insert_id();
 SET
@@ -159,14 +159,14 @@ INSERT INTO `chicochico`.`feed`
  `user_id`)
 VALUES
 -- 유저1 게시글 2개 추가
-('FEED_POST', now(), now(), 2, '김씨의 게시글1', '/post/default.jpg', 'N', 1, @user1),
-('FEED_POST', now(), now(), 2, '김씨의 게시글2', '/post/default.jpg', 'N', 1, @user1),
+('FEED_POST', now(), now(), 2, '김씨의 게시글1', 'feed/default.png', 'N', 1, @user1),
+('FEED_POST', now(), now(), 2, '김씨의 게시글2', 'feed/default.png', 'N', 1, @user1),
 -- 유저2 게시글 2개 추가
-('FEED_POST', now(), now(), 2, '임씨의 게시글1', '/post/default.jpg', 'N', 1, @user2),
-('FEED_POST', now(), now(), 2, '임씨의 게시글2', '/post/default.jpg', 'N', 1, @user2),
+('FEED_POST', now(), now(), 2, '임씨의 게시글1', 'feed/default.png', 'N', 1, @user2),
+('FEED_POST', now(), now(), 2, '임씨의 게시글2', 'feed/default.png', 'N', 1, @user2),
 -- 유저3 게시글 2개 추가
-('FEED_POST', now(), now(), 2, '양씨의 게시글1', '/post/default.jpg', 'N', 1, @user3),
-('FEED_POST', now(), now(), 2, '양씨의 게시글2', '/post/default.jpg', 'N', 1, @user3);
+('FEED_POST', now(), now(), 2, '양씨의 게시글1', 'feed/default.png', 'N', 1, @user3),
+('FEED_POST', now(), now(), 2, '양씨의 게시글2', 'feed/default.png', 'N', 1, @user3);
 SET @post1 := last_insert_id();
 SET @post2 := @post1 + 1;
 SET @post3 := @post2 + 1;
@@ -187,50 +187,28 @@ VALUES (@post1),
 INSERT INTO `chicochico`.`diary_set`
 (`created_at`, `updated_at`, `start_date`, `bookmark_count`, `diary_count`, `image_path`, `is_deleted`,
  `is_enabled_add_diary`, `title`, `user_id`, `user_plant_id`)
-VALUES (now(), now(), now() - interval 60 day, 1, 6, "/diaryset/default.jpg", 'N', 'Y', '김씨의 딸기 관찰일지', @user1,
-        @user_plant1),
-       (now(), now(), now() - interval 60 day, 1, 0, "/diaryset/default.jpg", 'N', 'Y', '김씨의 토마토 관찰일지', @user1,
-        @user_plant2),
-       (now(), now(), now() - interval 60 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '김씨의 라즈베리 관찰일지', @user1,
-        @user_plant3),
-       (now(), now(), now() - interval 60 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '김씨의 아보카도 관찰일지', @user1,
-        @user_plant4),
-       (now(), now(), now() - interval 60 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '김씨의 무화과나무 관찰일지', @user1,
-        @user_plant5),
-       (now(), now(), now() - interval 60 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '김씨의 패션프루트 관찰일지', @user1,
-        @user_plant6),
-       (now(), now(), now() - interval 60 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '김씨의 서양민들레 관찰일지', @user1,
-        @user_plant7),
-       (now(), now(), now() - interval 70 day, 1, 0, "/diaryset/default.jpg", 'N', 'Y', '임씨의 딸기 관찰일지', @user2,
-        @user_plant8),
-       (now(), now(), now() - interval 70 day, 1, 6, "/diaryset/default.jpg", 'N', 'Y', '임씨의 토마토 관찰일지', @user2,
-        @user_plant9),
-       (now(), now(), now() - interval 70 day, 1, 0, "/diaryset/default.jpg", 'N', 'Y', '임씨의 오이 관찰일지', @user2,
-        @user_plant10),
-       (now(), now(), now() - interval 70 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '임씨의 라즈베리 관찰일지', @user2,
-        @user_plant11),
-       (now(), now(), now() - interval 70 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '임씨의 아보카도 관찰일지', @user2,
-        @user_plant12),
-       (now(), now(), now() - interval 70 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '임씨의 무화과나무 관찰일지', @user2,
-        @user_plant13),
-       (now(), now(), now() - interval 70 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '임씨의 패션프루트 관찰일지', @user2,
-        @user_plant14),
-       (now(), now(), now() - interval 70 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '임씨의 서양민들레 관찰일지', @user2,
-        @user_plant15),
-       (now(), now(), now() - interval 30 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '양씨의 토마토 관찰일지', @user3,
-        @user_plant16),
-       (now(), now(), now() - interval 30 day, 1, 8, "/diaryset/default.jpg", 'N', 'Y', '양씨의 대파 관찰일지', @user3,
-        @user_plant17),
-       (now(), now(), now() - interval 30 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '양씨의 라즈베리 관찰일지', @user3,
-        @user_plant18),
-       (now(), now(), now() - interval 30 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '양씨의 아보카도 관찰일지', @user3,
-        @user_plant19),
-       (now(), now(), now() - interval 30 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '양씨의 무화과나무 관찰일지', @user3,
-        @user_plant20),
-       (now(), now(), now() - interval 30 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '양씨의 패션프루트 관찰일지', @user3,
-        @user_plant21),
-       (now(), now(), now() - interval 30 day, 0, 0, "/diaryset/default.jpg", 'N', 'Y', '양씨의 서양민들레 관찰일지', @user3,
-        @user_plant22);
+VALUES (now(), now(), now() - interval 60 day, 1, 6, "diaryset/default.png", 'N', 'Y', '김씨의 딸기 관찰일지', @user1,        @user_plant1),
+       (now(), now(), now() - interval 60 day, 1, 0, "diaryset/default.png", 'N', 'Y', '김씨의 토마토 관찰일지', @user1,        @user_plant2),
+       (now(), now(), now() - interval 60 day, 0, 0, "diaryset/default.png", 'N', 'Y', '김씨의 라즈베리 관찰일지', @user1,        @user_plant3),
+       (now(), now(), now() - interval 60 day, 0, 0, "diaryset/default.png", 'N', 'Y', '김씨의 아보카도 관찰일지', @user1,        @user_plant4),
+       (now(), now(), now() - interval 60 day, 0, 0, "diaryset/default.png", 'N', 'Y', '김씨의 무화과나무 관찰일지', @user1,        @user_plant5),
+       (now(), now(), now() - interval 60 day, 0, 0, "diaryset/default.png", 'N', 'Y', '김씨의 패션프루트 관찰일지', @user1,        @user_plant6),
+       (now(), now(), now() - interval 60 day, 0, 0, "diaryset/default.png", 'N', 'Y', '김씨의 서양민들레 관찰일지', @user1,        @user_plant7),
+       (now(), now(), now() - interval 70 day, 1, 0, "diaryset/default.png", 'N', 'Y', '임씨의 딸기 관찰일지', @user2,        @user_plant8),
+       (now(), now(), now() - interval 70 day, 1, 6, "diaryset/default.png", 'N', 'Y', '임씨의 토마토 관찰일지', @user2,        @user_plant9),
+       (now(), now(), now() - interval 70 day, 1, 0, "diaryset/default.png", 'N', 'Y', '임씨의 오이 관찰일지', @user2,        @user_plant10),
+       (now(), now(), now() - interval 70 day, 0, 0, "diaryset/default.png", 'N', 'Y', '임씨의 라즈베리 관찰일지', @user2,        @user_plant11),
+       (now(), now(), now() - interval 70 day, 0, 0, "diaryset/default.png", 'N', 'Y', '임씨의 아보카도 관찰일지', @user2,        @user_plant12),
+       (now(), now(), now() - interval 70 day, 0, 0, "diaryset/default.png", 'N', 'Y', '임씨의 무화과나무 관찰일지', @user2,        @user_plant13),
+       (now(), now(), now() - interval 70 day, 0, 0, "diaryset/default.png", 'N', 'Y', '임씨의 패션프루트 관찰일지', @user2,        @user_plant14),
+       (now(), now(), now() - interval 70 day, 0, 0, "diaryset/default.png", 'N', 'Y', '임씨의 서양민들레 관찰일지', @user2,        @user_plant15),
+       (now(), now(), now() - interval 30 day, 0, 0, "diaryset/default.png", 'N', 'Y', '양씨의 토마토 관찰일지', @user3,        @user_plant16),
+       (now(), now(), now() - interval 30 day, 1, 8, "diaryset/default.png", 'N', 'Y', '양씨의 대파 관찰일지', @user3,        @user_plant17),
+       (now(), now(), now() - interval 30 day, 0, 0, "diaryset/default.png", 'N', 'Y', '양씨의 라즈베리 관찰일지', @user3,        @user_plant18),
+       (now(), now(), now() - interval 30 day, 0, 0, "diaryset/default.png", 'N', 'Y', '양씨의 아보카도 관찰일지', @user3,        @user_plant19),
+       (now(), now(), now() - interval 30 day, 0, 0, "diaryset/default.png", 'N', 'Y', '양씨의 무화과나무 관찰일지', @user3,        @user_plant20),
+       (now(), now(), now() - interval 30 day, 0, 0, "diaryset/default.png", 'N', 'Y', '양씨의 패션프루트 관찰일지', @user3,        @user_plant21),
+       (now(), now(), now() - interval 30 day, 0, 0, "diaryset/default.png", 'N', 'Y', '양씨의 서양민들레 관찰일지', @user3,        @user_plant22);
 SET @diaryset1 := last_insert_id();
 SET @diaryset2 := @diaryset1 + 1;
 SET @diaryset3 := @diaryset2 + 1;
@@ -260,38 +238,38 @@ INSERT INTO `chicochico`.`feed`
  `user_id`)
 VALUES
 -- user1
-('FEED_DIARY', now() - interval 60 day, now() - interval 60 day, 2, '오늘은 새싹이 났다.', '/diary/default.jpg', 'N', 1,
+('FEED_DIARY', now() - interval 60 day, now() - interval 60 day, 2, '오늘은 새싹이 났다.', 'feed/default.png', 'N', 1,
  @user1),
-('FEED_DIARY', now() - interval 55 day, now() - interval 55 day, 2, '오늘은 줄기가 더 자랐다.', '/diary/default.jpg', 'N', 1,
+('FEED_DIARY', now() - interval 55 day, now() - interval 55 day, 2, '오늘은 줄기가 더 자랐다.', 'feed/default.png', 'N', 1,
  @user1),
-('FEED_DIARY', now() - interval 45 day, now() - interval 45 day, 2, '떡잎이 하나 생겼다', '/diary/default.jpg', 'N', 1, @user1),
-('FEED_DIARY', now() - interval 39 day, now() - interval 39 day, 2, '뿌리가 점점 커지는게 보인다. 뿌듯하다.', '/diary/default.jpg', 'N',
+('FEED_DIARY', now() - interval 45 day, now() - interval 45 day, 2, '떡잎이 하나 생겼다', 'feed/default.png', 'N', 1, @user1),
+('FEED_DIARY', now() - interval 39 day, now() - interval 39 day, 2, '뿌리가 점점 커지는게 보인다. 뿌듯하다.', 'feed/default.png', 'N',
  0, @user1),
-('FEED_DIARY', now() - interval 21 day, now() - interval 21 day, 2, '꽃이 폈다!', '/diary/default.jpg', 'N', 0, @user1),
-('FEED_DIARY', now() - interval 10 day, now() - interval 10 day, 2, '열매가 맺혔다!', '/diary/default.jpg', 'N', 2, @user1),
+('FEED_DIARY', now() - interval 21 day, now() - interval 21 day, 2, '꽃이 폈다!', 'feed/default.png', 'N', 0, @user1),
+('FEED_DIARY', now() - interval 10 day, now() - interval 10 day, 2, '열매가 맺혔다!', 'feed/default.png', 'N', 2, @user1),
 -- user2
-('FEED_DIARY', now() - interval 70 day, now() - interval 70 day, 2, '오늘은 새싹이 났다.', '/diary/default.jpg', 'N', 2,
+('FEED_DIARY', now() - interval 70 day, now() - interval 70 day, 2, '오늘은 새싹이 났다.', 'feed/default.png', 'N', 2,
  @user2),
-('FEED_DIARY', now() - interval 55 day, now() - interval 55 day, 2, '오늘은 줄기가 더 자랐다.', '/diary/default.jpg', 'N', 2,
+('FEED_DIARY', now() - interval 55 day, now() - interval 55 day, 2, '오늘은 줄기가 더 자랐다.', 'feed/default.png', 'N', 2,
  @user2),
-('FEED_DIARY', now() - interval 35 day, now() - interval 35 day, 2, '떡잎이 하나 생겼다', '/diary/default.jpg', 'N', 1, @user2),
-('FEED_DIARY', now() - interval 29 day, now() - interval 29 day, 2, '뿌리가 점점 커지는게 보인다. 뿌듯하다.', '/diary/default.jpg', 'N',
+('FEED_DIARY', now() - interval 35 day, now() - interval 35 day, 2, '떡잎이 하나 생겼다', 'feed/default.png', 'N', 1, @user2),
+('FEED_DIARY', now() - interval 29 day, now() - interval 29 day, 2, '뿌리가 점점 커지는게 보인다. 뿌듯하다.', 'feed/default.png', 'N',
  1, @user2),
-('FEED_DIARY', now() - interval 21 day, now() - interval 21 day, 2, '꽃이 폈다!', '/diary/default.jpg', 'N', 0, @user2),
-('FEED_DIARY', now() - interval 10 day, now() - interval 10 day, 2, '열매가 맺혔다!', '/diary/default.jpg', 'N', 1, @user2),
+('FEED_DIARY', now() - interval 21 day, now() - interval 21 day, 2, '꽃이 폈다!', 'feed/default.png', 'N', 0, @user2),
+('FEED_DIARY', now() - interval 10 day, now() - interval 10 day, 2, '열매가 맺혔다!', 'feed/default.png', 'N', 1, @user2),
 -- user3
-('FEED_DIARY', now() - interval 30 day, now() - interval 30 day, 2, '대파 뿌리를 물에 담궜다', '/diary/default.jpg', 'N', 1,
+('FEED_DIARY', now() - interval 30 day, now() - interval 30 day, 2, '대파 뿌리를 물에 담궜다', 'feed/default.png', 'N', 1,
  @user3),
-('FEED_DIARY', now() - interval 25 day, now() - interval 25 day, 2, '싱싱하다', '/diary/default.jpg', 'N', 1, @user3),
-('FEED_DIARY', now() - interval 23 day, now() - interval 23 day, 2, '줄기가 하나 튀어나왔다.', '/diary/default.jpg', 'N', 1,
+('FEED_DIARY', now() - interval 25 day, now() - interval 25 day, 2, '싱싱하다', 'feed/default.png', 'N', 1, @user3),
+('FEED_DIARY', now() - interval 23 day, now() - interval 23 day, 2, '줄기가 하나 튀어나왔다.', 'feed/default.png', 'N', 1,
  @user3),
-('FEED_DIARY', now() - interval 17 day, now() - interval 17 day, 2, '뿌리가 점점 커지는게 보인다. 뿌듯하다.', '/diary/default.jpg', 'N',
+('FEED_DIARY', now() - interval 17 day, now() - interval 17 day, 2, '뿌리가 점점 커지는게 보인다. 뿌듯하다.', 'feed/default.png', 'N',
  0, @user3),
-('FEED_DIARY', now() - interval 15 day, now() - interval 15 day, 2, '꼬랑지가 예쁘게 휘어졌다.', '/diary/default.jpg', 'N', 0,
+('FEED_DIARY', now() - interval 15 day, now() - interval 15 day, 2, '꼬랑지가 예쁘게 휘어졌다.', 'feed/default.png', 'N', 0,
  @user3),
-('FEED_DIARY', now() - interval 10 day, now() - interval 10 day, 2, '대파가 쑥쑥 자란다', '/diary/default.jpg', 'N', 0, @user3),
-('FEED_DIARY', now() - interval 5 day, now() - interval 5 day, 2, '대파를 잘랐다', '/diary/default.jpg', 'N', 0, @user3),
-('FEED_DIARY', now() - interval 1 day, now() - interval 1 day, 2, '맛있는 대파 볶음밥!', '/diary/default.jpg', 'N', 0, @user3);
+('FEED_DIARY', now() - interval 10 day, now() - interval 10 day, 2, '대파가 쑥쑥 자란다', 'feed/default.png', 'N', 0, @user3),
+('FEED_DIARY', now() - interval 5 day, now() - interval 5 day, 2, '대파를 잘랐다', 'feed/default.png', 'N', 0, @user3),
+('FEED_DIARY', now() - interval 1 day, now() - interval 1 day, 2, '맛있는 대파 볶음밥!', 'feed/default.png', 'N', 0, @user3);
 -- user1
 SET @diary1 := last_insert_id();
 SET @diary2 := @diary1 + 1;

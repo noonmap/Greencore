@@ -35,7 +35,7 @@ public class FeedSimpleResponseDto {
 		return FeedSimpleResponseDto.builder()
 			.feedId(xx.getId())
 			.feedType(feedType)
-			.imagePath(xx.getImagePath())
+			.imagePath("/images/" + xx.getImagePath())
 			.content(xx.getContent().substring(0, Math.min(xx.getContent().length(), 50))) // 최대 50자까지 잘라서 전송
 			.build();
 	}
