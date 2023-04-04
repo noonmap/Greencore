@@ -25,14 +25,14 @@ const plantSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(plantAPI.searchByPlantName.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload.content.length < 10) {
           state.isStopedAtPlant = true;
         }
         state.pageAtPlant = 1;
         state.searchPlantList = action.payload?.content;
       })
       .addCase(plantAPI.searchByPlantNameMore.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload.content.length < 10) {
           state.isStopedAtPlant = true;
         }
         state.pageAtPlant = state.pageAtPlant + 1;
