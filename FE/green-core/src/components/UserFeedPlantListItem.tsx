@@ -69,7 +69,7 @@ export default function UserFeedPlantListItem({ userPlant, fetchUserPlantList })
       <div key={userPlant.userPlantId} className='mx-10 mt-2'>
         <div className='relative'>
           <div className='flex flex-col items-center'>
-            <Image src={userPlant.imagePath} alt='사용자 식물' width={100} height={100} priority />
+            <Image src={userPlant.plantImagePath} alt='사용자 식물' width={100} height={100} priority />
             <div className='mt-2 text-sm '>{userPlant.plantNickname}</div>
           </div>
           <span className='material-symbols-outlined md cursor-pointer absolute top-0 -right-5' onClick={handleisEditToggle}>
