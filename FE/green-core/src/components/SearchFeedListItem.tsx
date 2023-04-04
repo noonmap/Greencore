@@ -29,7 +29,7 @@ export default function SearchFeedListItem(props: { tagFeed: TagFeedType }) {
           )}
 
           <div className='grow'>
-            <p>{tagFeed.content || <Skeleton />}</p>
+            <p>{<>{tagFeed.content}...</> || <Skeleton />}</p>
           </div>
         </div>
       </div>
