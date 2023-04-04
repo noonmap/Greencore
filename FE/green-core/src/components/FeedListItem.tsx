@@ -310,17 +310,17 @@ export default function FeedListItem(props: { feed: FeedType }) {
               <>
                 {/* 다이어리일때 사진 */}
                 <div className={`relative`}>
-                  <div className={`${styles.imageWarrper}`}>
+                  <div className={`${styles.imageWarrper} flex justify-center`}>
                     {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
                     <img
                       className='mb-3'
                       src={feed.imagePath}
                       alt='로고'
                       // width='100%'
-                      height='450px'
+                      // height='450px'
                       onLoad={() => handleImageLoadAtFeedImage()}
                       onError={() => handleImageErrorAtFeedImage()}
-                      style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
+                      style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block', height: '450px' }}></img>
                   </div>
                   <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}>
                     <div className={`p-5 flex justify-between h-full`}>
@@ -343,17 +343,17 @@ export default function FeedListItem(props: { feed: FeedType }) {
                 {feed.imagePath ? (
                   <>
                     <div className={`relative`}>
-                      <div className={`${styles.imageWarrper}`}>
+                      <div className={`${styles.imageWarrper} flex justify-center`}>
                         {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
                         <img
                           className='mb-3'
                           src={feed.imagePath}
                           alt='로고'
                           // width='100%'
-                          height='450px'
+                          // height='450px'
                           onLoad={() => handleImageLoadAtFeedImage()}
                           onError={() => handleImageErrorAtFeedImage()}
-                          style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
+                          style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block', height: '450px' }}></img>
                       </div>
                     </div>
                   </>
