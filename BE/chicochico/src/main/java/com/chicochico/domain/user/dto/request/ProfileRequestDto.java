@@ -2,8 +2,10 @@ package com.chicochico.domain.user.dto.request;
 
 
 import com.chicochico.domain.user.entity.UserEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -11,6 +13,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProfileRequestDto {
 
 	private String nickname;
