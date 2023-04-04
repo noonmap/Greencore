@@ -28,9 +28,13 @@ public class ProfileResponseDto implements Serializable {
 
 
 	public static ProfileResponseDto fromEntity(UserEntity user, Function<Long, Boolean> isFollowed) {
+		String path = user.getProfileImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return ProfileResponseDto.builder()
 			.nickname(user.getNickname())
-			.profileImagePath(NGINX_PATH + user.getProfileImagePath())
+			.profileImagePath(path)
 			.introduction(user.getIntroduction())
 			.followingCount(user.getFollowingCount())
 			.followerCount(user.getFollowerCount())

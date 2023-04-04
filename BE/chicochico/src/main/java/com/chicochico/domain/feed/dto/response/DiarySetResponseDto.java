@@ -30,9 +30,13 @@ public class DiarySetResponseDto {
 
 
 	public static DiarySetResponseDto fromEntity(DiarySetEntity diarySet, Function<DiarySetEntity, Boolean> isBookmarked) {
+		String path = diarySet.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiarySetResponseDto.builder()
 			.diarySetId(diarySet.getId())
-			.imagePath(NGINX_PATH + diarySet.getImagePath())
+			.imagePath(path)
 			.bookmarkCount(diarySet.getBookmarkCount())
 			.isBookmarked(isBookmarked.apply(diarySet))
 			.diaryCount(diarySet.getDiaryCount())

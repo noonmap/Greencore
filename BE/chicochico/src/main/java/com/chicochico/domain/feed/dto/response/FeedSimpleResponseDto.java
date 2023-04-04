@@ -34,10 +34,14 @@ public class FeedSimpleResponseDto {
 		} else {
 			feedType = FeedType.FEED_POST;
 		}
+		String path = xx.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return FeedSimpleResponseDto.builder()
 			.feedId(xx.getId())
 			.feedType(feedType)
-			.imagePath(NGINX_PATH + xx.getImagePath())
+			.imagePath(path)
 			.content(xx.getContent().substring(0, Math.min(xx.getContent().length(), 50))) // 최대 50자까지 잘라서 전송
 			.build();
 	}

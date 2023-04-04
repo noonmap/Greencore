@@ -64,13 +64,17 @@ public class FeedResponseDto implements Serializable {
 			growingDay = null;
 		}
 
+		String path = xx.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return FeedResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(xx.getUser(), isFollowed))
 			.feedCode(feedType)
 			.observationDate(observationDate)
 			.feedId(xx.getId())
 			.content(xx.getContent().substring(0, Math.min(xx.getContent().length(), 50))) // 최대 50자까지 잘라서 전송
-			.imagePath(NGINX_PATH + xx.getImagePath())
+			.imagePath(path)
 			.likeCount(xx.getLikeCount())
 			.isLiked(isLiked)
 			.commentCount(commentCount)

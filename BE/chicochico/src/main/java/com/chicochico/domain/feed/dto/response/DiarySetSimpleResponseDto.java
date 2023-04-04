@@ -23,10 +23,15 @@ public class DiarySetSimpleResponseDto {
 
 
 	public static DiarySetSimpleResponseDto fromEntity(DiarySetEntity diarySet) {
+
+		String path = diarySet.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiarySetSimpleResponseDto.builder()
 			.diarySetId(diarySet.getId())
 			.startDate(diarySet.getCreatedAt().toLocalDate())
-			.imagePath(NGINX_PATH + diarySet.getImagePath())
+			.imagePath(path)
 			.title(diarySet.getTitle())
 			.build();
 	}

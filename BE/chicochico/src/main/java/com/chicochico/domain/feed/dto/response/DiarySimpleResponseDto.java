@@ -49,13 +49,18 @@ public class DiarySimpleResponseDto {
 
 	public static DiarySimpleResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList) {
 		Long growingDay = ChronoUnit.DAYS.between(diary.getDiarySet().getStartDate(), diary.getObservationDate());
+
+		String path = diary.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiarySimpleResponseDto.builder()
 			.diaryId(diary.getId())
 			.content(diary.getContent())
 			.tags(getTagsList.apply(diary.getId()))
 			.observationDate(diary.getObservationDate())
 			.craetedAt(diary.getCreatedAt())
-			.imagePath(NGINX_PATH + diary.getImagePath())
+			.imagePath(path)
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.growingDay(growingDay)

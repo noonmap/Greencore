@@ -24,7 +24,11 @@ public class ProfileSimpleResponseDto {
 
 
 	public static ProfileSimpleResponseDto fromEntity(UserEntity user) {
-		return new ProfileSimpleResponseDto(user.getNickname(), NGINX_PATH + user.getProfileImagePath());
+		String path = user.getProfileImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
+		return new ProfileSimpleResponseDto(user.getNickname(), path);
 	}
 
 

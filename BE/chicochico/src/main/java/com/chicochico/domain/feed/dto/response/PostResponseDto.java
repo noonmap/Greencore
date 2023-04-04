@@ -35,11 +35,15 @@ public class PostResponseDto {
 
 	public static PostResponseDto fromEntity(PostEntity post, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed,
 		Function<Long, Boolean> isLiked) {
+		String path = post.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return PostResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(post.getUser(), isFollowed))
 			.postId(post.getId())
 			.content(post.getContent())
-			.imagePath(NGINX_PATH + post.getImagePath())
+			.imagePath(path)
 			.likeCount(post.getLikeCount())
 			.commentCount(getCommentCount.apply(post.getId()))
 			.tags(getTagsList.apply(post.getId())) //

@@ -51,13 +51,18 @@ public class DiaryResponseDto {
 
 
 	public static DiaryResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed, Function<Long, Boolean> isLiked) {
+
+		String path = diary.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiaryResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(diary.getUser(), isFollowed))
 			.diarySetId(diary.getDiarySet().getId())
 			.observationDate(diary.getObservationDate())
 			.content(diary.getContent())
 			.tags(getTagsList.apply(diary.getId()))
-			.imagePath(NGINX_PATH + diary.getImagePath())
+			.imagePath(path)
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.createdAt(diary.getCreatedAt())

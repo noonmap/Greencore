@@ -21,12 +21,16 @@ public class UserPlantResponseDto {
 
 
 	public static UserPlantResponseDto fromEntity(UserPlantEntity userPlant) {
+		String path = userPlant.getPlantImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return UserPlantResponseDto.builder()
 			.userPlantId(userPlant.getId())
 			.plantId(userPlant.getPlant().getId())
 			.plantNickname(userPlant.getPlantNickname())
 			.plantName(userPlant.getPlant().getName())
-			.plantImagePath(NGINX_PATH + userPlant.getPlantImagePath())
+			.plantImagePath(path)
 			.build();
 	}
 
