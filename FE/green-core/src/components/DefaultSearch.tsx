@@ -124,6 +124,7 @@ export default function DefaultSearch() {
   // -------------------------- 식물 -------------------------------
 
   function searchPlant(search: string) {
+    console.log('search', search);
     const params = {
       search: search,
       page: 0,
@@ -276,6 +277,7 @@ export default function DefaultSearch() {
   }
 
   function handleSearch(event) {
+    console.log('event.target.value', event.target.value);
     setIsSearched(true);
     setInputData(event.target.value);
     setSearchTypeTemp(searchType); // 결과 디브 재렌더링 하기!
