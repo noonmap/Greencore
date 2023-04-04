@@ -53,7 +53,7 @@ public class SpringSecurity {
 				"/swagger-ui.html", "/webjars/**", "/swagger/**",
 				"/swagger-ui/**")
 			.antMatchers("/api/login/oauth", "/api/login/kakao")
-			.antMatchers("/login/**", "/user", "/user/nickname/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type");
+			.antMatchers("/login/**", "/user/nickname/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type");
 	}
 
 
