@@ -12,20 +12,37 @@
   height: 100%;
 }
 
-.textareaBox {
-  outline: none;
-  border: 1px solid var(--light-color);
-  border-radius: 12px;
-  min-height: var(--min-height-input);
-  padding: var(--padding-input);
-  transition: all 0.3s ease;
-  width: 100%;
+.textareaWrapper {
+  position: relative;
 
-  &:focus {
-    border: 1px solid var(--main-color);
+  textarea {
+    outline: none;
+    border: 1px solid var(--light-color);
+    border-radius: 12px;
+    min-height: var(--min-height-input);
+    padding: var(--padding-input);
+    transition: all 0.3s ease;
+    width: 100%;
 
-    &::placeholder {
-      color: var(--main-light-color);
+    &:focus {
+      border: 1px solid var(--main-color);
+
+      &::placeholder {
+        color: var(--main-light-color);
+      }
     }
+  }
+
+  .dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    background-color: #fff;
+    cursor: pointer;
   }
 }
