@@ -4,7 +4,7 @@ const Dotenv = require('dotenv-webpack');
 const nextConfig = {
   reactStrictMode: false, // useEffect twice
   images: {
-    domains: ['firebasestorage.googleapis.com'],
+    domains: ['firebasestorage.googleapis.com', 'j8e101.p.ssafy.io'],
   },
   // basePath: '',
   // assetPrefix: './',
