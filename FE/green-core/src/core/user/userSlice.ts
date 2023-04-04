@@ -36,14 +36,14 @@ const userSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(userAPI.searchByUser.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload?.content.length < 10) {
           state.isStopedAtUser = true;
         }
         state.pageAtUser = 1;
         state.searchUserList = action.payload?.content;
       })
       .addCase(userAPI.searchByUserMore.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
+        if (action.payload?.content.length < 10) {
           state.isStopedAtUser = true;
         }
         state.pageAtUser = state.pageAtUser + 1;
