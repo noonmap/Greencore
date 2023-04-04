@@ -29,13 +29,17 @@ export default function FeedListItem(props: { feed: FeedType }) {
   // 이미지 불러오기
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
   /** 사용자 프로필 이미지 가져오는 함수 */
+
+  useEffect(() => {
+    getUserProfile(feed.user.nickname);
+  }, []);
+
   function getUserProfile(nickname: string) {
     const profileRef = ref(storage, `${nickname}/profileImage`);
 
     getDownloadURL(profileRef)
       .then((downloadURL) => {
         setUserProfileImagePath(downloadURL);
-        return downloadURL;
       })
       .catch((error) => {
         console.error(error);
