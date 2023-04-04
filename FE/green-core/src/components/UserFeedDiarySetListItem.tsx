@@ -95,8 +95,8 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet, fetchDiar
         <div className={`${styles.content} rounded space-y-2`}>
           <Link href={`/diary/${diarySet.diarySetId}`} className='relative'>
             {/* {JSON.stringify(diarySet)} */}
-            {/* <Image src={diarySet.imagePath} className={`${styles.img} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' /> */}
-            <Image src={'/'} className={`${styles.img} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' />
+            <Image src={diarySet.imagePath} className={`${styles.img} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' />
+            {/* <Image src={'/'} className={`${styles.img} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' /> */}
             <div className={`${styles.card} absolute bottom-0`}>{diarySet.title}</div>
           </Link>
 
