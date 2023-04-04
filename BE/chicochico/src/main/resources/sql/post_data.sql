@@ -450,6 +450,11 @@ update tag set count=@Cnt23 where id=@tag+23;
 -- gorse items
 DROP DATABASE IF EXISTS gorse;
 CREATE DATABASE gorse;
+
+DROP TABLE IF EXISTS `gorse`.`feedback`;
+DROP TABLE IF EXISTS `gorse`.`users`;
+DROP TABLE IF EXISTS `gorse`.`items`;
+
 CREATE TABLE IF NOT EXISTS `gorse`.items(
     `item_id`       varchar(256)    NOT NULL,
     `is_hidden`		tinyint(1)		NOT NULL,
@@ -458,6 +463,23 @@ CREATE TABLE IF NOT EXISTS `gorse`.items(
     `labels`		json			NOT NULL,
     `comment`		text			NOT NULL,
     PRIMARY KEY (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `gorse`.`users` (
+                                 `user_id` varchar(256) NOT NULL,
+                                 `labels` json NOT NULL,
+                                 `subscribe` json NOT NULL,
+                                 `comment` text NOT NULL,
+                                 PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `gorse`.`feedback` (
+                                    `feedback_type` varchar(256) NOT NULL,
+                                    `user_id` varchar(256) NOT NULL,
+                                    `item_id` varchar(256) NOT NULL,
+                                    `time_stamp` datetime NOT NULL,
+                                    `comment` text NOT NULL,
+                                    PRIMARY KEY (`feedback_type`,`user_id`,`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- item에 넣을 labels를 생성하는 함수
