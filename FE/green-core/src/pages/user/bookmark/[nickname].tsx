@@ -51,7 +51,7 @@ export default function Bookmark() {
         {bookmarkList.length > 0 ? (
           <>
             {bookmarkList.map((bookmark) => (
-              <UserBookmarkListItem key={bookmark.diarySetId} bookmark={bookmark} />
+              <UserBookmarkListItem key={bookmark.diarySetId} bookmark={bookmark} fetchBookmarkList={fetchBookmarkList} />
             ))}
           </>
         ) : (
