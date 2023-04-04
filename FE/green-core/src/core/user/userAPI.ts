@@ -377,7 +377,7 @@ export const logOut = createAsyncThunk('logOut', async () => {
  */
 export const checkNickname = async (nickname: string) => {
   try {
-    const { data } = await http.get(`/user/${nickname}`);
+    const { data } = await http.get(`/user/nickname/${nickname}`);
 
     Toastify({
       text: message.CheckNicknameSuccess,
