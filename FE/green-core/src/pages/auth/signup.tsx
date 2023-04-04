@@ -160,8 +160,12 @@ export default function signup() {
     try {
       const payload = { authCode };
       const { data } = await checkAuthCode(payload);
-      // setValue('isCheckedAuthCode', data);
-      setValue('isCheckedAuthCode', true);
+
+      if (data) {
+        setValue('isCheckedAuthCode', true);
+      } else {
+        alert('다시 인증코드를 입력해주세요');
+      }
     } catch (error) {
       console.error(error);
     }
