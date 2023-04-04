@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -24,7 +26,7 @@ public class DiarySetSimpleResponseDto {
 		return DiarySetSimpleResponseDto.builder()
 			.diarySetId(diarySet.getId())
 			.startDate(diarySet.getCreatedAt().toLocalDate())
-			.imagePath("/images/" + diarySet.getImagePath())
+			.imagePath(NGINX_PATH + diarySet.getImagePath())
 			.title(diarySet.getTitle())
 			.build();
 	}

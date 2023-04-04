@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 /**
  * diaryId: Long
@@ -53,7 +55,7 @@ public class DiarySimpleResponseDto {
 			.tags(getTagsList.apply(diary.getId()))
 			.observationDate(diary.getObservationDate())
 			.craetedAt(diary.getCreatedAt())
-			.imagePath("/images/" + diary.getImagePath())
+			.imagePath(NGINX_PATH + diary.getImagePath())
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.growingDay(growingDay)

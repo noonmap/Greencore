@@ -15,6 +15,7 @@ import java.util.UUID;
 @Service
 public class FileService {
 
+	public static final String NGINX_PATH = "/resources/";
 	private final String DEFAULT_IMAGE_PATH = "default.jpg";
 	@Value("${file.dir}")
 	private String fileDir;

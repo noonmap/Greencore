@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 /**
  * user: {
@@ -55,7 +57,7 @@ public class DiaryResponseDto {
 			.observationDate(diary.getObservationDate())
 			.content(diary.getContent())
 			.tags(getTagsList.apply(diary.getId()))
-			.imagePath("/images/" + diary.getImagePath())
+			.imagePath(NGINX_PATH + diary.getImagePath())
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.createdAt(diary.getCreatedAt())
