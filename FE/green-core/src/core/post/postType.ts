@@ -15,11 +15,12 @@ export type CreatePostType = {
 export type UpdatePostType = {
   router: NextRouter;
   postId: number;
-  payload: {
-    content: string;
-    image: Object;
-    tags: Array<string>;
-  };
+  // payload: {
+  //   content: string;
+  //   image: Object;
+  //   tags: Array<string>;
+  // };
+  payload: FormData;
 };
 
 // 포스트 삭제 타입

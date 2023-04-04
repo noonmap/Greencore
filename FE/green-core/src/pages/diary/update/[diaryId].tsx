@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
-import http from '@/lib/http';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import styles from '@/styles/Diary.module.scss';
 import { updateDiary } from '@/core/diary/diaryAPI';
@@ -12,8 +10,8 @@ import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { checkInputFormToast } from '@/lib/utils';
 import moment from 'moment';
 import AppButton from '@/components/button/AppButton';
-
-const fetcher = (url: string) => http.get(url).then((res) => res.data);
+import { getDiaryDetail } from '@/core/diary/diaryAPI';
+import Image from 'next/image';
 
 export default function updatediary() {
   const router = useRouter();
@@ -21,13 +19,12 @@ export default function updatediary() {
   const [preview, setPreview] = useState<any>('');
   const [tagList, setTagList] = useState<Array<string>>([]);
   const [myDiarySetList, setMyDiarySetList] = useState<Array<any>>([]);
-  const diaryId = Number(router.query.diaryId);
-  const { data: diary, error, isLoading: hasDiary } = useSWR(`/diary/${diaryId}`, fetcher);
+  const { diaryId } = router.query;
 
   type StateType = {
     diarysetId: number;
     content: string;
-    opservationDate: string;
+    observationDate: string;
     image: any;
     tagItem: string;
   };
@@ -35,28 +32,16 @@ export default function updatediary() {
   const initialState: StateType = {
     diarysetId: 0,
     content: '',
-    opservationDate: new Date().toISOString().substring(0, 10),
+    observationDate: new Date().toISOString().substring(0, 10),
     image: null,
     tagItem: '',
   };
 
   const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
-  const [diarysetId, content, opservationDate, image, tagItem] = getValues(['diarysetId', 'content', 'opservationDate', 'image', 'tagItem']);
+  const [diarysetId, content, observationDate, image, tagItem] = getValues(['diarysetId', 'content', 'observationDate', 'image', 'tagItem']);
 
   const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
-
-  // 내 관찰일지 리스트 가져오기
-  const getMyDiarySetList = async () => {
-    await getDiarySetList(myNickname, {
-      page: 0,
-      size: 0,
-    }).then((res) => {
-      if (res.result === 'SUCCESS') {
-        setMyDiarySetList(res.data.content);
-      }
-    });
-  };
 
   // searchState 변경
   function changeSearchState() {
@@ -65,28 +50,36 @@ export default function updatediary() {
 
   // 초기값 설정
   useEffect(() => {
-    if (!hasDiary) {
-      setPreview(diary.data.imagePath);
-      setTagList(diary.data.tags);
-      setValue('diarysetId', diary.data.diarySetId);
-      setValue('content', diary.data.content);
-      setValue('opservationDate', diary.data.observationDate);
-      fetch(diary.data.imagePath)
-        .then((res) => res.blob())
-        .then((blob) => {
-          const arr = preview.split('/');
-          const FileList = [new File([blob], arr[arr.length - 1], { type: 'image/*' })];
-          setValue('image', FileList);
-        });
-    }
-  }, [hasDiary]);
-
-  useEffect(() => {
     watch();
-    getMyDiarySetList();
     changeSearchState();
+    if (diaryId) {
+      getDiarySetList(myNickname, {
+        page: 0,
+        size: 0,
+      }).then((res) => {
+        if (res.result === 'SUCCESS') {
+          setMyDiarySetList(res.data.content);
+          getDiaryDetail(Number(diaryId)).then((res) => {
+            if (res.result === 'SUCCESS') {
+              setPreview(res.data.imagePath);
+              setTagList(res.data.tags);
+              setValue('diarysetId', res.data.diarySetId);
+              setValue('content', res.data.content);
+              setValue('observationDate', res.data.observationDate);
+              fetch(res.data.imagePath)
+                .then((res) => res.blob())
+                .then((blob) => {
+                  const arr = res.data.imagePath.split('/');
+                  const FileList = [new File([blob], arr[arr.length - 1], { type: `image/${arr[arr.length - 1].split('.')[1]}` })];
+                  setValue('image', FileList);
+                });
+            }
+          });
+        }
+      });
+    }
     return () => {};
-  }, []);
+  }, [diaryId]);
 
   // 태그 입력
   const handleOnChangeTagItem = (e: any) => {
@@ -98,9 +91,9 @@ export default function updatediary() {
   // 태그 생성
   const handleChangeTagList = () => {
     const updatedTagList = [...tagList];
-    let filteredTagList = updatedTagList.filter((item) => item.split('#')[1] !== tagItem);
+    let filteredTagList = updatedTagList.filter((item) => item !== tagItem);
     if (tagItem.trim()) {
-      filteredTagList.push('#' + tagItem.trim());
+      filteredTagList.push(tagItem.trim());
     }
     setTagList(filteredTagList);
     setValue('tagItem', '');
@@ -109,7 +102,7 @@ export default function updatediary() {
   // 태그 삭제
   const handleDeleteTagItem = (e: any) => {
     const deleteTagItem = e.target.parentElement.firstChild.innerText;
-    const filteredTagList = tagList.filter((item) => item.split('#')[1] !== deleteTagItem);
+    const filteredTagList = tagList.filter((item) => item !== deleteTagItem);
     setTagList(filteredTagList);
   };
 
@@ -167,7 +160,7 @@ export default function updatediary() {
 
   // 수정 가능한지 체크
   const CheckPossible = () => {
-    if (isNaN(diarysetId) || !isValidDate(opservationDate) || content == '' || image == null) {
+    if (isNaN(diarysetId) || !isValidDate(observationDate) || content == '' || image == null) {
       checkInputFormToast();
       return false;
     }
@@ -178,9 +171,12 @@ export default function updatediary() {
   const handleUpdateDiary = async (e: any) => {
     e.preventDefault();
     if (CheckPossible()) {
-      const payload = { diarysetId, diaryId, content, opservationDate, image, tags: tagList };
-      console.log(payload);
-      const requestData = { router, payload };
+      const formData = new FormData();
+      formData.append('content', content);
+      formData.append('tags', String(tagList));
+      formData.append('image', image[0]);
+      formData.append('observationDate', observationDate);
+      const requestData = { router, payload: formData, diaryId: Number(diaryId) };
       try {
         dispatch(updateDiary(requestData));
       } catch (err) {
@@ -203,7 +199,7 @@ export default function updatediary() {
           <div className='flex-1 mr-3'>
             <label htmlFor='image'>
               {preview ? (
-                <img src={preview} alt='이미지를 등록해주세요' className={`${styles.inputImage}`} />
+                <Image src={`/images${preview}`} width={100} height={100} alt='이미지를 등록해주세요' className={`${styles.inputImage}`} />
               ) : (
                 <div className={`${styles.inputImage}`}>
                   <span style={{ color: 'var(--title-light-color', fontSize: '1.5rem' }}>이곳을 클릭하여</span>
@@ -250,8 +246,8 @@ export default function updatediary() {
                 required
                 max={moment(new Date()).format('yyyy-MM-DD')}
                 type='date'
-                defaultValue={opservationDate}
-                {...register('opservationDate')}
+                defaultValue={observationDate}
+                {...register('observationDate')}
                 className={`w-full text-lg ${styles.inputBox}`}
               />
             </div>
@@ -271,7 +267,7 @@ export default function updatediary() {
             {tagList.map((tagItem, index) => {
               return (
                 <div key={index} className={`${styles.tagComponent} flex`}>
-                  <div className={`w-fit ${styles.tagName}`}>{tagItem.split('#')[1]}</div>
+                  <div className={`w-fit ${styles.tagName}`}>{tagItem}</div>
                   <button onClick={handleDeleteTagItem} className={`material-symbols-outlined w-fit ${styles.tagDelete}`}>
                     close
                   </button>
