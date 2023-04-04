@@ -146,7 +146,7 @@ export default function updatepost() {
           <div className='w-1/2'>
             <label htmlFor='image'>
               {preview ? (
-                <Image src={`/images${preview}`} width={100} height={100} alt='이미지를 등록해주세요' className={`${styles.inputImage}`} />
+                <Image src={preview} width={100} height={100} alt='이미지를 등록해주세요' className={`${styles.inputImage}`} />
               ) : (
                 <div className={`${styles.inputImage}`}>
                   <span style={{ color: 'var(--title-light-color', fontSize: '1.5rem' }}>이곳을 클릭하여</span>

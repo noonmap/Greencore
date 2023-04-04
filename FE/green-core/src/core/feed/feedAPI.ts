@@ -4,7 +4,6 @@ import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
 
-import { SearchType } from '@/core/common/commonType';
 import { createCommentType, deleteCommentType, FeedDataType, getCommentListType, updateCommentType } from './feedType';
 
 // 추천 피드 리스트 조회
@@ -93,7 +92,7 @@ export const deleteLike = async (feedId: number) => {
 };
 
 // 댓글 리스트 조회
-export const getCommentList = createAsyncThunk('getCommentList', async (requestData: getCommentListType) => {
+export const getCommentList = async (requestData: getCommentListType) => {
   try {
     const feedId = requestData.feedId;
     const page = requestData.page;
@@ -103,7 +102,7 @@ export const getCommentList = createAsyncThunk('getCommentList', async (requestD
   } catch (err) {
     console.log(err);
   }
-});
+};
 
 // 댓글 언급 리스트 조회
 export const getUserList = async (nickname: string) => {
@@ -154,7 +153,7 @@ export const updateComment = createAsyncThunk('updateComment', async (requestDat
     const { data } = await http.put(`/feed/${feedId}/comment/${commentId}`, payload);
     if (data.result === 'SUCCESS') {
       Toastify({
-        text: message.CreateCommentSuccess,
+        text: message.UpdateCommentSuccess,
         duration: 1000,
         position: 'center',
         stopOnFocus: true,
@@ -162,7 +161,7 @@ export const updateComment = createAsyncThunk('updateComment', async (requestDat
       }).showToast();
     } else {
       Toastify({
-        text: message.CreateCommentFail,
+        text: message.UpdateCommentFail,
         duration: 1000,
         position: 'center',
         stopOnFocus: true,

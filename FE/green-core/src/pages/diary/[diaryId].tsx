@@ -31,7 +31,8 @@ export default function DiaryDetail() {
   const [likeCount, setLikeCount] = useState<number>(0);
   const [isfollowed, setIsFollowed] = useState<boolean>(false);
   const [followerCount, setFollowerCount] = useState<number>(0);
-  const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
+  const [commentCount, setCommentCount] = useState<number>(0);
 
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 
@@ -65,6 +66,7 @@ export default function DiaryDetail() {
     getDiaryDetail(diaryId).then((res) => {
       if (res.result === 'SUCCESS') {
         getUserProfile(res.data.user.nickname);
+        setCommentCount(res.data.commentCount);
         setDiary(res.data);
         setIsLiked(res.data.isLiked);
         setLikeCount(res.data.likeCount);
@@ -224,7 +226,7 @@ export default function DiaryDetail() {
                     onClick={goProfile}
                   />
                 ) : (
-                  <Skeleton width={100} height={100} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+                  <Skeleton width={100} height={100} className={`${styles.profileImg}`} />
                 )}
 
                 {/* 프로필 팝업 */}
@@ -262,17 +264,19 @@ export default function DiaryDetail() {
                     </div>
                   </div>
                   <div className='flex py-5'>{diary.user.introduction}</div>
-                  <div className='flex justify-center rounded-lg overflow-hidden'>
-                    {isfollowed ? (
-                      <button className={`w-full `} onClick={handleDeleteFollow} style={{ backgroundColor: 'var(--thin-color)' }}>
-                        팔로우 취소
-                      </button>
-                    ) : (
-                      <button className={`text-white w-full`} onClick={handleUserFollow} style={{ backgroundColor: 'var(--main-color)' }}>
-                        팔로우
-                      </button>
-                    )}
-                  </div>
+                  {diary.user.nickname !== myNickname && (
+                    <div className='flex justify-center rounded-lg overflow-hidden'>
+                      {isfollowed ? (
+                        <button className={`w-full `} onClick={handleDeleteFollow} style={{ backgroundColor: 'var(--thin-color)' }}>
+                          팔로우 취소
+                        </button>
+                      ) : (
+                        <button className={`text-white w-full`} onClick={handleUserFollow} style={{ backgroundColor: 'var(--main-color)' }}>
+                          팔로우
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -290,7 +294,7 @@ export default function DiaryDetail() {
               </div>
               <div className={`${styles.infoItem} flex`}>
                 <span className={`material-symbols-outlined flex-1 flex text-right`}>chat</span>
-                <div className='font-extrabold flex-1 flex justify-start ml-3'>{diary.commentCount}</div>
+                <div className='font-extrabold flex-1 flex justify-start ml-3'>{commentCount}</div>
               </div>
             </div>
 
@@ -298,16 +302,10 @@ export default function DiaryDetail() {
             <div className={`${styles.subContainer} flex flex-1`} style={myNickname !== diary.user.nickname ? { paddingRight: '24px' } : null}>
               <div className='flex-1 px-3'>
                 <div className='flex justify-between mb-2'>
-                  <div className={`${styles.nickname}`}>{diary.user.nickname}</div>
+                  <div className={`${styles.nickname}`}>{diary.user.nickname}님의 일지</div>
                 </div>
                 <div className={`${styles.box}`}>
-                  <Image
-                    src={`/images${diary?.imagePath[0] === '/' ? diary?.imagePath : '/' + diary?.imagePath}`}
-                    width={100}
-                    height={100}
-                    alt='img'
-                    className={`${styles.image}`}
-                  />
+                  <Image src={diary?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
@@ -326,7 +324,7 @@ export default function DiaryDetail() {
                 <div className='mb-12'>{diary?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
-                <div>{!Number.isNaN(diaryId) && <FeedCommentList feedId={diaryId} />}</div>
+                <div>{!Number.isNaN(diaryId) && <FeedCommentList feedId={diaryId} setCommentCount={setCommentCount} />}</div>
               </div>
 
               {/* 옵션 버튼 */}

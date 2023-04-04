@@ -61,7 +61,7 @@ const AxiosInterceptor = ({ children }) => {
       }
 
       if (error.response.status == 404) {
-        alert('NOT FOUND');
+        // alert('NOT FOUND');
         // router.push('/login');
       }
 
