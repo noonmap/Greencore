@@ -14,7 +14,7 @@ export default function SearchUserListItem(props: { searchUser: SearchUserType }
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 
   useEffect(() => {
-    getUserProfile(searchUser.profileImagePath);
+    getUserProfile(searchUser.nickname);
   }, []);
 
   function getUserProfile(nickname: string) {
