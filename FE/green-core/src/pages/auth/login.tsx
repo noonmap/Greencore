@@ -68,8 +68,9 @@ export default function login() {
     try {
       const payload = { email, password };
       dispatch(SET_AUTH_TYPE_DB());
-      dispatch(logIn(payload));
-      router.push('/home');
+      const requestData = { router, payload };
+      dispatch(logIn(requestData));
+      // router.push('/home');
     } catch (error) {
       setValue('email', '');
       setValue('password', '');
@@ -108,15 +109,16 @@ export default function login() {
             const { data } = await signUp(signUpPayload);
 
             if (data) {
-              dispatch(logInByOAuth(logInPayload));
+              const requestData = { router, logInPayload };
+              dispatch(logInByOAuth(requestData));
               dispatch(SET_AUTH_TYPE_FIREBASE());
               handleSetUserProfile(githubNickname, githubPhotoUrl);
-              router.push('/home');
+              // router.push('/home');
             }
           } else {
             dispatch(logInByOAuth(logInPayload));
             dispatch(SET_AUTH_TYPE_FIREBASE());
-            router.push('/home');
+            // router.push('/home');
           }
         } catch (error) {
           console.error(error);
@@ -164,12 +166,12 @@ export default function login() {
               dispatch(logInByOAuth(logInPayload));
               dispatch(SET_AUTH_TYPE_FIREBASE());
               handleSetUserProfile(googleNickname, googlePhotoUrl);
-              router.push('/home');
+              // router.push('/home');
             }
           } else {
             dispatch(logInByOAuth(logInPayload));
             dispatch(SET_AUTH_TYPE_FIREBASE());
-            router.push('/home');
+            // router.push('/home');
           }
         } catch (error) {
           console.error(error);
