@@ -11,9 +11,11 @@ import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 import styles from './AppHeader.module.scss';
 import Skeleton from 'react-loading-skeleton';
+import { useRouter } from 'next/router';
 
 export default function AppHeader() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const storage = getStorage();
 
   const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
@@ -90,6 +92,8 @@ export default function AppHeader() {
       .catch(function () {
         console.log('Not kakao logged in');
       });
+
+    router.push('/');
   }
 
   return (
