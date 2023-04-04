@@ -167,8 +167,17 @@ public class FeedService {
 		Long userId = authService.getUserId();
 		List<Long> recommendedFeedIds = recommenderService.getRecommendFeedIdList(userId, pageable.getPageNumber(), pageable.getPageSize());
 		log.info("[Recommened Feed Ids]" + recommendedFeedIds);
-		// id list를 feed로 변환
-		List<FeedEntity> feedList = feedRepository.findByIdInAndIsDeleted(recommendedFeedIds, IsDeletedType.N, pageable);
+
+		// 추천 피드가 없으면 무작위로 반환
+		List<FeedEntity> feedList;
+		if (recommendedFeedIds.isEmpty()) {
+			log.info("[Recommend] 추천된 피드가 없습니다.");
+			feedList = feedRepository.findByIsDeletedOrOrderByRandom(IsDeletedType.N, pageable);
+		} else {
+			// id list를 feed로 변환
+			log.info("[Recommend] 추천된 피드 입니다.");
+			feedList = feedRepository.findByIdInAndIsDeleted(recommendedFeedIds, IsDeletedType.N, pageable);
+		}
 		return feedList;
 	}
 
