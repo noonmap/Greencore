@@ -77,7 +77,6 @@ export const getTagFeedListMore = createAsyncThunk('getTagFeedListMore', async (
 export const createLike = async (feedId: number) => {
   try {
     const { data } = await http.post(`/feed/${feedId}/like`);
-    console.log(data);
     return data;
   } catch (error) {}
 };
@@ -119,7 +118,6 @@ export const createComment = createAsyncThunk('createComment', async (requestDat
   try {
     const feedId = requestData.feedId;
     const payload = requestData.payload;
-    console.log(feedId, payload);
     const { data } = await http.post(`/feed/${feedId}/comment`, payload);
     if (data.result === 'SUCCESS') {
       Toastify({

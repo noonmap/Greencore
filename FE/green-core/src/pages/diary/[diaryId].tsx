@@ -13,6 +13,8 @@ import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import { SET_SEARCH_TAG } from '@/core/search/searchSlice';
 import Image from 'next/image';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { getTodayDate } from '@/lib/utils';
+import { createAlert } from '@/core/alert/alertAPI';
 
 export default function DiaryDetail() {
   const router = useRouter();
@@ -24,7 +26,7 @@ export default function DiaryDetail() {
   const [hasDiary, setHasDiary] = useState<boolean>(false);
 
   const [isOpenDiaryDeleteModal, setIsOpenDiaryDeleteModal] = useState(false);
-  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
+  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
   const divRef = useRef<HTMLDivElement>(null);
 
   const [isLiked, setIsLiked] = useState<boolean>(false);
@@ -86,7 +88,7 @@ export default function DiaryDetail() {
     return () => {};
   }, [diaryId]);
 
-  // 삭제
+  // 일지 삭제
   const handleDeleteDiary = () => {
     try {
       const payload = { diaryId: Number(diaryId), diarySetId: diary.diarySetId };
@@ -109,6 +111,17 @@ export default function DiaryDetail() {
       if (res.result === 'SUCCESS') {
         setIsLiked(true);
         setLikeCount((prev) => prev + 1);
+        if (diary.user.nickname !== myNickname) {
+          const payload = {
+            nickname: diary.user.nickname,
+            mentionNickname: myNickname,
+            type: 'ALERT_LIKE',
+            urlPath: `/diary/${Number(diaryId)}`,
+            createdAt: getTodayDate(),
+            isRead: false,
+          };
+          dispatch(createAlert(payload));
+        }
       }
     });
   }
@@ -131,6 +144,17 @@ export default function DiaryDetail() {
       if (res.result === 'SUCCESS') {
         setIsFollowed(true);
         setFollowerCount((prev) => prev + 1);
+        if (diary.user.nickname !== myNickname) {
+          const payload = {
+            nickname: diary.user.nickname,
+            mentionNickname: myNickname,
+            type: 'ALERT_FOLLOW',
+            urlPath: `/user/feed/${myNickname}`,
+            createdAt: getTodayDate(),
+            isRead: false,
+          };
+          dispatch(createAlert(payload));
+        }
       }
     });
   }
@@ -324,7 +348,11 @@ export default function DiaryDetail() {
                 <div className='mb-12'>{diary?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
-                <div>{!Number.isNaN(diaryId) && <FeedCommentList feedId={diaryId} setCommentCount={setCommentCount} />}</div>
+                <div>
+                  {!Number.isNaN(diaryId) && (
+                    <FeedCommentList feedId={Number(diaryId)} setCommentCount={setCommentCount} feedType='diary' nickname={diary.user.nickname} />
+                  )}
+                </div>
               </div>
 
               {/* 옵션 버튼 */}

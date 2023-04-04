@@ -41,7 +41,7 @@ export default function updatediary() {
 
   const [diarysetId, content, observationDate, image, tagItem] = getValues(['diarysetId', 'content', 'observationDate', 'image', 'tagItem']);
 
-  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
+  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 
   // searchState 변경
   function changeSearchState() {
