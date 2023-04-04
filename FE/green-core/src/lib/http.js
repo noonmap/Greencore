@@ -53,7 +53,7 @@ const AxiosInterceptor = ({ children }) => {
         // router.push('/login');
       }
 
-      if (error.response.status === 403) {
+      if (status === 403) {
         console.log('유효한 토큰이 아님');
         // dispatch(getAccessToken(authType));
         // router.push('/login');
