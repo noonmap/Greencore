@@ -106,7 +106,7 @@ export default function AppHeader() {
         console.log('Not kakao logged in');
       });
 
-    router.push('/');
+    router.push('/auth/login');
   }
 
   return (
