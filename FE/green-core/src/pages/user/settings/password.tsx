@@ -5,7 +5,16 @@ import UserSettingsConfirm from '@/components/UserSettingsConfirm';
 import UserSettingsPassword from '@/components/UserSettingsPassword';
 
 export default function password() {
-  const isPossibleUpdateUser = useAppSelector((state) => state.user.isPossibleUpdateUser);
+	const authType = useAppSelector((state) => state.common.authType);
+	const isPossibleUpdateUser = useAppSelector((state) => state.user.isPossibleUpdateUser);
 
-  return <SettingsLayout>{isPossibleUpdateUser ? <UserSettingsPassword /> : <UserSettingsConfirm />}</SettingsLayout>;
+	if (authType != 'DB') {
+		return (
+			<SettingsLayout>
+				<UserSettingsPassword />
+			</SettingsLayout>
+		);
+	}
+
+	return <SettingsLayout>{isPossibleUpdateUser ? <UserSettingsPassword /> : <UserSettingsConfirm />}</SettingsLayout>;
 }

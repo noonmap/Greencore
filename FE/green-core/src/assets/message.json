@@ -1,92 +1,102 @@
 {
-  "SignUpSuccess": "회원가입에 성공하였습니다 👏",
-  "SignUpFail": "회원가입에 실패하셨습니다 ❌",
+	"MessageDuration": 1800,
 
-  "GetAlertListFail": "알림 조회에 실패하셨습니다 ❌",
-  "DeleteAlertFail": "알림 삭제에 실패하셨습니다 ❌",
+	"500Error": "500: 서버에서 에러가 났습니다. \n네트워크 상태를 다시 한번 확인해주세요.",
+	"404Error": "404: 서버에서 에러가 났습니다. \n네트워크 상태를 다시 한번 확인해주세요.",
 
-  "CheckEmailSuccess": "해당 이메일로 인증코드가 전송되었습니다 🎉",
-  "CheckEmailFail": "중복된 이메일 입니다 ❌",
+	"SignUpSuccess": "회원가입에 성공하였습니다 👏",
+	"SignUpFail": "❌ 회원가입에 실패하셨습니다",
 
-  "FindPasswordSuccess": "해당 이메일로 임시 비밀번호가 전송되었습니다 🎉",
+	"GetAlertListFail": "❌ 알림 조회에 실패하셨습니다 ",
+	"DeleteAlertFail": "❌ 알림 삭제에 실패하셨습니다",
 
-  "CheckAuthCodeSuccess": "인증코드가 확인되었습니다 ✅",
-  "CheckAuthCodeFail": "인증코드가 틀렸습니다 ❌",
+	"CheckEmailSuccess": "해당 이메일로 인증코드가 전송되었습니다 🎉",
+	"CheckEmailFail": "❌ 중복된 이메일 입니다",
 
-  "DeleteUserSuccess": "회원탈퇴 되셨습니다",
-  "DeleteUserFail": "회원탈퇴에 실패하셨습니다 ❌",
+	"FindPasswordSuccess": "해당 이메일로 임시 비밀번호가 전송되었습니다 🎉",
+	"FindPasswordFail": "❌ 임시 비밀번호 전송에 실패했습니다",
 
-  "LogInSuccess": "로그인 하셨습니다 👋",
-  "LogInFail": "로그인에 실패하셨습니다 ❌",
-  "LogOutSuccess": "로그아웃 하셨습니다 👋",
-  "LogOutFail": "로그아웃에 실패하셨습니다 ❌",
+	"CheckAuthCodeSuccess": "✅ 인증코드가 확인되었습니다",
+	"CheckAuthCodeFail": "❌ 인증코드가 틀렸습니다",
 
-  "CheckPasswordFail": "회원 정보 조회에 실패하셨습니다 ❌",
-  "UpdatePasswordSuccess": "회원 정보가 수정되었습니다 ✅",
-  "UpdatePasswordFail": "회원 정보가 수정에 실패하셨습니다 ❌",
+	"DeleteUserSuccess": "회원탈퇴 되셨습니다 🥹",
+	"DeleteUserFail": "❌ 회원탈퇴에 실패하셨습니다",
 
-  "GetProfileFail": "프로필 조회에 실패하셨습니다 ❌",
-  "UpdateProfileSuccess": "프로필이 수정되었습니다 ✅",
-  "UpdateProfileFail": "프로필 수정에 실패하셨습니다 ❌",
-  "UpdateProfileImageSuccess": "프로필 이미지가 수정되었습니다 ✅",
-  "UpdateProfileImageFail": "프로필 이미지 수정에 실패하셨습니다 ❌",
+	"LogInSuccess": "로그인 하셨습니다 👋",
+	"LogInFail": "❌ 아이디와 비밀번호를 다시 한번 확인해주세요",
+	"LogOutSuccess": "로그아웃 하셨습니다 👋",
+	"LogOutFail": "❌ 로그아웃에 실패하셨습니다",
 
-  "CheckNicknameSuccess": "사용 가능한 닉네입 입니다 ✅",
-  "CheckNicknameFail": "사용 불가능한 닉네입 입니다. 닉네임을 다시 설정해주세요 ❌",
+	"CheckPasswordFail": "❌ 비밀번호가 틀렸습니다",
+	"UpdatePasswordSuccess": "✅ 회원 정보가 수정되었습니다",
+	"UpdatePasswordFail": "❌ 회원 정보 수정에 실패하셨습니다",
 
-  "GetFeedListFail": "피드 조회에 실패하셨습니다 ❌",
-  "CheckInputForm": "👇 입력된 폼을 확인해주세요",
+	"GetProfileFail": "❌ 프로필 조회에 실패하셨습니다",
+	"UpdateProfileSuccess": "✅ 프로필이 수정되었습니다",
+	"UpdateProfileFail": "❌ 프로필 수정에 실패하셨습니다",
+	"UpdateProfileImageSuccess": "✅ 프로필 이미지가 수정되었습니다",
+	"UpdateProfileImageFail": "❌ 프로필 이미지 수정에 실패하셨습니다",
 
-  "GetTagFeedListFail": "태그 검색에 실패하셨습니다 ❌",
+	"CheckNicknameSuccess": "✅ 사용 가능한 닉네임 입니다",
+	"CheckNicknameFail": "❌ 사용 불가능한 닉네임 입니다. 닉네임을 다시 설정해주세요",
 
-  "DeleteDiarySuccess": "일지를 삭제하셨습니다 ✅",
-  "DeleteDiaryFail": "일지 삭제에 실패하셨습니다 ❌",
+	"GetFeedListFail": "❌ 피드 조회에 실패하셨습니다",
+	"CheckInputForm": "👇 입력된 폼을 다시 확인해주세요",
 
-  "CreateDiarySuccess": "일지가 생성되었습니다 ✅",
-  "CreateDiaryFail": "일지 생성에 실패하셨습니다 ❌",
+	"GetTagFeedListFail": "❌ 태그 검색에 실패하셨습니다",
 
-  "UpdateDiarySuccess": "일지가 수정되었습니다 ✅",
-  "UpdateDiaryFail": "일지 수정에 실패하셨습니다 ❌",
+	"DeleteDiarySuccess": "✅ 일지를 삭제하셨습니다",
+	"DeleteDiaryFail": "❌ 일지 삭제에 실패하셨습니다",
 
-  "SearchByPlantName": "식물 조회에 실패하셨습니다 ❌",
+	"CreateDiarySuccess": "✅ 일지가 생성되었습니다",
+	"CreateDiaryFail": "❌ 일지 생성에 실패하셨습니다",
 
-  "SearchFail": "검색 요청에 실패하셨습니다 ❌",
+	"UpdateDiarySuccess": "✅ 일지가 수정되었습니다",
+	"UpdateDiaryFail": "❌ 일지 수정에 실패하셨습니다",
 
-  "CreateCommentSuccess": "댓글이 생성되었습니다 ✅",
-  "CreateCommentFail": "댓글 생성에 실패하셨습니다 ❌",
+	"SearchByPlantName": "❌ 식물 조회에 실패하셨습니다",
 
-  "UpdateCommentSuccess": "댓글이 수정되었습니다 ✅",
-  "UpdateCommentFail": "댓글 수정에 실패하셨습니다 ❌",
+	"SearchFail": "❌ 검색 요청에 실패하셨습니다",
 
-  "DeleteCommentSuccess": "댓글이 삭제되었습니다 ✅",
-  "DeleteCommentFail": "댓글 삭제에 실패하셨습니다 ❌",
+	"CreateCommentSuccess": "✅ 댓글이 생성되었습니다",
+	"CreateCommentFail": "❌ 댓글 생성에 실패하셨습니다",
 
-  "CreatePostSuccess": "게시글이 생성되었습니다 ✅",
-  "CreatePostFail": "게시글 생성에 실패하셨습니다 ❌",
+	"UpdateCommentSuccess": "✅ 댓글이 수정되었습니다",
+	"UpdateCommentFail": "❌ 댓글 수정에 실패하셨습니다",
 
-  "UpdatePostSuccess": "게시글이 수정되었습니다 ✅",
-  "UpdatePostFail": "게시글 수정에 실패하셨습니다 ❌",
+	"DeleteCommentSuccess": "✅ 댓글이 삭제되었습니다",
+	"DeleteCommentFail": "❌ 댓글 삭제에 실패하셨습니다",
 
-  "DeletePostSuccess": "게시글이 삭제되었습니다 ✅",
-  "DeletePostFail": "게시글 삭제에 실패하셨습니다 ❌",
+	"CreatePostSuccess": "✅ 게시글이 생성되었습니다",
+	"CreatePostFail": "❌ 게시글 생성에 실패하셨습니다",
 
-  "EssentialMessage": "필수 항목 입니다",
-  "EmailMessage": "올바른 이메일 형식이 아닙니다",
-  "PasswordMessage": "최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자",
-  "NicknameMessage": "2자 이상 16자 이하, 영어 또는 숫자 또는 한글로 구성",
+	"UpdatePostSuccess": "✅ 게시글이 수정되었습니다",
+	"UpdatePostFail": "❌ 게시글 수정에 실패하셨습니다",
 
-  "CreateScheduleSuccess": "스케줄이 생성되었습니다 ✅",
-  "CreateScheduleFail": "스케줄 생성에 실패하셨습니다 ❌",
+	"DeletePostSuccess": "✅ 게시글이 삭제되었습니다",
+	"DeletePostFail": "❌ 게시글 삭제에 실패하셨습니다",
 
-  "UpdateScheduleSuccess": "스케줄이 수정되었습니다 ✅",
-  "UpdateScheduleFail": "스케줄 수정에 실패하셨습니다 ❌",
+	"EssentialMessage": "필수 항목 입니다",
+	"EmailMessage": "올바른 이메일 형식이 아닙니다",
+	"PasswordMessage": "최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자",
+	"NicknameMessage": "2자 이상 16자 이하, 영어 또는 숫자 또는 한글로 구성",
 
-  "DeleteScheduleSuccess": "스케줄이 삭제되었습니다 ✅",
-  "DeleteScheduleFail": "스케줄 삭제에 실패하셨습니다 ❌",
+	"CreateScheduleSuccess": "✅ 스케줄이 생성되었습니다",
+	"CreateScheduleFail": "❌ 스케줄 생성에 실패하셨습니다",
 
-  "UpdateRegularScheduleSuccess": "정기스케줄이 수정되었습니다 ✅",
-  "UpdateRegularScheduleFail": "정기스케줄 수정에 실패하셨습니다 ❌",
+	"UpdateScheduleSuccess": "✅ 스케줄이 수정되었습니다",
+	"UpdateScheduleFail": "❌ 스케줄 수정에 실패하셨습니다",
 
-  "DeleteRegularScheduleSuccess": "정기스케줄이 삭제되었습니다 ✅",
-  "DeleteRegularScheduleFail": "정기스케줄 삭제에 실패하셨습니다 ❌"
+	"DeleteScheduleSuccess": "✅ 스케줄이 삭제되었습니다",
+	"DeleteScheduleFail": "❌ 스케줄 삭제에 실패하셨습니다",
+
+	"UpdateRegularScheduleSuccess": "✅ 정기스케줄이 수정되었습니다",
+	"UpdateRegularScheduleFail": "❌ 정기스케줄 수정에 실패하셨습니다",
+
+	"DeleteRegularScheduleSuccess": "✅ 정기스케줄이 삭제되었습니다",
+	"DeleteRegularScheduleFail": "❌ 정기스케줄 삭제에 실패하셨습니다",
+
+	"UpdateUserPlantSuccess": "✅ 키우는 식물의 별명이 수정되었습니다",
+	"UpdateUserPlantFail": "❌ 키우는 식물 별명 수정에 실패하셨습니다",
+	"DeleteUserPlantSuccess": "✅ 키우는 식물이 삭제되었습니다"
 }
