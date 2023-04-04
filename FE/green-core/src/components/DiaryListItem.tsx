@@ -26,7 +26,7 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
                 {isLoadingErrorAtimagePath && <Skeleton height={300} />}
                 <Image
                   className='mb-3 w-full h-full'
-                  src={`/images${diary.imagePath[0] === '/' ? diary.imagePath : '/' + diary.imagePath}`}
+                  src={diary.imagePath}
                   alt='로고'
                   width={100}
                   height={100}
