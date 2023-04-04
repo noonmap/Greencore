@@ -39,6 +39,6 @@ export type UserPlantType = {
 };
 
 export type SearchUserType = {
-  nickname: number;
+  nickname: string;
   profileImagePath: string;
 };
