@@ -9,7 +9,7 @@ import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
 
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
-import { SET_IS_POSSIBLE_UPDATE_USER_TRUE } from '@/core/user/userSlice';
+import { SET_IS_POSSIBLE_UPDATE_USER_FALSE, SET_IS_POSSIBLE_UPDATE_USER_TRUE } from '@/core/user/userSlice';
 
 type StateType = {
   password: string;
@@ -32,15 +32,14 @@ export default function UserSettingsConfirm() {
   } = useForm<StateType>({ defaultValues: initialState, mode: 'onChange' });
   const [password, isPossible] = getValues(['password', 'isPossible']);
 
+  useEffect(() => {
+    watch();
+  }, []);
+
   // searchState 변경
   useEffect(() => {
     dispatch(SET_IS_SEARCH_STATE('default'));
   });
-
-  useEffect(() => {
-    watch();
-    return () => {};
-  }, []);
 
   useEffect(() => {
     checkIsPossible();
