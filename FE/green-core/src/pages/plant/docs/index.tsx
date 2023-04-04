@@ -13,6 +13,7 @@ import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
 import { SearchUserType } from '@/core/user/userType';
 import Pagination from 'react-js-pagination';
 import styles from './plantDocs.module.scss';
+import Image from 'next/image';
 
 export default function plantDocs() {
   const dispatch = useAppDispatch();
@@ -405,9 +406,11 @@ export default function plantDocs() {
                       <div key={samPlantUser.nickname} className={`overflow-hidden`} style={{ borderRadius: '75px' }}>
                         <Link href={`/user/feed/${samPlantUser.nickname}`}>
                           {isLoadingErrorAtSamePlantUser[index] && <Skeleton width={150} height={150} />}
-                          <img
+                          <Image
                             className={`${styles.img}`}
-                            src={samPlantUser.profileImagePath}
+                            // src={samPlantUser.profileImagePath}
+                            src={`/images/default.jpg`}
+                            alt={''}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtSamePlantUser(index)}
