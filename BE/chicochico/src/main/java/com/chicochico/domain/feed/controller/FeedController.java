@@ -51,7 +51,7 @@ public class FeedController {
 		String nickname = authService.getUserNickname();
 		List<UserEntity> followingList = followService.getFollowingList(nickname);
 
-		List<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList);
+		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList, pageable);
 		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed, pageable);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
