@@ -50,6 +50,12 @@ const commonSlice = createSlice({
     SET_USER_INFO: (state, action) => {
       state.userInfo = action.payload;
     },
+    SET_IS_ALERT_TRUE: (state) => {
+      state.isAlert = true;
+    },
+    SET_IS_ALERT_FALSE: (state) => {
+      state.isAlert = false;
+    },
   },
 
   extraReducers(builder) {
@@ -90,9 +96,6 @@ const commonSlice = createSlice({
           state.accessToken = action.payload?.accessToken;
         }
       })
-      .addCase(createAlert.fulfilled, (state) => {
-        state.isAlert = true;
-      })
       .addCase(updateAllAlert.fulfilled, (state) => {
         state.isAlert = false;
       })
@@ -102,7 +105,15 @@ const commonSlice = createSlice({
   },
 });
 
-export const { SET_ACCESS_TOKEN, SET_IS_SEARCH_STATE, SET_AUTH_TYPE_DB, SET_AUTH_TYPE_KAKAO, SET_AUTH_TYPE_FIREBASE, SET_USER_INFO } =
-  commonSlice.actions;
+export const {
+  SET_ACCESS_TOKEN,
+  SET_IS_SEARCH_STATE,
+  SET_AUTH_TYPE_DB,
+  SET_AUTH_TYPE_KAKAO,
+  SET_AUTH_TYPE_FIREBASE,
+  SET_USER_INFO,
+  SET_IS_ALERT_TRUE,
+  SET_IS_ALERT_FALSE,
+} = commonSlice.actions;
 
 export default commonSlice.reducer;
