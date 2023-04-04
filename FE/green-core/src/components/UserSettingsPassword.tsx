@@ -5,6 +5,8 @@ import { checkInputFormToast } from '@/lib/utils';
 import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
 import styles from '@/styles/Settings.module.scss';
+import { useAppDispatch } from '@/core/hooks';
+import { SET_IS_POSSIBLE_UPDATE_USER_FALSE } from '@/core/user/userSlice';
 
 type StateType = {
   password: string;
@@ -19,6 +21,8 @@ const initialState: StateType = {
 };
 
 export default function UserSettingsPassword() {
+  const dispatch = useAppDispatch();
+
   const {
     register,
     formState: { errors },
@@ -30,7 +34,9 @@ export default function UserSettingsPassword() {
 
   useEffect(() => {
     watch();
-    return () => {};
+    return () => {
+      dispatch(SET_IS_POSSIBLE_UPDATE_USER_FALSE());
+    };
   }, []);
 
   function handleCheckPassword(e) {
