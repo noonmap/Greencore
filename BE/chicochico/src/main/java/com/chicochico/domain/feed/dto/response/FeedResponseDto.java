@@ -5,8 +5,6 @@ import com.chicochico.common.code.FeedType;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.user.dto.response.ProfileResponseDto;
-import com.chicochico.exception.CustomException;
-import com.chicochico.exception.ErrorCode;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
@@ -45,7 +43,7 @@ public class FeedResponseDto implements Serializable {
 	private Long growingDay;
 
 
-	public static FeedResponseDto fromEntity(FeedEntity xx, Boolean isLiked, Integer commentCount, Function<Long, Boolean> isFollowed) {
+	public static FeedResponseDto fromEntity(FeedEntity xx, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
 		FeedType feedType;
 		LocalDate observationDate;
 		String diarySetTitle;
@@ -76,8 +74,8 @@ public class FeedResponseDto implements Serializable {
 			.content(xx.getContent()) // 최대 50자까지 잘라서 전송
 			.imagePath(path)
 			.likeCount(xx.getLikeCount())
-			.isLiked(isLiked)
-			.commentCount(commentCount)
+			.isLiked(isLiked.apply(xx.getId()))
+			.commentCount(getCommentCount.apply(xx.getId()))
 			.diarySetTitle(diarySetTitle)
 			.growingDay(growingDay)
 			.createdAt(xx.getCreatedAt())
@@ -89,26 +87,35 @@ public class FeedResponseDto implements Serializable {
 	public static List<FeedResponseDto> fromEnityList(List<FeedEntity> xxList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
 		List<FeedResponseDto> result = new ArrayList<>();
 		for (FeedEntity xx : xxList) {
-			FeedResponseDto xxResponseDto = FeedResponseDto.fromEntity(xx, isLiked.apply(xx.getId()), getCommentCount.apply(xx.getId()), isFollowed);
+			FeedResponseDto xxResponseDto = FeedResponseDto.fromEntity(xx, isLiked, getCommentCount, isFollowed);
 			result.add(xxResponseDto);
 		}
 		return result;
 	}
 
 
-	public static Page<FeedResponseDto> fromEnityPage(List<FeedEntity> feedList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
+	public static Page<FeedResponseDto> fromEnityPage(Page<FeedEntity> feedList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
 		Pageable pageable) {
-		int start = (int) pageable.getOffset();
-		int end = Math.min(start + pageable.getPageSize(), feedList.size());
-		List<FeedResponseDto> feedResponseDtoList = fromEnityList(feedList, isLiked, getCommentCount, isFollowed);
-
 		try {
-			Page<FeedResponseDto> result = new PageImpl<>(feedResponseDtoList.subList(start, end), pageable, feedResponseDtoList.size());
+			Page<FeedResponseDto> result = feedList.map(f -> FeedResponseDto.fromEntity(f, isLiked, getCommentCount, isFollowed));
 			return result;
 		} catch (IllegalArgumentException e) {
-			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+			return Page.empty();
+			//			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
+	}
 
+
+	public static Page<FeedResponseDto> fromEnityPage(List<FeedEntity> feedList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
+		Pageable pageable) {
+		try {
+			Page<FeedEntity> feedEntityPage = new PageImpl<>(feedList, pageable, feedList.size());
+			Page<FeedResponseDto> result = feedEntityPage.map(f -> FeedResponseDto.fromEntity(f, isLiked, getCommentCount, isFollowed));
+			return result;
+		} catch (IllegalArgumentException e) {
+			return Page.empty();
+			//			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+		}
 	}
 
 }
