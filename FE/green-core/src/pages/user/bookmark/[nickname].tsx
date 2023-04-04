@@ -30,12 +30,15 @@ export default function Bookmark() {
   });
 
   const fetchBookmarkList = useCallback(async () => {
-    const payload = { page: 0, size: 5 };
-    const { content, totalElements } = await getBookmarkedDiarySet(nickname, payload);
+    try {
+      const payload = { page: 0, size: 5 };
+      const { data } = await getBookmarkedDiarySet(nickname, payload);
+      const content = data.content;
+      const totalElements = data.totalElements;
 
-    setBookMarkList(content);
-    setTotalCount(totalElements);
-    console.log(content, totalElements);
+      setBookMarkList(content);
+      setTotalCount(totalElements);
+    } catch (error) {}
   }, [nickname]);
 
   useEffect(() => {
