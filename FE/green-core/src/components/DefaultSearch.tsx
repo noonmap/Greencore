@@ -124,13 +124,11 @@ export default function DefaultSearch() {
   // -------------------------- 식물 -------------------------------
 
   function searchPlant(search: string) {
-    console.log('search', search);
     const params = {
       search: search,
       page: 0,
       size: sizeAtPlant,
     };
-    console.log('22', params);
     dispatch(searchByPlantName(params));
     setIsLoadedAtPlant(false);
   }
