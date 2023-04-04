@@ -45,17 +45,26 @@ const AxiosInterceptor = ({ children }) => {
     };
 
     const resInterceptor = (response) => {
-      return response;
-    };
+      const status = response.data?.status;
 
-    const errInterceptor = (error) => {
-      if (error.response.status === 401) {
+      if (status === 401) {
         console.log('refresh token 만료!');
-        // dispatch(getAccessToken(authType));
+        dispatch(getAccessToken(authType));
         // router.push('/login');
       }
 
       if (error.response.status === 403) {
+        console.log('유효한 토큰이 아님');
+        // dispatch(getAccessToken(authType));
+        // router.push('/login');
+      }
+
+      return response;
+    };
+
+    const errInterceptor = (error) => {
+      if (error.response.status === 403) {
+        console.log('유효한 토큰이 아님!');
         // dispatch(getAccessToken(authType));
         // router.push('/login');
       }
