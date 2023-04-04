@@ -192,8 +192,10 @@ export const deleteUser = createAsyncThunk('deleteUser', async () => {
 /** [POST] 로그인 API
  * @url /login
  */
-export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
+export const logIn = createAsyncThunk('logIn', async (requestData: any) => {
   try {
+    const router = requestData.router;
+    const payload = requestData.payload;
     const res = await http.post('/login', payload);
     const nickname = res.data.data.nickname;
 
@@ -233,7 +235,7 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
       if (cookies.getCookieToken()) cookies.removeCookieToken();
     }
 
-    return { accessToken, userInfo: { nickname } };
+    return { accessToken, userInfo: { nickname }, router };
   } catch (error) {
     Toastify({
       text: message.LogInFail,
@@ -248,7 +250,9 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 /** [POST] OAUTH 로그인 API
  * @url /login/oauth
  */
-export const logInByOAuth = createAsyncThunk('logInByOAuth', async (payload: LogInOAuthDataType) => {
+export const logInByOAuth = createAsyncThunk('logInByOAuth', async (requestData: any) => {
+  const router = requestData.router;
+  const payload = requestData.logInPayload;
   try {
     const { accessToken, refreshToken, nickname } = payload;
     const headers = {
@@ -290,7 +294,7 @@ export const logInByOAuth = createAsyncThunk('logInByOAuth', async (payload: Log
       if (cookies.getCookieToken()) cookies.removeCookieToken();
     }
 
-    return { accessToken, userInfo: { nickname } };
+    return { accessToken, userInfo: { nickname }, router };
   } catch (error) {
     Toastify({
       text: message.LogInFail,
