@@ -22,6 +22,15 @@ export const deleteFollow = async (nickname: string | string[]) => {
   }
 };
 
+export const deleteFollower = async (nickname: string | string[]) => {
+  try {
+    const { data } = await http.delete(`/follower/${nickname}`);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // 팔로잉 리스트 가져오기
 export const getFollowingList = async (nickname: string | string[], params: scrollType) => {
   try {

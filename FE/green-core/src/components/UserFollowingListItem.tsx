@@ -1,16 +1,20 @@
 import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import AppButton from './button/AppButton';
 
 export const UserFollowingListItem = ({ following, userProfileList }) => {
+  const router = useRouter();
+
   /** 팔로우 하는 함수 */
   async function handleFollowUpdate(e, nickname) {
     try {
       const { data } = await updateFollow(nickname);
       console.log(data);
+      router.reload();
     } catch (error) {
       console.error(error);
     }
@@ -21,6 +25,7 @@ export const UserFollowingListItem = ({ following, userProfileList }) => {
     try {
       const { data } = await deleteFollow(nickname);
       console.log(data);
+      router.reload();
     } catch (error) {
       console.error(error);
     }

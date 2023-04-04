@@ -12,6 +12,7 @@ import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import styles from './AppHeader.module.scss';
 import Skeleton from 'react-loading-skeleton';
 import { useRouter } from 'next/router';
+import { checkIsAlert } from '@/core/alert/alertAPI';
 
 export default function AppHeader() {
   const dispatch = useAppDispatch();
@@ -32,7 +33,10 @@ export default function AppHeader() {
   const googleProvider = new GoogleAuthProvider();
 
   useEffect(() => {
-    if (nickname) getUserProfile();
+    if (nickname) {
+      getUserProfile();
+      handleIsAlertCheck();
+    }
   }, [nickname, userProfileImagePath]);
 
   /** 사용자 프로필 이미지 가져오는 함수 */
@@ -46,6 +50,15 @@ export default function AppHeader() {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  /** 알림 체크하기 기능 */
+  async function handleIsAlertCheck() {
+    try {
+      dispatch(checkIsAlert(nickname));
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /** 로그아웃: github, kakao, google, jwt */
