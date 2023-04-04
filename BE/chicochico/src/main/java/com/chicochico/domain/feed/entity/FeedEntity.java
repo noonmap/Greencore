@@ -62,4 +62,14 @@ public class FeedEntity extends CommonEntity {
 		this.commentCount = commentCount;
 	}
 
+
+	public void increaseLikeCount() {
+		this.likeCount++;
+	}
+
+
+	public void decreaseLikeCount() {
+		this.likeCount--;
+	}
+
 }

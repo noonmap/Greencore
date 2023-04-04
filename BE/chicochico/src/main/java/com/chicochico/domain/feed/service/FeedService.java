@@ -274,6 +274,9 @@ public class FeedService {
 		LikeEntity like = LikeEntity.builder().feed(feed).user(user).build();
 		likeRepository.save(like);
 
+		feed.increaseLikeCount();
+		feedRepository.save(feed);
+
 		// Recommender system에 positive feedback 추가
 		recommenderService.insertFeedback(FeedbackType.like, userId, feedId, LocalDateTime.now());
 	}
@@ -290,6 +293,9 @@ public class FeedService {
 		FeedEntity feed = feedRepository.findById(feedId).orElseThrow(() -> new CustomException(ErrorCode.FEED_NOT_FOUND));
 		LikeEntity like = likeRepository.findByUserAndFeed(user, feed).orElseThrow(() -> new CustomException(ErrorCode.FEED_LIKE_NOT_FOUND));
 		likeRepository.delete(like);
+
+		feed.decreaseLikeCount();
+		feedRepository.save(feed);
 	}
 
 
