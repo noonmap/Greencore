@@ -5,8 +5,6 @@ import com.chicochico.common.code.FeedType;
 import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.user.dto.response.ProfileResponseDto;
-import com.chicochico.exception.CustomException;
-import com.chicochico.exception.ErrorCode;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
@@ -106,7 +104,8 @@ public class FeedResponseDto implements Serializable {
 			Page<FeedResponseDto> result = new PageImpl<>(feedResponseDtoList.subList(start, end), pageable, feedResponseDtoList.size());
 			return result;
 		} catch (IllegalArgumentException e) {
-			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
+			return Page.empty();
+			//			throw new CustomException(ErrorCode.PAGE_NOT_FOUND);
 		}
 
 	}
