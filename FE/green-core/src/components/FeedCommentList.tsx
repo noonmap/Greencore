@@ -2,13 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import FeedCommentItem from './FeedCommentItem';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '@/core/hooks';
-import { createComment, getCommentList } from '@/core/feed/feedAPI';
+import { createComment, getCommentList, getUserList } from '@/core/feed/feedAPI';
 import styles from './FeedCommentList.module.scss';
 import AppButton from './button/AppButton';
 import { checkInputFormToast } from '@/lib/utils';
 
 export default function FeedCommentList({ feedId }) {
   const [commentList, setCommentList] = useState([]);
+
+  // GET 요청 변수
   const [isStop, setIsStop] = useState(false);
   const size = useRef<number>(3);
   const page = useRef<number>(0);
@@ -17,15 +19,17 @@ export default function FeedCommentList({ feedId }) {
   // react-hook-form 설정
   type StateType = {
     content: string;
+    userList: Array<any>;
   };
 
   const initialState: StateType = {
     content: '',
+    userList: [],
   };
 
   const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
-  const [content] = getValues(['content']);
+  const [content, userList] = getValues(['content', 'userList']);
 
   useEffect(() => {
     watch();
@@ -39,13 +43,13 @@ export default function FeedCommentList({ feedId }) {
       const data = await dispatch(getCommentList(requestData));
       try {
         if (data.payload.result === 'SUCCESS') {
-          if (data.payload.data.length < 3) {
+          if (data.payload.data.content.length < 3) {
             setIsStop(true);
           }
           if (page.current === 0) {
-            setCommentList([...data.payload.data]);
+            setCommentList([...data.payload.data.content]);
           } else {
-            setCommentList((prev) => [...prev, ...data.payload.data]);
+            setCommentList((prev) => [...prev, ...data.payload.data.content]);
           }
           page.current += 1;
         }
@@ -55,11 +59,30 @@ export default function FeedCommentList({ feedId }) {
     }
   };
 
+  useEffect(() => {
+    const lastAtSignIndex = content.lastIndexOf('@');
+    console.log(lastAtSignIndex);
+    if (lastAtSignIndex !== -1 && content.length > lastAtSignIndex + 1) {
+      console.log(content.length, lastAtSignIndex + 1);
+      const nickname = content.slice(lastAtSignIndex + 1);
+      getUserList(nickname).then((res) => {
+        console.log(res.data);
+        setValue('userList', res.data.nickname);
+      });
+    }
+  }, [content]);
+
+  const handleUserSelect = (user: { name: string }) => {
+    setValue('content', content.replace(/@\w+$/, `@${user.name} `));
+    setValue('userList', []);
+  };
+
   // 댓글 생성
   const handleCreateComment = async (e: any) => {
     e.preventDefault();
-    const mentionRegex = /@[^\s@#]+/g;
-    const mentionNickname = content.match(mentionRegex) || [];
+    const mentionRegex = /@[^\s@]+/g;
+    // const mentionNickname = content.match(mentionRegex) || [];
+    const mentionNickname = null;
 
     if (content == '') {
       checkInputFormToast();
@@ -91,6 +114,13 @@ export default function FeedCommentList({ feedId }) {
     <>
       <div className={`${styles.inputBox}`}>
         <textarea className={`${styles.textareaBox}`} rows={2} {...register('content')} />
+        <ul>
+          {userList.map((user) => (
+            <li key={user.id} onClick={() => handleUserSelect(user)}>
+              {user.name}
+            </li>
+          ))}
+        </ul>
         <AppButton text='작성' className={`${styles.btn}`} handleClick={handleCreateComment} />
       </div>
       {commentList.map((comment) => {

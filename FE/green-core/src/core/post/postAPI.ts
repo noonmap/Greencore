@@ -41,7 +41,9 @@ export const createPost = createAsyncThunk('createPost', async (requestData: Cre
 export const updatePost = createAsyncThunk('updatePost', async (requestData: UpdatePostType) => {
   try {
     const router = requestData.router;
-    const { data } = await http.put(`/post/${requestData.postId}`, requestData.payload);
+    const payload = requestData.payload;
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    const { data } = await http.put(`/post/${requestData.postId}`, payload, { headers });
     if (data.result === 'SUCCESS') {
       Toastify({
         text: message.UpdatePostSuccess,
@@ -94,6 +96,16 @@ export const deletePost = createAsyncThunk('deletePost', async (requestData: Del
     console.log(err);
   }
 });
+
+// 포스트 상세 조회
+export const getPost = async (postId: number) => {
+  try {
+    const { data } = await http.get(`/post/${postId}`);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 /** 포스트 조회하는 함수 */
 export const getPostList = async (nickname: string | string[], params: PageType) => {

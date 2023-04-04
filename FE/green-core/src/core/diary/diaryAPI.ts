@@ -43,7 +43,8 @@ export const createDiary = createAsyncThunk('createDiary', async (requestData: C
         stopOnFocus: true,
         style: toastifyCSS.success,
       }).showToast();
-      router.push(`/diary/${data.data.diaryId}`);
+      console.log(data);
+      router.push(`/diaryset/list/${requestData.diarySetId}`);
     } else {
       Toastify({
         text: message.CreateDiaryFail,
@@ -93,9 +94,11 @@ export const deleteDiary = createAsyncThunk('deleteDiary', async (requestData: D
 export const updateDiary = createAsyncThunk('updateDiary', async (requestData: UpdateDiaryType) => {
   const router = requestData.router;
   try {
-    const { data } = await http.put(`/diary/${requestData.payload.diaryId}`, requestData.payload);
+    const payload = requestData.payload;
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    const { data } = await http.put(`/diary/${requestData.diaryId}`, payload, { headers });
     if (data.result === 'SUCCESS') {
-      router.push(`/diary/${requestData.payload.diaryId}`);
+      router.push(`/diary/${requestData.diaryId}`);
       Toastify({
         text: message.UpdateDiarySuccess,
         duration: 1000,

@@ -30,12 +30,6 @@ export type DeleteDiaryType = {
 // 일지 수정
 export type UpdateDiaryType = {
   router: NextRouter;
-  payload: {
-    diarysetId: number;
-    diaryId: number;
-    content: string;
-    opservationDate: string;
-    image: Object;
-    tags: Array<string>;
-  };
+  payload: FormData;
+  diaryId: Number;
 };

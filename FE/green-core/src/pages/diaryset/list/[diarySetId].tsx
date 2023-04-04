@@ -7,6 +7,10 @@ import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getDiaryList } from '~/src/core/diary/diaryAPI';
 import { createBookmark, deleteBookmark } from '~/src/core/diarySet/diarySetAPI';
+import Image from 'next/image';
+import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import Skeleton from 'react-loading-skeleton';
 
 export default function diarySet() {
   const dispatch = useAppDispatch();
@@ -16,32 +20,48 @@ export default function diarySet() {
   const [isBookmarked, setIsBookmarked] = useState<boolean | null>(diarySet.isBookmarked);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
-  const ref = useRef<HTMLDivElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { diarySetId } = router.query;
+  const storage = getStorage();
+  const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
+
+  /** 사용자 프로필 이미지 가져오는 함수 */
+  function getUserProfile(nickname: string) {
+    const profileRef = ref(storage, `${nickname}/profileImage`);
+
+    getDownloadURL(profileRef)
+      .then((downloadURL) => {
+        setUserProfileImagePath(downloadURL);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // searchState 변경
+  function changeSearchState() {
+    dispatch(SET_IS_SEARCH_STATE('default'));
+  }
+
+  // 바깥 클릭시
+  const handleClickOutside = (event) => {
+    if (event.target.innerText != 'more_vert') {
+      setIsEditOpen(false);
+    }
+  };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (event.target.innerText != 'more_vert') {
-        setIsEditOpen(false);
-      }
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => {};
-  }, []);
+    changeSearchState();
+    getUserProfile(myNickname);
 
-  useEffect(() => {
     if (diarySetId) {
       dispatch(getDiaryList(Number(diarySetId)));
     }
 
-    return () => {
-      console.log('unmounted');
-    };
-  }, [diarySetId]);
-
-  console.log(diaryList); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  console.log(diarySet);
+    document.addEventListener('click', handleClickOutside);
+    return () => {};
+  }, [diarySetId, myNickname]);
 
   // 뒤로가기
   function goBack() {
@@ -97,11 +117,11 @@ export default function diarySet() {
                 {/* 프로필 */}
                 <div>
                   <Link href={`/user/feed/${diarySet?.user?.nickname}`}>
-                    <img
-                      src={`http://localhost:8080/api${diarySet?.user?.profileImagePath}`}
-                      style={{ borderRadius: '50%', width: '80px', height: '80px' }}
-                      alt='프로필 사진'
-                    />
+                    {userProfileImagePath ? (
+                      <Image src={userProfileImagePath} width={80} height={80} style={{ borderRadius: '50%' }} alt='프로필 사진' />
+                    ) : (
+                      <Skeleton width={80} height={80} style={{ borderRadius: '50%' }} />
+                    )}
                   </Link>
                 </div>
                 {/* 일지생성 */}
@@ -134,7 +154,7 @@ export default function diarySet() {
                         <span className='material-symbols-outlined px-2' onClick={openEditPopUp} style={{ cursor: 'pointer' }}>
                           more_vert
                         </span>
-                        <div ref={ref} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
+                        <div ref={divRef} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
                           {/* TODO : 수정 페이지 모달 */}
                           <div className='border-b border-slate-300 bg-white flex justify-center items-center'>
                             <span className='text-lg p-2'>수정</span>
