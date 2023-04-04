@@ -149,6 +149,8 @@ public class PostService {
 			.likeCount(originPost.getLikeCount())
 			.commentCount(originPost.getCommentCount())
 			.isDeleted(IsDeletedType.N)
+			.createdAt(originPost.getCreatedAt())
+			.updatedAt(originPost.getUpdatedAt())
 			.build();
 		newPost = postRepository.save(newPost);
 

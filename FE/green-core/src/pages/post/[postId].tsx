@@ -30,6 +30,7 @@ export default function PostDetail() {
   const [isfollowed, setIsFollowed] = useState<boolean>(false);
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [commentCount, setCommentCount] = useState<number>(0);
 
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 
@@ -69,6 +70,7 @@ export default function PostDetail() {
       getPost(Number(postId)).then((res) => {
         if (res.result === 'SUCCESS') {
           setPost(res.data);
+          setCommentCount(res.data.commentCount);
           getUserProfile(res.data.user.nickname);
           setIsLiked(res.data.isLiked);
           setLikeCount(res.data.likeCount);
@@ -257,17 +259,19 @@ export default function PostDetail() {
                     </div>
                   </div>
                   <div className='flex py-5'>{post.user.introduction}</div>
-                  <div className='flex justify-center rounded-lg overflow-hidden'>
-                    {isfollowed ? (
-                      <button className={`w-full `} onClick={handleDeleteFollow} style={{ backgroundColor: 'var(--thin-color)' }}>
-                        팔로우 취소
-                      </button>
-                    ) : (
-                      <button className={`text-white w-full`} onClick={handleUserFollow} style={{ backgroundColor: 'var(--main-color)' }}>
-                        팔로우
-                      </button>
-                    )}
-                  </div>
+                  {post.user.nickname !== myNickname && (
+                    <div className='flex justify-center rounded-lg overflow-hidden'>
+                      {isfollowed ? (
+                        <button className={`w-full `} onClick={handleDeleteFollow} style={{ backgroundColor: 'var(--thin-color)' }}>
+                          팔로우 취소
+                        </button>
+                      ) : (
+                        <button className={`text-white w-full`} onClick={handleUserFollow} style={{ backgroundColor: 'var(--main-color)' }}>
+                          팔로우
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -285,7 +289,7 @@ export default function PostDetail() {
               </div>
               <div className={`${styles.infoItem} flex`}>
                 <span className={`material-symbols-outlined flex-1 flex text-right`}>chat</span>
-                <div className='font-extrabold flex-1 flex justify-start ml-3'>{post.commentCount}</div>
+                <div className='font-extrabold flex-1 flex justify-start ml-3'>{commentCount}</div>
               </div>
             </div>
 
@@ -293,16 +297,10 @@ export default function PostDetail() {
             <div className={`${styles.subContainer} flex flex-1`} style={myNickname !== post.user.nickname ? { paddingRight: '24px' } : null}>
               <div className='flex-1 px-3'>
                 <div className='flex justify-between mb-2'>
-                  <div className={`${styles.nickname}`}>{post.user.nickname}</div>
+                  <div className={`${styles.nickname}`}>{post.user.nickname}님의 게시물</div>
                 </div>
                 <div className={`${styles.box}`}>
-                  <Image
-                    src={`/images${post?.imagePath[0] === '/' ? post?.imagePath : '/' + post?.imagePath}`}
-                    width={100}
-                    height={100}
-                    alt='img'
-                    className={`${styles.image}`}
-                  />
+                  <Image src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
@@ -322,7 +320,7 @@ export default function PostDetail() {
                 <div className='mb-7'>{post?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
-                <div>{!Number.isNaN(postId) && <FeedCommentList feedId={postId} />}</div>
+                <div>{!Number.isNaN(postId) && <FeedCommentList feedId={postId} setCommentCount={setCommentCount} />}</div>
               </div>
 
               {/* 옵션 버튼 */}

@@ -7,12 +7,12 @@ import styles from './FeedCommentList.module.scss';
 import AppButton from './button/AppButton';
 import { checkInputFormToast } from '@/lib/utils';
 
-export default function FeedCommentList({ feedId }) {
+export default function FeedCommentList({ feedId, setCommentCount }) {
   const [commentList, setCommentList] = useState([]);
 
   // GET 요청 변수
-  const [isStop, setIsStop] = useState(false);
-  const size = useRef<number>(3);
+  const isStop = useRef<boolean>(false);
+  const size = useRef<number>(5);
   const page = useRef<number>(0);
   const dispatch = useAppDispatch();
 
@@ -36,29 +36,33 @@ export default function FeedCommentList({ feedId }) {
     return () => {};
   });
 
-  // 댓글 3개씩 리스트 받아오기
+  // 댓글 5개씩 리스트 받아오기
   const handleGetCommentList = async () => {
-    if (!isStop) {
+    if (!isStop.current) {
       const requestData = { feedId, page: page.current, size: size.current };
-      const data = await dispatch(getCommentList(requestData));
       try {
-        if (data.payload.result === 'SUCCESS') {
-          if (data.payload.data.content.length < 3) {
-            setIsStop(true);
+        const data = await getCommentList(requestData);
+        console.log(data);
+        if (data.result === 'SUCCESS') {
+          setCommentCount(data.data.totalElements);
+          if (data.data.content.length < 5) {
+            isStop.current = true;
           }
           if (page.current === 0) {
-            setCommentList([...data.payload.data.content]);
+            setCommentList([...data.data.content]);
           } else {
-            setCommentList((prev) => [...prev, ...data.payload.data.content]);
+            setCommentList((prev) => [...prev, ...data.data.content]);
           }
           page.current += 1;
         }
       } catch (err) {
-        console.log(err);
+        isStop.current = true;
+        setCommentList((prev) => [...prev]);
       }
     }
   };
 
+  // 멘션 적용
   useEffect(() => {
     const lastAtSignIndex = content.lastIndexOf('@');
     console.log(lastAtSignIndex);
@@ -94,6 +98,7 @@ export default function FeedCommentList({ feedId }) {
 
     const data = await dispatch(createComment(requestData));
     if (data.payload.result === 'SUCCESS') {
+      isStop.current = false;
       setValue('content', '');
       page.current = 0;
       handleGetCommentList();
@@ -101,9 +106,13 @@ export default function FeedCommentList({ feedId }) {
   };
 
   // 댓글 삭제
-  const deleteCommentList = (commentId: number) => {
-    let filteredCommentList = commentList.filter((item) => item.commentId !== commentId);
-    setCommentList(filteredCommentList);
+  const deleteCommentList = () => {
+    // let filteredCommentList = commentList.filter((item) => item.commentId !== commentId);
+    // setCommentList(filteredCommentList);
+    isStop.current = false;
+    setValue('content', '');
+    page.current = 0;
+    handleGetCommentList();
   };
 
   useEffect(() => {
@@ -126,7 +135,7 @@ export default function FeedCommentList({ feedId }) {
       {commentList.map((comment) => {
         return <FeedCommentItem key={comment.commentId} comment={comment} feedId={feedId} deleteCommentList={deleteCommentList} />;
       })}
-      {!isStop ? (
+      {!isStop.current ? (
         <AppButton text='더보기' handleClick={handleGetCommentList} className='mt-4' />
       ) : (
         <AppButton text='더 이상 불러올 댓글이 없습니다' bgColor='thin' handleClick={handleGetCommentList} className='mt-4' />

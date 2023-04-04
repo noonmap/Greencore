@@ -155,6 +155,8 @@ public class DiaryService {
 			.isDeleted(originDiary.getIsDeleted())
 			.diarySet(originDiary.getDiarySet())
 			.observationDate(originDiary.getObservationDate())
+			.createdAt(originDiary.getCreatedAt())
+			.updatedAt(originDiary.getUpdatedAt())
 			.build();
 		newDiary = diaryRepository.save(newDiary);
 
