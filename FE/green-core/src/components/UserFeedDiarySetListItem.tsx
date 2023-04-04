@@ -8,7 +8,7 @@ import { createBookmark, deleteBookmark, deleteDiarySet } from '@/core/diarySet/
 import DiarySetModal from '@/components/modal/DiarySetModal';
 import AppModal from './common/AppModal';
 
-export default function UserFeedDiarySetListItem({ nickname, diarySet }) {
+export default function UserFeedDiarySetListItem({ nickname, diarySet, fetchDiarySetList }) {
   const router = useRouter();
   const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 
@@ -32,35 +32,36 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet }) {
     if (myNickname == nickname) setIsSameUser(true);
   }, [myNickname, nickname]);
 
-  function handleIsOpenDiarySetUpdate(diarySetId: number) {
-    setDiarySetId(diarySetId);
+  async function handleIsOpenDiarySetUpdate() {
+    setDiarySetId(diarySet.diarySetId);
     setIsOpenDiarySetUpdateModal(true);
     setIsEditPopUp(false);
   }
 
-  function handleIsOpenDiarySetDelete(diarySetId: number) {
-    setDiarySetId(diarySetId);
+  async function handleIsOpenDiarySetDelete() {
+    setDiarySetId(diarySet.diarySetId);
     setIsOpenDiarySetDeleteModal(true);
     setIsEditPopUp(false);
   }
 
   async function handleBookmarkCreate() {
-    console.log('handleBookmarkCreate', diarySet.diarySetId);
     const { data } = await createBookmark(diarySet.diarySetId);
+    await fetchDiarySetList();
   }
 
   async function handleBookmardDelete() {
-    console.log('handleBookmardDelete', diarySet.diarySetId);
     const { data } = await deleteBookmark(diarySet.diarySetId);
+    await fetchDiarySetList();
   }
 
   /** 사용자 관찰일지 삭제하는 함수 */
-  async function handleDiarySetDelete(diarySetId: number) {
+  async function handleDiarySetDelete() {
     try {
-      const { data } = await deleteDiarySet(diarySetId);
+      const { data } = await deleteDiarySet(diarySet.diarySetId);
       console.log(data);
       setIsOpenDiarySetDeleteModal(false);
       setIsEditPopUp(false);
+      await fetchDiarySetList();
     } catch (error) {
       console.error(error);
       setIsOpenDiarySetDeleteModal(false);
@@ -81,6 +82,7 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet }) {
         modalTitle='관찰일지 수정'
         diarySetId={diarySetId}
         handleModalClose={() => setIsOpenDiarySetUpdateModal(false)}
+        fetchDiarySetList={fetchDiarySetList}
       />
       <AppModal
         isOpen={isOpenDiarySetDeleteModal}
@@ -130,8 +132,8 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet }) {
             {isEditPopUp ? (
               <div className='relative'>
                 <div className={`popUp ${styles.popUp}`}>
-                  <div onClick={() => handleIsOpenDiarySetUpdate(diarySet.diarySetId)}>수정</div>
-                  <div onClick={() => handleIsOpenDiarySetDelete(diarySet.diarySetId)}>삭제</div>
+                  <div onClick={handleIsOpenDiarySetUpdate}>수정</div>
+                  <div onClick={handleIsOpenDiarySetDelete}>삭제</div>
                 </div>
               </div>
             ) : null}
