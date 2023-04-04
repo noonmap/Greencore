@@ -67,7 +67,8 @@ const commonSlice = createSlice({
       .addCase(logIn.fulfilled, (state, action) => {
         state.userInfo = action.payload?.userInfo;
         state.accessToken = action.payload?.accessToken;
-        action.payload.router.push('/home');
+        console.log(action.payload);
+        action.payload.router?.push('/home');
       })
       .addCase(logInByOAuth.pending, (state) => {
         state.userInfo = null;
@@ -77,7 +78,8 @@ const commonSlice = createSlice({
         state.userInfo = action.payload?.userInfo;
         console.log('hihi:', action.payload);
         state.accessToken = action.payload?.accessToken;
-        action.payload.router.push('/home');
+        console.log(action.payload);
+        action.payload.router?.push('/home');
       })
       .addCase(logOut.fulfilled, (state) => {
         state.userInfo = null;

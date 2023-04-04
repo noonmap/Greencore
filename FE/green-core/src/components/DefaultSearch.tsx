@@ -129,6 +129,7 @@ export default function DefaultSearch() {
       page: 0,
       size: sizeAtPlant,
     };
+    console.log('22', params);
     dispatch(searchByPlantName(params));
     setIsLoadedAtPlant(false);
   }
