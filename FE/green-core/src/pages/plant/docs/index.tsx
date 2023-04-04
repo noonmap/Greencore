@@ -345,7 +345,7 @@ export default function plantDocs() {
                           {isLoadingErrorAtTopPlant[index] && <Skeleton width={150} height={150} />}
                           <img
                             className={`${styles.img}`}
-                            src={`/images${topPlant.imagePath}`}
+                            src={`${topPlant.imagePath}`}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtTopPlant(index)}
@@ -376,7 +376,7 @@ export default function plantDocs() {
                               {isLoadingErrorAtTopDiarySet[index] && <Skeleton width={200} height={200} />}
                               <img
                                 className={`${styles.img}`}
-                                src={`/images${topDiarySet.imagePath}`}
+                                src={`${topDiarySet.imagePath}`}
                                 width={200}
                                 height={200}
                                 onLoad={() => handleImageLoadAtTopDiarySet(index)}
@@ -407,7 +407,7 @@ export default function plantDocs() {
                           {isLoadingErrorAtSamePlantUser[index] && <Skeleton width={150} height={150} />}
                           <img
                             className={`${styles.img}`}
-                            src={`/images${samPlantUser.profileImagePath}`}
+                            src={`${samPlantUser.profileImagePath}`}
                             width={150}
                             height={150}
                             onLoad={() => handleImageLoadAtSamePlantUser(index)}
