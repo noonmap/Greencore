@@ -14,7 +14,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
 	List<CommentEntity> findByFeed(FeedEntity feed);
-	Page<CommentEntity> findByFeedAndIsDeleted(FeedEntity feed, Pageable pageable, IsDeletedType isDeletedType);
+	Page<CommentEntity> findByFeedAndIsDeletedOrderByIdDesc(FeedEntity feed, Pageable pageable, IsDeletedType isDeletedType);
 	Integer countByFeed(FeedEntity feed);
 
 }
