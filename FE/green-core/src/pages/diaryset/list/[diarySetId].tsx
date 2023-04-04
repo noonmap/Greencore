@@ -6,11 +6,13 @@ import styles from '@/styles/DiarySetDetail.module.scss';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getDiaryList } from '~/src/core/diary/diaryAPI';
-import { createBookmark, deleteBookmark } from '~/src/core/diarySet/diarySetAPI';
+import { createBookmark, deleteBookmark, deleteDiarySet } from '@/core/diarySet/diarySetAPI';
 import Image from 'next/image';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import Skeleton from 'react-loading-skeleton';
+import DiarySetModal from '@/components/modal/DiarySetModal';
+import AppModal from '@/components/common/AppModal';
 
 export default function diarySet() {
   const dispatch = useAppDispatch();
@@ -26,6 +28,9 @@ export default function diarySet() {
   const storage = getStorage();
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 
+  const [isOpenDiarySetUpdateModal, setIsOpenDiarySetUpdateModal] = useState(false);
+  const [isOpenDiarySetDeleteModal, setIsOpenDiarySetDeleteModal] = useState(false);
+
   /** 사용자 프로필 이미지 가져오는 함수 */
   function getUserProfile(nickname: string) {
     const profileRef = ref(storage, `${nickname}/profileImage`);
@@ -38,6 +43,11 @@ export default function diarySet() {
         console.error(error);
       });
   }
+
+  // 새로고침하기
+  const handleRefresh = () => {
+    router.reload();
+  };
 
   // searchState 변경
   function changeSearchState() {
@@ -92,8 +102,35 @@ export default function diarySet() {
     setIsEditOpen(true);
   }
 
+  /** 사용자 관찰일지 삭제하는 함수 */
+  async function handleDiarySetDelete() {
+    try {
+      const { data } = await deleteDiarySet(Number(diarySetId));
+      console.log(data);
+      router.push('/home');
+      setIsOpenDiarySetDeleteModal(false);
+    } catch (error) {
+      console.error(error);
+      setIsOpenDiarySetDeleteModal(false);
+    }
+  }
+
   return (
     <AppLayout>
+      <DiarySetModal
+        isOpen={isOpenDiarySetUpdateModal}
+        update
+        modalTitle='관찰일지 수정'
+        diarySetId={Number(diarySetId)}
+        handleModalClose={() => setIsOpenDiarySetUpdateModal(false)}
+        fetchDiarySetList={handleRefresh}
+      />
+      <AppModal
+        isOpen={isOpenDiarySetDeleteModal}
+        title='관찰일지 삭제'
+        handleModalClose={() => setIsOpenDiarySetDeleteModal(false)}
+        handleModalConfirm={handleDiarySetDelete}
+      />
       <div className=''>
         {isLoading ? (
           new Array(10).fill(1).map((_, i) => {
@@ -156,13 +193,15 @@ export default function diarySet() {
                         </span>
                         <div ref={divRef} className={`${isEditOpen ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
                           {/* TODO : 수정 페이지 모달 */}
-                          <div className='border-b border-slate-300 bg-white flex justify-center items-center'>
+                          <div
+                            className='border-b border-slate-300 bg-white flex justify-center items-center'
+                            onClick={() => setIsOpenDiarySetUpdateModal(true)}>
                             <span className='text-lg p-2'>수정</span>
                             <span className='material-symbols-outlined'>edit</span>
                           </div>
 
                           {/* TODO : 삭제 하기, 삭제 경고 모달 */}
-                          <div className='bg-white flex justify-center items-center text-red-400'>
+                          <div className='bg-white flex justify-center items-center text-red-400' onClick={() => setIsOpenDiarySetDeleteModal(true)}>
                             <span className='text-lg p-2'>삭제</span>
                             <span className='material-symbols-outlined'>delete</span>
                           </div>
