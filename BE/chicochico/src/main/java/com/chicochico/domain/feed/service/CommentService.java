@@ -35,8 +35,6 @@ public class CommentService {
 
 	private final AuthService authService;
 
-	private final FollowEntity mentionUser;
-
 
 	/**
 	 * 해당 피드의 댓글 목록을 조회합니다.
