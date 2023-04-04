@@ -29,15 +29,16 @@ const plantSlice = createSlice({
         if (action.payload.length === 0) {
           state.isStopedAtPlant = true;
         }
+        console.log('payload : ', action.payload);
         state.pageAtPlant = 1;
-        state.searchPlantList = action.payload;
+        state.searchPlantList = action.payload?.content;
       })
       .addCase(plantAPI.searchByPlantNameMore.fulfilled, (state, action) => {
         if (action.payload.length === 0) {
           state.isStopedAtPlant = true;
         }
         state.pageAtPlant = state.pageAtPlant + 1;
-        state.searchPlantList = [...state.searchPlantList, ...action.payload];
+        state.searchPlantList = [...state.searchPlantList, ...action.payload?.content];
       });
   },
 });
