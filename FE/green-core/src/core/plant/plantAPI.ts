@@ -9,7 +9,10 @@ import toastifyCSS from '@/assets/toastify.json';
 // 식물 이름 검색
 export const searchByPlantName = createAsyncThunk('searchByPlantName', async (params: SearchType) => {
   try {
+    console.log('33', params);
     const { data } = await http.get(`/plant`, { params });
+    console.log('44', params);
+    console.log(data);
     return data.data;
   } catch (error) {
     Toastify({

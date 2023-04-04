@@ -25,6 +25,7 @@ const plantSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(plantAPI.searchByPlantName.fulfilled, (state, action) => {
+        console.log('55');
         if (action.payload.length === 0) {
           state.isStopedAtPlant = true;
         }
