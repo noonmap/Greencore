@@ -101,9 +101,10 @@ export default function UserPlantModal({
 
     try {
       const payload = { plantId, plantNickname };
+      console.log('palnt::', payload);
       const { data } = await createUserPlant(payload);
       handleModalClose();
-      fetchUserPlantList();
+      await fetchUserPlantList();
       setValue('plantNickname', '');
       setValue('searchPlantName', '');
     } catch (error) {

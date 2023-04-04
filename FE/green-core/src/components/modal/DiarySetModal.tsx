@@ -12,6 +12,7 @@ type PropsType = {
   create?: boolean;
   update?: boolean;
   handleModalClose: () => void;
+  fetchDiarySetList?: () => void;
 };
 
 const initialState = {
@@ -21,9 +22,18 @@ const initialState = {
   startDate: '',
 };
 
-export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantList, create, update, handleModalClose }: PropsType) {
+export default function DiaryModal({
+  isOpen,
+  modalTitle,
+  diarySetId,
+  userPlantList,
+  create,
+  update,
+  handleModalClose,
+  fetchDiarySetList,
+}: PropsType) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { register, getValues, watch } = useForm({ defaultValues: initialState, mode: 'onChange' });
+  const { register, setValue, getValues, watch } = useForm({ defaultValues: initialState, mode: 'onChange' });
   const [userPlantId, title, startDate, image] = getValues(['userPlantId', 'title', 'startDate', 'image']);
 
   useEffect(() => {
@@ -48,6 +58,15 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
       formData.append('title', title);
       formData.append('startDate', startDate);
       const { data } = await createDiarySet(formData);
+
+      if (data) {
+        setValue('image', null);
+        setValue('title', '');
+        setValue('startDate', '');
+        await fetchDiarySetList();
+      }
+
+      handleModalClose();
     } catch (error) {
       console.error(error);
     }
@@ -61,6 +80,14 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
       formData.append('title', title);
       formData.append('startDate', startDate);
       const { data } = await updateDiarySet(diarySetId, formData);
+
+      if (data) {
+        setValue('image', null);
+        setValue('title', '');
+        setValue('startDate', '');
+        await fetchDiarySetList();
+      }
+      handleModalClose();
     } catch (error) {
       console.error(error);
     }
@@ -73,7 +100,7 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
           <div className='modalWrap' ref={modalRef}>
             {/* 모달 내부 */}
             <div className='relative'>
-              <span className='modSSSalClose material-symbols-outlined' onClick={() => handleModalClose()}>
+              <span className='modalClose material-symbols-outlined' onClick={() => handleModalClose()}>
                 close
               </span>
             </div>
@@ -87,7 +114,7 @@ export default function DiaryModal({ isOpen, modalTitle, diarySetId, userPlantLi
                   <div>
                     {userPlantList ? (
                       <select {...register('userPlantId')} className='w-full'>
-                        {userPlantList.map((p) => (
+                        {userPlantList?.map((p) => (
                           <option key={p.userPlantId} value={p.userPlantId}>
                             {p.plantNickname}
                           </option>

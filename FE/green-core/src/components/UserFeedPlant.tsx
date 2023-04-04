@@ -15,7 +15,7 @@ type UserPlantType = {
 };
 
 export default function UserFeedPlant({ nickname }) {
-  const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>();
+  const [userPlantList, setUserPlantList] = useState<Array<UserPlantType>>([]);
 
   const [userPlantPage, setUserPlantPage] = useState(0);
   const [userPlantSize, setUserPlantSize] = useState(3);
@@ -51,7 +51,8 @@ export default function UserFeedPlant({ nickname }) {
   /** 키우는 식물 리스트 다음 페이지 */
   async function nextUserPlantListPage() {
     let page = userPlantPage + 1;
-    if (page >= userPlantListTotalCount / userPlantSize) return;
+
+    if (page >= Math.ceil(Number(userPlantListTotalCount) / Number(userPlantSize))) return;
     else setUserPlantPage(page);
   }
 
@@ -86,7 +87,7 @@ export default function UserFeedPlant({ nickname }) {
               </span>
 
               <div className='flex mx-7'>
-                {userPlantList.map((userPlant) => (
+                {userPlantList?.map((userPlant) => (
                   <UserFeedPlantListItem key={userPlant.userPlantId} userPlant={userPlant} fetchUserPlantList={fetchUserPlantList} />
                 ))}
               </div>

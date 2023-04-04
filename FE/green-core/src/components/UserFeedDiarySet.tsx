@@ -42,10 +42,14 @@ export default function UserFeedDiarySet({ nickname }) {
     try {
       const params = { page: 0, size: 1 };
       const { data } = await getUserPlantList(nickname, params);
-      const content = data?.content;
       const totalElements = data?.totalElements;
+
+      const params2 = { page: 0, size: totalElements };
+      const { data: data2 } = await getUserPlantList(nickname, params2);
+      const content = data2?.content;
+
       setUserPlantListTotalCount(totalElements);
-      setUserPlantListAll(data);
+      setUserPlantListAll(content);
     } catch (error) {
       console.error(error);
     }
@@ -88,6 +92,7 @@ export default function UserFeedDiarySet({ nickname }) {
         create
         userPlantList={userPlantListAll}
         handleModalClose={() => setIsOpenDiarySetCreateModal(false)}
+        fetchDiarySetList={fetchDiarySetList}
       />
 
       <div className='space-y-2 px-10 py-5'>
@@ -106,7 +111,7 @@ export default function UserFeedDiarySet({ nickname }) {
 
           <div className='flex space-x-10 mx-10'>
             {diarySetList.map((diarySet) => (
-              <UserFeedDiarySetListItem key={diarySet.diarySetId} nickname={nickname} diarySet={diarySet} />
+              <UserFeedDiarySetListItem key={diarySet.diarySetId} nickname={nickname} diarySet={diarySet} fetchDiarySetList={fetchDiarySetList} />
             ))}
           </div>
 
