@@ -316,7 +316,8 @@ export default function FeedListItem(props: { feed: FeedType }) {
                       className='mb-3'
                       src={feed.imagePath}
                       alt='로고'
-                      width='100%'
+                      // width='100%'
+                      height='450px'
                       onLoad={() => handleImageLoadAtFeedImage()}
                       onError={() => handleImageErrorAtFeedImage()}
                       style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
@@ -348,7 +349,8 @@ export default function FeedListItem(props: { feed: FeedType }) {
                           className='mb-3'
                           src={feed.imagePath}
                           alt='로고'
-                          width='100%'
+                          // width='100%'
+                          height='450px'
                           onLoad={() => handleImageLoadAtFeedImage()}
                           onError={() => handleImageErrorAtFeedImage()}
                           style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
