@@ -11,9 +11,12 @@ import styles from '@/styles/Diary.module.scss';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import { SET_SEARCH_TAG } from '@/core/search/searchSlice';
+import Image from 'next/image';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 export default function DiaryDetail() {
   const router = useRouter();
+  const storage = getStorage();
   const dispatch = useAppDispatch();
   const { diaryId } = router.query;
 
@@ -22,7 +25,7 @@ export default function DiaryDetail() {
 
   const [isOpenDiaryDeleteModal, setIsOpenDiaryDeleteModal] = useState(false);
   const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
-  const ref = useRef<HTMLDivElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
 
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(0);
@@ -30,27 +33,38 @@ export default function DiaryDetail() {
   const [followerCount, setFollowerCount] = useState<number>(0);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
+  const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
+
   // 바깥 클릭시 닫기
-  useEffect(() => {
-    changeSearchState();
-    const handleClickOutside = (event: any) => {
-      if (event.target.innerText != 'more_vert') {
-        setIsOpenMenu(false);
-      }
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => {};
-  }, []);
+  const handleClickOutside = (event: any) => {
+    if (event.target.innerText != 'more_vert') {
+      setIsOpenMenu(false);
+    }
+  };
 
   // searchState 변경
   function changeSearchState() {
     dispatch(SET_IS_SEARCH_STATE('default'));
   }
 
+  /** 사용자 프로필 이미지 가져오는 함수 */
+  function getUserProfile(nickname: string) {
+    const profileRef = ref(storage, `${nickname}/profileImage`);
+
+    getDownloadURL(profileRef)
+      .then((downloadURL) => {
+        setUserProfileImagePath(downloadURL);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   // 일지 가져오기
   const getDiary = async (diaryId: number) => {
     getDiaryDetail(diaryId).then((res) => {
       if (res.result === 'SUCCESS') {
+        getUserProfile(res.data.user.nickname);
         setDiary(res.data);
         setIsLiked(res.data.isLiked);
         setLikeCount(res.data.likeCount);
@@ -60,10 +74,14 @@ export default function DiaryDetail() {
       }
     });
   };
+
   useEffect(() => {
+    changeSearchState();
+    document.addEventListener('click', handleClickOutside);
     if (diaryId) {
       getDiary(Number(diaryId));
     }
+    return () => {};
   }, [diaryId]);
 
   // 삭제
@@ -107,7 +125,7 @@ export default function DiaryDetail() {
   // 유저 팔로우
   function handleUserFollow(e: any) {
     e.stopPropagation();
-    updateFollow(diary.data.user.nickname).then((res) => {
+    updateFollow(diary.user.nickname).then((res) => {
       if (res.result === 'SUCCESS') {
         setIsFollowed(true);
         setFollowerCount((prev) => prev + 1);
@@ -118,7 +136,7 @@ export default function DiaryDetail() {
   // 유저 팔로우 취소
   function handleDeleteFollow(e: any) {
     e.stopPropagation();
-    deleteFollow(diary.data.user.nickname).then((res) => {
+    deleteFollow(diary.user.nickname).then((res) => {
       if (res.result === 'SUCCESS') {
         setIsFollowed(false);
         setFollowerCount((prev) => prev - 1);
@@ -158,7 +176,7 @@ export default function DiaryDetail() {
 
   // 유저 프로필 이동
   const goProfile = () => {
-    router.push(`/user/feed/${diary.data.user.nickname}`);
+    router.push(`/user/feed/${diary.user.nickname}`);
   };
 
   // 태그 클릭 이벤트
@@ -196,16 +214,34 @@ export default function DiaryDetail() {
             {/* 일지 작성자 정보 */}
             <div className='flex flex-col items-center'>
               <div className={`${styles.helpTip} flex`}>
-                <img src={diary?.user.profileImagePath} className={`${styles.profileImg}`} alt='프로필 이미지' onClick={goProfile} />
+                {userProfileImagePath ? (
+                  <Image
+                    width={100}
+                    height={100}
+                    src={userProfileImagePath}
+                    className={`${styles.profileImg}`}
+                    alt='프로필 이미지'
+                    onClick={goProfile}
+                  />
+                ) : (
+                  <Skeleton width={100} height={100} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+                )}
 
                 {/* 프로필 팝업 */}
                 <div className={`flex flex-col div ${styles.userInfo}`}>
                   <div className={`flex`}>
                     <div className={`flex flex-col justify-center items-center `}>
-                      {diary.user.profileImagePath ? (
-                        <img src={diary.user.profileImagePath} alt='프로필 이미지' className={`${styles.profileImg2} mb-3`} onClick={goProfile} />
+                      {userProfileImagePath ? (
+                        <Image
+                          width={80}
+                          height={80}
+                          src={userProfileImagePath}
+                          alt='프로필 이미지'
+                          className={`${styles.profileImg2} mb-3`}
+                          onClick={goProfile}
+                        />
                       ) : (
-                        <Skeleton width={80} height={80} />
+                        <Skeleton width={80} height={80} style={{ width: '80px', height: '80px', borderRadius: '50%' }} />
                       )}
                     </div>
 
@@ -265,7 +301,13 @@ export default function DiaryDetail() {
                   <div className={`${styles.nickname}`}>{diary.user.nickname}</div>
                 </div>
                 <div className={`${styles.box}`}>
-                  <img src={diary?.imagePath} alt='img' className={`${styles.image}`} />
+                  <Image
+                    src={`/images${diary?.imagePath[0] === '/' ? diary?.imagePath : '/' + diary?.imagePath}`}
+                    width={100}
+                    height={100}
+                    alt='img'
+                    className={`${styles.image}`}
+                  />
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
@@ -294,7 +336,7 @@ export default function DiaryDetail() {
                     more_vert
                   </span>
                   <div className={`${styles.dropdown}`}>
-                    <div ref={ref} className={`${isOpenMenu ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
+                    <div ref={divRef} className={`${isOpenMenu ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
                       <div
                         className={`border-b border-slate-300 bg-white flex justify-center items-center cursor-pointer ${styles.dropdownMenu}`}
                         onClick={() => {
