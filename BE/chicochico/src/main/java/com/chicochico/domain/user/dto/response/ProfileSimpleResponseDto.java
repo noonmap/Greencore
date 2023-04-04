@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -22,7 +24,11 @@ public class ProfileSimpleResponseDto {
 
 
 	public static ProfileSimpleResponseDto fromEntity(UserEntity user) {
-		return new ProfileSimpleResponseDto(user.getNickname(), user.getProfileImagePath());
+		String path = user.getProfileImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
+		return new ProfileSimpleResponseDto(user.getNickname(), path);
 	}
 
 

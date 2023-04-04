@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -26,9 +28,13 @@ public class ProfileResponseDto implements Serializable {
 
 
 	public static ProfileResponseDto fromEntity(UserEntity user, Function<Long, Boolean> isFollowed) {
+		String path = user.getProfileImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return ProfileResponseDto.builder()
 			.nickname(user.getNickname())
-			.profileImagePath("/images/" + user.getProfileImagePath())
+			.profileImagePath(path)
 			.introduction(user.getIntroduction())
 			.followingCount(user.getFollowingCount())
 			.followerCount(user.getFollowerCount())

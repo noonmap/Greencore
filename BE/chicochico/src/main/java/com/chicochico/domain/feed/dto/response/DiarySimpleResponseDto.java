@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 /**
  * diaryId: Long
@@ -47,13 +49,18 @@ public class DiarySimpleResponseDto {
 
 	public static DiarySimpleResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList) {
 		Long growingDay = ChronoUnit.DAYS.between(diary.getDiarySet().getStartDate(), diary.getObservationDate());
+
+		String path = diary.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiarySimpleResponseDto.builder()
 			.diaryId(diary.getId())
 			.content(diary.getContent())
 			.tags(getTagsList.apply(diary.getId()))
 			.observationDate(diary.getObservationDate())
 			.craetedAt(diary.getCreatedAt())
-			.imagePath("/images/" + diary.getImagePath())
+			.imagePath(path)
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.growingDay(growingDay)

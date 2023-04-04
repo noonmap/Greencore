@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 /**
  * user: {
@@ -49,13 +51,18 @@ public class DiaryResponseDto {
 
 
 	public static DiaryResponseDto fromEntity(DiaryEntity diary, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed, Function<Long, Boolean> isLiked) {
+
+		String path = diary.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiaryResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(diary.getUser(), isFollowed))
 			.diarySetId(diary.getDiarySet().getId())
 			.observationDate(diary.getObservationDate())
 			.content(diary.getContent())
 			.tags(getTagsList.apply(diary.getId()))
-			.imagePath("/images/" + diary.getImagePath())
+			.imagePath(path)
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.createdAt(diary.getCreatedAt())

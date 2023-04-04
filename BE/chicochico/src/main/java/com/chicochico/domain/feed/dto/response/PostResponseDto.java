@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -33,11 +35,15 @@ public class PostResponseDto {
 
 	public static PostResponseDto fromEntity(PostEntity post, Function<Long, Integer> getCommentCount, Function<Long, List<String>> getTagsList, Function<Long, Boolean> isFollowed,
 		Function<Long, Boolean> isLiked) {
+		String path = post.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return PostResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(post.getUser(), isFollowed))
 			.postId(post.getId())
 			.content(post.getContent())
-			.imagePath("/images/" + post.getImagePath())
+			.imagePath(path)
 			.likeCount(post.getLikeCount())
 			.commentCount(getCommentCount.apply(post.getId()))
 			.tags(getTagsList.apply(post.getId())) //

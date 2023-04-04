@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -28,9 +30,13 @@ public class DiarySetResponseDto {
 
 
 	public static DiarySetResponseDto fromEntity(DiarySetEntity diarySet, Function<DiarySetEntity, Boolean> isBookmarked) {
+		String path = diarySet.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiarySetResponseDto.builder()
 			.diarySetId(diarySet.getId())
-			.imagePath("/images/" + diarySet.getImagePath())
+			.imagePath(path)
 			.bookmarkCount(diarySet.getBookmarkCount())
 			.isBookmarked(isBookmarked.apply(diarySet))
 			.diaryCount(diarySet.getDiaryCount())

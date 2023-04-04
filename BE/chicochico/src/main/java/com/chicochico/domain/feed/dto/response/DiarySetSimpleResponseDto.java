@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -21,10 +23,15 @@ public class DiarySetSimpleResponseDto {
 
 
 	public static DiarySetSimpleResponseDto fromEntity(DiarySetEntity diarySet) {
+
+		String path = diarySet.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return DiarySetSimpleResponseDto.builder()
 			.diarySetId(diarySet.getId())
 			.startDate(diarySet.getCreatedAt().toLocalDate())
-			.imagePath("/images" + diarySet.getImagePath())
+			.imagePath(path)
 			.title(diarySet.getTitle())
 			.build();
 	}

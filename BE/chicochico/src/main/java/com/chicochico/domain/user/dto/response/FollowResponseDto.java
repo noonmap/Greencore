@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -29,9 +31,13 @@ public class FollowResponseDto {
 
 
 	public static FollowResponseDto fromEntity(UserEntity user, Function<Long, Boolean> isFollowed) {
+		String path = user.getProfileImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return FollowResponseDto.builder()
 			.nickname(user.getNickname())
-			.profileImagePath("/images/" + user.getProfileImagePath())
+			.profileImagePath(path)
 			.introduction(user.getIntroduction())
 			.isFollowed(isFollowed.apply(user.getId()))
 			.build();

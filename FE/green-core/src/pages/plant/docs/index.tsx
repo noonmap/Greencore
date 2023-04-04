@@ -370,7 +370,7 @@ export default function plantDocs() {
                   <div className={`flex px-5 justify-around `}>
                     {topDiarySetList?.map((topDiarySet, index) => (
                       <div key={topDiarySet.diarySetId} className={`overflow-hidden relative ${styles.topDiarySetImage}`}>
-                        <Link href={`/diarySet/${topDiarySet.diarySetId}`}>
+                        <Link href={`/diaryset/list/${topDiarySet.diarySetId}`}>
                           <div>
                             <div>
                               {isLoadingErrorAtTopDiarySet[index] && <Skeleton width={200} height={200} />}

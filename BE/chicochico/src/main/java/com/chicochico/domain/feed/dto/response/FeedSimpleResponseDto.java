@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.chicochico.common.service.FileService.NGINX_PATH;
+
 
 @Data
 @Builder
@@ -32,10 +34,14 @@ public class FeedSimpleResponseDto {
 		} else {
 			feedType = FeedType.FEED_POST;
 		}
+		String path = xx.getImagePath();
+		if (!path.startsWith("http")) {
+			path = NGINX_PATH + path;
+		}
 		return FeedSimpleResponseDto.builder()
 			.feedId(xx.getId())
 			.feedType(feedType)
-			.imagePath("/images/" + xx.getImagePath())
+			.imagePath(path)
 			.content(xx.getContent().substring(0, Math.min(xx.getContent().length(), 50))) // 최대 50자까지 잘라서 전송
 			.build();
 	}
