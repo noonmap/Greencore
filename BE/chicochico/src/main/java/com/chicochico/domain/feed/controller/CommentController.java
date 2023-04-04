@@ -32,7 +32,7 @@ public class CommentController {
 	public ResponseEntity<ResultDto<Page<CommentResponseDto>>> getCommentList(@PathVariable Long feedId, Pageable pageable) {
 		Page<CommentEntity> commentList = service.getCommentList(feedId, pageable);
 		//entity page를 dto page로 변환 필요합니다.
-		Page<CommentResponseDto> responseDto = CommentResponseDto.fromEnityPage(commentList);
+		Page<CommentResponseDto> responseDto = CommentResponseDto.fromEnityPage(commentList, service::findMentionNickname);
 
 		int page = pageable.getPageNumber();
 		if (page != 0 && responseDto.getTotalPages() <= page) {
@@ -59,7 +59,7 @@ public class CommentController {
 	}
 
 
-	@DeleteMapping("/{feedId}/comment/comment/{commentId}")
+	@DeleteMapping("/{feedId}/comment/{commentId}")
 	@ApiOperation(value = "해당 댓글을 삭제합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteComment(@PathVariable Long feedId, @PathVariable Long commentId) {
 		service.deleteComment(commentId);

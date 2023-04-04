@@ -34,7 +34,7 @@ public class CommentMentionController {
 
 	@GetMapping
 	@ApiOperation(value = "글자가 포함된 팔로잉한 유저 리스트를 반환한다.", notes = "")
-	public ResponseEntity<ResultDto<List<CommentMentionResponseDto>>> getMentionUserList(@RequestBody String nickname) {
+	public ResponseEntity<ResultDto<List<CommentMentionResponseDto>>> getMentionUserList(@RequestParam String nickname) {
 		List<UserEntity> followList = commentService.getMentionUserList(nickname);
 		List<CommentMentionResponseDto> followResponseDto = CommentMentionResponseDto.fromEntityList(followList);
 		return ResponseEntity.ok().body(ResultDto.of(followResponseDto));

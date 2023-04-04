@@ -15,6 +15,6 @@ public interface RegularScheduleRepository extends JpaRepository<RegularSchedule
 
 	Optional<RegularScheduleEntity> findById(Long regularId);
 	List<RegularScheduleEntity> findAllByUserAndIsDeleted(UserEntity user, IsDeletedType isDeleted);
-	List<RegularScheduleEntity> findAllByUserAndLastDateBefore(UserEntity user, LocalDate date);
+	List<RegularScheduleEntity> findAllByUserAndLastDateBeforeAndIsDeleted(UserEntity user, LocalDate date, IsDeletedType isDeleted);
 
 }

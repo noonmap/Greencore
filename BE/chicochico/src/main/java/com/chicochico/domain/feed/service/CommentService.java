@@ -33,9 +33,7 @@ public class CommentService {
 	private final UserRepository userRepository;
 	private final FollowRepository followRepository;
 
-	private AuthService authService;
-
-	private FollowEntity mentionUser;
+	private final AuthService authService;
 
 
 	/**
@@ -82,6 +80,12 @@ public class CommentService {
 	public UserEntity getMentionUser(Long userId) {
 		UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		return user;
+	}
+
+
+	public String findMentionNickname(CommentEntity comment) {
+		UserEntity user = comment.getUser();
+		return user.getNickname();
 	}
 
 

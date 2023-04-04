@@ -5,8 +5,10 @@ import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.domain.feed.entity.CommentEntity;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import com.chicochico.domain.user.entity.UserEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -14,6 +16,8 @@ import lombok.Data;
  */
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentRequestDto {
 
 	private String content;
