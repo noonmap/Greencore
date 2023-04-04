@@ -16,6 +16,7 @@ export type AlertDataType = {
 };
 
 export type AlertCreateType = {
+  nickname: string;
   mentionNickname: string;
   content?: string;
   urlPath: string;

@@ -120,7 +120,7 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
     });
 
     // 2. 이전 프로필 삭제
-    deleteObject(ref(storage, `${prevNickname}/profileImage`)).then(() => {});
+    // deleteObject(ref(storage, `${prevNickname}/profileImage`)).then(() => {});
 
     // 3. 새로운 프로필 이미지 등록
     // const res = await fetch(prevProfileImagePath);

@@ -33,9 +33,8 @@ export const getAlertList = createAsyncThunk('getAlertList', async (payload: Ale
 /** [FIREBASE] 알림 생성 */
 export const createAlert = createAsyncThunk('createAlert', async (payload: AlertCreateType) => {
   const db = getFirestore();
-  const { mentionNickname, type, urlPath, createdAt, isRead } = payload;
+  const { mentionNickname, nickname, type, urlPath, createdAt, isRead } = payload;
 
-  let nickname = 'test';
   const alertRef = collection(db, nickname);
   const newAlert = {
     type,
