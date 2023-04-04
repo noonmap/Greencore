@@ -18,6 +18,7 @@ import FindPasswordModal from '@/components/modal/FindPasswordModal';
 import { SET_AUTH_TYPE_DB, SET_AUTH_TYPE_FIREBASE, SET_AUTH_TYPE_KAKAO } from '@/core/common/commonSlice';
 
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+import { useRouter } from 'next/router';
 
 type StateType = {
   email: string;
@@ -31,6 +32,7 @@ const initialState: StateType = {
 
 export default function login() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const storage = getStorage();
   const auth = getAuth();
@@ -67,6 +69,7 @@ export default function login() {
       const payload = { email, password };
       dispatch(SET_AUTH_TYPE_DB());
       dispatch(logIn(payload));
+      router.push('/home');
     } catch (error) {
       setValue('email', '');
       setValue('password', '');
@@ -108,10 +111,12 @@ export default function login() {
               dispatch(logInByOAuth(logInPayload));
               dispatch(SET_AUTH_TYPE_FIREBASE());
               handleSetUserProfile(githubNickname, githubPhotoUrl);
+              router.push('/home');
             }
           } else {
             dispatch(logInByOAuth(logInPayload));
             dispatch(SET_AUTH_TYPE_FIREBASE());
+            router.push('/home');
           }
         } catch (error) {
           console.error(error);
@@ -159,10 +164,12 @@ export default function login() {
               dispatch(logInByOAuth(logInPayload));
               dispatch(SET_AUTH_TYPE_FIREBASE());
               handleSetUserProfile(googleNickname, googlePhotoUrl);
+              router.push('/home');
             }
           } else {
             dispatch(logInByOAuth(logInPayload));
             dispatch(SET_AUTH_TYPE_FIREBASE());
+            router.push('/home');
           }
         } catch (error) {
           console.error(error);
