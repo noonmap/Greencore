@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppDispatch } from '@/core/hooks';
 import { deleteUser, logOut } from '@/core/user/userAPI';
 import AppButton from '@/components/button/AppButton';
@@ -9,6 +9,12 @@ import { useRouter } from 'next/router';
 export default function UserDelete() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  useEffect(() => {
+    return () => {
+      dispatch(SET_IS_POSSIBLE_UPDATE_USER_FALSE());
+    };
+  }, []);
 
   async function handleUserDelete() {
     dispatch(deleteUser());
