@@ -33,9 +33,9 @@ public class CommentService {
 	private final UserRepository userRepository;
 	private final FollowRepository followRepository;
 
-	private AuthService authService;
+	private final AuthService authService;
 
-	private FollowEntity mentionUser;
+	private final FollowEntity mentionUser;
 
 
 	/**
