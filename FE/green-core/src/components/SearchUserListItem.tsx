@@ -35,8 +35,8 @@ export default function SearchUserListItem(props: { searchUser: SearchUserType }
   return (
     <>
       <div key={searchUser.nickname} className={`${styles.container} p-5 flex items-center`} onClick={goProfile}>
-        <div className='pr-5'>
-          {searchUser.profileImagePath ? <img src={userProfileImagePath} width={50} height={50} alt='' /> : <Skeleton width={150} height={150} />}
+        <div className='mr-5 overflow-hidden' style={{ borderRadius: '25px' }}>
+          {searchUser.profileImagePath ? <img src={userProfileImagePath} width={50} height={50} alt='' /> : <Skeleton width={50} height={50} />}
         </div>
         <div>{searchUser.nickname || <Skeleton />} </div>
       </div>

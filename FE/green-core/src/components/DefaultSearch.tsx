@@ -69,7 +69,6 @@ export default function DefaultSearch() {
       page: 0,
       size: sizeAtTag,
     };
-    console.log(params);
     dispatch(getTagFeedList(params));
     setIsLoadedAtTag(false);
   }
@@ -129,6 +128,7 @@ export default function DefaultSearch() {
       page: 0,
       size: sizeAtPlant,
     };
+    console.log(params);
     dispatch(searchByPlantName(params));
     setIsLoadedAtPlant(false);
   }
@@ -271,24 +271,25 @@ export default function DefaultSearch() {
   function handleKeyUp(event) {
     if (event.key === 'Enter') {
       handleSearch(event);
+    } else {
+      setInputData(event.target.value);
     }
   }
 
   function handleSearch(event) {
-    console.log('event.target.value', event.target.value);
+    console.log('event.target.value', inputData);
     setIsSearched(true);
-    setInputData(event.target.value);
     setSearchTypeTemp(searchType); // 결과 디브 재렌더링 하기!
 
     if (searchType === 'feed') {
       // 태그 검색
-      searchTag(event.target.value);
+      searchTag(inputData);
     } else if (searchType === 'profile') {
-      searchUser(event.target.value);
+      searchUser(inputData);
       // 닉네임 검색
     } else if (searchType === 'plant') {
       // 식물이름 검색
-      searchPlant(event.target.value);
+      searchPlant(inputData);
     }
   }
 
