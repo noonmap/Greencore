@@ -1,16 +1,20 @@
-import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
+import { deleteFollow, deleteFollower, updateFollow } from '@/core/follow/followAPI';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import AppButton from './button/AppButton';
 
 export default function UserFollowerListItem({ follower, userProfileList }) {
+  const router = useRouter();
+
   /** 팔로우 하는 함수 */
   async function handleFollowUpdate(e, nickname) {
     try {
       const { data } = await updateFollow(nickname);
       console.log(data);
+      router.reload();
     } catch (error) {
       console.error(error);
     }
@@ -21,12 +25,18 @@ export default function UserFollowerListItem({ follower, userProfileList }) {
     try {
       const { data } = await deleteFollow(nickname);
       console.log(data);
+      router.reload();
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function handleFollowerDelete() {}
+  async function handleFollowerDelete(e, nickname) {
+    try {
+      const { data } = await deleteFollower(nickname);
+      router.reload();
+    } catch (error) {}
+  }
 
   return (
     <div>
@@ -64,7 +74,7 @@ export default function UserFollowerListItem({ follower, userProfileList }) {
             <AppButton text='팔로우 하기' size='small' handleClick={(e) => handleFollowUpdate(e, follower.nickname)} />
           )}
 
-          <span className='material-symbols-outlined cursor-pointer close' onClick={handleFollowerDelete}>
+          <span className='material-symbols-outlined cursor-pointer close' onClick={(e) => handleFollowerDelete(e, follower.nickname)}>
             close
           </span>
         </div>

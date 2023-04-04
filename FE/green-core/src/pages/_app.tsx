@@ -21,6 +21,7 @@ import AppLoading from '@/components/common/AppLoading';
 
 import { getFirestore, collection, query, orderBy, startAfter, onSnapshot, limit } from 'firebase/firestore';
 import { getAlertList } from '@/core/alert/alertAPI';
+import { SET_IS_ALERT_TRUE } from '@/core/common/commonSlice';
 
 declare global {
   interface Window {
@@ -32,25 +33,31 @@ function App() {
   const dispatch = useAppDispatch();
   const db = getFirestore();
 
-  const page = useAppSelector((state) => state.alert.page);
-  const size = useAppSelector((state) => state.alert.size);
+  const nickname = useAppSelector((state) => state.common.userInfo?.nickname);
+  const page = useAppSelector((state) => state.alert?.page);
+  const size = useAppSelector((state) => state.alert?.size);
 
   const alertInit = () => {
     let lastPage = null;
     let alertQuery = null;
 
-    const nickname = 'test';
-    const alertRef = collection(db, nickname);
+    if (nickname) {
+      const alertRef = collection(db, nickname);
 
-    if (page) alertQuery = query(alertRef, orderBy('createdAt', 'desc'), startAfter(lastPage), limit(size));
-    else alertQuery = query(alertRef, orderBy('createdAt', 'desc'), limit(size));
+      if (page) alertQuery = query(alertRef, orderBy('createdAt', 'desc'), startAfter(lastPage), limit(size));
+      else alertQuery = query(alertRef, orderBy('createdAt', 'desc'), limit(size));
 
-    const alertSnapshot = onSnapshot(alertQuery, { includeMetadataChanges: true }, (snapShot: any) => {
-      snapShot.docChanges().forEach((change) => {
-        const payload = { nickname, page, size };
-        dispatch(getAlertList(payload));
+      const alertSnapshot = onSnapshot(alertQuery, { includeMetadataChanges: true }, (snapShot: any) => {
+        snapShot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            dispatch(SET_IS_ALERT_TRUE());
+          }
+
+          const payload = { nickname, page, size };
+          dispatch(getAlertList(payload));
+        });
       });
-    });
+    }
   };
 
   function sayHi() {

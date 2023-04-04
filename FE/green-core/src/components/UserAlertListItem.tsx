@@ -5,13 +5,13 @@ import { deleteAlert } from '@/core/alert/alertAPI';
 import { AlertType } from '@/core/alert/alertType';
 import styles from '@/styles/Alert.module.scss';
 
-export default function UserAlertListItem({ alert, selectedAlertList }) {
+export default function UserAlertListItem({ alert, nickname, selectedAlertList }) {
   const dispatch = useAppDispatch();
 
   /** 알림 단일 삭제하는 함수 */
   async function handleDeleteAlert(alertId: string) {
     try {
-      const payload = { nickname: 'test', alertId };
+      const payload = { nickname, alertId };
       dispatch(deleteAlert(payload));
     } catch (err) {
       console.error(err);

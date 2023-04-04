@@ -126,7 +126,7 @@ export default function Alert() {
 
           <div className='flex flex-col px-20'>
             {alertList.map((alert) => (
-              <UserAlertListItem key={alert.alertId} alert={alert} selectedAlertList={selectedAlertList} />
+              <UserAlertListItem key={alert.alertId} alert={alert} nickname={nickname} selectedAlertList={selectedAlertList} />
             ))}
           </div>
         </div>

@@ -115,7 +115,11 @@ export default function follower() {
           {isLoading ? (
             <>
               {followerList.map((follower) => (
-                <UserFollowerListItem key={follower.nickname} follower={follower} userProfileList={userProfileList} />
+                <UserFollowerListItem
+                  key={follower.nickname}
+                  follower={follower}
+                  userProfileList={userProfileList}
+                />
               ))}
               <div ref={setTarget} />
             </>
