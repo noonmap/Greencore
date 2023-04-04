@@ -55,7 +55,7 @@ public class DiaryResponseDto {
 			.observationDate(diary.getObservationDate())
 			.content(diary.getContent())
 			.tags(getTagsList.apply(diary.getId()))
-			.imagePath(diary.getImagePath())
+			.imagePath("/images/" + diary.getImagePath())
 			.likeCount(diary.getLikeCount())
 			.commentCount(diary.getCommentCount())
 			.createdAt(diary.getCreatedAt())

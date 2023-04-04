@@ -353,6 +353,13 @@ insert into feed (feed_code,created_at,updated_at,comment_count,content,image_pa
 ;
 SET @feed := last_insert_id() - 1;
 
+insert into post (id) values
+(@feed+1),(@feed+2),(@feed+3),(@feed+4),(@feed+5),(@feed+6),(@feed+7),(@feed+8),(@feed+9),(@feed+10),
+(@feed+11),(@feed+12),(@feed+13),(@feed+14),(@feed+15),(@feed+16),(@feed+17),(@feed+18),(@feed+19),(@feed+20),
+(@feed+21),(@feed+22),(@feed+23),(@feed+24),(@feed+25),(@feed+26),(@feed+27),(@feed+28),(@feed+29),(@feed+30),
+(@feed+31),(@feed+32),(@feed+33),(@feed+34),(@feed+35),(@feed+36),(@feed+37),(@feed+38),(@feed+39),(@feed+40),
+(@feed+41),(@feed+42),(@feed+43),(@feed+44),(@feed+45);
+
 insert into feed_tag (feed_id,tag_id) values
 (@feed+1,@tag+9),    (@feed+1,@tag+3),    (@feed+1,@tag+10),
 (@feed+2,@tag+9),    (@feed+2,@tag+10),

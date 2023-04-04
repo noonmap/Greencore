@@ -30,7 +30,7 @@ public class DiarySetResponseDto {
 	public static DiarySetResponseDto fromEntity(DiarySetEntity diarySet, Function<DiarySetEntity, Boolean> isBookmarked) {
 		return DiarySetResponseDto.builder()
 			.diarySetId(diarySet.getId())
-			.imagePath(diarySet.getImagePath())
+			.imagePath("/images/" + diarySet.getImagePath())
 			.bookmarkCount(diarySet.getBookmarkCount())
 			.isBookmarked(isBookmarked.apply(diarySet))
 			.diaryCount(diarySet.getDiaryCount())
