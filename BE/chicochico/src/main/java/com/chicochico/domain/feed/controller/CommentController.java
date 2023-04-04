@@ -59,7 +59,7 @@ public class CommentController {
 	}
 
 
-	@DeleteMapping("/{feedId}/comment/comment/{commentId}")
+	@DeleteMapping("/{feedId}/comment/{commentId}")
 	@ApiOperation(value = "해당 댓글을 삭제합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> deleteComment(@PathVariable Long feedId, @PathVariable Long commentId) {
 		service.deleteComment(commentId);
