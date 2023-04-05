@@ -334,7 +334,7 @@ export default function DefaultSearch() {
                 <SearchFedListItem key={tagFeed.feedId} tagFeed={tagFeed}></SearchFedListItem>
               ))}
               <div ref={setTargetAtTag} />
-              <div className={`p-5`}></div>
+              <div className={`p-1`}></div>
             </div>
           )
         ) : searchTypeTemp === 'profile' ? (
@@ -343,14 +343,14 @@ export default function DefaultSearch() {
             <div>조회된 유저가 없습니다</div>
           ) : (
             <div className={`overflow-auto rounded-xl mt-5`} style={{ backgroundColor: 'var(--thin-color)' }}>
-              <div className='text-xl pr-5  font-bold'>
+              <div className='text-xl p-5  font-bold'>
                 <span>사용자 검색</span>
               </div>
               {searchUserList?.map((user) => (
                 <SearchUserListItem key={user.nickname} searchUser={user}></SearchUserListItem>
               ))}
               <div ref={setTargetAtUser} />
-              <div className={`p-5`}></div>
+              <div className={`p-1`}></div>
             </div>
           )
         ) : searchPlantList?.length === 0 ? (
@@ -365,7 +365,7 @@ export default function DefaultSearch() {
               <SearchPlantListItem key={plant.plantId} searchPlant={plant}></SearchPlantListItem>
             ))}
             <div ref={setTargetAtPlant} />
-            <div className={`p-5`}></div>
+            <div className={`p-1`}></div>
           </div>
         )}
       </div>

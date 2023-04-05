@@ -21,7 +21,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
   const [followerCount, setFollowerCount] = useState<number>(feed.user.followerCount);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [isOpenFeedDeleteModal, setIsOpenFeedDeleteModal] = useState(false);
-  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
+  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
   const reff = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const storage = getStorage();
