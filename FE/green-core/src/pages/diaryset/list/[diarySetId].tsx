@@ -107,7 +107,7 @@ export default function diarySet() {
     try {
       const { data } = await deleteDiarySet(Number(diarySetId));
       console.log(data);
-      router.push('/home');
+      router.push('/home/recommend');
       setIsOpenDiarySetDeleteModal(false);
     } catch (error) {
       console.error(error);
