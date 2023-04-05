@@ -135,7 +135,7 @@ export default function PostDetail() {
   // 유저 팔로우
   function handleUserFollow(e: any) {
     e.stopPropagation();
-    updateFollow(post.data.user.nickname).then((res) => {
+    updateFollow(post.user.nickname).then((res) => {
       if (res.result === 'SUCCESS') {
         setIsFollowed(true);
         setFollowerCount((prev) => prev + 1);
@@ -157,7 +157,7 @@ export default function PostDetail() {
   // 유저 팔로우 취소
   function handleDeleteFollow(e: any) {
     e.stopPropagation();
-    deleteFollow(post.data.user.nickname).then((res) => {
+    deleteFollow(post.user.nickname).then((res) => {
       if (res.result === 'SUCCESS') {
         setIsFollowed(false);
         setFollowerCount((prev) => prev - 1);
@@ -197,7 +197,7 @@ export default function PostDetail() {
 
   // 유저 프로필 이동
   const goProfile = () => {
-    router.push(`/user/feed/${post.data.user.nickname}`);
+    router.push(`/user/feed/${post.user.nickname}`);
   };
 
   // 태그 클릭 이벤트

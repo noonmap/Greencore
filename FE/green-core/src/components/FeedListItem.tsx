@@ -11,6 +11,7 @@ import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import styles from './FeedListItem.module.scss';
 import Image from 'next/image';
+import { SET_SEARCH_TAG } from '@/core/search/searchSlice';
 
 export default function FeedListItem(props: { feed: FeedType }) {
   const feed = props.feed;
@@ -29,6 +30,12 @@ export default function FeedListItem(props: { feed: FeedType }) {
   // 이미지 불러오기
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
   /** 사용자 프로필 이미지 가져오는 함수 */
+
+  // 태그 클릭 이벤트
+  function handleTagClick(e) {
+    const searchValue = e.target.innerText.slice(1);
+    dispatch(SET_SEARCH_TAG(searchValue));
+  }
 
   useEffect(() => {
     getUserProfile(feed.user.nickname);
@@ -209,7 +216,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
           handleModalClose={() => setIsOpenFeedDeleteModal(false)}
         />
       )}
-      <div className={`flex border-b border-inherit`} onClick={goDetail}>
+      <div className={`flex border-b border-inherit`}>
         <div className={`flex flex-col`}>
           <div className={`pt-5 pl-5`}>
             {/* 프로필 사진 */}
@@ -221,21 +228,21 @@ export default function FeedListItem(props: { feed: FeedType }) {
                   width={80}
                   height={80}
                   alt='profile image'
-                  style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></Image>
+                  style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block', cursor: 'pointer' }}></Image>
               </div>
 
               {/* 프로필 팝업 */}
-              <div className={`flex flex-col div ${styles.userInfo}`} onClick={goProfile}>
+              <div className={`flex flex-col div ${styles.userInfo}`}>
                 <div className={`flex`}>
                   <div className={`flex flex-col justify-center items-center mr-5 overflow-hidden`} style={{ borderRadius: '40px' }}>
                     {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
                     <Image
-                      className='mb-3'
+                      onClick={goProfile}
                       src={userProfileImagePath ? userProfileImagePath : '/resources/default.png'}
                       alt='로고'
                       width='80'
                       height='80'
-                      style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block' }}></Image>
+                      style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block', cursor: 'pointer' }}></Image>
                   </div>
 
                   <div className='flex flex-col justify-center items-center'>
@@ -321,66 +328,78 @@ export default function FeedListItem(props: { feed: FeedType }) {
               </div>
             )}
           </div>
+
           {/* 내용 */}
-          <div className={`pl-3`}>{feed.content}</div>
-          <div className={`p-3 mr-5`}>
-            {feed.feedCode === 'FEED_DIARY' ? (
-              <>
-                {/* 다이어리일때 사진 */}
-                <div className={`relative`}>
-                  <div className={`${styles.imageWarrper} flex justify-center`}>
-                    {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
-                    <img
-                      className='mb-3'
-                      src={feed.imagePath}
-                      alt='로고'
-                      width='100%'
-                      // height='450px'
-                      onLoad={() => handleImageLoadAtFeedImage()}
-                      onError={() => handleImageErrorAtFeedImage()}
-                      style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
-                  </div>
-                  <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}>
-                    <div className={`p-5 flex justify-between h-full`}>
-                      <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
-                        <p>{feed.diarySetTitle}</p>
-                        <p>day {feed.growingDay}</p>
-                      </div>
-                      <div className={`p-3 flex flex-col text-lg text-white font-bold justify-end h-full `}>
-                        <button className={`rounded-lg`} style={{ backgroundColor: 'var(--main-color)' }} onClick={goDiarySet}>
-                          관찰일지 보러가기
-                        </button>
+          <div onClick={goDetail} className='p-3 pb-0 mb-3 cursor-pointer'>
+            <div>{feed.content}</div>
+            <div>
+              {feed.feedCode === 'FEED_DIARY' ? (
+                <>
+                  {/* 다이어리일때 사진 */}
+                  <div className={`relative`}>
+                    <div className={`${styles.imageWarrper} flex justify-center`}>
+                      {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
+                      <img
+                        src={feed.imagePath}
+                        alt='로고'
+                        width='100%'
+                        // height='450px'
+                        onLoad={() => handleImageLoadAtFeedImage()}
+                        onError={() => handleImageErrorAtFeedImage()}
+                        style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
+                    </div>
+                    <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}>
+                      <div className={`p-5 flex justify-between h-full`}>
+                        <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
+                          <p>{feed.diarySetTitle}</p>
+                          <p>day {feed.growingDay}</p>
+                        </div>
+                        <div className={`p-3 flex flex-col text-lg text-white font-bold justify-end h-full `}>
+                          <button className={`rounded-lg`} style={{ backgroundColor: 'var(--main-color)' }} onClick={goDiarySet}>
+                            관찰일지 보러가기
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* 포스트일 때 사진 */}
-                {feed.imagePath ? (
-                  <>
-                    <div className={`relative`}>
-                      <div className={`${styles.imageWarrper} flex justify-center`}>
-                        {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
-                        <img
-                          className='mb-3'
-                          src={feed.imagePath}
-                          alt='로고'
-                          width='100%'
-                          // height='450px'
-                          onLoad={() => handleImageLoadAtFeedImage()}
-                          onError={() => handleImageErrorAtFeedImage()}
-                          style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
+                </>
+              ) : (
+                <>
+                  {/* 포스트일 때 사진 */}
+                  {feed.imagePath ? (
+                    <>
+                      <div className={`relative`}>
+                        <div className={`${styles.imageWarrper} flex justify-center`}>
+                          {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
+                          <img
+                            src={feed.imagePath}
+                            alt='로고'
+                            width='100%'
+                            // height='450px'
+                            onLoad={() => handleImageLoadAtFeedImage()}
+                            onError={() => handleImageErrorAtFeedImage()}
+                            style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
+                        </div>
                       </div>
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </>
-            )}
-            <div className={`flex justify-end pt-3`}>{getData(feed.createdAt)}</div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+          <div className={`flex justify-between p-3 pt-0`}>
+            <div>
+              {feed.tags.map((tag: string, index: number) => {
+                return (
+                  <span key={index} onClick={handleTagClick} className={`${styles.tagBtn} mr-2`}>
+                    #{tag}
+                  </span>
+                );
+              })}
+            </div>
+            <div>{getData(feed.createdAt)}</div>
           </div>
         </div>
       </div>
