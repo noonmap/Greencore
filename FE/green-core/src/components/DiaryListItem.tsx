@@ -25,6 +25,7 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
               <div className='w-full overflow-hidden' style={{ borderRadius: '30px' }}>
                 {isLoadingErrorAtimagePath && <Skeleton height={300} />}
                 <Image
+                  priority
                   className='mb-3 w-full h-full'
                   src={diary.imagePath}
                   alt='로고'
