@@ -55,7 +55,6 @@ export default function DefaultSearch() {
     if (searchTagValue !== '') {
       setIsSearched(true);
       setSearchTypeTemp('feed');
-      setInputData(searchTagValue);
       // setSearchTypeTemp(searchType); // 결과 디브 재렌더링 하기!
 
       searchTag(searchTagValue);
