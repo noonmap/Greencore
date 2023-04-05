@@ -14,9 +14,8 @@ export default function FeedDetail() {
 
 	useEffect(() => {
 		if (!router.isReady) return;
-		console.log(nickname);
 		setNickname(router.query?.nickname);
-	}, [nickname, router, router.isReady]);
+	}, [nickname, router]);
 
 	return (
 		<AppLayout>
