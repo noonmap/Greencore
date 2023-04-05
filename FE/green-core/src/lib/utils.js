@@ -44,3 +44,12 @@ export function getTodayDate() {
 
   return year + '-' + month + '-' + date;
 }
+
+// 닉네임 encoding
+export const encodeNickname = (nickname) => {
+  if (typeof nickname === 'string') {
+    return encodeURIComponent(nickname);
+  } else {
+    return nickname.map((nick) => encodeURIComponent(nick)).join(',');
+  }
+};

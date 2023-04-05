@@ -93,7 +93,7 @@ export default function login() {
 
         const githubEmail = user.email;
         const githubUID = user.localId;
-        const githubNickname = encodeURIComponent(user.screenName);
+        const githubNickname = user.screenName;
         const githubPhotoUrl = user.photoUrl;
 
         const githubAccessToken = token.accessToken;
@@ -106,12 +106,10 @@ export default function login() {
           const logInPayload = { accessToken: githubAccessToken, refreshToken: githubRefreshToken, nickname: githubNickname };
 
           if (data) {
-            if (data) {
-              await dispatch(logInByOAuth(logInPayload));
-              await dispatch(SET_AUTH_TYPE_FIREBASE());
-              await handleSetUserProfile(githubNickname, githubPhotoUrl);
-              router.push('/home');
-            }
+            await dispatch(logInByOAuth(logInPayload));
+            await dispatch(SET_AUTH_TYPE_FIREBASE());
+            await handleSetUserProfile(githubNickname, githubPhotoUrl);
+            router.push('/home');
           } else {
             await dispatch(logInByOAuth(logInPayload));
             await dispatch(SET_AUTH_TYPE_FIREBASE());
@@ -141,7 +139,7 @@ export default function login() {
 
         const googleEmail = user.email;
         const googleUID = user.localId;
-        const googleNickname = encodeURIComponent(user.displayName);
+        const googleNickname = user.displayName;
         const googlePhotoUrl = user.photoUrl;
 
         const googleAccessToken = token.accessToken;
@@ -154,12 +152,10 @@ export default function login() {
           const logInPayload = { accessToken: googleAccessToken, refreshToken: googleRefreshToken, nickname: googleNickname };
 
           if (data) {
-            if (data) {
-              await dispatch(SET_AUTH_TYPE_FIREBASE());
-              await dispatch(logInByOAuth(logInPayload));
-              await handleSetUserProfile(googleNickname, googlePhotoUrl);
-              router.push('/home');
-            }
+            await dispatch(SET_AUTH_TYPE_FIREBASE());
+            await dispatch(logInByOAuth(logInPayload));
+            await handleSetUserProfile(googleNickname, googlePhotoUrl);
+            router.push('/home');
           } else {
             await dispatch(SET_AUTH_TYPE_FIREBASE());
             await dispatch(logInByOAuth(logInPayload));
