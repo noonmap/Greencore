@@ -133,9 +133,7 @@ export default function diarySet() {
       />
       <div className=''>
         {isLoading ? (
-          new Array(10).fill(1).map((_, i) => {
-            return <DiaryListItem key={i} />;
-          })
+          <div className='p-5'>로딩중</div>
         ) : (
           <div className={`flex flex-col`}>
             {/* 헤더 */}
