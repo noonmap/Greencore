@@ -26,7 +26,7 @@ type StateType = {
 
 const initialState: StateType = {
   email: 'test1@test.com',
-  password: '1234',
+  password: 'qwer1234!',
 };
 
 export default function login() {
@@ -74,7 +74,9 @@ export default function login() {
       const payload = { email, password };
       await dispatch(SET_AUTH_TYPE_DB());
       await dispatch(logIn(payload));
-      router.push('/home');
+
+      if (getCookieToken()) router.push('/home');
+      else router.push('/');
     } catch (error) {
       setValue('email', '');
       setValue('password', '');
@@ -233,7 +235,7 @@ export default function login() {
                 <label className={`${styles.password}`}>비밀번호</label>
                 <div className={`${styles.help}`}>영어 소문자, 숫자, 특수문자 포함 최소 8자</div>
               </div>
-              <input type='email' placeholder='비밀번호' className='block w-full' {...register('password')} />
+              <input type='password' placeholder='비밀번호' className='block w-full' {...register('password')} />
             </div>
           </div>
 

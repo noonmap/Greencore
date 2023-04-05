@@ -50,7 +50,6 @@ const feedSlice = createSlice({
         }
         state.page = state.page + 1;
         state.isLoading = false;
-        console.log(action.payload);
         if (action.payload) {
           state.feedList = [...state.feedList, ...action.payload?.content];
         }

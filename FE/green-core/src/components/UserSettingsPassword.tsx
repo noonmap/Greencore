@@ -71,7 +71,7 @@ export default function UserSettingsPassword() {
             </div>
 
             <input
-              type='text'
+              type='password'
               required
               placeholder='비밀번호'
               className={`${errors?.password ? 'inputError' : null} block w-full`}
