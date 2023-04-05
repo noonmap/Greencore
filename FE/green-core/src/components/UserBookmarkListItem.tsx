@@ -22,7 +22,7 @@ export default function UserBookmarkListItem({ bookmark, fetchBookmarkList }) {
   return (
     <>
       <div className='flex'>
-        <Image src={bookmark.imagePath} width={100} height={100} alt='' />
+        <Image priority src={bookmark.imagePath} width={100} height={100} alt='' />
         <div>{bookmark.title}</div>
         <div className='flex items-center cursor-pointer'>
           {bookmark.isBookmarked ? (

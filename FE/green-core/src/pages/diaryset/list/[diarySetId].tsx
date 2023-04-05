@@ -133,9 +133,7 @@ export default function diarySet() {
       />
       <div className=''>
         {isLoading ? (
-          new Array(10).fill(1).map((_, i) => {
-            return <DiaryListItem key={i} />;
-          })
+          <div className='p-5'>로딩중</div>
         ) : (
           <div className={`flex flex-col`}>
             {/* 헤더 */}
@@ -155,7 +153,7 @@ export default function diarySet() {
                 <div>
                   <Link href={`/user/feed/${diarySet?.user?.nickname}`}>
                     {userProfileImagePath ? (
-                      <Image src={userProfileImagePath} width={80} height={80} style={{ borderRadius: '50%' }} alt='프로필 사진' />
+                      <Image priority src={userProfileImagePath} width={80} height={80} style={{ borderRadius: '50%' }} alt='프로필 사진' />
                     ) : (
                       <Skeleton width={80} height={80} style={{ borderRadius: '50%' }} />
                     )}
@@ -164,7 +162,7 @@ export default function diarySet() {
                 {/* 일지생성 */}
                 <div className='py-3'>
                   <Link href={'/diary/create'}>
-                    <div className={`bg-blue-500 rounded px-3 py-1 flex justify-center ${styles.diaryAddBtn}`} style={{ borderRadius: '30px' }}>
+                    <div className={`rounded px-3 py-1 flex justify-center ${styles.diaryAddBtn}`} style={{ borderRadius: '30px' }}>
                       <span className='material-symbols-outlined'>add</span>
                       <span className='underline underline-offset-4 pr-2'>추가하기</span>
                     </div>

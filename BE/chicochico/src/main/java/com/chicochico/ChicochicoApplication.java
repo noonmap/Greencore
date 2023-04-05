@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -17,14 +16,16 @@ import java.util.TimeZone;
 public class ChicochicoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ChicochicoApplication.class, args);
-	}
-
-
-	@PostConstruct
-	public void started() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+		SpringApplication.run(ChicochicoApplication.class, args);
+
 		System.out.println("Current Time: " + new Date());
 	}
+
+	//	@PostConstruct
+	//	public void started() {
+	//		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+	//		System.out.println("Current Time: " + new Date());
+	//	}
 
 }

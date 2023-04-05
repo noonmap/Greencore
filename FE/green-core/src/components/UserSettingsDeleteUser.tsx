@@ -24,14 +24,13 @@ export default function UserDelete() {
   async function handleUserDelete() {
     const user = auth.currentUser;
 
+    await dispatch(deleteUser());
+
     if (authType == 'FIREBASE') {
       await signOut(auth);
       await deleteUserByOauth(user);
     }
-
-    // await dispatch(logOut());
     if (getCookieToken()) removeCookieToken();
-    await dispatch(deleteUser());
 
     router.push('/auth/login');
   }

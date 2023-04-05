@@ -197,6 +197,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
           <Link href={`/user/feed/${comment.user.nickname}`}>
             {userProfileImagePath ? (
               <Image
+                priority
                 src={userProfileImagePath}
                 alt='프로필사진'
                 width={100}

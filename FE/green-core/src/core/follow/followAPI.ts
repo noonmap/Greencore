@@ -5,6 +5,7 @@ import { scrollType } from '@/core/follow/followType';
 // 팔로우하기
 export const updateFollow = async (nickname: string | string[]) => {
   try {
+    console.log(nickname);
     const { data } = await http.post(`/following/${nickname}`);
     return data;
   } catch (error) {

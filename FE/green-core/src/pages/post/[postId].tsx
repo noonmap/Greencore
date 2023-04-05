@@ -135,7 +135,7 @@ export default function PostDetail() {
   // 유저 팔로우
   function handleUserFollow(e: any) {
     e.stopPropagation();
-    updateFollow(post.data.user.nickname).then((res) => {
+    updateFollow(post.user.nickname).then((res) => {
       if (res.result === 'SUCCESS') {
         setIsFollowed(true);
         setFollowerCount((prev) => prev + 1);
@@ -157,7 +157,7 @@ export default function PostDetail() {
   // 유저 팔로우 취소
   function handleDeleteFollow(e: any) {
     e.stopPropagation();
-    deleteFollow(post.data.user.nickname).then((res) => {
+    deleteFollow(post.user.nickname).then((res) => {
       if (res.result === 'SUCCESS') {
         setIsFollowed(false);
         setFollowerCount((prev) => prev - 1);
@@ -197,7 +197,7 @@ export default function PostDetail() {
 
   // 유저 프로필 이동
   const goProfile = () => {
-    router.push(`/user/feed/${post.data.user.nickname}`);
+    router.push(`/user/feed/${post.user.nickname}`);
   };
 
   // 태그 클릭 이벤트
@@ -237,6 +237,7 @@ export default function PostDetail() {
               <div className={`${styles.helpTip} flex`}>
                 {userProfileImagePath ? (
                   <Image
+                    priority
                     src={userProfileImagePath}
                     width={100}
                     height={100}
@@ -254,6 +255,7 @@ export default function PostDetail() {
                     <div className={`flex flex-col justify-center items-center `}>
                       {userProfileImagePath ? (
                         <Image
+                          priority
                           src={userProfileImagePath}
                           width={80}
                           height={80}
@@ -324,7 +326,7 @@ export default function PostDetail() {
                   <div className={`${styles.nickname}`}>{post.user.nickname}님의 게시물</div>
                 </div>
                 <div className={`${styles.box}`}>
-                  <Image src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
+                  <Image priority src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>

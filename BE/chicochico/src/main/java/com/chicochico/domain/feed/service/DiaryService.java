@@ -91,10 +91,10 @@ public class DiaryService {
 	 */
 	public List<DiaryEntity> getDiaryList(Long diarySetId) {
 		// 관찰 일지 조회
-		DiarySetEntity diarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
-		List<DiaryEntity> list = diarySet.getDiaryList();
+		//		DiarySetEntity diarySet = diarySetRepository.findByIdAndIsDeleted(diarySetId, IsDeletedType.N).orElseThrow(() -> new CustomException(ErrorCode.DIARY_SET_NOT_FOUND));
+		List<DiaryEntity> list = diaryRepository.findByDiarySetIdAndIsDeletedOrderByCreatedAtDesc(diarySetId, IsDeletedType.N);//diarySet.getDiaryList();
 		// OneToMany 해놓으면 알아서 list에 추가해 주는 듯 -> delete된 거 빼야 한다
-		list.removeIf(diary -> diary.getIsDeleted().equals(IsDeletedType.Y));
+		//		list.removeIf(diary -> diary.getIsDeleted().equals(IsDeletedType.Y));
 		return list;
 	}
 

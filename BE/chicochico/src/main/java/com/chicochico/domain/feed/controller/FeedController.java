@@ -40,7 +40,8 @@ public class FeedController {
 	@ApiOperation(value = "피드 추천 목록을 조회합니다.", notes = "")
 	public ResponseEntity<ResultDto<Page<FeedResponseDto>>> getFeedList(@PageableDefault Pageable pageable) {
 		List<FeedEntity> feedEntityList = feedService.getRecommendedFeedList(pageable);
-		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityList, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed, pageable);
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityList, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed,
+			feedService::getTagContentList, pageable);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 
@@ -52,7 +53,8 @@ public class FeedController {
 		List<UserEntity> followingList = followService.getFollowingList(nickname);
 
 		Page<FeedEntity> feedEntityPage = feedService.getFeedListByFollowUser(followingList, pageable);
-		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed, pageable);
+		Page<FeedResponseDto> feedResponseDtoPage = FeedResponseDto.fromEnityPage(feedEntityPage, feedService::isLikedFeed, feedService::getCommentCount, followService::isFollowed,
+			feedService::getTagContentList);
 		return ResponseEntity.ok().body(ResultDto.of(feedResponseDtoPage));
 	}
 

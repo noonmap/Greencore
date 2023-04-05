@@ -106,10 +106,6 @@ export default function login() {
           const logInPayload = { accessToken: githubAccessToken, refreshToken: githubRefreshToken, nickname: githubNickname };
 
           if (data) {
-            // 없는 이메일이므로 회원가입 진행 후 로그인
-            const signUpPayload = { email: githubEmail, password: githubUID + '!', nickname: githubNickname };
-            const { data } = await signUpByOAuth(signUpPayload);
-
             if (data) {
               await dispatch(logInByOAuth(logInPayload));
               await dispatch(SET_AUTH_TYPE_FIREBASE());
@@ -158,10 +154,6 @@ export default function login() {
           const logInPayload = { accessToken: googleAccessToken, refreshToken: googleRefreshToken, nickname: googleNickname };
 
           if (data) {
-            // 없는 이메일이므로 회원가입 진행 후 로그인
-            const signUpPayload = { email: googleEmail, password: googleUID + '!', nickname: googleNickname };
-            const { data } = await signUpByOAuth(signUpPayload);
-
             if (data) {
               await dispatch(SET_AUTH_TYPE_FIREBASE());
               await dispatch(logInByOAuth(logInPayload));
@@ -215,8 +207,8 @@ export default function login() {
       <FindPasswordModal isOpen={isOpenFindPasswordModal} handleModalClose={() => setIsOpenFindPasswordModal(false)} />
 
       <div className={`${styles.container} h-full flex flex-col`}>
-        <Image src='/images/leaf1.png' priority width={512} height={512} alt='' className={`${styles.leaf1} `} />
         <Image src='/images/leaf2.png' priority width={512} height={512} alt='' className={`${styles.leaf2}`} />
+        <Image src='/images/leaf1.png' priority width={512} height={512} alt='' className={`${styles.leaf1} `} />
         <Image src='/images/leaf3.png' priority width={512} height={512} alt='' className={`${styles.leaf3}`} />
 
         <div className={`w-96 ${styles.wrap} flex flex-col justify-between`}>
