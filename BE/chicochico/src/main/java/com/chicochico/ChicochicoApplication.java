@@ -17,7 +17,10 @@ import java.util.TimeZone;
 public class ChicochicoApplication {
 
 	public static void main(String[] args) {
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 		SpringApplication.run(ChicochicoApplication.class, args);
+
+		System.out.println("Current Time: " + new Date());
 	}
 
 
