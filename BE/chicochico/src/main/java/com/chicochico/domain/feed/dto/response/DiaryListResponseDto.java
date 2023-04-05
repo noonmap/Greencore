@@ -20,14 +20,16 @@ public class DiaryListResponseDto {
 	private String title;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate startDate;
+	private Boolean isBookmarked;
 	private Page<DiarySimpleResponseDto> diaryList;
 
 
-	public static DiaryListResponseDto fromEntity(DiarySetEntity diarySet, Page<DiarySimpleResponseDto> diaryList, Function<Long, Boolean> isFollowed) {
+	public static DiaryListResponseDto fromEntity(DiarySetEntity diarySet, Page<DiarySimpleResponseDto> diaryList, Function<Long, Boolean> isFollowed, Function<DiarySetEntity, Boolean> isBookmarked) {
 		return DiaryListResponseDto.builder()
 			.user(ProfileResponseDto.fromEntity(diarySet.getUser(), isFollowed))
 			.title(diarySet.getTitle())
 			.startDate(diarySet.getStartDate())
+			.isBookmarked(isBookmarked.apply(diarySet))
 			.diaryList(diaryList)
 			.build();
 	}
