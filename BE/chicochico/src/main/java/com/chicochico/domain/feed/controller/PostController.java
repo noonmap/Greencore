@@ -53,9 +53,9 @@ public class PostController {
 
 	@PostMapping
 	@ApiOperation(value = "게시글을 생성합니다.")
-	public ResponseEntity<ResultDto<Boolean>> createPost(PostRequestDto postRequestDto) {
-		postService.createPost(postRequestDto);
-		return ResponseEntity.ok().body(ResultDto.ofSuccess());
+	public ResponseEntity<ResultDto<Long>> createPost(PostRequestDto postRequestDto) {
+		Long postId = postService.createPost(postRequestDto);
+		return ResponseEntity.ok().body(ResultDto.of(postId));
 	}
 
 
