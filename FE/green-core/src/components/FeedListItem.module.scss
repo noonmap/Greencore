@@ -120,3 +120,13 @@
   background-color: var(--thin-color);
   cursor: pointer;
 }
+
+.tagBtn {
+  color: var(--main-color);
+}
+
+.tagBtn:hover {
+  cursor: pointer;
+  background-color: var(--main-color);
+  color: white;
+}
