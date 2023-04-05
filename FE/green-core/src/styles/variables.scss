@@ -6,6 +6,7 @@
 	--margin: 0.5rem;
 	--padding-card: 2rem;
 	--padding-input: 1rem;
+	--padding: 1.5rem;
 
 	--border-radius: 12px;
 	--border-radius-input: 6px;
@@ -19,7 +20,8 @@
 	--secondary-glow: radial-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
 	--tile-border: conic-gradient(#00000080, #00000040, #00000030, #00000020, #00000010, #00000010, #00000080);
 
-	--main-color: #4fc577;
+	// --main-color: #4fc577;
+	--main-color: #000;
 	--main-light-color: #87d0a0;
 	--main-dark-color: #3ead64;
 	--second-color: #6ad150;
@@ -30,16 +32,17 @@
 	--title-second-color: #121b15;
 	--title-light-color: #68716b;
 	--danger-color: #ca7468;
-	--like-color: #da2b13;
+	// --like-color: #da2b13;
+	--like-color: #ff3ebd;
 
 	--text-bold: 700;
 	--text-extra-bold: 800;
 
 	// --transition-nav: all 0.12s cubic-bezier(1, 0, 0.8, 1);
 	--transition-nav: all 0.1s ease-in;
-	--timing-func: cubic-bezier(0.4, 0, 0.2, 1);
+	// --timing-func: cubic-bezier(0.4, 0, 0.2, 1);
+	--timing-func: ease;
 	--transition-bg-duration: 300ms;
-  
 }
 
 @media (prefers-color-scheme: dark) {
