@@ -391,7 +391,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
           </div>
           <div className={`flex justify-between p-3 pt-0`}>
             <div>
-              {feed.tags.map((tag: string, index: number) => {
+              {feed?.tags.map((tag: string, index: number) => {
                 return (
                   <span key={index} onClick={handleTagClick} className={`${styles.tagBtn} mr-2`}>
                     #{tag}
