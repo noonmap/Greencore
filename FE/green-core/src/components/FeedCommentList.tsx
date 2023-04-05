@@ -1,14 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import FeedCommentItem from './FeedCommentItem';
 import { useForm } from 'react-hook-form';
-import { useAppDispatch } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { createComment, getCommentList, getUserList } from '@/core/feed/feedAPI';
 import styles from './FeedCommentList.module.scss';
 import AppButton from './button/AppButton';
-import { checkInputFormToast } from '@/lib/utils';
+import { checkInputFormToast, getTodayDate } from '@/lib/utils';
+import { createAlert } from '@/core/alert/alertAPI';
 
-export default function FeedCommentList({ feedId, setCommentCount }) {
+type PropsType = {
+  feedId: number;
+  setCommentCount: any;
+  feedType: string;
+  nickname: string;
+};
+
+export default function FeedCommentList({ feedId, setCommentCount, feedType, nickname }: PropsType) {
   const [commentList, setCommentList] = useState([]);
+  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 
   // GET 요청 변수
   const isStop = useRef<boolean>(false);
@@ -42,7 +51,6 @@ export default function FeedCommentList({ feedId, setCommentCount }) {
       const requestData = { feedId, page: page.current, size: size.current };
       try {
         const data = await getCommentList(requestData);
-        console.log(data);
         if (data.result === 'SUCCESS') {
           setCommentCount(data.data.totalElements);
           if (data.data.content.length < 5) {
@@ -65,27 +73,59 @@ export default function FeedCommentList({ feedId, setCommentCount }) {
   // 멘션 적용
   useEffect(() => {
     const lastAtSignIndex = content.lastIndexOf('@');
-    console.log(lastAtSignIndex);
     if (lastAtSignIndex !== -1 && content.length > lastAtSignIndex + 1) {
-      console.log(content.length, lastAtSignIndex + 1);
       const nickname = content.slice(lastAtSignIndex + 1);
       getUserList(nickname).then((res) => {
-        console.log(res.data);
-        setValue('userList', res.data.nickname);
+        setValue('userList', res.data);
       });
+    } else {
+      setValue('userList', []);
     }
   }, [content]);
 
-  const handleUserSelect = (user: { name: string }) => {
-    setValue('content', content.replace(/@\w+$/, `@${user.name} `));
+  // 멘션 추출하기
+  const handleUserSelect = (user: { nickname: string }) => {
+    const lastAtSignIndex = content.lastIndexOf('@');
+    setValue('content', content.slice(0, lastAtSignIndex) + `@${user.nickname} `);
     setValue('userList', []);
+  };
+
+  // 언급 알림 함수
+  const mentionAlertFunction = async (nickname: string) => {
+    if (nickname !== myNickname) {
+      const payload = {
+        nickname,
+        mentionNickname: myNickname,
+        type: 'ALERT_MENTION',
+        urlPath: `/${feedType}/${feedId}`,
+        createdAt: getTodayDate(),
+        isRead: false,
+      };
+      await dispatch(createAlert(payload));
+    }
+  };
+
+  // 댓글 생성 알림 함수
+  const commentAlertFunction = async (nickname: string) => {
+    if (nickname !== myNickname) {
+      const payload = {
+        nickname,
+        mentionNickname: myNickname,
+        type: 'ALERT_COMMENT',
+        urlPath: `/${feedType}/${feedId}`,
+        createdAt: getTodayDate(),
+        isRead: false,
+      };
+      await dispatch(createAlert(payload));
+    }
   };
 
   // 댓글 생성
   const handleCreateComment = async (e: any) => {
     e.preventDefault();
     const mentionRegex = /@[^\s@]+/g;
-    // const mentionNickname = content.match(mentionRegex) || [];
+    const mentionNicknameList = content.match(mentionRegex) || []; // 언급할 대상들
+
     const mentionNickname = null;
 
     if (content == '') {
@@ -102,13 +142,15 @@ export default function FeedCommentList({ feedId, setCommentCount }) {
       setValue('content', '');
       page.current = 0;
       handleGetCommentList();
+      await commentAlertFunction(nickname);
+      for (const nickname of mentionNicknameList) {
+        await mentionAlertFunction(nickname.substring(1));
+      }
     }
   };
 
   // 댓글 삭제
   const deleteCommentList = () => {
-    // let filteredCommentList = commentList.filter((item) => item.commentId !== commentId);
-    // setCommentList(filteredCommentList);
     isStop.current = false;
     setValue('content', '');
     page.current = 0;
@@ -121,19 +163,23 @@ export default function FeedCommentList({ feedId, setCommentCount }) {
 
   return (
     <>
-      <div className={`${styles.inputBox}`}>
-        <textarea className={`${styles.textareaBox}`} rows={2} {...register('content')} />
-        <ul>
-          {userList.map((user) => (
-            <li key={user.id} onClick={() => handleUserSelect(user)}>
-              {user.name}
-            </li>
-          ))}
-        </ul>
+      <div className={`${styles.inputBox} flex-1`}>
+        <div className={`${styles.textareaWrapper} flex-1`}>
+          <textarea rows={2} {...register('content')} />
+          {!userList ||
+            (userList.length > 0 &&
+              userList.map((user) => (
+                <div key={user.userId} onClick={() => handleUserSelect(user)} className={`${styles.dropdownMenu}`}>
+                  {user.nickname}
+                </div>
+              )))}
+        </div>
         <AppButton text='작성' className={`${styles.btn}`} handleClick={handleCreateComment} />
       </div>
       {commentList.map((comment) => {
-        return <FeedCommentItem key={comment.commentId} comment={comment} feedId={feedId} deleteCommentList={deleteCommentList} />;
+        return (
+          <FeedCommentItem key={comment.commentId} comment={comment} feedId={feedId} deleteCommentList={deleteCommentList} feedType={feedType} />
+        );
       })}
       {!isStop.current ? (
         <AppButton text='더보기' handleClick={handleGetCommentList} className='mt-4' />

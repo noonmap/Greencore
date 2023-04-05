@@ -13,13 +13,15 @@ import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import CommentDeleteModal from '@/components/modal/CommentDeleteModal';
 import Image from 'next/image';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { getTodayDate } from '@/lib/utils';
+import { createAlert } from '@/core/alert/alertAPI';
 
 export default function PostDetail() {
   const router = useRouter();
   const storage = getStorage();
   const dispatch = useAppDispatch();
   const [isOpenPostDeleteModal, setIsOpenPostDeleteModal] = useState(false);
-  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
+  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
   const divRef = useRef<HTMLDivElement>(null);
   const { postId } = router.query;
   const [post, setPost] = useState<any>({});
@@ -104,6 +106,17 @@ export default function PostDetail() {
       if (res.result === 'SUCCESS') {
         setIsLiked(true);
         setLikeCount((prev) => prev + 1);
+        if (post.user.nickname !== myNickname) {
+          const payload = {
+            nickname: post.user.nickname,
+            mentionNickname: myNickname,
+            type: 'ALERT_LIKE',
+            urlPath: `/post/${Number(postId)}`,
+            createdAt: getTodayDate(),
+            isRead: false,
+          };
+          dispatch(createAlert(payload));
+        }
       }
     });
   }
@@ -126,6 +139,17 @@ export default function PostDetail() {
       if (res.result === 'SUCCESS') {
         setIsFollowed(true);
         setFollowerCount((prev) => prev + 1);
+        if (post.user.nickname !== myNickname) {
+          const payload = {
+            nickname: post.user.nickname,
+            mentionNickname: myNickname,
+            type: 'ALERT_FOLLOW',
+            urlPath: `/user/feed/${myNickname}`,
+            createdAt: getTodayDate(),
+            isRead: false,
+          };
+          dispatch(createAlert(payload));
+        }
       }
     });
   }
@@ -320,7 +344,11 @@ export default function PostDetail() {
                 <div className='mb-7'>{post?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
-                <div>{!Number.isNaN(postId) && <FeedCommentList feedId={postId} setCommentCount={setCommentCount} />}</div>
+                <div>
+                  {!Number.isNaN(postId) && (
+                    <FeedCommentList feedId={Number(postId)} setCommentCount={setCommentCount} feedType='post' nickname={post.user.nickname} />
+                  )}
+                </div>
               </div>
 
               {/* 옵션 버튼 */}

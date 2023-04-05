@@ -2,21 +2,30 @@ import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import { deleteComment, updateComment } from '@/core/feed/feedAPI';
+import { deleteComment, getUserList, updateComment } from '@/core/feed/feedAPI';
 import styles from './FeedCommentItem.module.scss';
 import AppButton from './button/AppButton';
 import CommentDeleteModal from './modal/CommentDeleteModal';
-import { checkInputFormToast } from '@/lib/utils';
+import { checkInputFormToast, getTodayDate } from '@/lib/utils';
 import Image from 'next/image';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import Skeleton from 'react-loading-skeleton';
+import { createAlert } from '@/core/alert/alertAPI';
 
-export default function FeedCommentItem({ comment, feedId, deleteCommentList }) {
+type PropsType = {
+  comment: any;
+  feedId: number;
+  deleteCommentList: any;
+  feedType: string;
+};
+
+export default function FeedCommentItem({ comment, feedId, deleteCommentList, feedType }: PropsType) {
   const [isUpdated, setIsUpdated] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isOpenCommentDeleteModal, setIsOpenCommentDeleteModal] = useState(false);
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
-  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
+  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
+  const realContent = useRef<string>(comment.content);
   const modalRef = useRef<HTMLDivElement>(null);
   const storage = getStorage();
   const dispatch = useAppDispatch();
@@ -31,15 +40,17 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
   // react-hook-form 설정
   type StateType = {
     content: string;
+    userList: Array<any>;
   };
 
   const initialState: StateType = {
     content: comment.content,
+    userList: [],
   };
 
   const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 
-  const [content] = getValues(['content']);
+  const [content, userList] = getValues(['content', 'userList']);
 
   useEffect(() => {
     watch();
@@ -50,7 +61,27 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
     return () => {
       document.removeEventListener('mousedown', handleModalOutsideClick);
     };
-  });
+  }, []);
+
+  // 멘션 적용
+  useEffect(() => {
+    const lastAtSignIndex = content.lastIndexOf('@');
+    if (lastAtSignIndex !== -1 && content.length > lastAtSignIndex + 1) {
+      const nickname = content.slice(lastAtSignIndex + 1);
+      getUserList(nickname).then((res) => {
+        setValue('userList', res.data);
+      });
+    } else {
+      setValue('userList', []);
+    }
+  }, [content]);
+
+  // 멘션 추출하기
+  const handleUserSelect = (user: { nickname: string }) => {
+    const lastAtSignIndex = content.lastIndexOf('@');
+    setValue('content', content.slice(0, lastAtSignIndex) + `@${user.nickname} `);
+    setValue('userList', []);
+  };
 
   /** 사용자 프로필 이미지 가져오는 함수 */
   function getUserProfile(nickname: string) {
@@ -70,15 +101,22 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
     e.preventDefault();
     setIsOpenMenu(false);
     setIsUpdated((prev) => !prev);
+    setValue('content', realContent.current);
   };
 
   // 댓글 수정
   const handleUpdateComment = async () => {
-    const mentionRegex = /@[^\s@#]+/g;
     const mentionNickname = null;
+    const mentionRegex = /@[^\s@]+/g;
+    const mentionNicknameList = content.match(mentionRegex) || []; // 언급할 대상들
 
     if (content == '') {
       checkInputFormToast();
+      return;
+    }
+
+    if (content === realContent.current) {
+      setIsUpdated((prev) => !prev);
       return;
     }
 
@@ -87,7 +125,26 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
 
     const data = await dispatch(updateComment(requestData));
     if (data.payload.result === 'SUCCESS') {
+      realContent.current = content;
       setIsUpdated((prev) => !prev);
+      for (const nickname of mentionNicknameList) {
+        await mentionAlertFunction(nickname.substring(1));
+      }
+    }
+  };
+
+  // 언급 알림 함수
+  const mentionAlertFunction = async (nickname: string) => {
+    if (nickname !== myNickname) {
+      const payload = {
+        nickname,
+        mentionNickname: myNickname,
+        type: 'ALERT_MENTION',
+        urlPath: `/${feedType}/${feedId}`,
+        createdAt: getTodayDate(),
+        isRead: false,
+      };
+      await dispatch(createAlert(payload));
     }
   };
 
@@ -156,7 +213,16 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
             <div className={`${styles.name} w-12 mx-4`}>
               <Link href={`/user/feed/${comment.user.nickname}`}>{comment.user.nickname}</Link>
             </div>
-            <textarea className={`${styles.textareaBox} flex-1`} rows={2} {...register('content')} />
+            <div className={`flex-1 ${styles.textareaWrapper}`}>
+              <textarea rows={2} {...register('content')} />
+              {!userList ||
+                (userList.length > 0 &&
+                  userList.map((user) => (
+                    <div key={user.userId} onClick={() => handleUserSelect(user)} className={`${styles.dropdownMenu}`}>
+                      {user.nickname}
+                    </div>
+                  )))}
+            </div>
           </div>
         ) : (
           <div className={`flex items-center flex-1`}>
@@ -169,7 +235,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList }) 
                   if (v.match(/@[^\s@#]+/g)) {
                     return (
                       <span key={index}>
-                        <Link href={`/user/feed/${comment.user.nickname}`} style={{ color: 'blue', whiteSpace: 'pre-line' }}>
+                        <Link href={`/user/feed/${v.substring(1)}`} style={{ color: 'blue', whiteSpace: 'pre-line' }}>
                           {v}
                         </Link>
                       </span>
