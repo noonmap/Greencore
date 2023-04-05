@@ -4,6 +4,7 @@ export type FeedDataType = {
 };
 
 export type FeedType = {
+  tags: Array<string>;
   user: {
     nickname: string;
     profileImagePath: string;
