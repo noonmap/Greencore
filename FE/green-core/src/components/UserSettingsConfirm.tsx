@@ -26,6 +26,7 @@ export default function UserSettingsConfirm() {
 
   const {
     register,
+    setValue,
     formState: { errors },
     getValues,
     watch,
@@ -47,8 +48,8 @@ export default function UserSettingsConfirm() {
 
   /** 비밀번호가 입력 완료되었는지 확인하는 함수 */
   function checkIsPossible() {
-    // if (errors?.password || errors?.password?.type === 'required' || password === '') setValue('isPossible', false);
-    // else setValue('isPossible', true);
+    if (errors?.password || errors?.password?.type === 'required' || password === '') setValue('isPossible', false);
+    else setValue('isPossible', true);
   }
 
   /** 비밀번호 확인하는 함수 */
@@ -60,7 +61,7 @@ export default function UserSettingsConfirm() {
 
     try {
       const { data } = await checkPassword({ password });
-      dispatch(SET_IS_POSSIBLE_UPDATE_USER_TRUE());
+      if (data) dispatch(SET_IS_POSSIBLE_UPDATE_USER_TRUE());
     } catch (error) {
       console.error(error);
     }

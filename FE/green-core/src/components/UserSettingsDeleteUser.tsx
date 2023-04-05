@@ -1,14 +1,19 @@
 import React, { useEffect } from 'react';
-import { useAppDispatch } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { deleteUser, logOut } from '@/core/user/userAPI';
 import AppButton from '@/components/button/AppButton';
 import styles from '@/styles/Settings.module.scss';
 import { SET_IS_POSSIBLE_UPDATE_USER_FALSE } from '@/core/user/userSlice';
 import { useRouter } from 'next/router';
+import { getAuth, deleteUser as deleteUserByOauth, signOut } from 'firebase/auth';
+import { getCookieToken, removeCookieToken } from '@/lib/cookies';
 
 export default function UserDelete() {
   const dispatch = useAppDispatch();
+  const auth = getAuth();
   const router = useRouter();
+
+  const authType = useAppSelector((state) => state.common.authType);
 
   useEffect(() => {
     return () => {
@@ -17,8 +22,17 @@ export default function UserDelete() {
   }, []);
 
   async function handleUserDelete() {
-    dispatch(deleteUser());
-    dispatch(logOut());
+    const user = auth.currentUser;
+
+    if (authType == 'FIREBASE') {
+      await signOut(auth);
+      await deleteUserByOauth(user);
+    }
+
+    // await dispatch(logOut());
+    if (getCookieToken()) removeCookieToken();
+    await dispatch(deleteUser());
+
     router.push('/auth/login');
   }
 

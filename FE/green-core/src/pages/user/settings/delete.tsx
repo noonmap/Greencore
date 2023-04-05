@@ -5,7 +5,16 @@ import UserSettingsConfirm from '@/components/UserSettingsConfirm';
 import UserSettingsDeleteUser from '@/components/UserSettingsDeleteUser';
 
 export default function deleteUser() {
-  const isPossibleUpdateUser = useAppSelector((state) => state.user.isPossibleUpdateUser);
+	const authType = useAppSelector((state) => state.common.authType);
+	const isPossibleUpdateUser = useAppSelector((state) => state.user.isPossibleUpdateUser);
 
-  return <SettingsLayout>{isPossibleUpdateUser ? <UserSettingsDeleteUser /> : <UserSettingsConfirm />}</SettingsLayout>;
+	if (authType != 'DB') {
+		return (
+			<SettingsLayout>
+				<UserSettingsDeleteUser />
+			</SettingsLayout>
+		);
+	}
+
+	return <SettingsLayout>{isPossibleUpdateUser ? <UserSettingsDeleteUser /> : <UserSettingsConfirm />}</SettingsLayout>;
 }

@@ -1,315 +1,315 @@
 @import url('./font/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @import './variables.scss';
 @import './transition.scss';
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-// @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
 
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: 'Red Hat Display', 'Pretendard', 'Noto Sans KR', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  color: var(--title-color);
-  overflow: hidden;
-  font-weight: 500;
+	padding: 0;
+	margin: 0;
+	font-family: 'Red Hat Display', 'Pretendard', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+		Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+	color: var(--title-color);
+	overflow: hidden;
+	font-weight: 500;
 }
 
 * {
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-size-adjust: 100%;
-  font-feature-settings: normal;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%;
+	font-feature-settings: normal;
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+	width: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--main-light-color);
-  border-radius: var(--border-radius);
+	background-color: var(--main-light-color);
+	border-radius: var(--border-radius);
 }
 
 ::selection {
-  color: #fff;
-  background-color: var(--main-light-color);
+	color: #fff;
+	background-color: var(--main-light-color);
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+	color: inherit;
+	text-decoration: none;
 }
 
 img {
-  max-width: 100%;
-  height: auto;
+	max-width: 100%;
+	height: auto;
 }
 
 h1,
 h2,
 p,
 ul {
-  margin: 0;
+	margin: 0;
 }
 
 ul {
-  padding: 0;
-  list-style: none;
+	padding: 0;
+	list-style: none;
 }
 
 input {
-  outline: none;
-  border: 1px solid var(--light-color);
-  border-radius: var(--border-radius-input);
-  height: var(--min-height-input);
-  padding: var(--padding-input);
-  transition: all 0.3s ease;
+	outline: none;
+	border: 1px solid var(--light-color);
+	border-radius: var(--border-radius-input);
+	height: var(--min-height-input);
+	padding: var(--padding-input);
+	transition: all 0.3s ease;
 
-  &:focus {
-    border: 1px solid var(--main-color);
+	&:focus {
+		border: 1px solid var(--main-color);
 
-    &::placeholder {
-      color: var(--main-light-color);
-    }
-  }
+		&::placeholder {
+			color: var(--main-light-color);
+		}
+	}
 }
 
 input[type='checkbox'] {
-  -webkit-appearance: none;
-  position: relative;
-  padding: 8px;
-  cursor: pointer;
-  outline: none !important;
-  border: 1px solid var(--light-color);
-  border-radius: 2px;
-  background: var(--thin-color);
+	-webkit-appearance: none;
+	position: relative;
+	padding: 8px;
+	cursor: pointer;
+	outline: none !important;
+	border: 1px solid var(--light-color);
+	border-radius: 2px;
+	background: var(--thin-color);
 }
 
 input[type='checkbox']::before {
-  content: '\2713';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  overflow: hidden;
-  transform: scale(0) translate(-50%, -50%);
-  line-height: 1;
+	content: '\2713';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	overflow: hidden;
+	transform: scale(0) translate(-50%, -50%);
+	line-height: 1;
 }
 
 input[type='checkbox']:hover {
-  border-color: rgba(170, 170, 170, 0.5);
+	border-color: rgba(170, 170, 170, 0.5);
 }
 
 input[type='checkbox']:checked {
-  background-color: var(--main-color);
-  border-color: rgba(255, 255, 255, 0.3);
-  color: white;
+	background-color: var(--main-color);
+	border-color: rgba(255, 255, 255, 0.3);
+	color: white;
 }
 
 input[type='checkbox']:checked::before {
-  border-radius: 2px;
-  transform: scale(1) translate(-50%, -50%);
+	border-radius: 2px;
+	transform: scale(1) translate(-50%, -50%);
 }
 
 .inputError {
-  &:focus {
-    border: 1px solid var(--like-color);
+	&:focus {
+		border: 1px solid var(--like-color);
 
-    &::placeholder {
-      color: var(--light-color);
-    }
-  }
+		&::placeholder {
+			color: var(--light-color);
+		}
+	}
 }
 
 button {
-  padding: 0.3rem 2rem;
-  font-weight: bold;
+	padding: 0.3rem 2rem;
+	font-weight: bold;
 }
 
 button[aria-current='page'] {
-  background-color: red;
+	background-color: red;
 }
 
 h1 {
-  font-size: 1.875rem; /* 30px */
-  line-height: 2.25rem; /* 36px */
-  font-weight: bold;
+	font-size: 1.875rem; /* 30px */
+	line-height: 2.25rem; /* 36px */
+	font-weight: bold;
 }
 
 .modalContainer {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  z-index: 99;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.3);
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	z-index: 99;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.3);
 }
 
 .modalWrap {
-  max-width: 35%;
-  min-width: 350px;
-  min-height: 200px;
-  background-color: white;
-  border: 1px rgba(0, 0, 0, 0.3) solid;
-  border-radius: 0.375rem;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-  z-index: 100;
-  // padding: 0 0.5rem;
+	max-width: 35%;
+	min-width: 350px;
+	min-height: 200px;
+	background-color: white;
+	border: 1px rgba(0, 0, 0, 0.3) solid;
+	border-radius: 0.375rem;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+	z-index: 100;
+	// padding: 0 0.5rem;
 }
 
 .modalTitle {
-  color: var(--main-color);
-  font-size: 1.3rem;
-  font-weight: var(--text-bold);
-  // margin-bottom: 1rem;
+	color: var(--main-color);
+	font-size: 1.3rem;
+	font-weight: var(--text-bold);
+	// margin-bottom: 1rem;
 }
 
 .modalClose {
-  color: var(--light-color);
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  cursor: pointer;
+	color: var(--light-color);
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	cursor: pointer;
 
-  &:hover {
-    color: var(--danger-color);
-  }
+	&:hover {
+		color: var(--danger-color);
+	}
 }
 
 .close {
-  color: var(--light-color);
-  cursor: pointer;
+	color: var(--light-color);
+	cursor: pointer;
 
-  &:hover {
-    color: var(--danger-color);
-  }
+	&:hover {
+		color: var(--danger-color);
+	}
 }
 
 .modalContent {
-  padding: 2.5rem var(--padding-card);
-  min-width: 400px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
+	padding: 2.5rem var(--padding-card);
+	min-width: 400px;
+	min-height: 300px;
+	display: flex;
+	flex-direction: column;
 }
 
 .title {
-  color: var(--main-color);
-  font-size: 1.5rem;
+	color: var(--main-color);
+	font-size: 1.5rem;
 }
 
 .error {
-  color: var(--danger-color);
-  font-size: 0.85rem;
+	color: var(--danger-color);
+	font-size: 0.85rem;
 }
 
 .main {
-  color: var(--main-color);
+	color: var(--main-color);
 }
 
 .titleLight {
-  color: var(--title-light-color);
+	color: var(--title-light-color);
 }
 
 .light {
-  color: var(--light-color);
+	color: var(--light-color);
 }
 
 .label {
-  // color: var(--main-dark-color);
-  color: var(--title-light-color);
-  font-size: 0.9rem;
-  font-weight: var(--text-bold);
+	// color: var(--main-dark-color);
+	color: var(--title-light-color);
+	font-size: 0.9rem;
+	font-weight: var(--text-bold);
 }
 
 .md {
-  font-variation-settings: 'wght' 400;
-  font-size: 1.4rem;
-  color: var(--title-light-color);
+	font-variation-settings: 'wght' 400;
+	font-size: 1.4rem;
+	color: var(--title-light-color);
 }
 .fill {
-  font-variation-settings: 'FILL' 1;
+	font-variation-settings: 'FILL' 1;
 }
 
 .md-main {
-  font-variation-settings: 'wght' 400;
-  font-size: 1.4rem;
-  color: var(--main-color);
+	font-variation-settings: 'wght' 400;
+	font-size: 1.4rem;
+	color: var(--main-color);
 }
 .fill-main {
-  color: var(--main-color);
-  font-variation-settings: 'FILL' 1;
+	color: var(--main-color);
+	font-variation-settings: 'FILL' 1;
 }
 
 .md-small {
-  font-variation-settings: 'wght' 400;
-  font-size: 1rem;
-  color: var(--title-light-color);
+	font-variation-settings: 'wght' 400;
+	font-size: 1rem;
+	color: var(--title-light-color);
 }
 .fill-small {
-  font-size: 1rem;
-  font-variation-settings: 'FILL' 1;
+	font-size: 1rem;
+	font-variation-settings: 'FILL' 1;
 }
 
 .like {
-  color: var(--like-color);
-  font-size: 0.3rem;
+	color: var(--like-color);
+	font-size: 0.3rem;
 }
 .alertLight {
-  color: var(--light-color);
-  font-size: 0.3rem;
+	color: var(--light-color);
+	font-size: 0.3rem;
 }
 
 .popUp {
-  position: absolute;
-  width: 100px;
-  top: -110px;
-  right: -5px;
-  background-color: #fff;
-  border: 1px solid var(--thin-color);
-  padding: 0.5rem;
-  border-radius: var(--border-radius-input);
-  box-shadow: var(--box-shadow-card);
+	position: absolute;
+	width: 100px;
+	top: -110px;
+	right: -5px;
+	background-color: #fff;
+	border: 1px solid var(--thin-color);
+	padding: 0.5rem;
+	border-radius: var(--border-radius-input);
+	box-shadow: var(--box-shadow-card);
 
-  div:nth-child(1) {
-    border-bottom: 1px solid var(--thin-color);
-  }
+	div:nth-child(1) {
+		border-bottom: 1px solid var(--thin-color);
+	}
 
-  div {
-    padding-left: 5px;
-    color: var(--title-light-color);
+	div {
+		padding-left: 5px;
+		color: var(--title-light-color);
 
-    &:hover {
-      background-color: var(--thin-color);
-      cursor: pointer;
-    }
-  }
+		&:hover {
+			background-color: var(--thin-color);
+			cursor: pointer;
+		}
+	}
 }
 
 .introduction {
-  color: var(--title-light-color);
-  font-size: 0.9rem;
+	color: var(--title-light-color);
+	font-size: 0.9rem;
 }
 
 select {
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  padding: 10px 6px;
-  font-size: 14px;
-  height: var(--min-height-input);
+	border: 1px solid #bbb;
+	border-radius: 8px;
+	padding: 10px 6px;
+	font-size: 14px;
+	height: var(--min-height-input);
 }
 
 select:focus {
-  border-color: var(--main-color);
+	border-color: var(--main-color);
 }
 
 select:hover {
-  border-color: var(--main-color);
+	border-color: var(--main-color);
 }
 
 select:disabled {
-  opacity: 0.5;
+	opacity: 0.5;
 }

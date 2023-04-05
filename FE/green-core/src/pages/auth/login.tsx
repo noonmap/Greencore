@@ -3,22 +3,21 @@ import AppLayout from '@/layout/AppLayout';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { signInWithPopup, getRedirectResult, signInWithCredential } from 'firebase/auth';
 import { getAuth, GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
-import { logIn, checkEmailDuplicated, logInByOAuth, signUp } from '@/core/user/userAPI';
+import { logIn, checkEmailDuplicated, logInByOAuth, signUp, signUpByOAuth } from '@/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
 
 import styles from '@/styles/Auth.module.scss';
 import AppButton from '@/components/button/AppButton';
 import FindPasswordModal from '@/components/modal/FindPasswordModal';
-import { SET_AUTH_TYPE_DB, SET_AUTH_TYPE_FIREBASE, SET_AUTH_TYPE_KAKAO } from '@/core/common/commonSlice';
-
-import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
-import { useRouter } from 'next/router';
+import { SET_AUTH_TYPE_DB, SET_AUTH_TYPE_FIREBASE, SET_IS_SEARCH_STATE, SET_AUTH_TYPE_KAKAO } from '@/core/common/commonSlice';
+import { getCookieToken } from '@/lib/cookies';
 
 type StateType = {
   email: string;
@@ -42,7 +41,13 @@ export default function login() {
   const [isOpenFindPasswordModal, setIsOpenFindPasswordModal] = useState<boolean>(false);
   const [isPossibleLogIn, setIsPossibleLogIn] = useState<boolean>(false);
 
-  const { register, setValue, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
+  const {
+    register,
+    setValue,
+    formState: { errors },
+    getValues,
+    watch,
+  } = useForm<StateType>({ defaultValues: initialState });
   const [email, password] = getValues(['email', 'password']);
 
   // searchState 변경
@@ -60,21 +65,19 @@ export default function login() {
 
   /** 로그인 함수 */
   async function handleLogIn() {
-    if (email == '' || password == '') {
+    if (email == '' || password == '' || errors?.email || errors?.password) {
       checkInputFormToast();
       return;
     }
 
     try {
       const payload = { email, password };
-      dispatch(SET_AUTH_TYPE_DB());
-      const requestData = { router, payload };
-      dispatch(logIn(requestData));
-      // router.push('/home');
+      await dispatch(SET_AUTH_TYPE_DB());
+      await dispatch(logIn(payload));
+      router.push('/home');
     } catch (error) {
       setValue('email', '');
       setValue('password', '');
-      console.error(error);
     }
   }
 
@@ -88,37 +91,33 @@ export default function login() {
 
         const githubEmail = user.email;
         const githubUID = user.localId;
-        const githubNickname = user.screenName;
+        const githubNickname = encodeURIComponent(user.screenName);
         const githubPhotoUrl = user.photoUrl;
 
         const githubAccessToken = token.accessToken;
         const githubRefreshToken = token.refreshToken;
 
-        // console.log(githubEmail, githubUID, githubNickname, githubPhotoUrl);
-        // console.log(githubAccessToken, githubRefreshToken);
-        console.log('githubNickname', githubNickname);
+        console.log('githubEmail: ', githubEmail);
 
         try {
           const { data } = await checkEmailDuplicated(githubEmail);
           const logInPayload = { accessToken: githubAccessToken, refreshToken: githubRefreshToken, nickname: githubNickname };
-          console.log(data);
 
           if (data) {
             // 없는 이메일이므로 회원가입 진행 후 로그인
             const signUpPayload = { email: githubEmail, password: githubUID + '!', nickname: githubNickname };
-            const { data } = await signUp(signUpPayload);
+            const { data } = await signUpByOAuth(signUpPayload);
 
             if (data) {
-              const requestData = { router, logInPayload };
-              dispatch(logInByOAuth(requestData));
-              dispatch(SET_AUTH_TYPE_FIREBASE());
-              handleSetUserProfile(githubNickname, githubPhotoUrl);
-              // router.push('/home');
+              await dispatch(logInByOAuth(logInPayload));
+              await dispatch(SET_AUTH_TYPE_FIREBASE());
+              await handleSetUserProfile(githubNickname, githubPhotoUrl);
+              router.push('/home');
             }
           } else {
-            dispatch(logInByOAuth(logInPayload));
-            dispatch(SET_AUTH_TYPE_FIREBASE());
-            // router.push('/home');
+            await dispatch(logInByOAuth(logInPayload));
+            await dispatch(SET_AUTH_TYPE_FIREBASE());
+            router.push('/');
           }
         } catch (error) {
           console.error(error);
@@ -144,13 +143,13 @@ export default function login() {
 
         const googleEmail = user.email;
         const googleUID = user.localId;
-        const googleNickname = user.displayName;
+        const googleNickname = encodeURIComponent(user.displayName);
         const googlePhotoUrl = user.photoUrl;
 
         const googleAccessToken = token.accessToken;
         const googleRefreshToken = token.refreshToken;
 
-        console.log('googleNickname', googleNickname);
+        console.log('googleEmail: ', googleEmail);
 
         try {
           const { data } = await checkEmailDuplicated(googleEmail);
@@ -159,19 +158,18 @@ export default function login() {
           if (data) {
             // 없는 이메일이므로 회원가입 진행 후 로그인
             const signUpPayload = { email: googleEmail, password: googleUID + '!', nickname: googleNickname };
-            const { data } = await signUp(signUpPayload);
-            // console.log(data);
+            const { data } = await signUpByOAuth(signUpPayload);
 
             if (data) {
-              dispatch(logInByOAuth(logInPayload));
-              dispatch(SET_AUTH_TYPE_FIREBASE());
-              handleSetUserProfile(googleNickname, googlePhotoUrl);
-              // router.push('/home');
+              await dispatch(SET_AUTH_TYPE_FIREBASE());
+              await dispatch(logInByOAuth(logInPayload));
+              await handleSetUserProfile(googleNickname, googlePhotoUrl);
+              router.push('/home');
             }
           } else {
-            dispatch(logInByOAuth(logInPayload));
-            dispatch(SET_AUTH_TYPE_FIREBASE());
-            // router.push('/home');
+            await dispatch(SET_AUTH_TYPE_FIREBASE());
+            await dispatch(logInByOAuth(logInPayload));
+            router.push('/');
           }
         } catch (error) {
           console.error(error);
@@ -188,10 +186,10 @@ export default function login() {
   }
 
   /** Kakao OAUTH 로그인 */
-  function handleKakaoLogIn() {
-    window.Kakao.Auth.authorize({ redirectUri: 'http://localhost:3000/user/kakao' });
-    // dispatch(SET_AUTH_TYPE_KAKAO());
-  }
+  // function handleKakaoLogIn() {
+  // 	window.Kakao.Auth.authorize({ redirectUri: 'http://localhost:3000/user/kakao' });
+  // 	// dispatch(SET_AUTH_TYPE_KAKAO());
+  // }
 
   /** 이메일&비밀번호 input 채웠는지 확인하는 함수 */
   function checkIsPossibleLogIn() {
@@ -207,7 +205,7 @@ export default function login() {
 
     const profileRef = ref(storage, `${nickname}/profileImage`);
 
-    uploadBytes(profileRef, file, { contentType: 'image/png' }).then(() => {});
+    await uploadBytes(profileRef, file, { contentType: 'image/png' }).then(() => {});
   }
 
   return (
@@ -243,9 +241,9 @@ export default function login() {
           <div className={`flex flex-col gap-2 items-center justify-center `}>
             <div className={`${styles.help} ${styles.line} `}>간편 로그인</div>
             <div className={`${styles.oauth} flex space-x-5 items-center justify-center`}>
-              <div onClick={handleKakaoLogIn} className='flex items-center justify-center'>
-                <Image src='/images/kakao.png' alt='hi' width={24} height={24} />
-              </div>
+              {/* <div onClick={handleKakaoLogIn} className="flex items-center justify-center">
+								<Image src="/images/kakao.png" alt="hi" width={24} height={24} />
+							</div> */}
               <div onClick={handleGoogleLogIn} className='flex items-center justify-center'>
                 <i className='fa-brands fa-google text-2xl'></i>
               </div>

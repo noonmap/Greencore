@@ -7,6 +7,7 @@ import AppButton from '../button/AppButton';
 import { getStorage, ref, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { SET_USER_INFO } from '@/core/common/commonSlice';
+import { useAppDispatch } from '@/core/hooks';
 
 type PropsType = {
   isOpen: boolean;
@@ -27,6 +28,7 @@ const initialState: StateType = {
 export default function AppModal({ isOpen, userProfile, handleModalClose }: PropsType) {
   const router = useRouter();
   const storage = getStorage();
+  const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -82,7 +84,6 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
       setIsCheckedNickname(data);
     } catch (error) {
       setValue('nickname', '');
-      console.error(error);
     }
   }
 
@@ -99,11 +100,9 @@ export default function AppModal({ isOpen, userProfile, handleModalClose }: Prop
 
       if (data) {
         handleSetUserProfileImage();
-        SET_USER_INFO({ nickname });
+        dispatch(SET_USER_INFO({ nickname }));
         router.push(`${nickname}`);
       }
-
-      console.log(data);
     } catch (error) {
       console.error(error);
     }

@@ -76,7 +76,6 @@ export default function UserFeedProfile({ nickname }) {
 
   /** storage 에서 유저 프로필 이미지 가져오는 함수 */
   const fetchUserProfile = useCallback(async () => {
-    console.log(nickname);
     try {
       const { data } = await getProfile(nickname);
       setUserProfile(data);
@@ -206,7 +205,6 @@ export default function UserFeedProfile({ nickname }) {
                       <Image
                         src={userProfileImagePath}
                         alt='사용자 프로필 이미지'
-                        // className='rounded-full bg-cover'
                         className={styles.image}
                         width={120}
                         height={120}

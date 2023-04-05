@@ -9,29 +9,39 @@ import toastifyCSS from '@/assets/toastify.json';
 
 import { PageType, SearchType } from '@/core/common/commonType';
 import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType, LogInOAuthDataType } from './userType';
+import { ErrorCallback } from 'typescript';
+
+const SUCCESS_MESSAGE = 'SUCCESS';
 
 /** [POST] 회원가입  API
  * @url /user
  */
 export const signUp = async (payload: SignUpDataType) => {
-  /* "background": "linear-gradient(to right, #00b09b, #96c93d)",*/
-  // "background": "linear-gradient(to top, #c1dfc4 0%, #deecdd 100%)",
-
   try {
     const { data } = await http.post('/user', payload);
 
-    if (data.result == 'SUCCESS') {
-      Toastify({
-        text: message.SignUpSuccess,
-        duration: 1500,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.SignUpSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.SignUpFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
     } else {
       Toastify({
         text: message.SignUpFail,
-        duration: 1500,
+        duration: message.MessageDuration,
         position: 'center',
         stopOnFocus: true,
         style: toastifyCSS.fail,
@@ -39,43 +49,38 @@ export const signUp = async (payload: SignUpDataType) => {
     }
 
     return data;
-  } catch (err) {
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.SignUpFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
+  }
+};
+
+/** [POST] 회원가입 OAUTH API
+ * @url /user
+ */
+export const signUpByOAuth = async (payload: SignUpDataType) => {
+  try {
+    const { data } = await http.post('/user', payload);
+    return data;
+  } catch (error) {
     Toastify({
       text: message.SignUpFail,
-      duration: 1500,
+      duration: message.MessageDuration,
       position: 'center',
       stopOnFocus: true,
       style: toastifyCSS.fail,
     }).showToast();
   }
 };
-
-/** [POST] OAUTH 이용해서 회원가입  API
- * @url /user
- */
-// export const signUpByOAuth = async (payload: SignUpDataType) => {
-// 	try {
-// 		const { data } = await http.post('/user', payload);
-
-// 		Toastify({
-// 			text: message.SignUpSuccess,
-// 			duration: 1500,
-// 			position: 'center',
-// 			stopOnFocus: true,
-// 			style: toastifyCSS.success
-// 		}).showToast();
-
-// 		return data;
-// 	} catch (err) {
-// 		Toastify({
-// 			text: message.SignUpFail,
-// 			duration: 1500,
-// 			position: 'center',
-// 			stopOnFocus: true,
-// 			style: toastifyCSS.fail
-// 		}).showToast();
-// 	}
-// };
 
 /** [POST] 해당 이메일에 인증번호 메일 전송하는 API
  * @url /mail
@@ -84,23 +89,47 @@ export const checkEmail = async (payload: EmailType) => {
   try {
     const { data } = await http.post('/mail', payload);
 
-    Toastify({
-      text: message.CheckEmailSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.CheckEmailSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.CheckEmailFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    } else {
+      Toastify({
+        text: message.CheckEmailFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
 
     return data;
-  } catch (error) {
-    Toastify({
-      text: message.CheckEmailFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.CheckEmailFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 };
 
@@ -117,20 +146,40 @@ export const checkEmailDuplicated = async (email: string) => {
  */
 export const findPassword = async (payload: EmailType) => {
   try {
-    // FIXME:  비밀번호 찾기인데 토큰이 필요한가?
-    // const headers = { authorization: accessToken };
     const { data } = await http.post('/mail/password', payload);
 
-    Toastify({
-      text: message.FindPasswordSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+    if (data.result == SUCCESS_MESSAGE) {
+      Toastify({
+        text: message.FindPasswordSuccess,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+    } else {
+      Toastify({
+        text: message.FindPasswordFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
 
     return data;
-  } catch (error) {}
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.FindPasswordFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
+  }
 };
 
 /** [POST] 메일 검증하는 API (인증코드 확인)
@@ -140,23 +189,47 @@ export const checkAuthCode = async (payload: EmailType) => {
   try {
     const { data } = await http.post('/mail/confirm', payload);
 
-    Toastify({
-      text: message.CheckAuthCodeSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.CheckAuthCodeSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.CheckAuthCodeFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    } else {
+      Toastify({
+        text: message.CheckAuthCodeFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
 
     return data;
-  } catch (error) {
-    Toastify({
-      text: message.CheckAuthCodeSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.CheckAuthCodeFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 };
 
@@ -167,66 +240,94 @@ export const deleteUser = createAsyncThunk('deleteUser', async () => {
   try {
     const { data } = await http.delete(`/user`);
 
-    if (cookies.getCookieToken()) cookies.removeCookieToken();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        if (cookies.getCookieToken()) cookies.removeCookieToken();
 
-    Toastify({
-      text: message.DeleteUserSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+        Toastify({
+          text: message.DeleteUserSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.DeleteUserFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    }
 
     return data;
-  } catch (error) {
-    Toastify({
-      text: message.DeleteUserFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.DeleteUserFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 });
 
 /** [POST] 로그인 API
  * @url /login
  */
-export const logIn = createAsyncThunk('logIn', async (requestData: any) => {
+export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) => {
   try {
-    const router = requestData.router;
-    const payload = requestData.payload;
     const res = await http.post('/login', payload);
     const nickname = res.data.data.nickname;
 
     let accessToken = null;
     let refreshToken = null;
 
-    if (res.data.result == 'SUCCESS') {
-      Toastify({
-        text: message.LogInSuccess,
-        duration: 1500,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
-
+    if (res.data.result == SUCCESS_MESSAGE) {
       accessToken = res.headers['authorization'];
       refreshToken = res.headers['x-refresh-token'];
 
-      cookies.setRefreshToken(refreshToken);
+      if (res.data.data) {
+        cookies.setRefreshToken(refreshToken);
 
-      console.group('<< accessToken >>');
-      console.log(accessToken);
-      console.groupEnd();
+        Toastify({
+          text: message.LogInSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
 
-      console.group('<< refreshToken >>');
-      console.log(refreshToken);
-      console.groupEnd();
+        console.group('<< accessToken >>');
+        console.log(accessToken);
+        console.groupEnd();
+
+        console.group('<< refreshToken >>');
+        console.log(refreshToken);
+        console.groupEnd();
+      } else {
+        if (cookies.getCookieToken()) cookies.removeCookieToken();
+
+        Toastify({
+          text: message.LogInFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+
+      return { accessToken, userInfo: { nickname } };
     } else {
       Toastify({
         text: message.LogInFail,
-        duration: 1500,
+        duration: message.MessageDuration,
         position: 'center',
         stopOnFocus: true,
         style: toastifyCSS.fail,
@@ -234,27 +335,29 @@ export const logIn = createAsyncThunk('logIn', async (requestData: any) => {
 
       if (cookies.getCookieToken()) cookies.removeCookieToken();
     }
+  } catch (error: any) {
+    const status = error.response?.status;
 
-    return { accessToken, userInfo: { nickname }, router };
-  } catch (error) {
-    Toastify({
-      text: message.LogInFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+    if (status == 404) {
+      Toastify({
+        text: message.LogInFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 });
 
 /** [POST] OAUTH 로그인 API
  * @url /login/oauth
  */
-export const logInByOAuth = createAsyncThunk('logInByOAuth', async (requestData: any) => {
-  const router = requestData.router;
-  const payload = requestData.logInPayload;
+export const logInByOAuth = createAsyncThunk('logInByOAuth', async (payload: LogInOAuthDataType) => {
   try {
     const { accessToken, refreshToken, nickname } = payload;
+    console.log('hhhhh', accessToken);
+
     const headers = {
       headers: {
         'X-Refresh-Token': refreshToken,
@@ -264,45 +367,37 @@ export const logInByOAuth = createAsyncThunk('logInByOAuth', async (requestData:
 
     const res = await http.post('/login/oauth', {}, headers);
 
-    if (res.data.result == 'SUCCESS') {
-      Toastify({
-        text: message.LogInSuccess,
-        duration: 1500,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
+    if (res.data.result == SUCCESS_MESSAGE) {
+      if (res.data.data) {
+        cookies.setRefreshToken(refreshToken);
 
-      cookies.setRefreshToken(refreshToken);
+        console.group('<< accessToken >>');
+        console.log(accessToken);
+        console.groupEnd();
 
-      console.group('<< accessToken >>');
-      console.log(accessToken);
-      console.groupEnd();
-
-      console.group('<< refreshToken >>');
-      console.log(refreshToken);
-      console.groupEnd();
+        console.group('<< refreshToken >>');
+        console.log(refreshToken);
+        console.groupEnd();
+      } else {
+        if (cookies.getCookieToken()) cookies.removeCookieToken();
+      }
     } else {
+      if (cookies.getCookieToken()) cookies.removeCookieToken();
+    }
+
+    return { accessToken, userInfo: { nickname } };
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
       Toastify({
         text: message.LogInFail,
-        duration: 1500,
+        duration: message.MessageDuration,
         position: 'center',
         stopOnFocus: true,
         style: toastifyCSS.fail,
       }).showToast();
-
-      if (cookies.getCookieToken()) cookies.removeCookieToken();
     }
-
-    return { accessToken, userInfo: { nickname }, router };
-  } catch (error) {
-    Toastify({
-      text: message.LogInFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
   }
 });
 
@@ -319,6 +414,7 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (authType
 
   try {
     if (cookies.getCookieToken()) {
+      console.log('hihi');
       const headers = { 'X-Refresh-Token': cookies.getCookieToken() };
       const url = `${serverUrl}/api/refresh`;
       const res = await axios.post(url, { authType }, { headers });
@@ -326,28 +422,27 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (authType
       let accessToken = null;
       let refreshToken = null;
 
-      if (res.data.result == 'SUCCESS') {
-        accessToken = res.headers['authorization'];
-        refreshToken = res.headers['x-refresh-token'];
-        cookies.setRefreshToken(refreshToken);
+      if (res.data.result == SUCCESS_MESSAGE) {
+        if (res.data.data) {
+          accessToken = res.headers['authorization'];
+          refreshToken = res.headers['x-refresh-token'];
+          cookies.setRefreshToken(refreshToken);
 
-        console.group('<< accessToken >>');
-        console.log(accessToken);
-        console.groupEnd();
+          console.group('<< accessToken >>');
+          console.log(accessToken);
+          console.groupEnd();
 
-        console.group('<< refreshToken >>');
-        console.log(refreshToken);
-        console.groupEnd();
+          console.group('<< refreshToken >>');
+          console.log(refreshToken);
+          console.groupEnd();
+        }
       }
 
       return { accessToken };
     } else {
       return false;
     }
-  } catch (error) {
-    console.log('에러난다');
-    console.log(error);
-  }
+  } catch (error: any) {}
 });
 
 /** [DELETE] 로그아웃 API
@@ -355,30 +450,25 @@ export const getAccessToken = createAsyncThunk('getAccessToken', async (authType
  */
 export const logOut = createAsyncThunk('logOut', async () => {
   try {
-    // const headers = { authorization: accessToken };
     const { data } = await http.post('/logout');
 
-    if (cookies.getCookieToken()) cookies.removeCookieToken();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        if (cookies.getCookieToken()) cookies.removeCookieToken();
+      }
+    }
+  } catch (error: any) {
+    const status = error.response?.status;
 
-    Toastify({
-      text: message.LogOutSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
-
-    console.log(data);
-  } catch (error) {
-    if (cookies.getCookieToken()) cookies.removeCookieToken();
-
-    Toastify({
-      text: message.LogOutFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+    if (status == 404) {
+      Toastify({
+        text: message.LogInFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 });
 
@@ -389,23 +479,39 @@ export const checkNickname = async (nickname: string) => {
   try {
     const { data } = await http.get(`/user/nickname/${nickname}`);
 
-    Toastify({
-      text: message.CheckNicknameSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.CheckNicknameSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.CheckNicknameFail,
+          duration: 3000,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    }
 
     return data;
-  } catch (error) {
-    Toastify({
-      text: message.CheckNicknameFail,
-      duration: 3000,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.CheckNicknameFail,
+        duration: 3000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 };
 
@@ -414,17 +520,32 @@ export const checkNickname = async (nickname: string) => {
  */
 export const checkPassword = async (payload: PasswordType) => {
   try {
-    // const headers = { authorization: accessToken };
     const { data } = await http.post(`/user/password`, payload);
+
+    if (data.result == SUCCESS_MESSAGE) {
+      if (!data.data) {
+        Toastify({
+          text: message.CheckPasswordFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    }
     return data;
-  } catch (error) {
-    Toastify({
-      text: message.CheckPasswordFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.CheckPasswordFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 };
 
@@ -433,26 +554,41 @@ export const checkPassword = async (payload: PasswordType) => {
  */
 export const updatePassword = async (payload: PasswordType) => {
   try {
-    // const headers = { authorization: accessToken };
     const { data } = await http.put(`/user/password`, payload);
 
-    Toastify({
-      text: message.UpdatePasswordSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.UpdatePasswordSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.UpdatePasswordFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    }
 
     return data;
-  } catch (error) {
-    Toastify({
-      text: message.UpdatePasswordFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.UpdatePasswordFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 };
 
@@ -460,18 +596,8 @@ export const updatePassword = async (payload: PasswordType) => {
  * @url /profile/${nickname}
  */
 export const getProfile = async (nickname: string | string[]) => {
-  try {
-    const { data } = await http.get(`/profile/${nickname}`);
-    return data;
-  } catch (error) {
-    Toastify({
-      text: message.GetProfileFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
-  }
+  const { data } = await http.get(`/profile/${nickname}`);
+  return data;
 };
 
 /** [PUT] 회원 프로필 수정 API
@@ -479,56 +605,43 @@ export const getProfile = async (nickname: string | string[]) => {
  */
 export const updateProfile = async (payload: ProfileType) => {
   try {
-    // const headers = { authorization: accessToken };
     const { data } = await http.put(`/profile`, payload);
 
-    Toastify({
-      text: message.UpdatePasswordSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.UpdateProfileSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.UpdateProfileFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    }
 
     return data;
-  } catch (error) {
-    Toastify({
-      text: message.UpdateProfileSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.UpdateProfileFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 };
-
-/** [PUT] 회원 프로필 수정 API
- * @url /profile/img
- */
-export const updateProfileImage = createAsyncThunk('updateProfileImage', async (payload: ProfileType) => {
-  try {
-    // const headers = { authorization: accessToken };
-    const { data } = await http.put(`/profile/img`, payload);
-
-    Toastify({
-      text: message.UpdateProfileImageSuccess,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
-
-    return data;
-  } catch (error) {
-    Toastify({
-      text: message.UpdateProfileImageFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
-  }
-});
 
 /** [GET] 키우는 식물 리스트 조회 API
  * @url /user/plant/${nickname}
@@ -543,7 +656,6 @@ export const getUserPlantList = async (nickname: string | string[], params: Page
  * @url /user/plant/${nickname}/${userPlatId}
  */
 export const getUserPlant = async (nickname: string, userPlatId: string) => {
-  // const headers = { authorization: accessToken };
   const { data } = await http.get(`/user/plant/${nickname}/${userPlatId}`);
   return data;
 };
@@ -556,30 +668,83 @@ export const createUserPlant = async (payload: UserPlantType) => {
 
 // 키우는 식물 삭제
 export const deleteUserPlant = async (userPlantId: number) => {
-  const { data } = await http.delete(`/user/plant/${userPlantId}`);
-  return data;
+  try {
+    const { data } = await http.delete(`/user/plant/${userPlantId}`);
+
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.DeleteUserPlantSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      }
+    }
+
+    return data;
+  } catch (error) {}
 };
 
 // 키우는 식물 닉네임 수정
 export const updateUserPlant = async (userPlantId: number, payload: UserPlantType) => {
-  const { data } = await http.put(`/user/plant/${userPlantId}`, payload);
-  return data;
+  try {
+    const { data } = await http.put(`/user/plant/${userPlantId}`, payload);
+
+    if (data.result == SUCCESS_MESSAGE) {
+      if (data.data) {
+        Toastify({
+          text: message.UpdateUserPlantSuccess,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.success,
+        }).showToast();
+      } else {
+        Toastify({
+          text: message.UpdateUserPlantFail,
+          duration: message.MessageDuration,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      }
+    }
+
+    return data;
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.UpdateUserPlantFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
+  }
 };
 
 // 사용자 검색
 export const searchByUser = createAsyncThunk('searchByUser', async (params: SearchType) => {
   try {
     const { data } = await http.get(`/profile`, { params });
-
     return data.data;
-  } catch (error) {
-    Toastify({
-      text: message.SearchFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.SearchFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 });
 
@@ -587,16 +752,19 @@ export const searchByUser = createAsyncThunk('searchByUser', async (params: Sear
 export const searchByUserMore = createAsyncThunk('searchByUserMore', async (params: SearchType) => {
   try {
     const { data } = await http.get(`/profile`, { params });
-
     return data.data;
-  } catch (error) {
-    Toastify({
-      text: message.SearchFail,
-      duration: 1500,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
+  } catch (error: any) {
+    const status = error.response?.status;
+
+    if (status == 404) {
+      Toastify({
+        text: message.SearchFail,
+        duration: message.MessageDuration,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 });
 
