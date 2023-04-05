@@ -1,0 +1,32 @@
+.main {
+	box-shadow: var(--box-shadow);
+	// box-shadow: var(--box-shadow-light);
+	// box-shadow: var(--box-shadow-card);
+	height: 100px;
+	border-radius: var(--border-radius-input);
+	padding: var(--padding-card);
+}
+
+.title {
+	font-size: 1.5rem;
+	font-weight: var(--text-extra-bold);
+	color: var(--main-color);
+}
+
+.select {
+	background-color: var(--thin-color);
+}
+
+.addBtn {
+	position: fixed;
+	bottom: 35px;
+	margin-right: 35px;
+	z-index: 999;
+	padding: 12px;
+	background-color: var(--main-color);
+	color: white;
+	border-radius: 50%;
+	cursor: pointer;
+	height: 3rem;
+	width: 3rem;
+}

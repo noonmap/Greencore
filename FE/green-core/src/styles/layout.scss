@@ -1,0 +1,10 @@
+.layoutActive {
+	color: var(--main-color);
+	border-bottom: 3px solid var(--main-color);
+	font-weight: 600;
+	color: var(--title-color);
+}
+
+.layoutFunc {
+	transition: all 0.15s var(--timing-func);
+}

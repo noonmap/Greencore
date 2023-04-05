@@ -14,7 +14,7 @@ import java.util.List;
 public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 
 	Page<FeedEntity> findByUserInAndIsDeletedOrderByCreatedAtDesc(List<UserEntity> userIds, IsDeletedType isDeletedType, Pageable pageable);
-	Page<FeedEntity> findAllByIsDeleted(IsDeletedType isDeletedType, Pageable pageable);
+	Page<FeedEntity> findByIdInAndIsDeleted(List<Long> feedIds, IsDeletedType isDeletedType, Pageable pageable);
 
 	List<FeedEntity> findByIdInAndIsDeletedOrderByCreatedAtDesc(List<Long> feedIds, IsDeletedType isDeletedType);
 

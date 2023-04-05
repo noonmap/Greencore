@@ -254,8 +254,8 @@ public class FeedService {
 		if (tagList.isEmpty()) return Page.empty();
 		List<FeedTagEntity> feedTagList = feedTagRepository.findByTag(tagList);
 		if (feedTagList.isEmpty()) return Page.empty();
-		List<FeedEntity> feedList = feedTagList.stream().map(ft -> ft.getFeed()).collect(Collectors.toList());
-		Page<FeedEntity> feedPage = getUnDeletedFeedPage(feedList, pageable);
+		List<Long> feedIdList = feedTagList.stream().map(f -> f.getFeed().getId()).collect(Collectors.toList());
+		Page<FeedEntity> feedPage = feedRepository.findByIdInAndIsDeleted(feedIdList, IsDeletedType.N, pageable);
 		return feedPage;
 	}
 

@@ -5,7 +5,7 @@ import { initializeApp } from 'firebase/app';
 
 import { UserInfoType } from './commonType';
 import { logIn, deleteUser, logOut, logInByOAuth, getAccessToken } from '@/core/user/userAPI';
-import { createAlert, updateAllAlert, checkIsAlert } from '@/core/alert/alertAPI';
+import { createAlert, updateAllAlert, checkIsAlert, getAlertList } from '@/core/alert/alertAPI';
 
 interface CommonState {
 	firebase: any;
@@ -14,6 +14,7 @@ interface CommonState {
 	isAlert: boolean;
 	authType: string;
 	accessToken: string;
+	nowPage: string;
 }
 
 const firebase = initializeApp(firebaseConfig);
@@ -24,7 +25,8 @@ const initialState: CommonState = {
 	searchState: 'home',
 	isAlert: false,
 	authType: null,
-	accessToken: null
+	accessToken: null,
+	nowPage: 'home'
 };
 
 const commonSlice = createSlice({
@@ -55,6 +57,9 @@ const commonSlice = createSlice({
 		},
 		SET_IS_ALERT_FALSE: (state) => {
 			state.isAlert = false;
+		},
+		SET_NOW_PAGE: (state, action) => {
+			state.nowPage = action.payload;
 		}
 	},
 
@@ -92,18 +97,17 @@ const commonSlice = createSlice({
 				state.accessToken = null;
 			})
 			.addCase(getAccessToken.fulfilled, (state, action) => {
-				if (action.payload == false) {
-					// state.isAuthenticated = false;
-				} else {
-					// state.isAuthenticated = true;
-					state.accessToken = action.payload?.accessToken;
-				}
+				if (action.payload == false) return;
+				state.accessToken = action.payload?.accessToken;
 			})
 			.addCase(updateAllAlert.fulfilled, (state) => {
 				state.isAlert = false;
 			})
 			.addCase(checkIsAlert.fulfilled, (state, action) => {
 				state.isAlert = action.payload;
+			})
+			.addCase(getAlertList.pending, (state) => {
+				state.isAlert = false;
 			});
 	}
 });
@@ -116,7 +120,8 @@ export const {
 	SET_AUTH_TYPE_FIREBASE,
 	SET_USER_INFO,
 	SET_IS_ALERT_TRUE,
-	SET_IS_ALERT_FALSE
+	SET_IS_ALERT_FALSE,
+	SET_NOW_PAGE
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

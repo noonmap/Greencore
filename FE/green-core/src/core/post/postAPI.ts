@@ -5,6 +5,7 @@ import Toastify from 'toastify-js';
 import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
 import { PageType } from '@/core/common/commonType';
+import { encodeNickname } from '@/lib/utils';
 
 // 포스트 생성, {content, image, tags}
 export const createPost = createAsyncThunk('createPost', async (requestData: CreatePostType) => {
@@ -109,7 +110,7 @@ export const getPost = async (postId: number) => {
 
 /** 포스트 조회하는 함수 */
 export const getPostList = async (nickname: string | string[], params: PageType) => {
-  const { data } = await http.get(`/post/list/${nickname}`, { params });
+  const { data } = await http.get(`/post/list/${encodeNickname(nickname)}`, { params });
   return data;
 };
 

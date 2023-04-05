@@ -3,6 +3,15 @@
 
 @import './variables.scss';
 @import './transition.scss';
+@import './layout.scss';
+@import './modal.scss';
+
+@font-face {
+	font-family: 'neodgm';
+	src: url('font/woff/neodgm.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
 
 html,
 body {
@@ -23,16 +32,16 @@ body {
 }
 
 ::-webkit-scrollbar {
-	width: 4px;
+	width: 3px;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: var(--main-light-color);
+	background-color: var(--like-color);
 	border-radius: var(--border-radius);
 }
 
 ::selection {
-	color: #fff;
-	background-color: var(--main-light-color);
+	color: #000;
+	background-color: #9bf7f2;
 }
 
 a {
@@ -133,67 +142,6 @@ h1 {
 	font-size: 1.875rem; /* 30px */
 	line-height: 2.25rem; /* 36px */
 	font-weight: bold;
-}
-
-.modalContainer {
-	position: absolute;
-	width: 100vw;
-	height: 100vh;
-	top: 0;
-	left: 0;
-	z-index: 99;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: rgba(0, 0, 0, 0.3);
-}
-
-.modalWrap {
-	max-width: 35%;
-	min-width: 350px;
-	min-height: 200px;
-	background-color: white;
-	border: 1px rgba(0, 0, 0, 0.3) solid;
-	border-radius: 0.375rem;
-	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-	z-index: 100;
-	// padding: 0 0.5rem;
-}
-
-.modalTitle {
-	color: var(--main-color);
-	font-size: 1.3rem;
-	font-weight: var(--text-bold);
-	// margin-bottom: 1rem;
-}
-
-.modalClose {
-	color: var(--light-color);
-	position: absolute;
-	right: 20px;
-	top: 20px;
-	cursor: pointer;
-
-	&:hover {
-		color: var(--danger-color);
-	}
-}
-
-.close {
-	color: var(--light-color);
-	cursor: pointer;
-
-	&:hover {
-		color: var(--danger-color);
-	}
-}
-
-.modalContent {
-	padding: 2.5rem var(--padding-card);
-	min-width: 400px;
-	min-height: 300px;
-	display: flex;
-	flex-direction: column;
 }
 
 .title {

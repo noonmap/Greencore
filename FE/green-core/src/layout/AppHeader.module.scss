@@ -1,49 +1,75 @@
 .container {
-  // border-right: 1px solid var(--light-color);
-  background-color: #fff;
-  box-shadow: var(--box-shadow-card);
+	background-color: #fff;
+	border-left: 2px solid #000;
+	border-right: 2px solid #000;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(192, 255, 111, 1) 100%);
 }
 
 .title {
-  font-size: 1.6rem;
-  font-weight: 900;
-  color: var(--main-color);
+	font-size: 1.6rem;
+	font-weight: 900;
+	color: #000;
 }
 
 .navContainer {
-  font-size: 1rem;
-  // font-size: max(1.6rem, 1.1979vw);
-  // letter-spacing: 5px;
-  // letter-spacing: -0.5px;
+	font-size: 1rem;
+	font-weight: 700;
 
-  // font-weight: 700;
-  // font-weight: var(--text-bold);
-  // color: var(--title-light-color);
+	// transition: all 0.3s var(--timing-func);
 
-  div {
-    // transition: all 0.15s var(--timing-func);
-
-    &:hover {
-      font-weight: var(--text-bold);
-      background-color: var(--thin-color);
-      // color: var(--main-color);
-    }
-  }
-
-  a {
-    // transition: var(--transition-nav);
-    // transition: --transition;
-    // transition: all 0.12s cubic-bezier(1, 0, 0.8, 1);
-
-    &:hover {
-      // font-weight: var(--text-bold);
-      // color: var(--main-color);
-    }
-  }
+	div {
+		line-height: 1.1rem;
+		&:hover {
+			// font-family: 'neodgm';
+			// border-radius: var(--border-radius-card);
+			// padding: 0.5rem;
+			// background: #c9ff84;
+			// box-shadow: inset 5px 5px 7px #9dc767, inset -5px -5px 7px #f5ffa1;
+		}
+	}
 }
 
 .image {
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	border: 2px solid black;
+}
+
+.profile {
+	transition: all 0.1s var(--timing-func);
+	border-radius: var(--border-radius-card);
+	// border: 2px solid transparent;
+
+	&:hover {
+		// border: 2px solid #000;
+		background: #c9ff84;
+		box-shadow: inset 5px 5px 7px #9dc767, inset -5px -5px 7px #f5ffa1;
+	}
+}
+
+.logoutBtn {
+	transition: all 0.1s var(--timing-func);
+	border: 2px solid black;
+	// color: black;
+
+	&:hover {
+		background-color: var(--like-color);
+		color: white;
+	}
+	// border-radius: var(--border-radius-input);
+	// background: #c9ff84;
+	// box-shadow: inset 5px 5px 7px #9dc767, inset -5px -5px 7px #f5ffa1;
+}
+
+.navItem {
+	font-family: 'neodgm';
+	font-size: 1rem;
+	line-height: 1rem;
+}
+
+.navItemHome {
+	font-size: 1.2rem;
+	padding-top: 0.3rem;
+	line-height: 1.2rem;
 }
