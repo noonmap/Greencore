@@ -14,6 +14,10 @@ type PropsType = {
 export default function RegularScheduleListItem({ item, handleReload }: PropsType) {
   const [isOpenRegularScheduleUpdateModal, setIsOpenRegularScheduleUpdateModal] = useState(false);
   const [isOpenRegularScheduleDeleteModal, setIsOpenRegularScheduleDeleteModal] = useState(false);
+  const day: Array<string> = ['월', '화', '수', '목', '금', '토', '일'];
+  const regular: string = item.regularScheduleCode === 'WEEKLY_SCHEDULE' ? '매주' : '매월';
+  const pick: string = item.regularScheduleCode === 'WEEKLY_SCHEDULE' ? day[Number(item.day) - 1] : String(item.day) + '일';
+  const period = regular + ' ' + pick;
 
   return (
     <>
@@ -38,13 +42,19 @@ export default function RegularScheduleListItem({ item, handleReload }: PropsTyp
         />
       )}
       <div className={`${styles.container}`}>
-        <div className={`${styles.icon}`}>
-          <ScheduleCode scheduleCode={item.scheduleCode} size='lg' />
+        <div className='flex justify-between'>
+          <div className={`${styles.name}`}>{item.plant.plantNickname}</div>
+          <div className={`${styles.name}`}>{period}</div>
         </div>
-        <div onClick={() => setIsOpenRegularScheduleUpdateModal(true)} className={`${styles.text}`}>
-          {item.content}
+        <div className={`${styles.subContainer}`}>
+          <div className={`${styles.icon}`}>
+            <ScheduleCode scheduleCode={item.scheduleCode} size='lg' />
+          </div>
+          <div onClick={() => setIsOpenRegularScheduleUpdateModal(true)} className={`${styles.text}`}>
+            {item.content}
+          </div>
+          <FontAwesomeIcon icon={faRemove} color='#D9D9D9' className={`${styles.check}`} onClick={() => setIsOpenRegularScheduleDeleteModal(true)} />
         </div>
-        <FontAwesomeIcon icon={faRemove} color='#D9D9D9' className={`${styles.check}`} onClick={() => setIsOpenRegularScheduleDeleteModal(true)} />
       </div>
     </>
   );

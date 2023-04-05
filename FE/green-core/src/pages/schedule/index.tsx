@@ -41,7 +41,6 @@ export default function schedule() {
   // 월간 스케줄 GET
   useEffect(() => {
     getMonthSchedule();
-    console.log('월간 GET');
     changeSearchState();
   }, [reload]);
 
@@ -62,7 +61,6 @@ export default function schedule() {
   // 주간 스케줄 GET
   useEffect(() => {
     getWeekSchedule();
-    console.log('주간 GET');
   }, [reload, date]);
 
   return (
