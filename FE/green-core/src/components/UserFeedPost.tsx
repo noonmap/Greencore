@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAppDispatch } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import AppModal from './common/AppModal';
@@ -25,6 +25,8 @@ const initialState: StateType = {
 };
 
 export default function UserFeedPost({ nickname }) {
+	const isSameUser = useAppSelector((state) => state.user.isSameUser);
+
 	const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 	const [checkedPostList] = getValues(['checkedPostList']);
 
@@ -106,12 +108,14 @@ export default function UserFeedPost({ nickname }) {
 				<div className="flex justify-between space-y-2 mb-5">
 					<div className="text-xl font-semibold">포스트</div>
 
-					<div className="flex main cursor-pointer">
-						<span className="material-symbols-outlined">delete</span>
-						<div className="hover:underline" onClick={() => setIsOpenSelectedPostDeleteModal(true)}>
-							선택 삭제
+					{isSameUser ? (
+						<div className="flex main cursor-pointer">
+							<span className="material-symbols-outlined">delete</span>
+							<div className="hover:underline" onClick={() => setIsOpenSelectedPostDeleteModal(true)}>
+								선택 삭제
+							</div>
 						</div>
-					</div>
+					) : null}
 				</div>
 
 				<div className={``}>
@@ -131,9 +135,11 @@ export default function UserFeedPost({ nickname }) {
 								</div>
 							</div>
 
-							<span className="material-symbols-outlined cursor-pointer close" onClick={() => handleIsOpenPostDelete(p.postId)}>
-								close
-							</span>
+							{isSameUser ? (
+								<span className="material-symbols-outlined cursor-pointer close" onClick={() => handleIsOpenPostDelete(p.postId)}>
+									close
+								</span>
+							) : null}
 						</div>
 					))}
 				</div>
