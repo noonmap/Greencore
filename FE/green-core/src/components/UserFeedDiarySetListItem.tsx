@@ -25,6 +25,7 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet, fetchDiar
     if (!router.isReady) return;
     if (!router.query.nickname) return;
     checkSameUser();
+    console.log(diarySet);
   }, [nickname]);
 
   /** url path의 유저와 현재 로그인 유저가 같은지 확인하는 함수 */
@@ -46,24 +47,22 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet, fetchDiar
 
   async function handleBookmarkCreate() {
     const { data } = await createBookmark(diarySet.diarySetId);
-    await fetchDiarySetList();
+    if (data) await fetchDiarySetList();
   }
 
   async function handleBookmardDelete() {
     const { data } = await deleteBookmark(diarySet.diarySetId);
-    await fetchDiarySetList();
+    if (data) await fetchDiarySetList();
   }
 
   /** 사용자 관찰일지 삭제하는 함수 */
   async function handleDiarySetDelete() {
     try {
       const { data } = await deleteDiarySet(diarySet.diarySetId);
-      console.log(data);
       setIsOpenDiarySetDeleteModal(false);
       setIsEditPopUp(false);
       await fetchDiarySetList();
     } catch (error) {
-      console.error(error);
       setIsOpenDiarySetDeleteModal(false);
       setIsEditPopUp(false);
     }
@@ -93,10 +92,8 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet, fetchDiar
 
       <div className={`${styles.wrap}`}>
         <div className={`${styles.content} rounded space-y-2`}>
-          <Link href={`/diary/${diarySet.diarySetId}`} className='relative'>
-            {/* {JSON.stringify(diarySet)} */}
+          <Link href={`/diaryset/list/${diarySet.diarySetId}`} className='relative'>
             <Image src={diarySet.imagePath} className={`${styles.img} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' />
-            {/* <Image src={'/'} className={`${styles.img} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' /> */}
             <div className={`${styles.card} absolute bottom-0`}>{diarySet.title}</div>
           </Link>
 
