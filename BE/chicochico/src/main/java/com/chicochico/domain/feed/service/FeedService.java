@@ -168,16 +168,17 @@ public class FeedService {
 		List<Long> recommendedFeedIds = recommenderService.getRecommendFeedIdList(userId, pageable.getPageNumber(), pageable.getPageSize());
 		log.info("[Recommened Feed Ids]" + recommendedFeedIds);
 
-		// 추천 피드가 없으면 무작위로 반환
+		// 추천 피드가 없으면 무작위로 반환 (내가 작성한 게시글 포함해서 조회)
+		Long myId = authService.getUserId();
 		List<FeedEntity> feedList;
 		if (recommendedFeedIds.isEmpty()) {
 			log.info("[Recommend] 추천된 피드가 없습니다.");
 			//			feedList = feedRepository.findByIsDeletedOrderByRandom(IsDeletedType.N, pageable);
-			feedList = feedRepository.findByIsDeletedOrderByCreatedAtDesc(IsDeletedType.N, pageable);
+			feedList = feedRepository.findByUserIdOrIsDeletedOrderByCreatedAtDesc(myId, IsDeletedType.N, pageable);
 		} else {
 			// id list를 feed로 변환
 			log.info("[Recommend] 추천된 피드 입니다.");
-			feedList = feedRepository.findByIdInAndIsDeletedOrderByCreatedAtDesc(recommendedFeedIds, IsDeletedType.N);
+			feedList = feedRepository.findByUserIdOrIdInAndIsDeletedOrderByCreatedAtDesc(myId, recommendedFeedIds, IsDeletedType.N);
 		}
 		return feedList;
 	}
@@ -235,6 +236,10 @@ public class FeedService {
 	 * @return
 	 */
 	public Page<FeedEntity> getFeedListByFollowUser(List<UserEntity> followingUserList, Pageable pageable) {
+		// 내가 작성한 피드도 같이 조회
+		Long userId = authService.getUserId();
+		UserEntity me = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		followingUserList.add(me);
 		// 팔로우하고 있는 유저들의 피드
 		Page<FeedEntity> feedList = feedRepository.findByUserInAndIsDeletedOrderByCreatedAtDesc(followingUserList, IsDeletedType.N, pageable);
 		return feedList;
