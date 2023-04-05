@@ -1,138 +1,143 @@
 .container {
-	min-width: 150px;
-	// min-height: var(--min-height-input);
-	border-radius: var(--border-radius-input);
-	// letter-spacing: -0.5px;
-	letter-spacing: 0.5px;
-	font-size: 0.9rem;
-	font-weight: 700;
+  min-width: 150px;
+  // min-height: var(--min-height-input);
+  border-radius: var(--border-radius-input);
+  // letter-spacing: -0.5px;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  font-weight: 700;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 
-	// &:hover {
-	//   background-color: var(--main-color);
-	//   color: #fff;
-	//   font-weight: 500;
-	// }
+  // &:hover {
+  //   background-color: var(--main-color);
+  //   color: #fff;
+  //   font-weight: 500;
+  // }
+}
+
+.transparent {
+  background-color: transparent;
+  color: #000;
 }
 
 .medium {
-	min-height: var(--min-height-input);
+  min-height: var(--min-height-input);
 }
 
 .small {
-	min-height: var(--min-height-input-small);
+  min-height: var(--min-height-input-small);
 }
 
 .white {
-	background-color: #fff;
-	color: var(--title-color);
+  background-color: #fff;
+  color: var(--title-color);
 }
 .black {
-	background-color: #000;
-	color: #fff;
+  background-color: #000;
+  color: #fff;
 }
 
 .main {
-	background-color: var(--main-color);
-	color: #fff;
-	font-weight: 600;
+  background-color: var(--main-color);
+  color: #fff;
+  font-weight: 600;
 }
 .mainLight {
-	background-color: var(--main-light-color);
-	color: var(--title-second-color);
-	// color: #fff;
-	// font-weight: 500;
+  background-color: var(--main-light-color);
+  color: var(--title-second-color);
+  // color: #fff;
+  // font-weight: 500;
 }
 
 .second {
-	background-color: var(--second-color);
-	// color: var(--title-second-color);
-	color: #fff;
-	font-weight: 500;
+  background-color: var(--second-color);
+  // color: var(--title-second-color);
+  color: #fff;
+  font-weight: 500;
 }
 .secondLight {
-	background-color: var(--second-light-color);
-	color: var(--title-second-color);
+  background-color: var(--second-light-color);
+  color: var(--title-second-color);
 }
 
 .light {
-	background-color: var(--light-color);
-	color: var(--title-second-color);
-	// color: #fff;
-	// font-weight: 500;
+  background-color: var(--light-color);
+  color: var(--title-second-color);
+  // color: #fff;
+  // font-weight: 500;
 }
 
 .thin {
-	background-color: var(--thin-color);
-	color: var(--title-light-color);
+  background-color: var(--thin-color);
+  color: var(--title-light-color);
 }
 
 .title {
-	background-color: var(--title-color);
-	color: #fff;
-	font-weight: 500;
+  background-color: var(--title-color);
+  color: #fff;
+  font-weight: 500;
 }
 .titleLight {
-	background-color: var(--title-light-color);
-	color: #fff;
-	font-weight: 500;
+  background-color: var(--title-light-color);
+  color: #fff;
+  font-weight: 500;
 }
 
 .danger {
-	background-color: var(--danger-color);
-	color: #fff;
-	font-weight: 500;
+  background-color: var(--danger-color);
+  color: #fff;
+  font-weight: 500;
 }
 .like {
-	background-color: var(--like-color);
-	color: #fff;
-	font-weight: 500;
+  background-color: var(--like-color);
+  color: #fff;
+  font-weight: 500;
 }
 
 .mainText {
-	color: var(--main-color);
+  color: var(--main-color);
 }
 .mainLightText {
-	color: var(--main-light-color);
+  color: var(--main-light-color);
 }
 
 .secondText {
-	color: var(--second-color);
+  color: var(--second-color);
 }
 .secondLightText {
-	color: var(--second-light-color);
+  color: var(--second-light-color);
 }
 
 .lightText {
-	color: var(--light-color);
+  color: var(--light-color);
 }
 
 .thinText {
-	color: var(--thin-color);
+  color: var(--thin-color);
 }
 
 .titleText {
-	color: var(--title-color);
+  color: var(--title-color);
 }
 .titleLightText {
-	color: var(--title-light-color);
+  color: var(--title-light-color);
 }
 
 .dangerText {
-	color: var(--danger-color);
+  color: var(--danger-color);
 }
 .likeText {
-	color: var(--like-color);
+  color: var(--like-color);
 }
 
 .whiteText {
-	color: #fff;
-	font-weight: 500;
+  color: #fff;
+  font-weight: 500;
 }
 .blackText {
-	color: #000;
+  color: #000;
 }

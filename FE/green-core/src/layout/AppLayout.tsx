@@ -26,12 +26,9 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
           <link rel='icon' href='/favicon.ico' />
         </Head>
 
-        <div className='flex md:gap-5'>
+        <div className='flex md:gap-5 mx-auto mx-32'>
           <AppHeader />
-          {/* <div className={`overflow-auto mx-auto xl:ml-56 ml-20 flex flex-1`}> */}
           <div className={`flex-1 flex h-screen`}>
-            {/* <main>{home ? <>{children}</> : <>{children}</>}</main>
-             */}
             <AppMain children={children} />
             {searchState === 'default' ? <AppSearch /> : <></>}
           </div>
@@ -50,13 +47,11 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <div className='flex md:gap-5'>
+      <div className='flex md:gap-5 mx-auto mx-32'>
         <AppHeader />
 
-        {/* <div className="overflow-auto mx-auto xl:ml-56 ml-20 flex flex-1"> */}
         <div className='flex-1 flex h-screen'>
           <AppMain children={children} />
-          {/* <main>{home ? <>{children}</> : <>{children}</>}</main> */}
           {searchState === 'default' ? <AppSearch /> : <></>}
         </div>
       </div>
