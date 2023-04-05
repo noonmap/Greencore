@@ -73,6 +73,11 @@ export default function diarySet() {
     return () => {};
   }, [diarySetId, myNickname]);
 
+  useEffect(() => {
+    setIsBookmarked(diarySet.isBookmarked);
+    return () => {};
+  }, [diarySet]);
+
   // 뒤로가기
   function goBack() {
     router.back();
@@ -107,7 +112,7 @@ export default function diarySet() {
     try {
       const { data } = await deleteDiarySet(Number(diarySetId));
       console.log(data);
-      router.push('/home');
+      router.push('/home/recommend');
       setIsOpenDiarySetDeleteModal(false);
     } catch (error) {
       console.error(error);

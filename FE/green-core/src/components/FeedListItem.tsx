@@ -35,6 +35,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
 
   // 태그 클릭 이벤트
   function handleTagClick(e) {
+    e.stopPropagation();
     const searchValue = e.target.innerText.slice(1);
     dispatch(SET_SEARCH_TAG(searchValue));
   }

@@ -30,7 +30,7 @@ export default function SearchUserListItem(props: { searchUser: SearchUserType }
   }
 
   function goProfile() {
-    router.push(`user/feed/${searchUser.nickname}`);
+    router.push(`/user/feed/${searchUser.nickname}`);
   }
   return (
     <>

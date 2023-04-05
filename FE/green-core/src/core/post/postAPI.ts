@@ -22,7 +22,7 @@ export const createPost = createAsyncThunk('createPost', async (requestData: Cre
         stopOnFocus: true,
         style: toastifyCSS.success,
       }).showToast();
-      router.push(`/post/${data.data.postId}`);
+      router.push(`/post/${data.data}`);
     } else {
       Toastify({
         text: message.CreatePostFail,

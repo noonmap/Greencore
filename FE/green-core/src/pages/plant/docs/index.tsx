@@ -7,6 +7,7 @@ import { getTopDiarySet } from '@/core/diarySet/diarySetAPI';
 import { getSamePlantUserList } from '@/core/user/userAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { useAppDispatch } from '@/core/hooks';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 import { PlantType, SearchPlantDetailType } from '@/core/plant/plantType';
 import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
@@ -16,6 +17,9 @@ import styles from './plantDocs.module.scss';
 
 export default function plantDocs() {
   const dispatch = useAppDispatch();
+  const storage = getStorage();
+
+  const [userProfileList, setUserProfileList] = useState(['temp', 'temp', 'temp']);
 
   // 인기식물, 인기 관찰일지, 나와 같은 식물을 키우는 사람들
   const [topPlantList, setTopPlantList] = useState<Array<PlantType>>([]);
@@ -78,6 +82,29 @@ export default function plantDocs() {
   };
 
   // 나같식키 유저
+
+  useEffect(() => {
+    if (samePlantUserList.length != 0) {
+      getUserProfile(samePlantUserList);
+    }
+  }, [samePlantUserList]);
+
+  function getUserProfile(samePlantUserList: Array<SearchUserType>) {
+    const newUserProfileList = [...userProfileList];
+    samePlantUserList.map((samePlantUser, index) => {
+      const profileRef = ref(storage, `${samePlantUser.nickname}/profileImage`);
+
+      getDownloadURL(profileRef)
+        .then((downloadURL) => {
+          newUserProfileList[index] = downloadURL;
+          setUserProfileList(newUserProfileList);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  }
+
   const handleImageLoadAtSamePlantUser = (index) => {
     setIsLoadingErrorAtSamPlantUser((prev) => {
       const nextState = [...prev];
@@ -404,16 +431,19 @@ export default function plantDocs() {
                     {samePlantUserList?.map((samPlantUser, index) => (
                       <div key={samPlantUser.nickname} className={`overflow-hidden`} style={{ borderRadius: '75px' }}>
                         <Link href={`/user/feed/${samPlantUser.nickname}`}>
-                          {isLoadingErrorAtSamePlantUser[index] && <Skeleton width={150} height={150} />}
-                          <img
-                            className={`${styles.img}`}
-                            src={`${samPlantUser.profileImagePath}`}
-                            width={150}
-                            height={150}
-                            onLoad={() => handleImageLoadAtSamePlantUser(index)}
-                            onError={() => handleImageErrorAtSamePlantUser(index)}
-                            style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block', width: '150px', height: '150px' }}
-                          />
+                          {userProfileList[index] == 'temp' ? (
+                            <Skeleton width={150} height={150} />
+                          ) : (
+                            <img
+                              className={`${styles.img}`}
+                              src={userProfileList[index]}
+                              width={150}
+                              height={150}
+                              onLoad={() => handleImageLoadAtSamePlantUser(index)}
+                              onError={() => handleImageErrorAtSamePlantUser(index)}
+                              style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block', width: '150px', height: '150px' }}
+                            />
+                          )}
                         </Link>
                       </div>
                     ))}

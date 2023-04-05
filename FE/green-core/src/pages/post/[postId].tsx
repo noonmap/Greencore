@@ -96,7 +96,7 @@ export default function PostDetail() {
 
   // 뒤로가기
   const handleGoBack = () => {
-    router.push(`/home`);
+    router.back();
   };
 
   // 좋아요

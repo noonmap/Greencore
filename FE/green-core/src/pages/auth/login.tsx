@@ -109,7 +109,7 @@ export default function login() {
             await dispatch(logInByOAuth(logInPayload));
             await dispatch(SET_AUTH_TYPE_FIREBASE());
             await handleSetUserProfile(githubNickname, githubPhotoUrl);
-            router.push('/home');
+            router.push('/home/recommend');
           } else {
             await dispatch(logInByOAuth(logInPayload));
             await dispatch(SET_AUTH_TYPE_FIREBASE());
@@ -155,7 +155,7 @@ export default function login() {
             await dispatch(SET_AUTH_TYPE_FIREBASE());
             await dispatch(logInByOAuth(logInPayload));
             await handleSetUserProfile(googleNickname, googlePhotoUrl);
-            router.push('/home');
+            router.push('/home/recommend');
           } else {
             await dispatch(SET_AUTH_TYPE_FIREBASE());
             await dispatch(logInByOAuth(logInPayload));
