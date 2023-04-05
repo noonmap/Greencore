@@ -10,6 +10,7 @@ import toastifyCSS from '@/assets/toastify.json';
 import { PageType, SearchType } from '@/core/common/commonType';
 import { SignUpDataType, LogInDataType, PasswordType, ProfileType, UserPlantType, EmailType, LogInOAuthDataType } from './userType';
 import { ErrorCallback } from 'typescript';
+import { encodeNickname } from '@/lib/utils';
 
 const SUCCESS_MESSAGE = 'SUCCESS';
 
@@ -477,7 +478,7 @@ export const logOut = createAsyncThunk('logOut', async () => {
  */
 export const checkNickname = async (nickname: string) => {
   try {
-    const { data } = await http.get(`/user/nickname/${nickname}`);
+    const { data } = await http.get(`/user/nickname/${encodeNickname(nickname)}`);
 
     if (data.result == SUCCESS_MESSAGE) {
       if (data.data) {
@@ -596,7 +597,7 @@ export const updatePassword = async (payload: PasswordType) => {
  * @url /profile/${nickname}
  */
 export const getProfile = async (nickname: string | string[]) => {
-  const { data } = await http.get(`/profile/${nickname}`);
+  const { data } = await http.get(`/profile/${encodeNickname(nickname)}`);
   return data;
 };
 
@@ -647,7 +648,7 @@ export const updateProfile = async (payload: ProfileType) => {
  * @url /user/plant/${nickname}
  */
 export const getUserPlantList = async (nickname: string | string[], params: PageType) => {
-  const { data } = await http.get(`/user/plant/${nickname}`, { params });
+  const { data } = await http.get(`/user/plant/${encodeNickname(nickname)}`, { params });
   return data;
 };
 
@@ -656,7 +657,7 @@ export const getUserPlantList = async (nickname: string | string[], params: Page
  * @url /user/plant/${nickname}/${userPlatId}
  */
 export const getUserPlant = async (nickname: string, userPlatId: string) => {
-  const { data } = await http.get(`/user/plant/${nickname}/${userPlatId}`);
+  const { data } = await http.get(`/user/plant/${encodeNickname(nickname)}/${userPlatId}`);
   return data;
 };
 
