@@ -1,11 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
-import { deleteUserPlant, getUserPlantList } from '@/core/user/userAPI';
+import { getUserPlantList } from '@/core/user/userAPI';
 import UserPlantModal from '@/components/modal/UserPlantModal';
-import AppModal from './common/AppModal';
-import AppButton from './button/AppButton';
 import UserFeedPlantListItem from './UserFeedPlantListItem';
-import { useRouter } from 'next/router';
+import Skeleton from 'react-loading-skeleton';
 
 type UserPlantType = {
 	plantId: number;
@@ -68,38 +65,53 @@ export default function UserFeedPlant({ nickname }) {
 				fetchUserPlantList={fetchUserPlantList}
 			/>
 
-			{/* 내키식 라인 */}
-			<div className="space-y-2 px-10 py-5">
-				<div className="flex justify-between space-y-2 mb-5">
-					<div className="text-xl font-semibold">키우는 식물</div>
-					<div className="flex main cursor-pointer" onClick={() => setIsOpenUserPlantCreateModal(true)}>
-						<span className="material-symbols-outlined">add</span>
-						<div className="hover:underline">추가하기</div>
+			{/* 내키식 라인 px-3 py-7 */}
+			<div className="px-3 py-7">
+				<div className="flex justify-between items-center mb-7 mx-4">
+					<div className="text-md font-semibold">키우는 식물 🌿</div>
+
+					<div
+						className="flex items-center cursor-pointer border border-2 bg-black border-black rounded-full p-0.5"
+						onClick={() => setIsOpenUserPlantCreateModal(true)}>
+						<span className="material-symbols-outlined font-bold text-white" style={{ fontSize: '1.2rem' }}>
+							add
+						</span>
+						<div className="text-sm pr-1 font-bold text-white">ADD</div>
 					</div>
 				</div>
 
 				{userPlantList ? (
 					userPlantList.length < 0 ? (
-						<div>식물을 생성해주세요 🌱</div>
+						<div className="mx-4 text-center text-sm py-4">식물을 생성해주세요 🌱</div>
 					) : (
-						<div className="flex flex-row space-x-4 items-center">
-							<span className="material-symbols-outlined cursor-pointer" onClick={prevUserPlantListPage}>
-								arrow_back_ios
-							</span>
+						<div className="flex flex-row space-x-4 items-center mx-4">
+							{userPlantPage == 0 ? (
+								<span className="material-symbols-outlined cursor-default text-gray-200">arrow_back_ios</span>
+							) : (
+								<span className="material-symbols-outlined cursor-pointer" onClick={prevUserPlantListPage}>
+									arrow_back_ios
+								</span>
+							)}
 
-							<div className="flex mx-7">
+							<div className="flex justify-around w-full">
 								{userPlantList?.map((userPlant) => (
 									<UserFeedPlantListItem key={userPlant.userPlantId} userPlant={userPlant} fetchUserPlantList={fetchUserPlantList} />
 								))}
 							</div>
 
-							<span className="material-symbols-outlined cursor-pointer" onClick={nextUserPlantListPage}>
-								arrow_forward_ios
-							</span>
+							{userPlantPage >= Math.ceil(Number(userPlantListTotalCount) / Number(userPlantSize)) - 1 ? (
+								<span className="material-symbols-outlined cursor-default text-gray-200">arrow_forward_ios</span>
+							) : (
+								<span className="material-symbols-outlined cursor-pointer" onClick={nextUserPlantListPage}>
+									arrow_forward_ios
+								</span>
+							)}
 						</div>
 					)
 				) : (
-					<div>식물을 생성해주세요 🌱</div>
+					<div className="mx-4 text-center text-sm py-4">
+						<Skeleton width={150} height={150} circle />
+					</div>
 				)}
 			</div>
 		</>

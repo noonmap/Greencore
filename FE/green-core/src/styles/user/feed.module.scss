@@ -2,3 +2,35 @@
 	font-size: 1.5rem;
 	font-weight: var(--text-extra-bold);
 }
+
+.popUp {
+	position: absolute;
+	width: 80px;
+	top: -75px;
+	left: 5px;
+	padding: 0.2rem 0;
+
+	border-radius: var(--border-radius-input);
+	box-shadow: var(--box-shadow-card);
+	font-size: 0.9rem;
+	border: 2px solid black;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(228, 255, 194) 100%);
+
+	div:nth-child(1) {
+		border-bottom: 2px solid black;
+	}
+
+	div {
+		padding-left: 5px;
+		padding: 0 0.5rem;
+		// color: var(--title-light-color);
+		transition: all 0.15s var(--timing-func);
+
+		&:hover {
+			// background-color: var(--thin-color);
+			background-color: var(--like-color);
+			color: #fff;
+			cursor: pointer;
+		}
+	}
+}
