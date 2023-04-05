@@ -32,16 +32,16 @@ body {
 }
 
 ::-webkit-scrollbar {
-	width: 4px;
+	width: 3px;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: var(--main-light-color);
+	background-color: var(--like-color);
 	border-radius: var(--border-radius);
 }
 
 ::selection {
-	color: #fff;
-	background-color: var(--main-light-color);
+	color: #000;
+	background-color: #9bf7f2;
 }
 
 a {

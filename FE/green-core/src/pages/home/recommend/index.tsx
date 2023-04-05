@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FeedLayout from '@/layout/FeedLayout';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
-import { initFeedList } from '@/core/feed/feedSlice';
-import { getFeedList, getFollowFeedList } from '@/core/feed/feedAPI';
+import { getFeedList } from '@/core/feed/feedAPI';
 import FeedListItem from '@/components/FeedListItem';
 import Link from 'next/link';
 import styles from '@/styles/home/home.module.scss';
@@ -16,7 +15,7 @@ export default function index() {
 	const dispatch = useAppDispatch();
 
 	const isLoading = useAppSelector((state) => state.feed.isLoading);
-	const feedList = useAppSelector((state) => state.feed.feedList);
+	const feedList = useAppSelector((state) => state.feed.recommendFeedList);
 	const isStoped = useAppSelector((state) => state.feed.isStoped);
 	const page = useAppSelector((state) => state.feed.page);
 	const size = useAppSelector((state) => state.feed.size);
@@ -31,8 +30,6 @@ export default function index() {
 
 	// 초기 웹 훅
 	useEffect(() => {
-		// feedList 초기화 하기
-		// dispatch(initFeedList());
 		setIsLoaded(true);
 	}, []);
 
@@ -93,9 +90,7 @@ export default function index() {
 				</div>
 
 				{isLoading ? (
-					<div>
-						<Skeleton />
-					</div>
+					<AppLoading />
 				) : feedList.length == 0 ? (
 					<div className="text-center flex items-center justify-center space-x-2 pt-40">
 						<div className="font-italic">조회된 피드가 없습니다</div>
@@ -107,7 +102,6 @@ export default function index() {
 							<FeedListItem key={feed.feedId} feed={feed}></FeedListItem>
 						))}
 						<div ref={setTarget} />
-						{/* <div className={`p-5`}></div> */}
 					</div>
 				)}
 			</div>

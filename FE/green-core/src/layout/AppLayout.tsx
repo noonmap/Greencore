@@ -26,7 +26,7 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 
-				<div className="flex md:gap-5 mx-auto 2xl:mx-72 mx-40">
+				<div className="flex md:gap-5 mx-auto 2xl:mx-72 md:mx-40">
 					<AppHeader />
 					<div className={`flex-1 flex h-screen`}>
 						<AppMain children={children} />
@@ -47,7 +47,7 @@ export default function AppLayout({ children, home }: AppLayoutProps) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<div className="flex md:gap-5 mx-auto 2xl:mx-72 mx-40">
+			<div className="flex md:gap-5 mx-auto 2xl:mx-72 md:mx-40">
 				<AppHeader />
 
 				<div className="flex-1 flex h-screen">
