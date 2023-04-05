@@ -83,7 +83,7 @@ public class PostService {
 	 * @param postRequestDto
 	 */
 	@Transactional
-	public void createPost(PostRequestDto postRequestDto) {
+	public Long createPost(PostRequestDto postRequestDto) {
 		// 작성자 조회
 		Long userId = authService.getUserId();
 		UserEntity writer = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -109,6 +109,8 @@ public class PostService {
 
 		// Recommender system에 추가
 		recommenderService.insertItem(post.getId(), false, tags, null, post.getCreatedAt(), post.getContent().substring(0, Math.min(30, post.getContent().length())));
+
+		return post.getId();
 	}
 
 
