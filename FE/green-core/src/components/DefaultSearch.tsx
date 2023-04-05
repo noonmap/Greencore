@@ -242,7 +242,7 @@ export default function DefaultSearch() {
   // ------------------------------------------------------------셀렉트 박스
 
   const OPTIONS = [
-    { value: 'feed', name: '피드' },
+    { value: 'feed', name: '태그' },
     { value: 'profile', name: '사용자' },
     { value: 'plant', name: '식물도감' },
   ];
