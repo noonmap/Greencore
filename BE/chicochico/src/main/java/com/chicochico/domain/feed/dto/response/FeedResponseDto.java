@@ -42,9 +42,11 @@ public class FeedResponseDto implements Serializable {
 	private Long diarySetId;
 	private String diarySetTitle;
 	private Long growingDay;
+	private List<String> tags;
 
 
-	public static FeedResponseDto fromEntity(FeedEntity xx, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
+	public static FeedResponseDto fromEntity(FeedEntity xx, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
+		Function<Long, List<String>> getTagsList) {
 		FeedType feedType;
 		LocalDate observationDate;
 		Long diarySetId;
@@ -84,15 +86,17 @@ public class FeedResponseDto implements Serializable {
 			.diarySetTitle(diarySetTitle)
 			.growingDay(growingDay)
 			.createdAt(xx.getCreatedAt())
+			.tags(getTagsList.apply(xx.getId()))
 			.build();
 	}
 
 
 	// isLiked, commentCount 때문에 Controller에서 처리
-	public static List<FeedResponseDto> fromEnityList(List<FeedEntity> xxList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
+	public static List<FeedResponseDto> fromEnityList(List<FeedEntity> xxList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
+		Function<Long, List<String>> getTagsList) {
 		List<FeedResponseDto> result = new ArrayList<>();
 		for (FeedEntity xx : xxList) {
-			FeedResponseDto xxResponseDto = FeedResponseDto.fromEntity(xx, isLiked, getCommentCount, isFollowed);
+			FeedResponseDto xxResponseDto = FeedResponseDto.fromEntity(xx, isLiked, getCommentCount, isFollowed, getTagsList);
 			result.add(xxResponseDto);
 		}
 		return result;
@@ -100,9 +104,9 @@ public class FeedResponseDto implements Serializable {
 
 
 	public static Page<FeedResponseDto> fromEnityPage(Page<FeedEntity> feedList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
-		Pageable pageable) {
+		Function<Long, List<String>> getTagsList) {
 		try {
-			Page<FeedResponseDto> result = feedList.map(f -> FeedResponseDto.fromEntity(f, isLiked, getCommentCount, isFollowed));
+			Page<FeedResponseDto> result = feedList.map(f -> FeedResponseDto.fromEntity(f, isLiked, getCommentCount, isFollowed, getTagsList));
 			return result;
 		} catch (IllegalArgumentException e) {
 			return Page.empty();
@@ -112,10 +116,10 @@ public class FeedResponseDto implements Serializable {
 
 
 	public static Page<FeedResponseDto> fromEnityPage(List<FeedEntity> feedList, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed,
-		Pageable pageable) {
+		Function<Long, List<String>> getTagsList, Pageable pageable) {
 		try {
 			Page<FeedEntity> feedEntityPage = new PageImpl<>(feedList, pageable, feedList.size());
-			Page<FeedResponseDto> result = feedEntityPage.map(f -> FeedResponseDto.fromEntity(f, isLiked, getCommentCount, isFollowed));
+			Page<FeedResponseDto> result = feedEntityPage.map(f -> FeedResponseDto.fromEntity(f, isLiked, getCommentCount, isFollowed, getTagsList));
 			return result;
 		} catch (IllegalArgumentException e) {
 			return Page.empty();
