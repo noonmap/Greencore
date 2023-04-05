@@ -3,6 +3,7 @@ package com.chicochico.domain.user.service;
 
 import com.chicochico.common.code.IsDeletedType;
 import com.chicochico.common.code.UserStoreType;
+import com.chicochico.common.service.AuthService;
 import com.chicochico.common.service.AuthTokenProvider;
 import com.chicochico.common.service.OauthService;
 import com.chicochico.common.service.RedisService;
@@ -48,6 +49,7 @@ public class LoginService {
 	private final FirebaseAuth firebaseAuth;
 	private final OauthService oauthService;
 	private final ObjectMapper objectMapper;
+	private final AuthService authService;
 
 
 	/**
@@ -299,25 +301,27 @@ public class LoginService {
 	 */
 	public void deleteAccessToken(Map<String, String> logoutRequestHeader) {
 
-		// 1. Access Token 검증
+		// 1. Access Token 검증은 spring security에서 진행
 		String accessToken = extractAccessToken(getHeader(logoutRequestHeader, "authorization"));
 
-		if (!authTokenProvider.validate(accessToken)) {
-			throw new CustomException(ErrorCode.ACCESS_TOKEN_ERROR);
+		// 2. 로그인 유저 에서 User id 을 가져옵니다.
+
+		Long userId = authService.getUserId();
+		UserEntity user = userRepository.findByIdAndIsDeleted(userId, IsDeletedType.N).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+		if (user.getUserStore().equals(UserStoreType.DB)) {
+			// 3. Redis 에서 해당 User id 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
+			if (redisService.getData("RT:" + userId) != null) {
+				// Refresh Token 삭제
+				redisService.deleteData("RT:" + userId);
+			}
+
+			// 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
+			Long expiration = authTokenProvider.getExpiration(accessToken);
+			redisService.setDataExpireMilliseconds(accessToken, "logout", expiration);
 		}
 
-		// 2. Access Token 에서 User id 을 가져옵니다.
-		Long userId = authTokenProvider.getUserId(accessToken);
-
-		// 3. Redis 에서 해당 User id 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
-		if (redisService.getData("RT:" + userId) != null) {
-			// Refresh Token 삭제
-			redisService.deleteData("RT:" + userId);
-		}
-
-		// 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
-		Long expiration = authTokenProvider.getExpiration(accessToken);
-		redisService.setDataExpireMilliseconds(accessToken, "logout", expiration);
+		// FIREBASE나 KAKAO는 프론트에서 로그아웃 로직 처리
 
 	}
 
