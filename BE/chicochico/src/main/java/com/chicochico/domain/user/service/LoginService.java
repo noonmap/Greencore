@@ -86,12 +86,14 @@ public class LoginService {
 
 			// 4. 새로운 토큰 생성
 			String newAccessToken = authTokenProvider.createAccessToken(userId, userNickname);
-			String newRefreshToken = authTokenProvider.createRefreshToken(userId, userNickname);
+			String newRefreshToken = loginRequestRefreshToken;
+			if (!authTokenProvider.validate(loginRequestRefreshToken)) {
+				newRefreshToken = authTokenProvider.createRefreshToken(userId, userNickname);
+				// 5. RefreshToken Redis 업데이트
+				redisService.setDataExpireMilliseconds("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken));
+			}
 			authTokenProvider.setHeaderAccessToken(response, newAccessToken);
 			authTokenProvider.setHeaderRefreshToken(response, newRefreshToken);
-
-			// 5. RefreshToken Redis 업데이트
-			redisService.setDataExpireMilliseconds("RT:" + userId, newRefreshToken, authTokenProvider.getExpiration(refreshToken));
 
 		} else if (userStore.equals(UserStoreType.FIREBASE)) { // firebase에 저장된 유저 (구글/깃헙)
 			Map<String, String> params = new HashMap<>();
