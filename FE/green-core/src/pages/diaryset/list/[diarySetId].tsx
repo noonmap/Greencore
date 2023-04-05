@@ -162,7 +162,7 @@ export default function diarySet() {
                 {/* 일지생성 */}
                 <div className='py-3'>
                   <Link href={'/diary/create'}>
-                    <div className={`bg-blue-500 rounded px-3 py-1 flex justify-center ${styles.diaryAddBtn}`} style={{ borderRadius: '30px' }}>
+                    <div className={`rounded px-3 py-1 flex justify-center ${styles.diaryAddBtn}`} style={{ borderRadius: '30px' }}>
                       <span className='material-symbols-outlined'>add</span>
                       <span className='underline underline-offset-4 pr-2'>추가하기</span>
                     </div>
