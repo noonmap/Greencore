@@ -73,6 +73,11 @@ export default function diarySet() {
     return () => {};
   }, [diarySetId, myNickname]);
 
+  useEffect(() => {
+    setIsBookmarked(diarySet.isBookmarked);
+    return () => {};
+  }, [diarySet]);
+
   // 뒤로가기
   function goBack() {
     router.back();
