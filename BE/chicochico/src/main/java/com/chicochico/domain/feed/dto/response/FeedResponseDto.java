@@ -39,6 +39,7 @@ public class FeedResponseDto implements Serializable {
 	private Integer commentCount;
 	private LocalDateTime createdAt;
 	// FEED_DIARY인 경우, diarySet 관련 추가
+	private Long diarySetId;
 	private String diarySetTitle;
 	private Long growingDay;
 
@@ -46,6 +47,7 @@ public class FeedResponseDto implements Serializable {
 	public static FeedResponseDto fromEntity(FeedEntity xx, Function<Long, Boolean> isLiked, Function<Long, Integer> getCommentCount, Function<Long, Boolean> isFollowed) {
 		FeedType feedType;
 		LocalDate observationDate;
+		Long diarySetId;
 		String diarySetTitle;
 		Long growingDay;
 		DiaryEntity diary = null;
@@ -53,11 +55,13 @@ public class FeedResponseDto implements Serializable {
 			diary = (DiaryEntity) xx;
 			feedType = FeedType.FEED_DIARY;
 			observationDate = diary.getObservationDate();
+			diarySetId = diary.getDiarySet().getId();
 			diarySetTitle = diary.getDiarySet().getTitle();
 			growingDay = ChronoUnit.DAYS.between(diary.getDiarySet().getStartDate(), diary.getObservationDate());
 		} else {
 			feedType = FeedType.FEED_POST;
 			observationDate = null;
+			diarySetId = null;
 			diarySetTitle = null;
 			growingDay = null;
 		}
@@ -76,6 +80,7 @@ public class FeedResponseDto implements Serializable {
 			.likeCount(xx.getLikeCount())
 			.isLiked(isLiked.apply(xx.getId()))
 			.commentCount(getCommentCount.apply(xx.getId()))
+			.diarySetId(diarySetId)
 			.diarySetTitle(diarySetTitle)
 			.growingDay(growingDay)
 			.createdAt(xx.getCreatedAt())
