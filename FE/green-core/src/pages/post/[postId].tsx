@@ -237,6 +237,7 @@ export default function PostDetail() {
               <div className={`${styles.helpTip} flex`}>
                 {userProfileImagePath ? (
                   <Image
+                    priority
                     src={userProfileImagePath}
                     width={100}
                     height={100}
@@ -254,6 +255,7 @@ export default function PostDetail() {
                     <div className={`flex flex-col justify-center items-center `}>
                       {userProfileImagePath ? (
                         <Image
+                          priority
                           src={userProfileImagePath}
                           width={80}
                           height={80}
@@ -324,7 +326,7 @@ export default function PostDetail() {
                   <div className={`${styles.nickname}`}>{post.user.nickname}님의 게시물</div>
                 </div>
                 <div className={`${styles.box}`}>
-                  <Image src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
+                  <Image priority src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
