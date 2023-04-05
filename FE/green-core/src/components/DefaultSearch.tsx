@@ -54,6 +54,7 @@ export default function DefaultSearch() {
   useEffect(() => {
     if (searchTagValue !== '') {
       setIsSearched(true);
+      setSearchTypeTemp('feed');
       setInputData(searchTagValue);
       // setSearchTypeTemp(searchType); // 결과 디브 재렌더링 하기!
 
