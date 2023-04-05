@@ -15,13 +15,11 @@ import com.chicochico.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -185,61 +183,15 @@ public class FeedService {
 
 
 	/**
-	 * feedPage에서 삭제되지 않은(IsDeletedType.N인) 피드 페이지를 얻음
-	 *
-	 * @param feedPage
-	 * @param pageable
-	 * @return
-	 */
-	private Page<FeedEntity> getUnDeletedFeedPage(Page<FeedEntity> feedPage, Pageable pageable) {
-		List<FeedEntity> feedList = new ArrayList<>(feedPage.toList());
-		// 삭제된 피드 삭제
-		feedList.removeIf(feed -> feed.getIsDeleted().equals(IsDeletedType.Y));
-		Page<FeedEntity> noDeletedFeedPage = new PageImpl<>(feedList, pageable, feedList.size());
-		return noDeletedFeedPage;
-	}
-
-
-	/**
-	 * feedList에서 삭제되지 않은(IsDeletedType.N인) 피드 페이지를 얻음
-	 *
-	 * @param _feedList
-	 * @return
-	 */
-	private List<FeedEntity> getUnDeletedFeedPage(List<FeedEntity> _feedList) {
-		List<FeedEntity> feedList = new ArrayList<>(_feedList); // 입력 list는 unmodifidable list라서 한번 복사를 거쳐줘야한다.
-		// 삭제된 피드 삭제
-		feedList.removeIf(feed -> feed.getIsDeleted().equals(IsDeletedType.Y));
-		return feedList;
-	}
-
-
-	/**
-	 * feedList에서 삭제되지 않은(IsDeletedType.N인) 피드 페이지를 얻음
-	 *
-	 * @param _feedList
-	 * @param pageable
-	 * @return
-	 */
-	private Page<FeedEntity> getUnDeletedFeedPage(List<FeedEntity> _feedList, Pageable pageable) {
-		List<FeedEntity> feedList = new ArrayList<>(_feedList); // 입력 list는 unmodifidable list라서 한번 복사를 거쳐줘야한다.
-		// 삭제된 피드 삭제
-		feedList.removeIf(feed -> feed.getIsDeleted().equals(IsDeletedType.Y));
-		Page<FeedEntity> noDeletedFeedPage = new PageImpl<>(feedList, pageable, feedList.size());
-		return noDeletedFeedPage;
-	}
-
-
-	/**
 	 * 팔로우한 사람의 최신 피드를 조회합니다.
 	 *
 	 * @return
 	 */
 	public Page<FeedEntity> getFeedListByFollowUser(List<UserEntity> followingUserList, Pageable pageable) {
-		// 내가 작성한 피드도 같이 조회
-		Long userId = authService.getUserId();
-		UserEntity me = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		followingUserList.add(me);
+		//		// 내가 작성한 피드도 같이 조회
+		//		Long userId = authService.getUserId();
+		//		UserEntity me = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		//		followingUserList.add(me);
 		// 팔로우하고 있는 유저들의 피드
 		Page<FeedEntity> feedList = feedRepository.findByUserInAndIsDeletedOrderByCreatedAtDesc(followingUserList, IsDeletedType.N, pageable);
 		return feedList;
