@@ -180,7 +180,7 @@ export default function ScheduleModal({
     document.addEventListener('mousedown', handleModalOutsideClick);
 
     if (regularScheduleCode === 'WEEKLY_SCHEDULE') {
-      handleClick(Number(day));
+      handleClick(Number(day) - 1);
     }
 
     return () => {

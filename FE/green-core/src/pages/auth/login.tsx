@@ -106,9 +106,6 @@ export default function login() {
           const logInPayload = { accessToken: githubAccessToken, refreshToken: githubRefreshToken, nickname: githubNickname };
 
           if (data) {
-            // 없는 이메일이므로 회원가입 진행 후 로그인
-            const signUpPayload = { email: githubEmail, password: githubUID + '!', nickname: githubNickname };
-            const { data } = await signUpByOAuth(signUpPayload);
 
             if (data) {
               await dispatch(logInByOAuth(logInPayload));
@@ -158,9 +155,6 @@ export default function login() {
           const logInPayload = { accessToken: googleAccessToken, refreshToken: googleRefreshToken, nickname: googleNickname };
 
           if (data) {
-            // 없는 이메일이므로 회원가입 진행 후 로그인
-            const signUpPayload = { email: googleEmail, password: googleUID + '!', nickname: googleNickname };
-            const { data } = await signUpByOAuth(signUpPayload);
 
             if (data) {
               await dispatch(SET_AUTH_TYPE_FIREBASE());

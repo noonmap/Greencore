@@ -242,6 +242,7 @@ export default function DiaryDetail() {
               <div className={`${styles.helpTip} flex`}>
                 {userProfileImagePath ? (
                   <Image
+                    priority
                     width={100}
                     height={100}
                     src={userProfileImagePath}
@@ -259,6 +260,7 @@ export default function DiaryDetail() {
                     <div className={`flex flex-col justify-center items-center `}>
                       {userProfileImagePath ? (
                         <Image
+                          priority
                           width={80}
                           height={80}
                           src={userProfileImagePath}
@@ -329,7 +331,7 @@ export default function DiaryDetail() {
                   <div className={`${styles.nickname}`}>{diary.user.nickname}님의 일지</div>
                 </div>
                 <div className={`${styles.box}`}>
-                  <Image src={diary?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
+                  <Image priority src={diary?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
                 </div>
                 <div className='flex justify-between mb-2'>
                   <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>

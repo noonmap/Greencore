@@ -6,6 +6,7 @@ import { initFeedList } from '@/core/feed/feedSlice';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import FeedListItem from '@/components/FeedListItem';
 import styles from '@/styles/Home.module.scss';
+import Link from 'next/link';
 
 export default function feed() {
   const dispatch = useAppDispatch();
@@ -96,8 +97,13 @@ export default function feed() {
 
   return (
     <AppLayout>
-      <div className={`py-5`}>
+      <div className={`py-5 relative w-full`}>
         <div className={`${styles.title} mb-10 px-3 `}>Home</div>
+        <div className={`rounded w-full mb-2 ml-auto flex justify-end items-center`}>
+          <Link href='/post/create' className={` ${styles.addBtn}`}>
+            <span className={`material-symbols-outlined`}>edit_square</span>
+          </Link>
+        </div>
         <div className='flex'>
           <div className={`w-6/12 text-xl flex justify-center ${isSelectRecomment ? styles.select : ''} border-b border-black`}>
             <button onClick={handleClickRecommend}>추천</button>
