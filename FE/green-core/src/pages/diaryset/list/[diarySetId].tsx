@@ -153,7 +153,7 @@ export default function diarySet() {
                 <div>
                   <Link href={`/user/feed/${diarySet?.user?.nickname}`}>
                     {userProfileImagePath ? (
-                      <Image src={userProfileImagePath} width={80} height={80} style={{ borderRadius: '50%' }} alt='프로필 사진' />
+                      <Image priority src={userProfileImagePath} width={80} height={80} style={{ borderRadius: '50%' }} alt='프로필 사진' />
                     ) : (
                       <Skeleton width={80} height={80} style={{ borderRadius: '50%' }} />
                     )}

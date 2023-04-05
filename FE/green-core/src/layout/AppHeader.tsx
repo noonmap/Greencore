@@ -115,7 +115,7 @@ export default function AppHeader() {
         <div className='flex flex-col justify-between h-full xl:px-4'>
           <div className='flex flex-col items-center xl:items-start'>
             <div className=' flex mb-10'>
-              <Image src='/images/leaf4.png' width={32} height={32} className={`xl:hidden block`} alt='logo' />
+              <Image priority src='/images/leaf4.png' width={32} height={32} className={`xl:hidden block`} alt='logo' />
               <Link href='/' className={`${styles.title} xl:block hidden`}>
                 GREENCORE
               </Link>
@@ -219,7 +219,14 @@ export default function AppHeader() {
               <div className='gap-3'>
                 <div className='flex flex-col items-center'>
                   {userProfileImagePath ? (
-                    <Image src={userProfileImagePath} width={50} height={50} className={`${styles.image} border rounded-full xl:hidden`} alt='' />
+                    <Image
+                      priority
+                      src={userProfileImagePath}
+                      width={50}
+                      height={50}
+                      className={`${styles.image} border rounded-full xl:hidden`}
+                      alt=''
+                    />
                   ) : (
                     <div className='xl:hidden'>
                       <Skeleton width={50} height={50} circle />
@@ -230,6 +237,7 @@ export default function AppHeader() {
                   <div className='flex mb-3 w-50 items-center rounded-full hover:bg-gray-100 p-3 gap-2'>
                     {userProfileImagePath ? (
                       <Image
+                        priority
                         src={userProfileImagePath}
                         width={50}
                         height={50}
