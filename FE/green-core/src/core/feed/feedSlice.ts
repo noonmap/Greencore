@@ -75,10 +75,9 @@ const feedSlice = createSlice({
         console.log(action.payload?.content);
         if (action.payload?.content?.length < state.size) {
           state.isStopedAtTag = true;
-        } else {
-          state.pageAtTag = 1;
-          state.tagFeedList = action.payload?.content;
         }
+        state.pageAtTag = 1;
+        state.tagFeedList = action.payload?.content;
       })
       // 태그 검색 아이템 더 불러오기
       .addCase(getTagFeedListMore.pending, (state) => {})
@@ -86,10 +85,9 @@ const feedSlice = createSlice({
         console.log(action.payload?.content);
         if (action.payload?.content.length < state.size) {
           state.isStopedAtTag = true;
-        } else {
-          state.pageAtTag = state.pageAtTag + 1;
-          state.tagFeedList = [...state.tagFeedList, ...action.payload?.content];
         }
+        state.pageAtTag = state.pageAtTag + 1;
+        state.tagFeedList = [...state.tagFeedList, ...action.payload?.content];
       });
   },
 });
