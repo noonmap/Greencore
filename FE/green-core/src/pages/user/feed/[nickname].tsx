@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppLayout from '@/layout/AppLayout';
 import { useRouter } from 'next/router';
 import styles from '@/styles/user/feed.module.scss';
@@ -9,7 +9,14 @@ import UserFeedPost from '@/components/UserFeedPost';
 
 export default function FeedDetail() {
 	const router = useRouter();
-	const { nickname } = router.query;
+
+	const [nickname, setNickname] = useState<string | string[]>('');
+
+	useEffect(() => {
+		if (!router.isReady) return;
+		console.log(nickname);
+		setNickname(router.query?.nickname);
+	}, [nickname, router, router.isReady]);
 
 	return (
 		<AppLayout>
