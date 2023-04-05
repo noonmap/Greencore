@@ -224,7 +224,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
               <div onClick={goProfile} className={`overflow-hidden`} style={{ borderRadius: '40px' }}>
                 {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
                 <Image
-                  src={userProfileImagePath ? userProfileImagePath : '/resources/default.png'}
+                  src={userProfileImagePath ? userProfileImagePath : '/images/noProfile.png'}
                   width={80}
                   height={80}
                   alt='profile image'
@@ -238,7 +238,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
                     {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
                     <Image
                       onClick={goProfile}
-                      src={userProfileImagePath ? userProfileImagePath : '/resources/default.png'}
+                      src={userProfileImagePath ? userProfileImagePath : '/images/noProfile.png'}
                       alt='로고'
                       width='80'
                       height='80'
