@@ -48,7 +48,7 @@ public class DiaryController {
 		List<DiaryEntity> diaryEntityPage = diaryService.getDiaryList(diarySetId);
 		DiarySetEntity diarySet = diarySetService.getDiarySet(diarySetId);
 		Page<DiarySimpleResponseDto> diarySimpleResponseDtoList = DiarySimpleResponseDto.fromEnityPage(diaryEntityPage, feedService::getTagContentList, pageable);
-		DiaryListResponseDto diaryListResponseDto = DiaryListResponseDto.fromEntity(diarySet, diarySimpleResponseDtoList, followService::isFollowed);
+		DiaryListResponseDto diaryListResponseDto = DiaryListResponseDto.fromEntity(diarySet, diarySimpleResponseDtoList, followService::isFollowed, diarySetService::isBookmarked);
 		return ResponseEntity.ok().body(ResultDto.of(diaryListResponseDto));
 	}
 
