@@ -8,6 +8,8 @@ interface FeedState {
   isStoped: boolean;
   page: number;
   size: number;
+  recommendFeedList: Array<FeedType>;
+  followingFeedList: Array<FeedType>;
 
   // 검색용
   tagFeedList: Array<TagFeedType>;
@@ -18,6 +20,8 @@ interface FeedState {
 const initialState: FeedState = {
   isLoading: true,
   feedList: [],
+  recommendFeedList: [],
+  followingFeedList: [],
   isStoped: false,
   page: 0,
   size: 10,
@@ -51,7 +55,7 @@ const feedSlice = createSlice({
         state.page = state.page + 1;
         state.isLoading = false;
         if (action.payload) {
-          state.feedList = [...state.feedList, ...action.payload?.content];
+          state.recommendFeedList = [...state.recommendFeedList, ...action.payload?.content];
         }
       })
       // 팔로우 피드 조회
@@ -62,28 +66,28 @@ const feedSlice = createSlice({
         }
         state.page = state.page + 1;
         if (action.payload) {
-          state.feedList = [...state.feedList, ...action.payload?.content];
+          state.followingFeedList = [...state.followingFeedList, ...action.payload?.content];
         }
       })
       // 태그 검색 초기 요청
       .addCase(getTagFeedList.pending, (state) => {})
       .addCase(getTagFeedList.fulfilled, (state, action) => {
-        if (action.payload?.content.length < state.size) {
+        console.log(action.payload?.content);
+        if (action.payload?.content?.length < state.size) {
           state.isStopedAtTag = true;
-        } else {
-          state.pageAtTag = 1;
-          state.tagFeedList = action.payload?.content;
         }
+        state.pageAtTag = 1;
+        state.tagFeedList = action.payload?.content;
       })
       // 태그 검색 아이템 더 불러오기
       .addCase(getTagFeedListMore.pending, (state) => {})
       .addCase(getTagFeedListMore.fulfilled, (state, action) => {
+        console.log(action.payload?.content);
         if (action.payload?.content.length < state.size) {
           state.isStopedAtTag = true;
-        } else {
-          state.pageAtTag = state.pageAtTag + 1;
-          state.tagFeedList = [...state.tagFeedList, ...action.payload?.content];
         }
+        state.pageAtTag = state.pageAtTag + 1;
+        state.tagFeedList = [...state.tagFeedList, ...action.payload?.content];
       });
   },
 });

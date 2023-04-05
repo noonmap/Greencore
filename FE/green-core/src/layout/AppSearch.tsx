@@ -5,13 +5,13 @@ import styles from './AppSearch.module.scss';
 import { useAppSelector } from '@/core/hooks';
 
 export default function AppSearch() {
-  const searchState = useAppSelector((state) => state.common.searchState || 'home');
+	const searchState = useAppSelector((state) => state.common.searchState || 'home');
 
-  return (
-    <div className={`${styles.container} lg:block hidden overflow-auto lg:w-1/3 px-7 py-5`}>
-      <>
-        <DefaultSearch></DefaultSearch>
-      </>
-    </div>
-  );
+	return (
+		<div className={`border border-l-2 border-r-2 border-t-0 border-b-0 border-black lg:block hidden overflow-auto lg:w-1/3 px-7 py-5`}>
+			<>
+				<DefaultSearch></DefaultSearch>
+			</>
+		</div>
+	);
 }

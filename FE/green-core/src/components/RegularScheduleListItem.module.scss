@@ -1,14 +1,21 @@
 .container {
-  display: flex;
+  // display: flex;
   // border: 1px solid #d9d9d9;
   border-radius: 1rem;
   // width: 90%;
+  box-shadow: var(--box-shadow);
   margin: 0.5rem;
   padding: 0.5rem 1rem;
+}
+
+.subContainer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  box-shadow: var(--box-shadow);
+}
+
+.name {
+  font-size: 0.8rem;
 }
 
 .icon {

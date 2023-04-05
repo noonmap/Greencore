@@ -41,7 +41,6 @@ export default function schedule() {
   // 월간 스케줄 GET
   useEffect(() => {
     getMonthSchedule();
-    console.log('월간 GET');
     changeSearchState();
   }, [reload]);
 
@@ -51,10 +50,10 @@ export default function schedule() {
     let sortedMap = {};
     for (let i = 0; i < data.payload.data.length; i++) {
       const schedule = data.payload.data[i];
-      if (!Object.keys(sortedMap).includes(moment(schedule.scheduleDate).format('MD'))) {
-        sortedMap[moment(schedule.scheduleDate).format('MD')] = [];
+      if (!Object.keys(sortedMap).includes(moment(schedule.scheduleDate).format('MDD'))) {
+        sortedMap[moment(schedule.scheduleDate).format('MDD')] = [];
       }
-      sortedMap[moment(schedule.scheduleDate).format('MD')] = [...sortedMap[moment(schedule.scheduleDate).format('MD')], schedule];
+      sortedMap[moment(schedule.scheduleDate).format('MDD')] = [...sortedMap[moment(schedule.scheduleDate).format('MDD')], schedule];
     }
     setWeekSchedule(sortedMap);
   };
@@ -62,7 +61,6 @@ export default function schedule() {
   // 주간 스케줄 GET
   useEffect(() => {
     getWeekSchedule();
-    console.log('주간 GET');
   }, [reload, date]);
 
   return (

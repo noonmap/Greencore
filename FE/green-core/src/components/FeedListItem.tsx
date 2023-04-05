@@ -1,16 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+
+import styles from '@/styles/home/feed.module.scss';
 import Skeleton from 'react-loading-skeleton';
+
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { deleteDiary } from '@/core/diary/diaryAPI';
 import { deletePost } from '@/core/post/postAPI';
-import { FeedType } from '../core/feed/feedType';
+import { FeedType } from '@/core/feed/feedType';
 import CommentDeleteModal from '@/components/modal/CommentDeleteModal';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import styles from './FeedListItem.module.scss';
-import Image from 'next/image';
 import { SET_SEARCH_TAG } from '@/core/search/searchSlice';
 
 export default function FeedListItem(props: { feed: FeedType }) {
@@ -33,6 +35,7 @@ export default function FeedListItem(props: { feed: FeedType }) {
 
   // 태그 클릭 이벤트
   function handleTagClick(e) {
+    e.stopPropagation();
     const searchValue = e.target.innerText.slice(1);
     dispatch(SET_SEARCH_TAG(searchValue));
   }
@@ -216,38 +219,45 @@ export default function FeedListItem(props: { feed: FeedType }) {
           handleModalClose={() => setIsOpenFeedDeleteModal(false)}
         />
       )}
-      <div className={`flex border-b border-inherit`}>
+
+      <div onClick={goDetail} className={`${styles.container} cursor-pointer flex border-b border-inherit 2xl:px-10 2xl:py-8 px-8 py-8`}>
         <div className={`flex flex-col`}>
-          <div className={`pt-5 pl-5`}>
+          <div className={``}>
             {/* 프로필 사진 */}
             <div className={`${styles.helpTip} flex `}>
-              <div onClick={goProfile} className={`overflow-hidden`} style={{ borderRadius: '40px' }}>
-                {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
-                <Image
-                  src={userProfileImagePath ? userProfileImagePath : '/images/noProfile.png'}
-                  width={80}
-                  height={80}
-                  alt='profile image'
-                  style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block', cursor: 'pointer' }}></Image>
+              <div onClick={goProfile} className={`overflow-hidden `}>
+                {userProfileImagePath ? (
+                  <Image
+                    src={userProfileImagePath}
+                    priority
+                    className='rounded-full border border-2 border-black'
+                    width={80}
+                    height={80}
+                    alt='profile image'></Image>
+                ) : (
+                  <Skeleton width={80} height={80} circle />
+                )}
               </div>
 
               {/* 프로필 팝업 */}
               <div className={`flex flex-col div ${styles.userInfo}`}>
                 <div className={`flex`}>
-                  <div className={`flex flex-col justify-center items-center mr-5 overflow-hidden`} style={{ borderRadius: '40px' }}>
-                    {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} />}
+                  <div className={`flex flex-col justify-center items-center mr-5 overflow-hidden`}>
+                    {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} circle />}
                     <Image
+                      priority
                       onClick={goProfile}
+                      className='rounded-full border border-2 border-black'
                       src={userProfileImagePath ? userProfileImagePath : '/images/noProfile.png'}
                       alt='로고'
-                      width='80'
-                      height='80'
+                      width={80}
+                      height={80}
                       style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block', cursor: 'pointer' }}></Image>
                   </div>
 
                   <div className='flex flex-col justify-center items-center'>
                     <div className='text-xl font-bold'>
-                      <span>{feed.user.nickname || <Skeleton />}</span>
+                      <span>{feed.user.nickname || <Skeleton width={50} />}</span>
                     </div>
                     <div className='flex justify-center items-center text-sm'>
                       <div className='flex flex-col justify-center items-center w-20'>
@@ -276,38 +286,35 @@ export default function FeedListItem(props: { feed: FeedType }) {
               </div>
             </div>
           </div>
+
           {/* 좋아요 */}
-          <div className={`flex justify-center pl-5 py-2`}>
-            <div className={`w-6/12 flex justify-end`}>
-              {isLiked
-                ? (
-                    <span
-                      className={`material-symbols-outlined ${styles.materialSymbolsOutlined}`}
-                      style={{ cursor: 'pointer', color: 'crimson' }}
-                      onClick={handleDeleteLike}>
-                      favorite
-                    </span>
-                  ) || <Skeleton />
-                : (
-                    <span className='material-symbols-outlined' style={{ cursor: 'pointer' }} onClick={handlePostLike}>
-                      favorite
-                    </span>
-                  ) || <Skeleton />}
-            </div>
-            <div className='w-6/12 flex justify-start pl-2'>{likeCount}</div>
+          <div className={`flex justify-center items-center space-x-2 my-3`}>
+            {isLiked
+              ? (
+                  <span className={`material-symbols-outlined fill like`} onClick={handleDeleteLike}>
+                    favorite
+                  </span>
+                ) || <Skeleton />
+              : (
+                  <span className='material-symbols-outlined' style={{ cursor: 'pointer' }} onClick={handlePostLike}>
+                    favorite
+                  </span>
+                ) || <Skeleton />}
+            <div className=''>{likeCount}</div>
           </div>
+
           {/* 댓글 */}
-          <div className='flex justify-center'>
-            <div className={`pl-3 pr-2`}>
-              <span className={`material-symbols-outlined `}>chat</span>
-            </div>
+          <div className='flex justify-center items-center space-x-2'>
+            <span className={`material-symbols-outlined `}>chat</span>
             <div>{feed.commentCount}</div>
           </div>
         </div>
+
         <div className={`flex flex-col w-full`}>
-          <div className={`pt-5 mt-2 pl-3 text-lg font-bold flex justify-between relative`}>
+          <div className={`font-bold flex justify-between relative`}>
             {/* 닉네임 */}
-            <span>{feed.user.nickname}</span>
+            <span className={`${styles.nickname} ml-4`}>{feed.user.nickname}</span>
+
             {/* 편집창 팝업 */}
             {myNickname === feed.user.nickname && (
               <div>
@@ -329,16 +336,28 @@ export default function FeedListItem(props: { feed: FeedType }) {
             )}
           </div>
 
+          <div className={`flex justify-between mx-4`}>
+            <div className='space-x-2'>
+              {feed?.tags?.map((tag: string, index: number) => {
+                return (
+                  <span key={index} onClick={handleTagClick} className={`${styles.tagBtn}`}>
+                    #{tag}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
           {/* 내용 */}
-          <div onClick={goDetail} className='p-3 pb-0 mb-3 cursor-pointer'>
-            <div>{feed.content}</div>
+          <div className='mx-5 space-y-4'>
+            <div className={`${styles.content} h-30`}>{feed.content}</div>
             <div>
               {feed.feedCode === 'FEED_DIARY' ? (
                 <>
                   {/* 다이어리일때 사진 */}
                   <div className={`relative`}>
-                    <div className={`${styles.imageWarrper} flex justify-center`}>
-                      {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
+                    <div className={`${styles.imageWarrper} flex justify-center  border border-2 border-black`}>
+                      {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} />}
                       <img
                         src={feed.imagePath}
                         alt='로고'
@@ -370,15 +389,18 @@ export default function FeedListItem(props: { feed: FeedType }) {
                     <>
                       <div className={`relative`}>
                         <div className={`${styles.imageWarrper} flex justify-center`}>
-                          {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} style={{ borderRadius: '30px' }} />}
-                          <img
-                            src={feed.imagePath}
-                            alt='로고'
-                            width='100%'
-                            // height='450px'
-                            onLoad={() => handleImageLoadAtFeedImage()}
-                            onError={() => handleImageErrorAtFeedImage()}
-                            style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}></img>
+                          {isLoadingErrorAtFeedImage && <Skeleton width={400} height={400} />}
+                          <div className='w-full h-96 bg-center'>
+                            <Image
+                              src={feed.imagePath}
+                              alt='로고'
+                              width={400}
+                              height={400}
+                              className='w-full h-full'
+                              style={{ borderRadius: '2px' }}
+                              onLoad={() => handleImageLoadAtFeedImage()}
+                              onError={() => handleImageErrorAtFeedImage()}></Image>
+                          </div>
                         </div>
                       </div>
                     </>
@@ -389,17 +411,10 @@ export default function FeedListItem(props: { feed: FeedType }) {
               )}
             </div>
           </div>
-          <div className={`flex justify-between p-3 pt-0`}>
-            <div>
-              {feed?.tags.map((tag: string, index: number) => {
-                return (
-                  <span key={index} onClick={handleTagClick} className={`${styles.tagBtn} mr-2`}>
-                    #{tag}
-                  </span>
-                );
-              })}
-            </div>
-            <div>{getData(feed.createdAt)}</div>
+
+          {/* createAt */}
+          <div className='relative mt-5 text-xs text-gray-500'>
+            <div className='absolute -right-2'>{getData(feed.createdAt)}</div>
           </div>
         </div>
       </div>
