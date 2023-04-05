@@ -59,29 +59,32 @@ export default function ScheduleListItem({ item, check, handleReload }: PropsTyp
         />
       )}
       <div className={`${styles.container}`}>
-        <div className={`${styles.icon}`}>
-          <ScheduleCode scheduleCode={item.scheduleCode} size='lg' />
-        </div>
-        {check ? (
-          isCompleted ? (
-            <>
-              <div className={`${styles.text}`}>{item.content}</div>
-              <FontAwesomeIcon icon={faCheck} color='#4FC577' className={`${styles.check}`} onClick={() => cancelToDo(item.scheduleId)} />
-            </>
+        <div className={`${styles.name}`}>{item.plant.plantNickname}</div>
+        <div className={`${styles.subContainer}`}>
+          <div className={`${styles.icon}`}>
+            <ScheduleCode scheduleCode={item.scheduleCode} size='lg' />
+          </div>
+          {check ? (
+            isCompleted ? (
+              <>
+                <div className={`${styles.text}`}>{item.content}</div>
+                <FontAwesomeIcon icon={faCheck} color='#4FC577' className={`${styles.check}`} onClick={() => cancelToDo(item.scheduleId)} />
+              </>
+            ) : (
+              <>
+                <div className={`${styles.text}`}>{item.content}</div>
+                <FontAwesomeIcon icon={faCheck} color='#D9D9D9' className={`${styles.check}`} onClick={() => completeToDo(item.scheduleId)} />
+              </>
+            )
           ) : (
             <>
-              <div className={`${styles.text}`}>{item.content}</div>
-              <FontAwesomeIcon icon={faCheck} color='#D9D9D9' className={`${styles.check}`} onClick={() => completeToDo(item.scheduleId)} />
+              <div onClick={() => setIsOpenScheduleUpdateModal(true)} style={{ cursor: 'pointer' }} className={`${styles.text}`}>
+                {item.content}
+              </div>
+              <FontAwesomeIcon icon={faRemove} color='#D9D9D9' className={`${styles.check}`} onClick={() => setIsOpenCheckDeleteModal(true)} />
             </>
-          )
-        ) : (
-          <>
-            <div onClick={() => setIsOpenScheduleUpdateModal(true)} style={{ cursor: 'pointer' }} className={`${styles.text}`}>
-              {item.content}
-            </div>
-            <FontAwesomeIcon icon={faRemove} color='#D9D9D9' className={`${styles.check}`} onClick={() => setIsOpenCheckDeleteModal(true)} />
-          </>
-        )}
+          )}
+        </div>
       </div>
     </>
   );

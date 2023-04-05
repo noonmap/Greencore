@@ -14,7 +14,7 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
   const handleImageErrorAtimagePath = () => {
     setIsLoadingErrorAtimagePath(true);
   };
-  console.log(diary?.imagePath);
+
   return (
     <ul className=''>
       <li>
