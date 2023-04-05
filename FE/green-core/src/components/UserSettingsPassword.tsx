@@ -45,7 +45,7 @@ export default function UserSettingsPassword() {
   }
 
   async function handlePasswordUpdate() {
-    if (errors.password || password == '' || checkPassword == '') {
+    if (errors?.password || password == '' || checkPassword == '') {
       checkInputFormToast();
       return;
     }

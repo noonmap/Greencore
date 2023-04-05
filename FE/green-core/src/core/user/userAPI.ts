@@ -356,6 +356,7 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
 export const logInByOAuth = createAsyncThunk('logInByOAuth', async (payload: LogInOAuthDataType) => {
   try {
     const { accessToken, refreshToken, nickname } = payload;
+    console.log('hhhhh', accessToken);
 
     const headers = {
       headers: {
