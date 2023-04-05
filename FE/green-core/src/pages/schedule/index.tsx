@@ -50,10 +50,10 @@ export default function schedule() {
     let sortedMap = {};
     for (let i = 0; i < data.payload.data.length; i++) {
       const schedule = data.payload.data[i];
-      if (!Object.keys(sortedMap).includes(moment(schedule.scheduleDate).format('MD'))) {
-        sortedMap[moment(schedule.scheduleDate).format('MD')] = [];
+      if (!Object.keys(sortedMap).includes(moment(schedule.scheduleDate).format('MDD'))) {
+        sortedMap[moment(schedule.scheduleDate).format('MDD')] = [];
       }
-      sortedMap[moment(schedule.scheduleDate).format('MD')] = [...sortedMap[moment(schedule.scheduleDate).format('MD')], schedule];
+      sortedMap[moment(schedule.scheduleDate).format('MDD')] = [...sortedMap[moment(schedule.scheduleDate).format('MDD')], schedule];
     }
     setWeekSchedule(sortedMap);
   };
