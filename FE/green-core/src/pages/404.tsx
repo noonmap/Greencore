@@ -1,11 +1,19 @@
 import AppButton from '@/components/button/AppButton';
+import { SET_NOW_PAGE } from '@/core/common/commonSlice';
+import { useAppDispatch } from '@/core/hooks';
 import AppLayout from '@/layout/AppLayout';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function ErrorPage() {
+	const dispatch = useAppDispatch();
 	const router = useRouter();
+
+	useEffect(() => {
+		dispatch(SET_NOW_PAGE('404'));
+		return () => {};
+	}, []);
 
 	function handleLogInClick() {
 		router.back();

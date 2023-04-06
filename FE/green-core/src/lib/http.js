@@ -7,6 +7,7 @@ import { getAccessToken } from '@/core/user/userAPI';
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
+import { useRouter } from 'next/router';
 
 const serverUrl =
 	process.env.NODE_ENV == 'production'
@@ -34,6 +35,7 @@ const instance = axios.create({
 
 const AxiosInterceptor = ({ children }) => {
 	const dispatch = useAppDispatch();
+	const router = useRouter();
 	const authType = useAppSelector((state) => state.common.authType);
 	const accessToken = useAppSelector((state) => state.common.accessToken);
 
@@ -57,6 +59,7 @@ const AxiosInterceptor = ({ children }) => {
 
 			if (status === 403) {
 				console.log('유효한 토큰이 아님');
+				router.push('/auth/login');
 			}
 
 			return response;
