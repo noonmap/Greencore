@@ -13,7 +13,7 @@ import { PlantType, SearchPlantDetailType } from '@/core/plant/plantType';
 import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
 import { SearchUserType } from '@/core/user/userType';
 import Pagination from 'react-js-pagination';
-import styles from './plantDocs.module.scss';
+import styles from '@/styles/plant/docs.module.scss';
 
 export default function plantDocs() {
   const dispatch = useAppDispatch();

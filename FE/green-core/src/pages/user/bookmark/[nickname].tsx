@@ -1,13 +1,10 @@
 import UserBookmarkListItem from '@/components/UserBookmarkListItem';
 import { getBookmarkedDiarySet } from '@/core/diarySet/diarySetAPI';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import { getAccessToken } from '@/core/user/userAPI';
 import AppLayout from '@/layout/AppLayout';
-import { getCookieToken } from '@/lib/cookies';
-import { startOfYesterday } from 'date-fns';
 import React, { useCallback, useEffect, useState } from 'react';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
-import styles from '@/styles/UserFeed.module.scss';
+import styles from '@/styles/user/bookmark.module.scss';
 
 type BookmarkType = {
   bookmarkCount: number;
@@ -29,34 +26,35 @@ export default function Bookmark() {
     dispatch(SET_IS_SEARCH_STATE('default'));
   });
 
+  useEffect(() => {
+    fetchBookmarkList();
+    return () => {};
+  }, []);
+
   const fetchBookmarkList = useCallback(async () => {
     try {
       const payload = { page: 0, size: 5 };
       const { data } = await getBookmarkedDiarySet(nickname, payload);
       const content = data.content;
       const totalElements = data.totalElements;
+      console.log(content);
 
       setBookMarkList(content);
       setTotalCount(totalElements);
     } catch (error) {}
   }, [nickname]);
 
-  useEffect(() => {
-    fetchBookmarkList();
-    return () => {};
-  }, []);
-
   return (
     <AppLayout>
-      <div>
-        <h1 className={`title p-5`}>북마크</h1>
+      <div className='space-y-2 px-4 py-4'>
+        <h1 className={`${styles.title} py-1 mb-10`}>북마크</h1>
 
         {bookmarkList.length > 0 ? (
-          <>
+          <div className='flex flex-wrap mx-7'>
             {bookmarkList.map((bookmark) => (
               <UserBookmarkListItem key={bookmark.diarySetId} bookmark={bookmark} fetchBookmarkList={fetchBookmarkList} />
             ))}
-          </>
+          </div>
         ) : (
           <div>북마크 리스트가 없습니다</div>
         )}
