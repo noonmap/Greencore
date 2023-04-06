@@ -70,10 +70,10 @@
 }
 
 .mainContainer {
-  min-width: 800px;
+  min-width: 600px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 600px) {
   .mainContainer {
     width: auto;
   }
