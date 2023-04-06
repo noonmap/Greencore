@@ -9,6 +9,7 @@ import { CreateScheduleType, MonthScheduleType, UpdateRegularScheduleType, Updat
 export const getMonthList = createAsyncThunk('getMonthList', async (requestData: MonthScheduleType) => {
   try {
     const { data } = await http.get(`/schedule?year=${requestData.year}&month=${requestData.month}`);
+    console.log('월간 GET', data);
     return data;
   } catch (err) {
     console.log(err);
@@ -20,6 +21,7 @@ export const getMonthList = createAsyncThunk('getMonthList', async (requestData:
 export const getWeekList = createAsyncThunk('getWeekList', async (requestData: MonthScheduleType) => {
   try {
     const { data } = await http.get(`/schedule?year=${requestData.year}&month=${requestData.month}&day=${requestData.day}`);
+    console.log('주간 GET', data);
     return data;
   } catch (err) {
     console.log(err);
