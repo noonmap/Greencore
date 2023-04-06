@@ -47,9 +47,9 @@ spring:
     cache: false
   # JPA for auto reload
   jpa:
-    show-sql: false #${jpa.show.sql}
+    show-sql: ${jpa.show.sql}
     hibernate:
-      ddl-auto: update #${jpa.ddl.option}
+      ddl-auto: ${jpa.ddl.option}
       naming:
         # camelCase -> snake_case
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
@@ -60,17 +60,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    defer-datasource-initialization: false #${jpa.ddl.defer-datasource-initialization} # dummy data 사용
+    defer-datasource-initialization: ${jpa.ddl.defer-datasource-initialization} # dummy data 사용
   sql:
     init:
-      mode: never #${sql.init.mode} # sql파일로 init할 것인지 설정
+      mode: ${sql.init.mode} # sql파일로 init할 것인지 설정
       schema-locations: classpath:/sql/schema.sql # schema init 사용
       data-locations: classpath:/sql/plant_data.sql, classpath:/sql/post_data.sql # dummy data 사용
 
   # hibernate logging
   logging:
     level:
-      org.hibernate: info #${log.hibernate.level}
+      org.hibernate: ${log.hibernate.level}
 
 # JWT Login
 token:
