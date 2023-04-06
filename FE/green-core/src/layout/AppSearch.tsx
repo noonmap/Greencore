@@ -8,7 +8,7 @@ export default function AppSearch() {
 	const searchState = useAppSelector((state) => state.common.searchState || 'home');
 
 	return (
-		<div className={`border border-l-2 border-r-2 border-t-0 border-b-0 border-black lg:block hidden overflow-auto lg:w-1/3 px-7 py-5`}>
+		<div className={`border border-l-1 border-r-1 border-t-0 border-b-0 border-gray-100 lg:block hidden overflow-auto lg:w-1/3 px-7 py-5`}>
 			<>
 				<DefaultSearch></DefaultSearch>
 			</>

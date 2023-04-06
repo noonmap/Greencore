@@ -131,8 +131,8 @@ export default function AppHeader() {
 									<Link href="/home/recommend" onClick={() => handleNotPageClick('home')}>
 										{nowPage == 'home' ? (
 											<div className="flex items-center space-x-3">
-												<span className="material-symbols-outlined fill like">home</span>
-												<span className={`xl:block hidden ${styles.navItem} ${styles.navItemHome}`}>Home</span>
+												<span className="material-symbols-outlined fill main">home</span>
+												<span className={`xl:block hidden`}>Home</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
@@ -145,8 +145,8 @@ export default function AppHeader() {
 									<Link href="/plant/docs" onClick={() => handleNotPageClick('dictonary')}>
 										{nowPage == 'dictonary' ? (
 											<div className="flex items-center space-x-3 ">
-												<span className="material-symbols-outlined fill like">auto_stories</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>식물 도감</span>
+												<span className="material-symbols-outlined fill main">auto_stories</span>
+												<span className={`xl:block hidden`}>식물 도감</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3 ">
@@ -159,8 +159,8 @@ export default function AppHeader() {
 									<Link href="/plant/disease" onClick={() => handleNotPageClick('bug')}>
 										{nowPage == 'bug' ? (
 											<div className="flex items-center space-x-3">
-												<span className="material-symbols-outlined fill like">bug_report</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>병충해 분석</span>
+												<span className="material-symbols-outlined fill main">bug_report</span>
+												<span className={`xl:block hidden`}>병충해 분석</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
@@ -173,8 +173,8 @@ export default function AppHeader() {
 									<Link href="/schedule" onClick={() => handleNotPageClick('schedule')}>
 										{nowPage == 'schedule' ? (
 											<div className="flex items-center space-x-3 ">
-												<span className="material-symbols-outlined fill like">calendar_month</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>식물 스케줄링</span>
+												<span className="material-symbols-outlined fill main">calendar_month</span>
+												<span className={`xl:block hidden`}>식물 스케줄링</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3 ">
@@ -187,8 +187,8 @@ export default function AppHeader() {
 									<Link href={`/user/following/${nickname}`} onClick={() => handleNotPageClick('follow')}>
 										{nowPage == 'follow' ? (
 											<div className="flex items-center space-x-3">
-												<span className="material-symbols-outlined fill like">group</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>팔로우 관리</span>
+												<span className="material-symbols-outlined fill main">group</span>
+												<span className={`xl:block hidden`}>팔로우 관리</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
@@ -201,8 +201,8 @@ export default function AppHeader() {
 									<Link href={`/user/bookmark/${nickname}`} onClick={() => handleNotPageClick('bookmark')}>
 										{nowPage == 'bookmark' ? (
 											<div className="flex items-center space-x-3">
-												<span className="material-symbols-outlined fill like">book</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>북마크</span>
+												<span className="material-symbols-outlined fill main">book</span>
+												<span className={`xl:block hidden`}>북마크</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
@@ -216,16 +216,16 @@ export default function AppHeader() {
 										{nowPage == 'alert' ? (
 											<div className="flex items-center space-x-3 relative">
 												{isAlert ? (
-													<span className="material-symbols-outlined fill like">notification_important</span>
+													<span className="material-symbols-outlined fill main">notification_important</span>
 												) : (
-													<span className="material-symbols-outlined fill like">notifications</span>
+													<span className="material-symbols-outlined fill main">notifications</span>
 												)}
-												<span className={`xl:block hidden ${styles.navItem}`}>알림</span>
+												<span className={`xl:block hidden`}>알림</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
 												{isAlert ? (
-													<span className="material-symbols-outlined fill like">notification_important</span>
+													<span className="material-symbols-outlined fill main">notification_important</span>
 												) : (
 													<span className="material-symbols-outlined">notifications</span>
 												)}
@@ -237,8 +237,8 @@ export default function AppHeader() {
 									<Link href="/user/settings/password" onClick={() => handleNotPageClick('settings')}>
 										{nowPage == 'settings' ? (
 											<div className="flex items-center space-x-3">
-												<span className="material-symbols-outlined  fill like">settings</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>설정</span>
+												<span className="material-symbols-outlined  fill main">settings</span>
+												<span className={`xl:block hidden`}>설정</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
@@ -253,8 +253,8 @@ export default function AppHeader() {
 									<Link href="/home" onClick={() => handleNotPageClick('home')}>
 										{nowPage == 'home' ? (
 											<div className="flex items-center space-x-3">
-												<span className="material-symbols-outlined fill like">home</span>
-												<span className={`xl:block hidden ${styles.navItem} ${styles.navItemHome}`}>Home</span>
+												<span className="material-symbols-outlined fill main">home</span>
+												<span className={`xl:block hidden ${styles.navItemHome}`}>Home</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
@@ -267,8 +267,8 @@ export default function AppHeader() {
 									<Link href="/plant/docs" onClick={() => handleNotPageClick('dictonary')}>
 										{nowPage == 'dictonary' ? (
 											<div className="flex items-center space-x-3 ">
-												<span className="material-symbols-outlined fill like">auto_stories</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>식물 도감</span>
+												<span className="material-symbols-outlined fill main">auto_stories</span>
+												<span className={`xl:block hidden`}>식물 도감</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3 ">
@@ -281,8 +281,8 @@ export default function AppHeader() {
 									<Link href="/plant/disease" onClick={() => handleNotPageClick('bug')}>
 										{nowPage == 'bug' ? (
 											<div className="flex items-center space-x-3">
-												<span className="material-symbols-outlined fill like">bug_report</span>
-												<span className={`xl:block hidden ${styles.navItem}`}>병충해 분석</span>
+												<span className="material-symbols-outlined fill main">bug_report</span>
+												<span className={`xl:block hidden`}>병충해 분석</span>
 											</div>
 										) : (
 											<div className="flex items-center space-x-3">
@@ -292,9 +292,12 @@ export default function AppHeader() {
 										)}
 									</Link>
 
-									<Link href="/auth/login">로그인</Link>
+									<Link href="/auth/login">
+										{/* <div className={`${styles.login} w-full`}>로그인</div> */}
+										{nowPage == 'login' ? <div className="main">로그인</div> : <div>로그인</div>}
+									</Link>
 
-									<Link href="/auth/signup">회원가입</Link>
+									<Link href="/auth/signup">{nowPage == 'signup' ? <div className="main">회원가입</div> : <div>회원가입</div>}</Link>
 								</>
 							)}
 						</div>
@@ -345,12 +348,7 @@ export default function AppHeader() {
 								</Link>
 
 								<div className="xl:block hidden">
-									<AppButton
-										text="로그아웃"
-										handleClick={handleLogOut}
-										bgColor="transparent"
-										className={`${styles.logoutBtn} mb-3 mt-3 xl:block hidden`}
-									/>
+									<AppButton text="로그아웃" handleClick={handleLogOut} bgColor="thin" className={`${styles.logoutBtn} mb-3 mt-3 xl:block hidden`} />
 								</div>
 							</div>
 						</>

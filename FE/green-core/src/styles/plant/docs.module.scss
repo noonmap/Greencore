@@ -1,128 +1,128 @@
 .pagination ul {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	justify-content: center;
+	align-items: center;
 }
 
 .active {
-  background-color: var(--main-color) !important;
-  color: white !important;
+	background-color: var(--main-color) !important;
+	color: white !important;
 }
 
 .paginationItem {
-  margin: 2px;
-  display: flex;
-  justify-content: center;
-  justify-items: center;
-  width: 35px;
-  height: 35px;
-  padding: 5px 10px;
-  background-color: white;
-  color: black;
-  border-radius: 30px;
-  border: var(--thin-color) 1px solid;
-  cursor: pointer;
-  text-align: center;
+	margin: 2px;
+	display: flex;
+	justify-content: center;
+	justify-items: center;
+	width: 35px;
+	height: 35px;
+	padding: 5px 10px;
+	background-color: white;
+	color: black;
+	border-radius: 30px;
+	border: var(--thin-color) 1px solid;
+	cursor: pointer;
+	text-align: center;
 }
 
 .pagination li:hover {
-  background-color: var(--main-color);
-  color: white;
+	background-color: var(--main-color);
+	color: white;
 }
 
 .pagination li.disabled {
-  color: green;
-  cursor: not-allowed;
+	color: green;
+	cursor: not-allowed;
 }
 
 .indexBtn:hover {
-  background-color: var(--main-color);
-  color: white;
+	background-color: var(--main-color);
+	color: white;
 }
 
 .search {
-  position: relative;
+	position: relative;
 }
 
 .search input {
-  width: 100%;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 14px;
+	width: 100%;
+	border-radius: 8px;
+	padding: 10px 12px;
+	font-size: 14px;
 }
 
 .selectBox {
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  padding: 10px 6px;
-  font-size: 14px;
+	border: 1px solid #bbb;
+	border-radius: 8px;
+	padding: 10px 6px;
+	font-size: 14px;
 }
 
 .search img {
-  position: absolute;
-  width: 17px;
-  top: 10px;
-  right: 12px;
-  margin: 0;
+	position: absolute;
+	width: 17px;
+	top: 10px;
+	right: 12px;
+	margin: 0;
 }
 
 .mainContainer {
-  min-width: 600px;
+	min-width: 600px;
 }
 
 @media (max-width: 600px) {
-  .mainContainer {
-    width: auto;
-  }
+	.mainContainer {
+		width: auto;
+	}
 }
 
 .sideContainer {
-  // box-shadow: var(--box-shadow);
-  border-left: 2px solid black;
-  border-right: 2px solid black;
-  // margin-right: 10%;
-  // padding-top: 76px;
+	// box-shadow: var(--box-shadow-card);
+	border-left: 1px solid var(--thin-color);
+	// border-right: 2px solid black;
+	// margin-right: 10%;
+	// padding-top: 76px;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: var(--text-extra-bold);
-  color: var(--main-color);
+	font-size: 1.5rem;
+	font-weight: var(--text-extra-bold);
+	color: var(--main-color);
 }
 
 .item:hover {
-  background-color: var(--light-color);
+	background-color: var(--light-color);
 }
 
 .topPlantImage {
-  border-radius: 30px;
+	border-radius: 30px;
 }
 
 .topDiarySetImage {
-  width: 150px;
-  height: 150px;
-  border-radius: 30px;
+	width: 150px;
+	height: 150px;
+	border-radius: 30px;
 }
 
 .gradation {
-  z-index: 99;
-  position: absolute;
-  height: 40%;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 1));
-  width: 100%;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+	z-index: 99;
+	position: absolute;
+	height: 40%;
+	bottom: 0;
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 1));
+	width: 100%;
+	border-bottom-left-radius: var(--border-radius);
+	border-bottom-right-radius: var(--border-radius);
 }
 
 .detailImage {
-  overflow: hidden;
-  border-radius: 40px;
+	overflow: hidden;
+	border-radius: 40px;
 }
 
 .img {
-  object-fit: fill;
+	object-fit: fill;
 }

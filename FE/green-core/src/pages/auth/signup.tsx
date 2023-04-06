@@ -7,9 +7,9 @@ import { useForm } from 'react-hook-form';
 import { signUp, checkEmail, checkNickname, checkAuthCode } from '~/src/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
-import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+import { SET_IS_SEARCH_STATE, SET_NOW_PAGE } from '@/core/common/commonSlice';
 
-import styles from '@/styles/Auth.module.scss';
+import styles from '@/styles/home/auth.module.scss';
 import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
 
@@ -66,6 +66,7 @@ export default function signup() {
 	// searchState 변경
 	useEffect(() => {
 		dispatch(SET_IS_SEARCH_STATE('default'));
+		dispatch(SET_NOW_PAGE('signup'));
 	});
 
 	useEffect(() => {

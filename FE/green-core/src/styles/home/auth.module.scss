@@ -13,8 +13,8 @@ $shadow: var(--light-color);
 	box-shadow: var(--box-shadow-card);
 	border-radius: var(--border-radius-card);
 	padding: 3.5rem;
-	min-width: 450px;
-	min-height: 520px;
+	min-width: 400px;
+	min-height: 500px;
 	position: relative;
 	z-index: 20;
 }
@@ -23,7 +23,7 @@ $shadow: var(--light-color);
 	overflow: hidden;
 }
 .signup {
-	width: 500px;
+	width: 480px;
 }
 
 .title {
@@ -31,7 +31,7 @@ $shadow: var(--light-color);
 	// color: var(--second-light-color);
 	// color: #fff;
 	// color: var(--thin-color);
-	font-weight: var(--text-extra-bold);
+	font-weight: 900;
 	position: absolute;
 	top: -30px;
 	right: 30px;
@@ -88,25 +88,25 @@ $shadow: var(--light-color);
 
 .leaf1 {
 	position: absolute;
-	width: 270px;
+	width: 200px;
 	top: 67%;
-	left: 18%;
+	left: 30%;
 	z-index: 10;
 	opacity: 0.2;
 }
 .leaf2 {
 	position: absolute;
-	width: 270px;
+	width: 170px;
 	top: 55%;
-	left: 47%;
+	left: 52%;
 	z-index: 10;
 	opacity: 0.2;
 }
 .leaf3 {
 	position: absolute;
-	width: 230px;
+	width: 190px;
 	top: 10%;
-	left: 20%;
+	left: 30%;
 	z-index: 10;
 	opacity: 0.2;
 }
