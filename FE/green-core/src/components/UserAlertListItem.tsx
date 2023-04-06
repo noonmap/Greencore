@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useAppDispatch } from '@/core/hooks';
 import { deleteAlert } from '@/core/alert/alertAPI';
 import { AlertType } from '@/core/alert/alertType';
-import styles from '@/styles/Alert.module.scss';
+import styles from '@/styles/user/alert.module.scss';
 
 export default function UserAlertListItem({ alert, nickname, selectedAlertList }) {
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ export default function UserAlertListItem({ alert, nickname, selectedAlertList }
 
   return (
     <>
-      <div key={alert.alertId} className={`${styles.card} flex items-center justify-between space-x-2 mb-5`}>
+      <div key={alert.alertId} className={`${styles.introduction} flex items-center justify-between space-x-2 mb-5`}>
         <div className='flex items-center'>
           <input type='checkbox' value={alert.alertId} className='w-1 h-1 mr-2' onChange={handleSelctedAlertListChange} />
           <div className='flex items-center space-x-2'>
@@ -48,8 +48,8 @@ export default function UserAlertListItem({ alert, nickname, selectedAlertList }
         </div>
 
         <div className='flex items-center'>
-          <span className='introduction w-40'>{alert.createdAt}</span>
-          <span className='material-symbols-outlined cursor-pointer close' onClick={() => handleDeleteAlert(alert.alertId)}>
+          <span className='introduction'>{alert.createdAt}</span>
+          <span className='material-symbols-outlined cursor-pointer like close' onClick={() => handleDeleteAlert(alert.alertId)}>
             close
           </span>
         </div>
