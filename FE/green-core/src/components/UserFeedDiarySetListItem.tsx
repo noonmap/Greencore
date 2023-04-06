@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from './UserFeedDiary.module.scss';
+import styles from '@/styles/user/feed.module.scss';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '@/core/hooks';
 import { createBookmark, deleteBookmark, deleteDiarySet } from '@/core/diarySet/diarySetAPI';
@@ -9,28 +9,13 @@ import DiarySetModal from '@/components/modal/DiarySetModal';
 import AppModal from './common/AppModal';
 
 export default function UserFeedDiarySetListItem({ nickname, diarySet, fetchDiarySetList }) {
-  const router = useRouter();
-  const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
+  const isSameUser = useAppSelector((state) => state.user.isSameUser);
 
-  const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [isEditPopUp, setIsEditPopUp] = useState<boolean>(false);
-
   const [diarySetId, setDiarySetId] = useState(null);
-  const [diarySetList, setDiarySetList] = useState([]);
 
   const [isOpenDiarySetUpdateModal, setIsOpenDiarySetUpdateModal] = useState(false);
   const [isOpenDiarySetDeleteModal, setIsOpenDiarySetDeleteModal] = useState(false);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (!router.query.nickname) return;
-    checkSameUser();
-  }, [nickname]);
-
-  /** url path의 유저와 현재 로그인 유저가 같은지 확인하는 함수 */
-  const checkSameUser = useCallback(() => {
-    if (myNickname == nickname) setIsSameUser(true);
-  }, [myNickname, nickname]);
 
   async function handleIsOpenDiarySetUpdate() {
     setDiarySetId(diarySet.diarySetId);
@@ -89,38 +74,48 @@ export default function UserFeedDiarySetListItem({ nickname, diarySet, fetchDiar
         handleModalConfirm={handleDiarySetDelete}
       />
 
-      <div className={`${styles.wrap}`}>
-        <div className={`${styles.content} rounded space-y-2`}>
+      <div className={``}>
+        <div className={`rounded space-y-2`}>
           <Link href={`/diaryset/list/${diarySet.diarySetId}`} className='relative'>
-            <Image src={diarySet.imagePath} className={`${styles.img} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' />
-            <div className={`${styles.card} w-full absolute bottom-0`}>{diarySet.title}</div>
+            <div className='w-30'>
+              <Image src={diarySet.imagePath} className={`${styles.diarySet} w-full`} priority width={150} height={150} alt='관찰일지 썸네일' />
+              <div className={`${styles.card} w-full absolute bottom-0`}>{diarySet.title}</div>
+            </div>
           </Link>
 
           <div>
             <div className='relative '>
               {isSameUser ? (
-                <span className='material-symbols-outlined md cursor-pointer absolute top-0 -right-1' onClick={handleisEditToggle}>
+                <span
+                  className='material-symbols-outlined md cursor-pointer absolute top-0 -left-1'
+                  style={{ fontSize: '1.3rem' }}
+                  onClick={handleisEditToggle}>
                   more_vert
                 </span>
               ) : null}
 
               {isSameUser ? (
-                <div className='flex items-center'>
-                  <span className='material-symbols-outlined md-main fill-main mr-0.5'>bookmark</span>
-                  {diarySet.bookmarkCount}
+                <div className='flex items-center ml-3'>
+                  <span className='material-symbols-outlined md-main fill-main cursor-default' style={{ fontSize: '1.2rem' }}>
+                    bookmark
+                  </span>
+                  <span className='text-xs'>{diarySet.bookmarkCount}</span>
                 </div>
               ) : (
                 <div className='flex items-center cursor-pointer'>
                   {diarySet.isBookmarked ? (
-                    <span className='material-symbols-outlined md-main fill-main mr-0.5' onClick={handleBookmardDelete}>
+                    <span
+                      className='material-symbols-outlined md-main fill-main mr-0.5'
+                      style={{ fontSize: '1.2rem' }}
+                      onClick={handleBookmardDelete}>
                       bookmark
                     </span>
                   ) : (
-                    <span className='material-symbols-outlined md-main mr-0.5' onClick={handleBookmarkCreate}>
+                    <span className='material-symbols-outlined md-main mr-0.5' style={{ fontSize: '1.2rem' }} onClick={handleBookmarkCreate}>
                       bookmark
                     </span>
                   )}
-                  {diarySet.bookmarkCount}
+                  <span className='text-xs'>{diarySet.bookmarkCount}</span>
                 </div>
               )}
             </div>
