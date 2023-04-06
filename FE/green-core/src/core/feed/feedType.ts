@@ -29,7 +29,7 @@ export type FeedType = {
 
 export type TagFeedType = {
   feedId: number;
-  feedCode: string;
+  feedType: string;
   imagePath?: string;
   content: string;
 };

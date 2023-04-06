@@ -9,7 +9,7 @@ export default function SearchFeedListItem(props: { tagFeed: TagFeedType }) {
   const router = useRouter();
 
   function goFeedDetail() {
-    if (tagFeed.feedCode == 'FEED_DIARY') {
+    if (tagFeed.feedType == 'FEED_DIARY') {
       router.push(`/diary/${tagFeed.feedId}`);
     } else {
       router.push(`/post/${tagFeed.feedId}`);
