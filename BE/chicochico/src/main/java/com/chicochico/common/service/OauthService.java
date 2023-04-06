@@ -27,6 +27,8 @@ public class OauthService {
 	private static final String KAKAO_USER_ME_PATH = "/v2/user/me";
 	private static final String KAKAO_OAUTH_TOKEN = "/oauth/token";
 	private static final String FIREBASE_API_SERVER_HOST = "https://securetoken.googleapis.com/v1/token?key=";
+	private static final String FIREBASE_API_USER_INFO = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=";
+
 	@Value("${kakao.config.rest-api-key}")
 	private String KAKAO_REST_API_KEY;
 	@Value("${kakao.config.client-secret}")
@@ -89,6 +91,12 @@ public class OauthService {
 	public String firebaseRefreshToken(Map<String, String> params) {
 		params.put("grant_type", "refresh_token");
 		String requestUrl = FIREBASE_API_SERVER_HOST + FIREBASE_REST_API_KEY;
+		return request(HttpMethodType.POST, requestUrl, mapToParams(params), OauthType.FIREBASE);
+	}
+
+
+	public String firebaseUserInfo(Map<String, String> params) {
+		String requestUrl = FIREBASE_API_USER_INFO + FIREBASE_REST_API_KEY;
 		return request(HttpMethodType.POST, requestUrl, mapToParams(params), OauthType.FIREBASE);
 	}
 
