@@ -14,6 +14,7 @@ import Skeleton from 'react-loading-skeleton';
 import { useRouter } from 'next/router';
 import { checkIsAlert } from '@/core/alert/alertAPI';
 import { SET_NOW_PAGE } from '@/core/common/commonSlice';
+import { getCookieToken } from '@/lib/cookies';
 
 export default function AppHeader() {
 	const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ export default function AppHeader() {
 	const nowPage = useAppSelector((state) => state.common.nowPage);
 	const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 	const isAlert = useAppSelector((state) => state.common?.isAlert);
+	const isAuth = getCookieToken();
 
 	const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
 
@@ -121,12 +123,12 @@ export default function AppHeader() {
 						<div className=" flex mb-10">
 							<Image src="/images/leaf4.png" width={32} height={32} className={`xl:hidden block`} alt="logo" />
 							<Link href="/" className={`${styles.title} xl:block hidden`} data-content="GREENCORE">
-								GREENCORE
+								<Image src={'/logo.png'} alt="" width={200} height={100} />
 							</Link>
 						</div>
 
 						<div className={`${styles.navContainer} flex flex-col space-y-7`}>
-							{nickname ? (
+							{isAuth ? (
 								<>
 									<Link href="/home/recommend" onClick={() => handleNotPageClick('home')}>
 										{nowPage == 'home' ? (
