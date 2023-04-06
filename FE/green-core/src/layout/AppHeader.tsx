@@ -250,7 +250,7 @@ export default function AppHeader() {
 								</>
 							) : (
 								<>
-									<Link href="/home" onClick={() => handleNotPageClick('home')}>
+									<Link href="/" onClick={() => handleNotPageClick('home')}>
 										{nowPage == 'home' ? (
 											<div className="flex items-center space-x-3">
 												<span className="material-symbols-outlined fill main">home</span>

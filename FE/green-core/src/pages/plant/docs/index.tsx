@@ -4,7 +4,7 @@ import AppLayout from '@/layout/AppLayout';
 import Skeleton from 'react-loading-skeleton';
 import { getPlantList, getPlantListByIndex, getPlant, getTopPlantList } from '@/core/plant/plantAPI';
 import { getTopDiarySet } from '@/core/diarySet/diarySetAPI';
-import { getSamePlantUserList } from '@/core/user/userAPI';
+import { getAccessToken, getSamePlantUserList } from '@/core/user/userAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
@@ -14,6 +14,7 @@ import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
 import { SearchUserType } from '@/core/user/userType';
 import Pagination from 'react-js-pagination';
 import styles from '@/styles/plant/docs.module.scss';
+import { getCookieToken } from '@/lib/cookies';
 
 export default function plantDocs() {
 	const dispatch = useAppDispatch();
@@ -157,8 +158,10 @@ export default function plantDocs() {
 	// 인기 관찰일지 조회
 	async function fetchTopDiarySetList() {
 		try {
-			const { data } = await getTopDiarySet();
-			setTopDiarySetList(data);
+			if (getCookieToken()) {
+				const { data } = await getTopDiarySet();
+				setTopDiarySetList(data);
+			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -166,8 +169,10 @@ export default function plantDocs() {
 	// 나와 같은 식물을 키우는 사람들 조회
 	async function fetchSamePlantUserList() {
 		try {
-			const { data } = await getSamePlantUserList();
-			setSamePlantUserList(data);
+			if (getCookieToken()) {
+				const { data } = await getSamePlantUserList();
+				setSamePlantUserList(data);
+			}
 		} catch (error) {
 			console.error(error);
 		}

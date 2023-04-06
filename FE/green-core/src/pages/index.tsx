@@ -1,9 +1,17 @@
-import Head from 'next/head';
 import styles from '@/styles/Home.module.scss';
 import AppLayout from '@/layout/AppLayout';
-import AppLoading from '@/components/common/AppLoading';
+import { useAppDispatch } from '@/core/hooks';
+import { useEffect } from 'react';
+import { SET_NOW_PAGE } from '@/core/common/commonSlice';
 
 export default function Home() {
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		dispatch(SET_NOW_PAGE('home'));
+		return () => {};
+	}, []);
+
 	return (
 		<AppLayout home>
 			<main className="mx-7 my-7">
