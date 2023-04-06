@@ -186,11 +186,9 @@ export default function UserPlantModal({
 							) : null}
 
 							<div className="flex mt-20 space-x-2">
-								<AppButton text="취소" bgColor="white" className="w-full border border-2 border-black" handleClick={handleModalClose} />
-								{create ? <AppButton text="확인" className="w-full border border-2 border-black" handleClick={handleUserPlantCreate} /> : null}
-								{update ? (
-									<AppButton text="확인" className="w-full border border-2 border-black" handleClick={handleUserPlantNicknameUpdate} />
-								) : null}
+								<AppButton text="취소" bgColor="thin" className="w-full" handleClick={handleModalClose} />
+								{create ? <AppButton text="확인" className="w-full" handleClick={handleUserPlantCreate} /> : null}
+								{update ? <AppButton text="확인" className="w-full" handleClick={handleUserPlantNicknameUpdate} /> : null}
 							</div>
 						</div>
 					</div>

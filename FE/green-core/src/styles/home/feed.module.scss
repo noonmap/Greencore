@@ -90,23 +90,24 @@
 	overflow: hidden;
 	border-radius: var(--border-radius);
 	// box-shadow: var(--box-shadow-card);
-	box-shadow: var(--box-shadow);
-	box-shadow: 5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff;
+	box-shadow: var(--box-shadow-card);
+	// box-shadow: 5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff;
+	border: 1px solid var(--light-color);
 
-	box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
-	-webkit-box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
-	-moz-box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
-	border: 2px solid black;
+	// box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
+	// -webkit-box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
+	// -moz-box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
+	// border: 2px solid black;
 }
 
 .gradation {
 	height: 200px;
 	position: absolute;
 	bottom: 0px;
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0), grey);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 1));
 	width: 100%;
-	border-bottom-left-radius: 30px;
-	border-bottom-right-radius: 30px;
+	border-bottom-left-radius: var(--border-radius);
+	border-bottom-right-radius: var(--border-radius);
 }
 
 .editPopUp {
@@ -131,7 +132,7 @@
 
 	&:hover {
 		cursor: pointer;
-		color: var(--like-color);
+		color: var(--main-color);
 		opacity: 0.8;
 	}
 }
@@ -151,16 +152,19 @@
 }
 
 .content {
-	background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(228, 255, 194) 100%);
-	border-radius: 0 var(--border-radius-card) var(--border-radius-card) var(--border-radius-card);
-	border: 2px solid black;
+	// background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(228, 255, 194) 100%);
+	// border-radius: 0 var(--border-radius-card) var(--border-radius-card) var(--border-radius-card);
+	// // border-radius: var(--border-radius);
+	// border: 1px solid var(--thin-color);
+	// box-shadow: var(--box-shadow-card);
+	// font-size: 0.9rem;
+	// padding: 0.2rem;
 	font-size: 0.9rem;
-	padding: 0.5rem;
 
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: -webkit-box;
-	-webkit-line-clamp: 4; /* 라인수 */
+	-webkit-line-clamp: 3; /* 라인수 */
 	-webkit-box-orient: vertical;
 	word-wrap: break-word;
 	line-height: 1.7em;

@@ -93,8 +93,8 @@ export default function UserFeedPlantListItem({ userPlant, fetchUserPlantList })
 								alt="사용자 식물"
 								width={80}
 								height={80}
-								style={{ width: '80px', height: '80px' }}
-								className="rounded-full border border-2 border-black"
+								style={{ width: '80px', height: '80px', boxShadow: 'var(--box-shadow-card)' }}
+								className="rounded-full "
 							/>
 						) : (
 							<Skeleton width={80} height={80} circle />
