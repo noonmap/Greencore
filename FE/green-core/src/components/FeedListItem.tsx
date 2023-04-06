@@ -225,34 +225,34 @@ export default function FeedListItem(props: { feed: FeedType }) {
           <div className={``}>
             {/* 프로필 사진 */}
             <div className={`${styles.helpTip} flex `}>
-              <div onClick={goProfile} className={`overflow-hidden `}>
+              <div onClick={goProfile} className={`overflow-hidden `} style={{ width: '70px', height: '70px' }}>
                 {userProfileImagePath ? (
                   <Image
                     src={userProfileImagePath}
                     priority
                     className='rounded-full border border-2 border-black'
-                    width={80}
-                    height={80}
+                    width={70}
+                    height={70}
+                    style={{ width: '70px', height: '70px' }}
                     alt='profile image'></Image>
                 ) : (
-                  <Skeleton width={80} height={80} circle />
+                  <Skeleton width={70} height={70} circle />
                 )}
               </div>
-
               {/* 프로필 팝업 */}
               <div className={`flex flex-col div ${styles.userInfo}`}>
                 <div className={`flex`}>
                   <div className={`flex flex-col justify-center items-center mr-5 overflow-hidden`}>
-                    {isLoadingErrorAtProfileImage && <Skeleton width={80} height={80} circle />}
+                    {isLoadingErrorAtProfileImage && <Skeleton width={70} height={70} circle />}
                     <Image
                       priority
                       onClick={goProfile}
                       className='rounded-full border border-2 border-black'
                       src={userProfileImagePath ? userProfileImagePath : '/images/noProfile.png'}
                       alt='로고'
-                      width={80}
-                      height={80}
-                      style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block', cursor: 'pointer' }}></Image>
+                      width={70}
+                      height={70}
+                      style={{ display: isLoadingErrorAtProfileImage ? 'none' : 'block', cursor: 'pointer', width: '70px', height: '70px' }}></Image>
                   </div>
 
                   <div className='flex flex-col justify-center items-center'>
