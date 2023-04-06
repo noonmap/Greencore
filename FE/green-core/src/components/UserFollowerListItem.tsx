@@ -60,14 +60,15 @@ export default function UserFollowerListItem({ follower, userProfileList }) {
     <div>
       <div key={follower.nickname} className='flex pt-4 space-x-2 items-center justify-between'>
         {userProfileList[follower.nickname] ? (
-          <Link href={`/user/feed/${follower.nickname}`}>
+          <Link href={`/user/feed/${follower.nickname}`} style={{ width: '60px', height: '60px' }}>
             <Image
               src={userProfileList[follower.nickname]}
               alt='사용자 프로필 이미지'
               width={60}
               height={60}
-              className='rounded-full bg-cover'
+              className='rounded-full bg-cover border border-2 border-black'
               priority
+              style={{ width: '60px', height: '60px' }}
             />
           </Link>
         ) : (
@@ -81,18 +82,12 @@ export default function UserFollowerListItem({ follower, userProfileList }) {
 
         <div className='flex space-x-2 items-center'>
           {follower.isFollowed ? (
-            <AppButton
-              text='언팔로우'
-              className='hover:bg-red-100'
-              bgColor='thin'
-              size='small'
-              handleClick={(e) => handleFollowDelete(e, follower.nickname)}
-            />
+            <AppButton text='언팔로우' bgColor='main' size='small' handleClick={(e) => handleFollowDelete(e, follower.nickname)} />
           ) : (
-            <AppButton text='팔로우 하기' size='small' handleClick={(e) => handleFollowUpdate(e, follower.nickname)} />
+            <AppButton text='팔로우 하기' size='small' bgColor='yellow' handleClick={(e) => handleFollowUpdate(e, follower.nickname)} />
           )}
 
-          <span className='material-symbols-outlined cursor-pointer close' onClick={(e) => handleFollowerDelete(e, follower.nickname)}>
+          <span className='material-symbols-outlined cursor-pointer like' onClick={(e) => handleFollowerDelete(e, follower.nickname)}>
             close
           </span>
         </div>

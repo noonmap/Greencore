@@ -6,20 +6,22 @@ import { getPlantList, getPlantListByIndex, getPlant, getTopPlantList } from '@/
 import { getTopDiarySet } from '@/core/diarySet/diarySetAPI';
 import { getSamePlantUserList } from '@/core/user/userAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
-import { useAppDispatch } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 import { PlantType, SearchPlantDetailType } from '@/core/plant/plantType';
 import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
 import { SearchUserType } from '@/core/user/userType';
 import Pagination from 'react-js-pagination';
-import styles from './plantDocs.module.scss';
+import styles from '@/styles/plant/docs.module.scss';
 
 export default function plantDocs() {
   const dispatch = useAppDispatch();
   const storage = getStorage();
 
   const [userProfileList, setUserProfileList] = useState(['temp', 'temp', 'temp']);
+
+  const nickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 
   // 인기식물, 인기 관찰일지, 나와 같은 식물을 키우는 사람들
   const [topPlantList, setTopPlantList] = useState<Array<PlantType>>([]);
@@ -30,7 +32,7 @@ export default function plantDocs() {
   const indexList = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [pageAtindex, setPageAtindex] = useState<number>(0);
-  const [sizeAtindex, setSizeAtindex] = useState<number>(10);
+  const [sizeAtindex, setSizeAtindex] = useState<number>(7);
 
   // 식물도감 이름 리스트 검색
   const [inputData, setInputData] = useState<string>(''); // 인풋데이터
@@ -84,7 +86,7 @@ export default function plantDocs() {
   // 나같식키 유저
 
   useEffect(() => {
-    if (samePlantUserList.length != 0) {
+    if (samePlantUserList?.length != 0) {
       getUserProfile(samePlantUserList);
     }
   }, [samePlantUserList]);
@@ -285,7 +287,7 @@ export default function plantDocs() {
   return (
     <AppLayout>
       <>
-        <div className={`flex h-full`}>
+        <div className={`flex h-full overflow-hidden`}>
           {/* 메인 */}
           <div className={`${styles.mainContainer} flex-col flex h-screen h-full w-3/5`}>
             <div className={`${styles.title} flex-none p-5`}>식물 도감</div>
@@ -352,103 +354,111 @@ export default function plantDocs() {
 
           {/* 사이드바 */}
 
-          <div className={`${styles.sideContainer} lg:block hidden overflow-auto grow`}>
+          <div className={`${styles.sideContainer} lg:block hidden overflow-auto grow `}>
             {!isDetailSearched ? (
               // 디폴트 정보
-              <div className={`flex flex-col`} style={{ paddingTop: '76px', marginRight: '20%' }}>
+              <div className={`flex flex-col space-y-8 my-4 mx-4`}>
                 {/* 인기 식물 */}
                 <div className='pb-5'>
                   <div className='p-5'>
-                    <span className={`text-xl font-bold pr-3`}>인기 식물</span>
-                    <span>이번 주에 가장 많이 검색된 식물입니다</span>
+                    <span className={`text-xl font-bold pr-3`}>인기 식물 🌷</span>
+                    <span className='text-sm'>이번 주에 가장 많이 검색된 식물입니다</span>
                   </div>
-                  <div className={`flex px-5 justify-between `}>
+                  <div className={`flex mx-10 justify-between `}>
                     {topPlantList?.map((topPlant, index) => (
                       <div
                         key={topPlant.plantId}
                         className={`overflow-hidden relative ${styles.topPlantImage}`}
                         onClick={() => getDetail(topPlant.plantId)}>
                         <div>
-                          {isLoadingErrorAtTopPlant[index] && <Skeleton width={150} height={150} />}
+                          {isLoadingErrorAtTopPlant[index] && <Skeleton width={100} height={100} />}
                           <img
                             className={`${styles.img}`}
                             src={`${topPlant.imagePath}`}
-                            width={150}
-                            height={150}
+                            width={100}
+                            height={100}
                             onLoad={() => handleImageLoadAtTopPlant(index)}
                             onError={() => handleImageErrorAtTopPlant(index)}
-                            style={{ display: isLoadingErrorAtTopPlant[index] ? 'none' : 'block', width: '150px', height: '150px' }}
+                            style={{ display: isLoadingErrorAtTopPlant[index] ? 'none' : 'block', width: '100px', height: '100px' }}
                           />
                         </div>
 
                         <div className={`${styles.gradation} flex items-end pl-3 pb-2 text-white`}>
-                          <span>{topPlant.plantName || <Skeleton />} </span>
+                          <span className='text-sm p-1'>{topPlant.plantName || <Skeleton />} </span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
                 {/* 인기 관찰일지 */}
-                <div className='pb-5'>
-                  <div className='p-5'>
-                    <span className={`text-xl font-bold pr-3`}>인기 관찰일지</span>
-                    <span>사용자에게 인기 있는 관찰일지입니다</span>
-                  </div>
-                  <div className={`flex px-5 justify-around `}>
-                    {topDiarySetList?.map((topDiarySet, index) => (
-                      <div key={topDiarySet.diarySetId} className={`overflow-hidden relative ${styles.topDiarySetImage}`}>
-                        <Link href={`/diaryset/list/${topDiarySet.diarySetId}`}>
-                          <div>
+                {nickname ? (
+                  <div className='pb-5'>
+                    <div className='p-5'>
+                      <span className={`text-xl font-bold pr-3`}>인기 관찰일지</span>
+                      <span className='text-sm'>사용자에게 인기 있는 관찰일지입니다</span>
+                    </div>
+                    <div className={`flex px-5 justify-around `}>
+                      {topDiarySetList?.map((topDiarySet, index) => (
+                        <div key={topDiarySet.diarySetId} className={`overflow-hidden relative ${styles.topDiarySetImage}`}>
+                          <Link href={`/diaryset/list/${topDiarySet.diarySetId}`}>
                             <div>
-                              {isLoadingErrorAtTopDiarySet[index] && <Skeleton width={200} height={200} />}
+                              <div>
+                                {isLoadingErrorAtTopDiarySet[index] && <Skeleton width={150} height={150} />}
+                                <img
+                                  className={`${styles.img}`}
+                                  src={`${topDiarySet.imagePath}`}
+                                  width={150}
+                                  height={150}
+                                  onLoad={() => handleImageLoadAtTopDiarySet(index)}
+                                  onError={() => handleImageErrorAtTopDiarySet(index)}
+                                  style={{ display: isLoadingErrorAtTopDiarySet[index] ? 'none' : 'block', width: '150px', height: '150px' }}
+                                />
+                              </div>
+                            </div>
+                            <div className={`${styles.gradation} flex items-center text-white`}>
+                              <span className='text-sm p-2'>{topDiarySet.title || <Skeleton width={150} />}</span>
+                            </div>
+                          </Link>
+                          <br />
+                          {/* <span>시작일 : {topDiarySet.startDate || <Skeleton width={150} />}</span> */}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                {/* 나와 같은 식물을 키우는 유저 */}
+                {nickname ? (
+                  <div>
+                    <div className={`p-5`}>
+                      <span className={`text-xl font-bold`}>나와 같은 식물을 키우는 사람들 </span> <br />
+                    </div>
+                    <div className={`flex justify-around`}>
+                      {samePlantUserList?.map((samPlantUser, index) => (
+                        <div key={samPlantUser.nickname} className={`overflow-hidden rounded-full border border-2 border-black`}>
+                          <Link href={`/user/feed/${samPlantUser.nickname}`}>
+                            {userProfileList[index] == 'temp' ? (
+                              <Skeleton width={100} height={100} />
+                            ) : (
                               <img
                                 className={`${styles.img}`}
-                                src={`${topDiarySet.imagePath}`}
-                                width={200}
-                                height={200}
-                                onLoad={() => handleImageLoadAtTopDiarySet(index)}
-                                onError={() => handleImageErrorAtTopDiarySet(index)}
-                                style={{ display: isLoadingErrorAtTopDiarySet[index] ? 'none' : 'block', width: '200px', height: '200px' }}
+                                src={userProfileList[index]}
+                                width={100}
+                                height={100}
+                                onLoad={() => handleImageLoadAtSamePlantUser(index)}
+                                onError={() => handleImageErrorAtSamePlantUser(index)}
+                                style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block', width: '100px', height: '100px' }}
                               />
-                            </div>
-                          </div>
-                          <div className={`${styles.gradation} flex items-end pl-5 pb-4 text-white`}>
-                            <span>{topDiarySet.title || <Skeleton width={150} />}</span>
-                          </div>
-                        </Link>
-                        <br />
-                        {/* <span>시작일 : {topDiarySet.startDate || <Skeleton width={150} />}</span> */}
-                      </div>
-                    ))}
+                            )}
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                {/* 나와 같은 식물을 키우는 유저 */}
-                <div>
-                  <div className={`p-5`}>
-                    <span className={`text-xl font-bold`}>나와 같은 식물을 키우는 사람들 </span> <br />
-                  </div>
-                  <div className={`flex justify-around`}>
-                    {samePlantUserList?.map((samPlantUser, index) => (
-                      <div key={samPlantUser.nickname} className={`overflow-hidden`} style={{ borderRadius: '75px' }}>
-                        <Link href={`/user/feed/${samPlantUser.nickname}`}>
-                          {userProfileList[index] == 'temp' ? (
-                            <Skeleton width={150} height={150} />
-                          ) : (
-                            <img
-                              className={`${styles.img}`}
-                              src={userProfileList[index]}
-                              width={150}
-                              height={150}
-                              onLoad={() => handleImageLoadAtSamePlantUser(index)}
-                              onError={() => handleImageErrorAtSamePlantUser(index)}
-                              style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block', width: '150px', height: '150px' }}
-                            />
-                          )}
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                ) : (
+                  <></>
+                )}
               </div>
             ) : plantDocsList?.length === 0 ? (
               <div className={`p-5`}>조회된게 없어요</div>
@@ -502,37 +512,37 @@ export default function plantDocs() {
                       </div>
                       <div className='flex flex-col'>
                         {plantDocsDetail?.water ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.water}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.water}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />
                         )}
                         {plantDocsDetail?.light ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.light}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.light}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />
                         )}
                         {plantDocsDetail?.temperature ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.temperature}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.temperature}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />
                         )}
                         {plantDocsDetail?.humidity ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.humidity}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.humidity}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />

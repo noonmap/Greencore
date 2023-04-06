@@ -11,6 +11,7 @@ import { updateFollow, deleteFollow } from '@/core/follow/followAPI';
 import Skeleton from 'react-loading-skeleton';
 import AppButton from '@/components/button/AppButton';
 import { UserFollowingListItem } from '@/components/UserFollowingListItem';
+import AppLoading from '@/components/common/AppLoading';
 
 export default function following() {
   const dispatch = useAppDispatch();
@@ -113,7 +114,7 @@ export default function following() {
 
   return (
     <FollowLayout>
-      <div className='w-full flex justify-center items-center py-10 '>
+      <div className='w-full flex justify-center items-center py-10 px-10 '>
         <div className='space-y-5 divide-y divide-slate-200'>
           {isLoading ? (
             <>
@@ -123,7 +124,7 @@ export default function following() {
               <div ref={setTarget} />
             </>
           ) : (
-            <>로딩중..</>
+            <AppLoading />
           )}
         </div>
       </div>

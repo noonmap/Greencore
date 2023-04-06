@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAppDispatch } from '@/core/hooks';
-import { useRouter } from 'next/router';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
+import { Router, useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import AppModal from './common/AppModal';
-import styles from './UserFeedPost.module.scss';
+import styles from '@/styles/user/feed.module.scss';
 import ReactPaginate from 'react-paginate';
 import { deletePost, deleteSelectedPost, getPostList } from '@/core/post/postAPI';
 
@@ -25,6 +25,8 @@ const initialState: StateType = {
 };
 
 export default function UserFeedPost({ nickname }) {
+  const isSameUser = useAppSelector((state) => state.user.isSameUser);
+
   const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
   const [checkedPostList] = getValues(['checkedPostList']);
 
@@ -45,7 +47,7 @@ export default function UserFeedPost({ nickname }) {
   useEffect(() => {
     fetchPostList();
     return () => {};
-  }, [postPage]);
+  }, [postPage, nickname]);
 
   async function fetchPostList() {
     try {
@@ -82,9 +84,9 @@ export default function UserFeedPost({ nickname }) {
   async function handleSelectedPostDelete() {
     checkedPostList.forEach(async (postId) => {
       const { data } = await deleteSelectedPost(postId);
+      setIsOpenSelectedPostDeleteModal(false);
+      await fetchPostList();
     });
-    setIsOpenSelectedPostDeleteModal(false);
-    await fetchPostList();
   }
 
   return (
@@ -102,38 +104,60 @@ export default function UserFeedPost({ nickname }) {
         handleModalConfirm={handleSelectedPostDelete}
       />
 
-      <div className='space-y-2 px-10 py-5'>
-        <div className='flex justify-between space-y-2 mb-5'>
-          <div className='text-xl font-semibold'>포스트</div>
+      <div className='px-3 py-6'>
+        <div className='flex justify-between items-center mb-7 mx-4'>
+          <div className='text-md font-semibold'>포스트 😀</div>
 
-          <div className='flex main cursor-pointer'>
-            <span className='material-symbols-outlined'>delete</span>
-            <div className='hover:underline' onClick={() => setIsOpenSelectedPostDeleteModal(true)}>
-              선택 삭제
+          {isSameUser ? (
+            <div
+              className='flex items-center cursor-pointer border border-2 bg-black border-black rounded-full p-0.5'
+              onClick={() => setIsOpenSelectedPostDeleteModal(true)}>
+              <span className='material-symbols-outlined font-bold text-white' style={{ fontSize: '1.2rem' }}>
+                remove
+              </span>
+              <div className='pr-1 font-bold text-white' style={{ fontSize: '0.8rem' }}>
+                REMOVE
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
-        <div className={``}>
+        <div className={`mx-4`}>
           {postList.map((p) => (
-            <div className={`${styles.card} mb-2 flex space-x-2 justify-between`} key={p.postId}>
-              <div className='flex items-center  space-x-2'>
-                <input type='checkbox' value={p.postId} className='w-1 h-1' {...register('checkedPostList')} />
-                <Link href={`/post/${p.postId}`}>{p.content}</Link>
+            <div className={`${styles.post} mb-2 flex space-x-2 justify-between`} key={p.postId}>
+              <div className='flex items-center ml-2 space-x-2 w-full'>
+                {isSameUser ? <input type='checkbox' value={p.postId} className='w-1 h-1' {...register('checkedPostList')} /> : null}
 
-                <div className='flex items-center space-x-0.5 text-sm cursor-default'>
-                  <span className='material-symbols-outlined md-small'>chat</span>
-                  <div>{p.commentCount}</div>
-                </div>
-                <div className='flex items-center space-x-0.5 text-sm cursor-default'>
-                  <span className={`material-symbols-outlined md-small fill-small ${styles.like}`}>favorite</span>
-                  <div>{p.likeCount}</div>
+                <div className='flex justify-between w-full'>
+                  <Link href={`/post/${p.postId}`} className={`hover:underline ${styles.content}`}>
+                    {p.content}
+                  </Link>
+
+                  <div className='flex space-x-1 ml-1'>
+                    <div className='flex items-center space-x-0.5 text-sm cursor-default'>
+                      <span className='material-symbols-outlined md-small' style={{ fontSize: '1rem' }}>
+                        chat
+                      </span>
+                      <div className='text-xs font-bold'>{p.commentCount}</div>
+                    </div>
+                    <div className='flex items-center space-x-0.5 text-sm cursor-default'>
+                      <span className={`material-symbols-outlined md-small fill-small `} style={{ fontSize: '1rem', color: 'var(--like-color)' }}>
+                        favorite
+                      </span>
+                      <div className='text-xs font-bold'>{p.likeCount}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <span className='material-symbols-outlined cursor-pointer close' onClick={() => handleIsOpenPostDelete(p.postId)}>
-                close
-              </span>
+              {isSameUser ? (
+                <span
+                  className='pr-1 material-symbols-outlined cursor-pointer like '
+                  style={{ fontSize: '1.2rem' }}
+                  onClick={() => handleIsOpenPostDelete(p.postId)}>
+                  close
+                </span>
+              ) : null}
             </div>
           ))}
         </div>
@@ -142,8 +166,8 @@ export default function UserFeedPost({ nickname }) {
       <div className='flex items-center justify-center'>
         <ReactPaginate
           pageCount={postListTotalCount}
-          pageRangeDisplayed={10}
-          marginPagesDisplayed={10}
+          pageRangeDisplayed={5}
+          marginPagesDisplayed={1}
           breakLabel={'...'}
           previousLabel={
             <div className='block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'>
@@ -173,7 +197,7 @@ export default function UserFeedPost({ nickname }) {
           containerClassName={'pagination-ul inline-flex items-center -space-x-px'}
           pageClassName={'block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300  hover:bg-gray-100 hover:text-gray-700'}
           activeClassName={
-            'currentPage main px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-green-500'
+            'currentPage main px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-pink-500'
           }
           previousClassName={'pageLabel-btn '}
           nextClassName={'pageLabel-btn'}

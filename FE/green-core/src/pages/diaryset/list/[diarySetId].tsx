@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import AppLayout from '@/layout/AppLayout';
 import DiaryListItem from '@/components/DiaryListItem';
-import styles from '@/styles/DiarySetDetail.module.scss';
+import styles from '@/styles/post/diarySet.module.scss';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { getDiaryList } from '~/src/core/diary/diaryAPI';
@@ -13,6 +13,8 @@ import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import Skeleton from 'react-loading-skeleton';
 import DiarySetModal from '@/components/modal/DiarySetModal';
 import AppModal from '@/components/common/AppModal';
+import AppLoading from '@/components/common/AppLoading';
+import { clipByValue } from '@tensorflow/tfjs';
 
 export default function diarySet() {
   const dispatch = useAppDispatch();
@@ -20,8 +22,12 @@ export default function diarySet() {
   const diaryList = useAppSelector<Array<any>>((state) => state.diary.diaryList);
   const diarySet = useAppSelector<any>((state) => state.diary.diarySet);
   const [isBookmarked, setIsBookmarked] = useState<boolean | null>(diarySet.isBookmarked);
+
+  const isSameUser = useAppSelector((state) => state.user.isSameUser);
+
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
-  const { nickname: myNickname } = useAppSelector((state) => state.common?.userInfo);
+  const myNickname = useAppSelector((state) => state.common?.userInfo.nickname);
+
   const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { diarySetId } = router.query;
@@ -63,7 +69,6 @@ export default function diarySet() {
 
   useEffect(() => {
     changeSearchState();
-    getUserProfile(myNickname);
 
     if (diarySetId) {
       dispatch(getDiaryList(Number(diarySetId)));
@@ -75,6 +80,8 @@ export default function diarySet() {
 
   useEffect(() => {
     setIsBookmarked(diarySet.isBookmarked);
+    getUserProfile(diarySet.user?.nickname);
+
     return () => {};
   }, [diarySet]);
 
@@ -136,59 +143,76 @@ export default function diarySet() {
         handleModalClose={() => setIsOpenDiarySetDeleteModal(false)}
         handleModalConfirm={handleDiarySetDelete}
       />
-      <div className=''>
-        {isLoading ? (
-          <div className='p-5'>로딩중</div>
-        ) : (
-          <div className={`flex flex-col`}>
-            {/* 헤더 */}
-            <div className='p-5 '>
-              <div className='flex items-center text-2xl font-bold'>
-                <span className='material-symbols-outlined' style={{ cursor: 'pointer' }} onClick={goBack}>
-                  arrow_back_ios
-                </span>
-                <span>관찰 일지</span>
-              </div>
-            </div>
+
+      {isLoading ? (
+        <AppLoading />
+      ) : (
+        <div className='px-4 py-4'>
+          {/* 헤더 */}
+          <div className='flex items-center'>
+            <span className={`material-symbols-outlined cursor-pointer mr-2`} onClick={goBack} style={{ fontSize: '2rem', fontWeight: '600' }}>
+              arrow_back
+            </span>
+            <span className={`${styles.title} py-1`}>관찰일지</span>
+          </div>
+
+          <div className={`flex flex-col mx-auto  2xl:px-10 2xl:py-8 px-5 py-5`}>
             {/* 바디 */}
             <div className='flex'>
               {/* 세로1 */}
-              <div className='flex flex-col items-center p-5'>
+              <div className='flex flex-col items-center 2xl:py-5 py-2'>
                 {/* 프로필 */}
-                <div>
+                <div style={{ width: '80px', height: '80px' }} className='flex flex-col items-center'>
                   <Link href={`/user/feed/${diarySet?.user?.nickname}`}>
                     {userProfileImagePath ? (
-                      <Image priority src={userProfileImagePath} width={80} height={80} style={{ borderRadius: '50%' }} alt='프로필 사진' />
+                      <Image
+                        priority
+                        src={userProfileImagePath}
+                        width={80}
+                        height={80}
+                        alt='프로필 사진'
+                        className='rounded-full border border-2 border-black'
+                        style={{ width: '80px', height: '80px' }}
+                      />
                     ) : (
-                      <Skeleton width={80} height={80} style={{ borderRadius: '50%' }} />
+                      <Skeleton width={80} height={80} />
                     )}
                   </Link>
-                </div>
-                {/* 일지생성 */}
-                <div className='py-3'>
-                  <Link href={'/diary/create'}>
-                    <div className={`rounded px-3 py-1 flex justify-center ${styles.diaryAddBtn}`} style={{ borderRadius: '30px' }}>
-                      <span className='material-symbols-outlined'>add</span>
-                      <span className='underline underline-offset-4 pr-2'>추가하기</span>
+
+                  <div className='font-bold text-md my-2'>{diarySet?.user?.nickname}</div>
+
+                  {isSameUser ? null : (
+                    <div className='flex items-center'>
+                      <span
+                        className={`material-symbols-outlined cursor-pointer ${
+                          isBookmarked ? `${styles.materialSymbolsOutlined} text-yellow-400` : ''
+                        }`}
+                        onClick={postBookmark}>
+                        bookmark
+                      </span>
+                      <span className='text-sm'>북마크</span>
                     </div>
-                  </Link>
+                  )}
+
+                  {/* 일지생성 */}
+                  {isSameUser ? (
+                    <div className={`flex justify-center items-center`}>
+                      <Link href={'/diary/create'} className={`${styles.addBtn} flex items-center jusify-center`}>
+                        <span className={`material-symbols-outlined`} style={{ fontSize: '1.3rem' }}>
+                          add
+                        </span>
+                        <span className='pr-1'>ADD</span>
+                      </Link>
+                    </div>
+                  ) : null}
                 </div>
               </div>
+
               {/* 세로2 */}
               <div className='flex flex-col grow'>
                 {/* 닉네임, 아이콘 */}
                 <div className='text-lg flex justify-between pr-5 pt-5 '>
-                  <div className='font-bold text-xl'>{diarySet?.user?.nickname}</div>
-
                   <div className='relative'>
-                    <span
-                      className={`material-symbols-outlined cursor-pointer ${
-                        isBookmarked ? `${styles.materialSymbolsOutlined} text-yellow-400` : ''
-                      }`}
-                      onClick={postBookmark}>
-                      bookmark
-                    </span>
-
                     {myNickname === diarySet?.user?.nickname && (
                       <>
                         <span className='material-symbols-outlined px-2' onClick={openEditPopUp} style={{ cursor: 'pointer' }}>
@@ -213,8 +237,9 @@ export default function diarySet() {
                     )}
                   </div>
                 </div>
+
                 {/* 일지리스트 */}
-                <div className={`pr-5 pt-5 ${styles.diaryList}`}>
+                <div className={`${styles.diaryList} mx-7`}>
                   {diaryList.map((diary, index) => (
                     <DiaryListItem key={diary?.diaryId} diary={diary} title={diarySet.title} isLast={diaryList.length - 1 === index ? true : false} />
                   ))}
@@ -222,8 +247,8 @@ export default function diarySet() {
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </AppLayout>
   );
 }

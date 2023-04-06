@@ -4,7 +4,7 @@ import { checkPassword } from '@/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
 import { useAppDispatch } from '@/core/hooks';
 
-import styles from '@/styles/Settings.module.scss';
+import styles from '@/styles/user/settings.module.scss';
 import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
 
@@ -100,7 +100,7 @@ export default function UserSettingsConfirm() {
           </div>
         </div>
 
-        <AppButton text='확인' bgColor={isPossible ? 'main' : 'thin'} handleClick={handleCheckPassword} />
+        <AppButton text='확인' bgColor={isPossible ? 'main' : 'yellow'} handleClick={handleCheckPassword} />
       </div>
     </div>
   );

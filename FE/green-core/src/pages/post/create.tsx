@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { createPost } from '@/core/post/postAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { checkInputFormToast } from '@/lib/utils';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import AppButton from '@/components/button/AppButton';
 
 export default function post() {
@@ -115,22 +115,23 @@ export default function post() {
   return (
     <AppLayout>
       <div className={`overflow-auto flex-1 mx-auto py-6 px-10 h-full`}>
-        <div className={`${styles.title}`}>
-          <span className={`material-symbols-outlined ${styles.backIcon} cursor-pointer`} onClick={handleGoBack}>
-            arrow_back_ios
+        <div className='flex items-center'>
+          <span className={`material-symbols-outlined cursor-pointer mr-2`} onClick={handleGoBack} style={{ fontSize: '2rem', fontWeight: '600' }}>
+            arrow_back
           </span>
-          <div>게시글 생성</div>
+          <span className={`${styles.title} py-1`}>포스트 생성</span>
         </div>
-        <div className='flex justify-center mb-4'>
+
+        <div className='flex justify-center 2xl:py-5 py-2 w-full'>
           {/* 사진 */}
-          <div className='w-1/2'>
+          <div className=''>
             <label htmlFor='image'>
               {preview ? (
                 <img src={preview} alt='이미지를 등록해주세요' className={`${styles.inputImage}`} />
               ) : (
-                <div className={`${styles.inputImage}`}>
-                  <span style={{ color: 'var(--title-light-color', fontSize: '1.5rem' }}>이곳을 클릭하여</span>
-                  <span style={{ color: 'var(--title-light-color', fontSize: '1.5rem' }}>게시글의 사진을 추가해주세요!</span>
+                <div className={`${styles.inputImage} p-10`}>
+                  <span style={{ color: 'var(--title-light-color', fontSize: '1rem' }}>이곳을 클릭하여</span>
+                  <span style={{ color: 'var(--title-light-color', fontSize: '1rem' }}>게시글의 사진을 추가해주세요!</span>
                 </div>
               )}
             </label>
@@ -150,14 +151,15 @@ export default function post() {
             />
           </div>
         </div>
+
         {/* 게시글 내용 */}
-        <div className='mb-4'>
+        <div className='my-2 mx-10'>
           <div className={`${styles.label}`}>게시글 내용 입력</div>
-          <textarea required className={`${styles.textareaBox}`} {...register('content')} placeholder='게시글의 내용을 입력해주세요' />
+          <textarea required className={`w-full`} {...register('content')} placeholder='게시글의 내용을 입력해주세요' />
         </div>
 
         {/* 태그 */}
-        <div className={`w-full`}>
+        <div className={`my-5 mx-10`}>
           <div className={`${styles.label}`}>태그 입력</div>
           <div className={`${styles.tagBox}`}>
             {tagList.map((tagItem, index) => {
@@ -183,9 +185,9 @@ export default function post() {
         </div>
 
         {/* 버튼 */}
-        <div className='flex mt-16'>
-          <AppButton text='취소' bgColor='thin' handleClick={handleGoBack} className={`flex-1 mr-8 ${styles.btn}`} />
-          <AppButton text='게시글 생성' handleClick={handleCreatePost} className={`flex-1 ${styles.btn}`} />
+        <div className='flex mt-16 mx-10'>
+          <AppButton text='취소' bgColor='transparent' handleClick={handleGoBack} className={`flex-1 mr-8 ${styles.btn}`} />
+          <AppButton text='게시글 생성' bgColor='yellow' handleClick={handleCreatePost} className={`flex-1 ${styles.btn}`} />
         </div>
       </div>
     </AppLayout>

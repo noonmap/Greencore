@@ -15,7 +15,7 @@ public interface ScheduleRepository extends JpaRepository<ScheduleEntity, Long> 
 
 	Optional<ScheduleEntity> findById(Long scheduleId);
 	List<ScheduleEntity> findAllByDateBetweenAndUserOrderByDate(LocalDate localDateSt, LocalDate localDateEd, UserEntity user);
-	List<ScheduleEntity> findAllByRegularScheduleIdAndDateAfter(Long regularId, LocalDate date);
+	List<ScheduleEntity> findAllByRegularScheduleIdAndDateGreaterThanEqual(Long regularId, LocalDate date);
 	void deleteAllByUserAndDateAfter(UserEntity user, LocalDate date);
 	void deleteAllByUserPlantAndDateAfter(UserPlantEntity userPlant, LocalDate date);
 

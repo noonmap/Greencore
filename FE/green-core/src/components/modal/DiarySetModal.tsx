@@ -45,7 +45,6 @@ export default function DiaryModal({
   }, []);
 
   function handleModalOutsideClick(e) {
-    // 모달 바깥 클릭 시
     if (modalRef.current && !modalRef.current.contains(e.target)) handleModalClose();
   }
 
@@ -87,6 +86,7 @@ export default function DiaryModal({
         setValue('startDate', '');
         await fetchDiarySetList();
       }
+
       handleModalClose();
     } catch (error) {
       console.error(error);

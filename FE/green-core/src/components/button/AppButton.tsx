@@ -27,6 +27,8 @@ export default function AppButton({ bgColor, size, textColor, text, handleClick,
     else if (bgColor == 'white') return `${styles.white}`;
     else if (bgColor == 'black') return `${styles.black}`;
     else if (bgColor == 'transparent') return `${styles.transparent}`;
+    else if (bgColor == 'yellow') return `${styles.yellow}`;
+    else if (bgColor == 'pink') return `${styles.pink}`;
   }, [bgColor, styles]);
 
   const buttonSize = useMemo(() => {

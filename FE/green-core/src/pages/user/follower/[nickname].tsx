@@ -11,6 +11,7 @@ import Skeleton from 'react-loading-skeleton';
 import FollowLayout from '@/layout/FollowLayout';
 import AppButton from '@/components/button/AppButton';
 import UserFollowerListItem from '@/components/UserFollowerListItem';
+import AppLoading from '@/components/common/AppLoading';
 
 export default function follower() {
   const router = useRouter();
@@ -110,21 +111,17 @@ export default function follower() {
 
   return (
     <FollowLayout>
-      <div className='w-full flex justify-center items-center py-10'>
+      <div className='w-full flex justify-center items-center py-10 px-10'>
         <div className='space-y-5 divide-y divide-slate-200'>
           {isLoading ? (
             <>
               {followerList.map((follower) => (
-                <UserFollowerListItem
-                  key={follower.nickname}
-                  follower={follower}
-                  userProfileList={userProfileList}
-                />
+                <UserFollowerListItem key={follower.nickname} follower={follower} userProfileList={userProfileList} />
               ))}
               <div ref={setTarget} />
             </>
           ) : (
-            <>로딩중..</>
+            <AppLoading />
           )}
         </div>
       </div>

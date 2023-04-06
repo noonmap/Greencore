@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { updatePassword } from '@/core/user/userAPI';
 import { checkInputFormToast } from '@/lib/utils';
 import AppButton from '@/components/button/AppButton';
 import message from '@/assets/message.json';
-import styles from '@/styles/Settings.module.scss';
+import styles from '@/styles/user/settings.module.scss';
 import { useAppDispatch } from '@/core/hooks';
 import { SET_IS_POSSIBLE_UPDATE_USER_FALSE } from '@/core/user/userSlice';
+import { useRouter } from 'next/router';
 
 type StateType = {
   password: string;
@@ -22,6 +23,7 @@ const initialState: StateType = {
 
 export default function UserSettingsPassword() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const {
     register,
@@ -32,6 +34,8 @@ export default function UserSettingsPassword() {
   } = useForm<StateType>({ defaultValues: initialState, mode: 'onChange' });
   const [password, checkPassword, passwordMessage] = getValues(['password', 'checkPassword', 'passwordMessage']);
 
+  const [isPossible, setIsPossible] = useState<boolean>(false);
+
   useEffect(() => {
     watch();
     return () => {
@@ -39,19 +43,29 @@ export default function UserSettingsPassword() {
     };
   }, []);
 
+  useEffect(() => {
+    checkIsPossible();
+  }, [password, checkPassword, isPossible]);
+
   function handleCheckPassword(e) {
     if (password === e.target.value || checkPassword === e.target.value) return setValue('passwordMessage', '');
     else return setValue('passwordMessage', '비밀번호가 다릅니다');
   }
 
+  function checkIsPossible() {
+    if (errors?.password || password == '' || errors?.checkPassword || checkPassword == '') setIsPossible(false);
+    else setIsPossible(true);
+  }
+
   async function handlePasswordUpdate() {
-    if (errors?.password || password == '' || checkPassword == '') {
+    if (!isPossible) {
       checkInputFormToast();
       return;
     }
 
     try {
       const { data } = await updatePassword({ password: password });
+      // if (data) router.reload();
     } catch (error) {
       console.error(error);
     }
@@ -81,13 +95,17 @@ export default function UserSettingsPassword() {
                   value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
                   message: message.PasswordMessage,
                 },
-                onChange: (e) => handleCheckPassword(e),
+                onChange: (e) => {
+                  handleCheckPassword(e);
+                },
+                onBlur(e) {
+                  checkIsPossible();
+                },
               })}
             />
           </div>
 
           {/* 비밀번호 확인 */}
-
           <div className='space-y-2'>
             <label className={styles.main}>비밀번호 확인</label>
 
@@ -102,7 +120,12 @@ export default function UserSettingsPassword() {
                   value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
                   message: message.PasswordMessage,
                 },
-                onChange: (e) => handleCheckPassword(e),
+                onChange: (e) => {
+                  handleCheckPassword(e);
+                },
+                onBlur(e) {
+                  checkIsPossible();
+                },
               })}
             />
 
@@ -114,7 +137,7 @@ export default function UserSettingsPassword() {
           </div>
         </div>
 
-        <AppButton text='확인' handleClick={handlePasswordUpdate} />
+        <AppButton text='확인' bgColor={isPossible ? 'main' : 'yellow'} handleClick={handlePasswordUpdate} />
       </div>
     </div>
   );

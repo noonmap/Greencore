@@ -22,6 +22,17 @@
 .transparent {
   background-color: transparent;
   color: #000;
+  border: 2px solid black;
+}
+
+.yellow {
+  border: 2px solid black;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(192, 255, 111, 1) 100%);
+}
+
+.pink {
+  border: 2px solid black;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, var(--like-color) 100%);
 }
 
 .medium {

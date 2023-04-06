@@ -197,12 +197,39 @@ public class LoginService {
 		// 회원가입 되지 않은 유저인가? -> 회원가입 (email, nickname, password)
 		if (userRepository.findByEmail(decodedToken.getEmail()).isEmpty()) {
 
-			// 이미 존재하는 닉네임인지 다시 한번 확인
-			if (userRepository.findByNickname(decodedToken.getName()).isPresent()) {
-				throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+			// 유저 정보 가져오기
+			Map<String, String> params = new HashMap<>();
+			params.put("idToken", accessToken);
+			String userInfo = oauthService.firebaseUserInfo(params);
+
+			// Firebase부터 유저 정보를 가져올 수 없음
+
+			JsonNode jsonNode = null;
+			try {
+				jsonNode = objectMapper.readTree(userInfo);
+			} catch (JsonProcessingException e) {
+				throw new CustomException(ErrorCode.TOKEN_ERROR);
 			}
 
-			String nickname = decodedToken.getName() == null ? decodedToken.getUid() : decodedToken.getName();
+			JsonNode firebaseAccount = jsonNode.get("users").get(0).get("providerUserInfo").get(0);
+
+			String GoogleNickname = oauthService.getStringValue(firebaseAccount, "displayName");
+			String GitHubNickname = oauthService.getStringValue(firebaseAccount, "screenName");
+
+			// screenName 이 있다면 GitHub 로그인
+			if (GitHubNickname != null) {
+				// 이미 존재하는 닉네임인지 다시 한번 확인
+				if (userRepository.findByNickname(GitHubNickname).isPresent()) {
+					throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+				}
+			} else {
+				// 이미 존재하는 닉네임인지 다시 한번 확인
+				if (userRepository.findByNickname(GoogleNickname).isPresent()) {
+					throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+				}
+			}
+
+			String nickname = GitHubNickname == null ? GoogleNickname : GitHubNickname;
 
 			UserEntity userEntity = UserEntity.builder().email(decodedToken.getEmail()).nickname(nickname).password(passwordEncoder.encode(decodedToken.getUid() + "!"))
 				.userStore(UserStoreType.FIREBASE)

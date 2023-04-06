@@ -5,6 +5,7 @@ import { createAlert, deleteSelectedAlert, getAlertList, updateAllAlert, updateS
 import AppLoading from '@/components/common/AppLoading';
 import UserAlertListItem from '@/components/UserAlertListItem';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
+import styles from '@/styles/user/alert.module.scss';
 
 export default function Alert() {
   const dispatch = useAppDispatch();
@@ -101,30 +102,43 @@ export default function Alert() {
       {alertList.length == 0 ? (
         <>알림 리스트가 없습니다</>
       ) : (
-        <div className='py-5 px-10'>
-          <h1 className='main mb-5'>알림</h1>
+        <div className='space-y-2 px-4 py-4'>
+          <h1 className={`${styles.title} main mb-10`}>알림</h1>
 
-          <div className='flex justify-between px-20 main mb-5'>
-            <div className='flex space-x-2'>
-              <div className='hover:underline cursor-pointer' onClick={handleIsAlertCheck}>
-                알림 안 읽은거 확인 test
+          <div className='flex justify-between mx-7 '>
+            <div className='flex space-x-2 mb-2'>
+              <div className='flex items-center cursor-pointer border border-2 bg-black border-black rounded-full p-0.5' onClick={handleAllAlertRead}>
+                <span className='material-symbols-outlined font-bold text-white' style={{ fontSize: '1.2rem' }}>
+                  done
+                </span>
+                <div className='pr-1 font-bold text-white' style={{ fontSize: '0.8rem' }}>
+                  전체 읽음 확인
+                </div>
               </div>
-              <div className='hover:underline cursor-pointer' onClick={handleAlertCreate}>
-                알림 생성
-              </div>
-              <div className='hover:underline cursor-pointer' onClick={handleAllAlertRead}>
-                전체 읽음 확인
-              </div>
-              <div className='hover:underline cursor-pointer' onClick={handleSelectedAlertRead}>
-                읽음 확인
+
+              <div
+                className='flex items-center cursor-pointer border border-2 bg-black border-black rounded-full p-0.5'
+                onClick={handleSelectedAlertRead}>
+                <span className='material-symbols-outlined font-bold text-white' style={{ fontSize: '1.2rem' }}>
+                  done
+                </span>
+                <div className='pr-1 font-bold text-white' style={{ fontSize: '0.8rem' }}>
+                  읽음 확인
+                </div>
               </div>
             </div>
-            <div className='hover:underline cursor-pointer' onClick={handleSelectedAlertDelete}>
-              삭제
+
+            <div className='flex items-center cursor-pointer rounded-full' onClick={handleSelectedAlertDelete}>
+              <span className='material-symbols-outlined font-bold text-black' style={{ fontSize: '1.2rem' }}>
+                delete
+              </span>
+              <div className='pr-1 font-bold text-black' style={{ fontSize: '0.8rem' }}>
+                삭제
+              </div>
             </div>
           </div>
 
-          <div className='flex flex-col px-20'>
+          <div className='flex flex-col mx-7'>
             {alertList.map((alert) => (
               <UserAlertListItem key={alert.alertId} alert={alert} nickname={nickname} selectedAlertList={selectedAlertList} />
             ))}
