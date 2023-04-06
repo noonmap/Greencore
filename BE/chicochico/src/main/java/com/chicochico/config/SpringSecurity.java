@@ -58,7 +58,7 @@ public class SpringSecurity {
 				"/swagger-ui.html", "/webjars/**", "/swagger/**",
 				"/swagger-ui/**")
 			.antMatchers("/login/oauth", "/login/kakao")
-			.antMatchers("/login/**", "/user/nickname/{nickname}", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type")
+			.antMatchers("/login/**", "/user/email/{email}", "/refresh", "/mail/**", "/plant/**", "/type")
 			.antMatchers(HttpMethod.POST, "/user");
 	}
 
