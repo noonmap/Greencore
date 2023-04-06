@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { createPost } from '@/core/post/postAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { checkInputFormToast } from '@/lib/utils';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import AppButton from '@/components/button/AppButton';
 
 export default function post() {

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { createDiary } from '@/core/diary/diaryAPI';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import { getDiarySetList } from '@/core/diarySet/diarySetAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import moment from 'moment';

@@ -7,7 +7,7 @@ import FeedCommentList from '@/components/FeedCommentList';
 import { deleteDiary, getDiaryDetail } from '@/core/diary/diaryAPI';
 import CommentDeleteModal from '@/components/modal/CommentDeleteModal';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import { SET_SEARCH_TAG } from '@/core/search/searchSlice';

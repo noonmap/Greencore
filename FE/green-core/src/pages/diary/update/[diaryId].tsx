@@ -3,7 +3,7 @@ import AppLayout from '@/layout/AppLayout';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import { updateDiary } from '@/core/diary/diaryAPI';
 import { getDiarySetList } from '@/core/diarySet/diarySetAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';

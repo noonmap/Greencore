@@ -1,17 +1,7 @@
-.container {
-  padding: 1rem;
-}
-
-.backIcon {
-  font-weight: 900;
-  font-size: 2.5rem;
-  margin-right: 0.5rem;
-}
-
 .infoItem {
   margin-top: 1rem;
   width: 80%;
-  border-bottom: 1px solid #f0f0f0;
+  // border-bottom: 1px solid #f0f0f0;
   margin-inline: 0.5rem;
   display: flex;
   justify-content: center;
@@ -30,18 +20,22 @@
   color: var(--like-color);
 }
 
+// .title {
+//   font-size: 2rem;
+//   font-weight: 900;
+//   // color: var(--main-color);
+//   margin-bottom: 1.5rem;
+//   display: flex;
+//   align-items: center;
+// }
 .title {
-  font-size: 2rem;
-  font-weight: 900;
-  // color: var(--main-color);
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
+  font-size: 1.5rem;
+  font-weight: var(--text-extra-bold);
 }
 
 .nickname {
-  font-weight: 700;
-  font-size: 1.5rem;
+  font-weight: 800;
+  font-size: 1rem;
 }
 
 .image {
@@ -214,8 +208,63 @@
   font-size: 1rem;
 }
 
-.tagBtn:hover {
-  cursor: pointer;
-  background-color: var(--main-color);
-  color: white;
+.imageWarrper {
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  // box-shadow: var(--box-shadow-card);
+  box-shadow: var(--box-shadow);
+  box-shadow: 5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff;
+
+  box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
+  -webkit-box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
+  -moz-box-shadow: 7px 9px 0px -3px rgba(0, 0, 0, 1);
+  border: 2px solid black;
+}
+
+.tagBtn {
+  font-family: 'neodgm';
+  font-size: 0.8rem;
+  // color: blue;
+  transition: all 0.1s var(--timing-func);
+
+  &:hover {
+    cursor: pointer;
+    color: var(--like-color);
+    opacity: 0.8;
+  }
+}
+
+.popUp {
+  position: absolute;
+  width: 80px;
+  // top: -75px;
+  // left: 5px;
+  top: 0;
+  right: 1.5rem;
+  padding: 0.2rem 0;
+
+  border-radius: var(--border-radius-input);
+  box-shadow: var(--box-shadow-card);
+  font-size: 0.9rem;
+  border: 2px solid black;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(228, 255, 194) 100%);
+
+  div:nth-child(1) {
+    border-bottom: 2px solid black;
+  }
+
+  div {
+    color: #000;
+    padding-left: 5px;
+    padding: 0 0.5rem;
+    // color: var(--title-light-color);
+    transition: all 0.15s var(--timing-func);
+
+    &:hover {
+      // background-color: var(--thin-color);
+      background-color: var(--like-color);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
 }

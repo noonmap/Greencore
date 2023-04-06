@@ -164,8 +164,8 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
   return (
     <>
       <div className={`${styles.inputBox} flex-1`}>
-        <div className={`${styles.textareaWrapper} flex-1`}>
-          <textarea rows={2} {...register('content')} />
+        <div className={`flex items-center w-full`}>
+          <textarea rows={1} {...register('content')} className='w-full' />
           {!userList ||
             (userList.length > 0 &&
               userList.map((user) => (
@@ -173,8 +173,8 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
                   {user.nickname}
                 </div>
               )))}
+          <AppButton text='작성' className='ml-2' bgColor='yellow' handleClick={handleCreateComment} />
         </div>
-        <AppButton text='작성' className={`${styles.btn}`} handleClick={handleCreateComment} />
       </div>
       {commentList.map((comment) => {
         return (
@@ -184,7 +184,7 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
       {!isStop.current ? (
         <AppButton text='더보기' handleClick={handleGetCommentList} className='mt-4' />
       ) : (
-        <AppButton text='더 이상 불러올 댓글이 없습니다' bgColor='thin' handleClick={handleGetCommentList} className='mt-4' />
+        <AppButton text='더 이상 불러올 댓글이 없습니다' bgColor='thin' className='my-4' handleClick={handleGetCommentList} />
       )}
     </>
   );

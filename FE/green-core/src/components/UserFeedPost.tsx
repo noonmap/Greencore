@@ -152,8 +152,8 @@ export default function UserFeedPost({ nickname }) {
 
               {isSameUser ? (
                 <span
-                  className='pr-1 material-symbols-outlined cursor-pointer like'
-                  style={{ fontSize: '1.4rem' }}
+                  className='pr-1 material-symbols-outlined cursor-pointer like '
+                  style={{ fontSize: '1.2rem' }}
                   onClick={() => handleIsOpenPostDelete(p.postId)}>
                   close
                 </span>

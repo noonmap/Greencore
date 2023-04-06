@@ -26,22 +26,23 @@
   padding: 0.9rem;
   font-size: 1rem;
   font-weight: bold;
-  background-color: var(--main-color);
+  background: var(--main-color);
   color: white;
   border: 2px solid black;
   border-radius: var(--border-radius-card);
   cursor: pointer;
-  color: black;
-  // box-shadow: var(--box-shadow-input);
+  // color: black;
   // height: 3rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, var(--like-color) 100%);
   // width: 3rem;
 
+  box-shadow: var(--box-shadow-card);
   transition: all 0.2s var(--timing-func);
 
   &:hover {
     // opacity: 0.8;
-    background: linear-gradient(180deg, var(--like-color) 0%, var(--like-color) 100%);
+    // background: linear-gradient(180deg, var(--like-color) 0%, var(--like-color) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, var(--like-color) 100%);
+    // background-color: var(--like-color);
     color: #000;
   }
 }

@@ -7,7 +7,7 @@ import { getPost, updatePost } from '@/core/post/postAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { checkInputFormToast } from '@/lib/utils';
 import AppButton from '@/components/button/AppButton';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import Image from 'next/image';
 
 export default function updatepost() {

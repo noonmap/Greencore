@@ -51,7 +51,7 @@
   // align-items: center;
   // margin-inline: 1rem;
   font-weight: 800;
-  min-width: 2.5rem;
+  // min-width: 2.5rem;
 
   // display: flex;
   // flex-direction: column;
@@ -86,4 +86,46 @@
   margin-left: 0.5rem;
   min-width: 50px;
   height: 100%;
+}
+
+.popUp {
+  position: absolute;
+  width: 80px;
+  // top: -75px;
+  // left: 5px;
+  top: 0;
+  right: 1rem;
+  padding: 0.2rem 0;
+
+  border-radius: var(--border-radius-input);
+  box-shadow: var(--box-shadow-card);
+  font-size: 0.9rem;
+  border: 2px solid black;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(228, 255, 194) 100%);
+
+  div:nth-child(1) {
+    border-bottom: 2px solid black;
+  }
+
+  div {
+    color: #000;
+    padding-left: 5px;
+    padding: 0 0.5rem;
+    // color: var(--title-light-color);
+    transition: all 0.15s var(--timing-func);
+
+    &:hover {
+      // background-color: var(--thin-color);
+      background-color: var(--like-color);
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+}
+
+.introduction {
+  border: 2px solid black;
+  padding: 0.3rem 0.3rem 0.3rem 0.8rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(194, 239, 255) 100%);
+  border-radius: 0 var(--border-radius-card) var(--border-radius-card) var(--border-radius-card);
 }

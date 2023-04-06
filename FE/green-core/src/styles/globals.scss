@@ -263,3 +263,10 @@ select:hover {
 select:disabled {
   opacity: 0.5;
 }
+
+textarea {
+  outline: none;
+  border-radius: var(--border-radius-input);
+  border: 2px solid black;
+  padding: 0.4rem;
+}
