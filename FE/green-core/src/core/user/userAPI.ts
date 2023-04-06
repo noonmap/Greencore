@@ -339,7 +339,7 @@ export const logIn = createAsyncThunk('logIn', async (payload: LogInDataType) =>
   } catch (error: any) {
     const status = error.response?.status;
 
-    if (status == 404) {
+    if (status == 400 || status == 404) {
       Toastify({
         text: message.LogInFail,
         duration: message.MessageDuration,
