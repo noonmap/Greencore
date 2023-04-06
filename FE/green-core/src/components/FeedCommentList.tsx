@@ -17,8 +17,8 @@ type PropsType = {
 
 export default function FeedCommentList({ feedId, setCommentCount, feedType, nickname }: PropsType) {
   const [commentList, setCommentList] = useState([]);
+  const [reloadFeedId, setReloadFeedId] = useState<number>(Number(feedId));
   const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
-  console.log(feedId); ////////////////////////////////////
 
   // GET 요청 변수
   const isStop = useRef<boolean>(false);
@@ -50,10 +50,8 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
   const handleGetCommentList = async () => {
     if (!isStop.current) {
       const requestData = { feedId, page: page.current, size: size.current };
-      console.log('댓글 요청');
       try {
         const data = await getCommentList(requestData);
-        console.log('댓글 요청 성공', data.data.content);
         if (data.result === 'SUCCESS') {
           setCommentCount(data.data.totalElements);
           if (data.data.content.length < 5) {
@@ -163,7 +161,7 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
   useEffect(() => {
     handleGetCommentList();
     return setCommentList([]);
-  }, [feedId]);
+  }, [reloadFeedId]);
 
   return (
     <>
