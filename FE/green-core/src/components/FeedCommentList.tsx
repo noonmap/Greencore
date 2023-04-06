@@ -157,7 +157,11 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
     handleGetCommentList();
     console.log('요청은 보내냐?'); /////////////////////////////////////////
     watch();
-    return () => setCommentList([]);
+    return () => {
+      setCommentList([]);
+      isStop.current = false;
+      page.current = 0;
+    };
   }, [feedId]);
 
   return (
