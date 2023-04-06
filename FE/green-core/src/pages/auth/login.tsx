@@ -75,8 +75,8 @@ export default function login() {
       await dispatch(SET_AUTH_TYPE_DB());
       await dispatch(logIn(payload));
 
-      if (getCookieToken()) router.push('/home');
-      else router.push('/');
+      if (getCookieToken()) router.push('/home/recommend');
+      else router.push('/auth/login');
     } catch (error) {
       setValue('email', '');
       setValue('password', '');
