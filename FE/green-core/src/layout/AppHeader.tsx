@@ -292,9 +292,12 @@ export default function AppHeader() {
 										)}
 									</Link>
 
-									<Link href="/auth/login">로그인</Link>
+									<Link href="/auth/login">
+										{/* <div className={`${styles.login} w-full`}>로그인</div> */}
+										{nowPage == 'login' ? <div className="main">로그인</div> : <div>로그인</div>}
+									</Link>
 
-									<Link href="/auth/signup">회원가입</Link>
+									<Link href="/auth/signup">{nowPage == 'signup' ? <div className="main">회원가입</div> : <div>회원가입</div>}</Link>
 								</>
 							)}
 						</div>

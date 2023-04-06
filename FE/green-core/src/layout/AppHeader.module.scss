@@ -67,3 +67,13 @@
 	// background: #c9ff84;
 	// box-shadow: inset 5px 5px 7px #9dc767, inset -5px -5px 7px #f5ffa1;
 }
+
+.login {
+	min-width: 150px;
+	padding: 0.8rem 0;
+	background-color: var(--main-color);
+	// padding: var(--padding-input);
+	color: #fff;
+	border-radius: var(--border-radius);
+	text-align: center;
+}
