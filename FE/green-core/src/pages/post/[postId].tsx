@@ -371,9 +371,11 @@ export default function PostDetail() {
                 <div className={`${styles.box}`}>
                   <Image priority src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.imageWarrper} w-full h-full`} />
                 </div>
+
                 <div className='relative'>
                   <div className='w-fit absolute mt-3 right-0 text-xs text-gray-500'>{elapsedTime(post?.createdAt)}</div>
                 </div>
+
                 <div className='my-10'>{post?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
