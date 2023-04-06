@@ -369,12 +369,15 @@ export default function FeedListItem(props: { feed: FeedType }) {
                     </div>
                     <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtFeedImage ? 'none' : 'block' }}>
                       <div className={`p-5 flex justify-between h-full`}>
-                        <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
+                        <div className={`p-3 flex flex-col text-md text-white font-bold justify-end h-full `}>
                           <p>{feed.diarySetTitle}</p>
                           <p>day {feed.growingDay}</p>
                         </div>
                         <div className={`p-3 flex flex-col text-lg text-white font-bold justify-end h-full `}>
-                          <button className={`rounded-lg`} style={{ backgroundColor: 'var(--main-color)' }} onClick={goDiarySet}>
+                          <button
+                            className='text-md'
+                            style={{ backgroundColor: 'var(--main-color)', borderRadius: 'var(--border-radius)' }}
+                            onClick={goDiarySet}>
                             관찰일지 보러가기
                           </button>
                         </div>
