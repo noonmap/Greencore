@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import AppButton from './button/AppButton';
+import styles from '@/styles/user/follow.module.scss';
 
 export const UserFollowingListItem = ({ following, userProfileList }) => {
   const dispatch = useAppDispatch();
@@ -53,14 +54,15 @@ export const UserFollowingListItem = ({ following, userProfileList }) => {
     <div>
       <div className='flex pt-4 space-x-2 items-center justify-between'>
         {userProfileList[following.nickname] ? (
-          <Link href={`/user/feed/${following.nickname}`}>
+          <Link href={`/user/feed/${following.nickname}`} style={{ width: '60px', height: '60px' }}>
             <Image
               src={userProfileList[following.nickname]}
               alt='사용자 프로필 이미지'
               width={60}
               height={60}
-              className='rounded-full bg-cover'
+              className='rounded-full bg-cover border border-2 border-black'
               priority
+              style={{ width: '60px', height: '60px' }}
             />
           </Link>
         ) : (
@@ -68,20 +70,20 @@ export const UserFollowingListItem = ({ following, userProfileList }) => {
         )}
 
         <div className='flex flex-col'>
-          {following.nickname ? <Link href={`/user/feed/${following.nickname}`}>{following.nickname}</Link> : <Skeleton width={50} />}
-          {following.introduction ? <div className='w-80 introduction'>{following.introduction}</div> : <Skeleton width={150} />}
+          {following.nickname ? (
+            <Link href={`/user/feed/${following.nickname}`} className='font-bold'>
+              {following.nickname}
+            </Link>
+          ) : (
+            <Skeleton width={50} />
+          )}
+          {following.introduction ? <div className={`w-80 introduction`}>{following.introduction}</div> : <Skeleton width={150} />}
         </div>
 
         {following.isFollowed ? (
-          <AppButton
-            text='언팔로우'
-            className='hover:bg-red-100'
-            bgColor='thin'
-            size='small'
-            handleClick={(e) => handleFollowDelete(e, following.nickname)}
-          />
+          <AppButton text='언팔로우' bgColor='main' size='small' handleClick={(e) => handleFollowDelete(e, following.nickname)} />
         ) : (
-          <AppButton text='팔로우 하기' size='small' handleClick={(e) => handleFollowUpdate(e, following.nickname)} />
+          <AppButton text='팔로우 하기' size='small' bgColor='yellow' handleClick={(e) => handleFollowUpdate(e, following.nickname)} />
         )}
       </div>
     </div>

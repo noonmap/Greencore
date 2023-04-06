@@ -44,11 +44,11 @@ export default function UserFeedProfile({ nickname }) {
 	const storage = getStorage();
 
 	const myNickname = useAppSelector((state) => state.common.userInfo?.nickname);
+	const isSameUser = useAppSelector((state) => state.user.isSameUser);
 
 	const { register, getValues, watch } = useForm<StateType>({ defaultValues: initialState });
 	const [uploadProfileImage] = getValues(['uploadProfileImage']);
 
-	const [isSameUser, setIsSameUser] = useState<boolean>(false);
 	const [isOpenUserProfileUpdateModal, setIsOpenUserProfileUpdateModal] = useState<boolean>(false);
 	const [userProfile, setUserProfile] = useState<ProfileType>(null);
 	const [userProfileImagePath, setUserProfileImagePath] = useState<string>(null);
@@ -61,18 +61,12 @@ export default function UserFeedProfile({ nickname }) {
 		if (!router.isReady) return;
 		if (!router.query.nickname) return;
 
-		checkSameUser();
 		fetchUserProfile();
 	}, [nickname, uploadProfileImage]);
 
 	useEffect(() => {
 		handleProfileImageUpdate();
 	}, [uploadProfileImage]);
-
-	/** url path의 유저와 현재 로그인 유저가 같은지 확인하는 함수 */
-	const checkSameUser = useCallback(() => {
-		if (myNickname == nickname) setIsSameUser(true);
-	}, [myNickname, nickname]);
 
 	/** storage 에서 유저 프로필 이미지 가져오는 함수 */
 	const fetchUserProfile = useCallback(async () => {
@@ -222,7 +216,8 @@ export default function UserFeedProfile({ nickname }) {
 												<div className={`${styles.nickname} `}>{userProfile?.nickname}</div>
 												{isSameUser ? (
 													<span
-														className="material-symbols-outlined titleLight text-lg cursor-pointer"
+														className="material-symbols-outlined titleLight cursor-pointer"
+														style={{ fontSize: '1.2rem' }}
 														onClick={() => setIsOpenUserProfileUpdateModal(true)}>
 														edit
 													</span>

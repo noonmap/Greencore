@@ -30,6 +30,23 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
   const storage = getStorage();
   const dispatch = useAppDispatch();
 
+  const [isEditPopUp, setIsEditPopUp] = useState<boolean>(false);
+  const popUpRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleModalOutsideClick);
+    document.addEventListener('mousedown', handlePopUpOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+      document.removeEventListener('mousedown', handlePopUpOutsideClick);
+    };
+  }, []);
+
+  /** 팝업 바깥 클릭 시 */
+  function handlePopUpOutsideClick(e) {
+    if (popUpRef.current && !popUpRef.current.contains(e.target)) setIsEditPopUp(false);
+  }
+
   // 모달 바깥 클릭 시
   function handleModalOutsideClick(e: any) {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -102,6 +119,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
     setIsOpenMenu(false);
     setIsUpdated((prev) => !prev);
     setValue('content', realContent.current);
+    setIsEditPopUp(false);
   };
 
   // 댓글 수정
@@ -192,7 +210,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
           handleModalClose={() => setIsOpenCommentDeleteModal(false)}
         />
       )}
-      <div key={comment.commentId} className={`${styles.container}`}>
+      <div key={comment.commentId} className={`${styles.container} `}>
         <div>
           <Link href={`/user/feed/${comment.user.nickname}`}>
             {userProfileImagePath ? (
@@ -200,22 +218,23 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
                 priority
                 src={userProfileImagePath}
                 alt='프로필사진'
-                width={100}
-                height={100}
-                style={{ width: '50px', height: '50px', borderRadius: '50%' }}
+                className='border border-2 border-black rounded-full'
+                width={50}
+                height={50}
+                style={{ width: '50px', height: '50px' }}
               />
             ) : (
-              <Skeleton width={50} height={50} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+              <Skeleton width={50} height={50} style={{ width: '50px', height: '50px' }} circle />
             )}
           </Link>
         </div>
         {isUpdated ? (
           <div className={`flex items-center flex-1`}>
-            <div className={`${styles.name} w-12 mx-4`}>
+            <div className={`${styles.name} ml-1`}>
               <Link href={`/user/feed/${comment.user.nickname}`}>{comment.user.nickname}</Link>
             </div>
-            <div className={`flex-1 ${styles.textareaWrapper}`}>
-              <textarea rows={2} {...register('content')} />
+            <div className={`flex-1 `}>
+              <textarea rows={1} {...register('content')} />
               {!userList ||
                 (userList.length > 0 &&
                   userList.map((user) => (
@@ -226,12 +245,15 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
             </div>
           </div>
         ) : (
-          <div className={`flex items-center flex-1`}>
-            <div className={`${styles.name} w-12 mx-4`}>
-              <Link href={`/user/feed/${comment.user.nickname}`}>{comment.user.nickname}</Link>
-            </div>
+          <div className={`flex items-center flex-1 mx-2`}>
             <div className='flex-1'>
-              <div>
+              <div className='flex items-center'>
+                <div className={`${styles.name} text-sm mr-1`}>
+                  <Link href={`/user/feed/${comment.user.nickname}`}>{comment.user.nickname}</Link>
+                </div>
+                <div className={`${styles.date} text-xs`}>{elapsedTime(comment.createdAt)}</div>
+              </div>
+              <div className={`${styles.introduction} `}>
                 {content.split(/(@[^\s@#]+)/g).map((v: string, index: number) => {
                   if (v.match(/@[^\s@#]+/g)) {
                     return (
@@ -249,11 +271,43 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
                   );
                 })}
               </div>
-              <div className={`${styles.date}`}>{elapsedTime(comment.createdAt)}</div>
             </div>
           </div>
         )}
-        {myNickname === comment.user.nickname && (
+
+        {myNickname === comment.user.nickname ? (
+          <>
+            {isUpdated ? (
+              <>
+                <AppButton text='수정' className={`${styles.btn} mb-1`} handleClick={handleUpdateComment} />
+                <AppButton text='취소' className={`${styles.btn}`} handleClick={handleUpdateCommentToggle} bgColor='thin' />
+              </>
+            ) : (
+              <>
+                <span className='material-symbols-outlined cursor-pointer md' style={{ fontSize: '1.3rem' }} onClick={() => setIsEditPopUp(true)}>
+                  more_vert
+                </span>
+
+                {isEditPopUp ? (
+                  <div className='relative' ref={popUpRef}>
+                    <div className={`popUp ${styles.popUp}`}>
+                      <div onClick={handleUpdateCommentToggle}>수정</div>
+                      <div
+                        onClick={() => {
+                          setIsOpenCommentDeleteModal(true);
+                          setIsEditPopUp(false);
+                        }}>
+                        삭제
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            )}
+          </>
+        ) : null}
+
+        {/* {myNickname === comment.user.nickname && (
           <div className={`${styles.end}`}>
             {isUpdated ? (
               <>
@@ -284,7 +338,7 @@ export default function FeedCommentItem({ comment, feedId, deleteCommentList, fe
               </>
             )}
           </div>
-        )}
+        )} */}
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 .modalContainer {
-	position: absolute;
+	position: fixed;
 	width: 100vw;
 	height: 100vh;
 	top: 0;
@@ -8,7 +8,8 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: rgba(0, 0, 0, 0.3);
+	// background-color: rgba(0, 0, 0, 0.3);
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgb(194, 239, 255, 0.7) 100%);
 }
 
 .modalWrap {
@@ -16,11 +17,16 @@
 	min-width: 350px;
 	min-height: 200px;
 	background-color: white;
-	border: 1px rgba(0, 0, 0, 0.3) solid;
-	border-radius: 0.375rem;
+	border: 2px black solid;
+	// border-radius: 0.375rem;
+
+	border-radius: var(--border-radius-card);
 	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
 	z-index: 100;
 	// padding: 0 0.5rem;
+	// box-shadow: inset 5px 5px 7px #9dc767, inset -5px -5px 7px #f5ffa1;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(192, 255, 111, 1) 100%);
+	// background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(194, 239, 255, 1) 100%);
 }
 
 .modalTitle {
@@ -31,14 +37,14 @@
 }
 
 .modalClose {
-	color: var(--light-color);
+	color: var(--like-color);
 	position: absolute;
-	right: 20px;
-	top: 20px;
+	right: 32px;
+	top: 32px;
 	cursor: pointer;
 
 	&:hover {
-		color: var(--danger-color);
+		color: var(--like-color);
 	}
 }
 
@@ -47,12 +53,12 @@
 	cursor: pointer;
 
 	&:hover {
-		color: var(--danger-color);
+		color: var(--like-color);
 	}
 }
 
 .modalContent {
-	padding: 2.5rem var(--padding-card);
+	padding: 3rem;
 	min-width: 400px;
 	min-height: 300px;
 	display: flex;

@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import DiarySetModal from '@/components/modal/DiarySetModal';
 import { getDiarySetList, deleteDiarySet } from '@/core/diarySet/diarySetAPI';
-import { useAppDispatch } from '@/core/hooks';
+import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { useRouter } from 'next/router';
 import { getUserPlantList } from '@/core/user/userAPI';
 import Link from 'next/link';
 import Image from 'next/image';
 import AppModal from './common/AppModal';
 import UserFeedDiarySetListItem from './UserFeedDiarySetListItem';
+import Skeleton from 'react-loading-skeleton';
 
 type UserPlantType = {
   plantId: number;
@@ -18,6 +19,8 @@ type UserPlantType = {
 };
 
 export default function UserFeedDiarySet({ nickname }) {
+  const isSameUser = useAppSelector((state) => state.user.isSameUser);
+
   const [isOpenDiarySetCreateModal, setIsOpenDiarySetCreateModal] = useState(false);
   const [diarySetList, setDiarySetList] = useState([]);
   const [diarySetPage, setDiarySetPage] = useState(0);
@@ -35,7 +38,7 @@ export default function UserFeedDiarySet({ nickname }) {
   useEffect(() => {
     fetchDiarySetList();
     return () => {};
-  }, [diarySetPage]);
+  }, [nickname, diarySetPage]);
 
   /** 키우는 식물 리스트 모두 가져오기 함수 */
   async function fetchUserPlantListAll() {
@@ -62,6 +65,7 @@ export default function UserFeedDiarySet({ nickname }) {
       const { data } = await getDiarySetList(nickname, params);
       const content = data.content;
       const totalElements = data.totalElements;
+      console.log(totalElements);
       setDiarySetList(content);
       setDiarySetListTotalCount(totalElements);
     } catch (error) {
@@ -95,16 +99,59 @@ export default function UserFeedDiarySet({ nickname }) {
         fetchDiarySetList={fetchDiarySetList}
       />
 
-      <div className='space-y-2 px-10 py-5'>
-        <div className='flex justify-between space-y-2 mb-5'>
-          <div className='text-xl font-semibold'>관찰일지</div>
-          <div className='flex main cursor-pointer' onClick={() => setIsOpenDiarySetCreateModal(true)}>
-            <span className='material-symbols-outlined'>add</span>
-            <div className='hover:underline'>추가하기</div>
-          </div>
+      <div className='px-3 py-7 pt-9'>
+        <div className='flex justify-between items-center mb-7 mx-4'>
+          <div className='text-md font-semibold'>관찰일지 🔍</div>
+
+          {isSameUser ? (
+            <div
+              className='flex items-center cursor-pointer border border-2 bg-black border-black rounded-full p-0.5'
+              onClick={() => setIsOpenDiarySetCreateModal(true)}>
+              <span className='material-symbols-outlined font-bold text-white' style={{ fontSize: '1.2rem' }}>
+                add
+              </span>
+              <div className='pr-1 font-bold text-white' style={{ fontSize: '0.8rem' }}>
+                ADD
+              </div>
+            </div>
+          ) : null}
         </div>
 
-        <div className='flex items-center'>
+        {diarySetList ? (
+          diarySetList.length == 0 ? (
+            <div className='mx-4 text-center text-sm py-4'>관찰일지를 생성해주세요 📑</div>
+          ) : (
+            <div className='flex flex-row space-x-4 items-center mx-4'>
+              {diarySetPage == 0 ? (
+                <span className='material-symbols-outlined cursor-default text-gray-200'>arrow_back_ios</span>
+              ) : (
+                <span className='material-symbols-outlined cursor-pointer' onClick={prevDiarySetListPage}>
+                  arrow_back_ios
+                </span>
+              )}
+
+              <div className='flex justify-around w-full'>
+                {diarySetList.map((diarySet) => (
+                  <UserFeedDiarySetListItem key={diarySet.diarySetId} nickname={nickname} diarySet={diarySet} fetchDiarySetList={fetchDiarySetList} />
+                ))}
+              </div>
+
+              {diarySetPage >= Math.ceil(Number(diarySetListTotalCount) / Number(diarySetSize)) - 1 ? (
+                <span className='material-symbols-outlined cursor-default text-gray-200'>arrow_forward_ios</span>
+              ) : (
+                <span className='material-symbols-outlined cursor-pointer' onClick={nextDiarySetListPage}>
+                  arrow_forward_ios
+                </span>
+              )}
+            </div>
+          )
+        ) : (
+          <div className='mx-4 text-center text-sm py-4'>
+            <Skeleton width={150} height={150} circle />
+          </div>
+        )}
+
+        {/* <div className='flex items-center'>
           <span className='material-symbols-outlined cursor-pointer' onClick={prevDiarySetListPage}>
             arrow_back_ios
           </span>
@@ -118,7 +165,7 @@ export default function UserFeedDiarySet({ nickname }) {
           <span className='material-symbols-outlined cursor-pointer' onClick={nextDiarySetListPage}>
             arrow_forward_ios
           </span>
-        </div>
+        </div> */}
       </div>
     </>
   );

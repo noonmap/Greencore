@@ -13,7 +13,7 @@ import { PlantType, SearchPlantDetailType } from '@/core/plant/plantType';
 import { SearchDiarySetType } from '@/core/diarySet/diarySetType';
 import { SearchUserType } from '@/core/user/userType';
 import Pagination from 'react-js-pagination';
-import styles from './plantDocs.module.scss';
+import styles from '@/styles/plant/docs.module.scss';
 
 export default function plantDocs() {
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ export default function plantDocs() {
   const indexList = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [pageAtindex, setPageAtindex] = useState<number>(0);
-  const [sizeAtindex, setSizeAtindex] = useState<number>(10);
+  const [sizeAtindex, setSizeAtindex] = useState<number>(7);
 
   // 식물도감 이름 리스트 검색
   const [inputData, setInputData] = useState<string>(''); // 인풋데이터
@@ -287,7 +287,7 @@ export default function plantDocs() {
   return (
     <AppLayout>
       <>
-        <div className={`flex h-full`}>
+        <div className={`flex h-full overflow-hidden`}>
           {/* 메인 */}
           <div className={`${styles.mainContainer} flex-col flex h-screen h-full w-3/5`}>
             <div className={`${styles.title} flex-none p-5`}>식물 도감</div>
@@ -354,17 +354,17 @@ export default function plantDocs() {
 
           {/* 사이드바 */}
 
-          <div className={`${styles.sideContainer} lg:block hidden overflow-auto grow`}>
+          <div className={`${styles.sideContainer} lg:block hidden overflow-auto grow `}>
             {!isDetailSearched ? (
               // 디폴트 정보
-              <div className={`flex flex-col`} style={{ paddingTop: '76px', marginRight: '20%' }}>
+              <div className={`flex flex-col space-y-8 my-4 mx-4`}>
                 {/* 인기 식물 */}
                 <div className='pb-5'>
                   <div className='p-5'>
-                    <span className={`text-xl font-bold pr-3`}>인기 식물</span>
-                    <span>이번 주에 가장 많이 검색된 식물입니다</span>
+                    <span className={`text-xl font-bold pr-3`}>인기 식물 🌷</span>
+                    <span className='text-sm'>이번 주에 가장 많이 검색된 식물입니다</span>
                   </div>
-                  <div className={`flex px-5 justify-between `}>
+                  <div className={`flex mx-10 justify-between `}>
                     {topPlantList?.map((topPlant, index) => (
                       <div
                         key={topPlant.plantId}
@@ -384,7 +384,7 @@ export default function plantDocs() {
                         </div>
 
                         <div className={`${styles.gradation} flex items-end pl-3 pb-2 text-white`}>
-                          <span>{topPlant.plantName || <Skeleton />} </span>
+                          <span className='text-sm p-1'>{topPlant.plantName || <Skeleton />} </span>
                         </div>
                       </div>
                     ))}
@@ -395,7 +395,7 @@ export default function plantDocs() {
                   <div className='pb-5'>
                     <div className='p-5'>
                       <span className={`text-xl font-bold pr-3`}>인기 관찰일지</span>
-                      <span>사용자에게 인기 있는 관찰일지입니다</span>
+                      <span className='text-sm'>사용자에게 인기 있는 관찰일지입니다</span>
                     </div>
                     <div className={`flex px-5 justify-around `}>
                       {topDiarySetList?.map((topDiarySet, index) => (
@@ -415,8 +415,8 @@ export default function plantDocs() {
                                 />
                               </div>
                             </div>
-                            <div className={`${styles.gradation} flex items-end pl-5 pb-4 text-white`}>
-                              <span>{topDiarySet.title || <Skeleton width={150} />}</span>
+                            <div className={`${styles.gradation} flex items-center text-white`}>
+                              <span className='text-sm p-2'>{topDiarySet.title || <Skeleton width={150} />}</span>
                             </div>
                           </Link>
                           <br />
@@ -436,19 +436,19 @@ export default function plantDocs() {
                     </div>
                     <div className={`flex justify-around`}>
                       {samePlantUserList?.map((samPlantUser, index) => (
-                        <div key={samPlantUser.nickname} className={`overflow-hidden`} style={{ borderRadius: '75px' }}>
+                        <div key={samPlantUser.nickname} className={`overflow-hidden rounded-full border border-2 border-black`}>
                           <Link href={`/user/feed/${samPlantUser.nickname}`}>
                             {userProfileList[index] == 'temp' ? (
-                              <Skeleton width={150} height={150} />
+                              <Skeleton width={100} height={100} />
                             ) : (
                               <img
                                 className={`${styles.img}`}
                                 src={userProfileList[index]}
-                                width={150}
-                                height={150}
+                                width={100}
+                                height={100}
                                 onLoad={() => handleImageLoadAtSamePlantUser(index)}
                                 onError={() => handleImageErrorAtSamePlantUser(index)}
-                                style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block', width: '150px', height: '150px' }}
+                                style={{ display: isLoadingErrorAtSamePlantUser[index] ? 'none' : 'block', width: '100px', height: '100px' }}
                               />
                             )}
                           </Link>

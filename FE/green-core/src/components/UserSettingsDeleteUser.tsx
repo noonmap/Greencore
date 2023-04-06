@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { deleteUser, logOut } from '@/core/user/userAPI';
 import AppButton from '@/components/button/AppButton';
-import styles from '@/styles/Settings.module.scss';
+import styles from '@/styles/user/settings.module.scss';
 import { SET_IS_POSSIBLE_UPDATE_USER_FALSE } from '@/core/user/userSlice';
 import { useRouter } from 'next/router';
 import { getAuth, deleteUser as deleteUserByOauth, signOut } from 'firebase/auth';
@@ -47,7 +47,7 @@ export default function UserDelete() {
           </div>
         </div>
 
-        <AppButton text='회원탈퇴' bgColor='danger' handleClick={handleUserDelete} />
+        <AppButton text='회원탈퇴' bgColor='like' handleClick={handleUserDelete} />
       </div>
     </div>
   );

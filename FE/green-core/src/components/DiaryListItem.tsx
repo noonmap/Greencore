@@ -22,18 +22,18 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
           <Link href={`/diary/${diary.diaryId}`} className='hover:underline'>
             <div className='relative'>
               {/* 바디 */}
-              <div className='w-full overflow-hidden' style={{ borderRadius: '30px' }}>
+              <div className='w-full overflow-hidden'>
                 {isLoadingErrorAtimagePath && <Skeleton height={300} />}
                 <Image
                   priority
-                  className='mb-3 w-full h-full'
+                  className='mb-3 w-full h-full border border-2 border-black'
                   src={diary.imagePath}
                   alt='로고'
                   width={100}
                   height={100}
                   onLoad={() => handleImageLoadAtimagePath()}
                   onError={() => handleImageErrorAtimagePath()}
-                  style={{ display: isLoadingErrorAtimagePath ? 'none' : 'block' }}
+                  style={{ display: isLoadingErrorAtimagePath ? 'none' : 'block', borderRadius: 'var(--border-radius)' }}
                 />
                 {/* {diary.imagePath ? (
                   <img src={diary.imagePath} alt='image' style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
@@ -45,7 +45,7 @@ export default function DiaryListItem({ diary, title, isLast }: any) {
               {/* 그라데이션 */}
               <div className={`${styles.gradation}`} style={{ display: isLoadingErrorAtimagePath ? 'none' : 'block' }}>
                 <div className={`p-5 flex justify-between h-full`}>
-                  <div className={`p-3 flex flex-col text-3xl text-white font-bold justify-end h-full `}>
+                  <div className={`p-3 flex flex-col text-xl text-white font-bold justify-end h-full `}>
                     <p>{title || <Skeleton />}</p>
                     <p>day {diary.growingDay}</p>
                   </div>

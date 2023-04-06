@@ -3,7 +3,7 @@ import AppLayout from '@/layout/AppLayout';
 import Skeleton from 'react-loading-skeleton';
 import { useRouter } from 'next/router';
 import FeedCommentList from '@/components/FeedCommentList';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import { useAppDispatch, useAppSelector } from '@/core/hooks';
 import { deletePost, getPost } from '@/core/post/postAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
@@ -15,11 +15,14 @@ import Image from 'next/image';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import { getTodayDate } from '@/lib/utils';
 import { createAlert } from '@/core/alert/alertAPI';
+import Link from 'next/link';
 
 export default function PostDetail() {
   const router = useRouter();
   const storage = getStorage();
   const dispatch = useAppDispatch();
+  const popUpRef = useRef<HTMLDivElement>(null);
+
   const [isOpenPostDeleteModal, setIsOpenPostDeleteModal] = useState(false);
   const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
   const divRef = useRef<HTMLDivElement>(null);
@@ -35,6 +38,20 @@ export default function PostDetail() {
   const [commentCount, setCommentCount] = useState<number>(0);
 
   const [userProfileImagePath, setUserProfileImagePath] = useState<string>('');
+
+  const [isEditPopUp, setIsEditPopUp] = useState<boolean>(false);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleModalOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleModalOutsideClick);
+    };
+  }, []);
+
+  /** 팝업 바깥 클릭 시 */
+  function handleModalOutsideClick(e) {
+    if (popUpRef.current && !popUpRef.current.contains(e.target)) setIsEditPopUp(false);
+  }
 
   /** 사용자 프로필 이미지 가져오는 함수 */
   function getUserProfile(nickname: string) {
@@ -96,7 +113,7 @@ export default function PostDetail() {
 
   // 뒤로가기
   const handleGoBack = () => {
-    router.push('/home/recommend');
+    router.back();
   };
 
   // 좋아요
@@ -223,15 +240,15 @@ export default function PostDetail() {
           <Skeleton />
         </ul>
       ) : (
-        <div className={`${styles.container} overflow-auto flex-1 mx-auto pt-2 px-3`}>
-          <div className={`${styles.title}`}>
-            <span className={`material-symbols-outlined ${styles.backIcon} cursor-pointer`} onClick={handleGoBack}>
-              arrow_back_ios
+        <div className={`${styles.container} overflow-auto flex-1 mx-auto px-4 py-4`}>
+          <div className='flex items-center'>
+            <span className={`material-symbols-outlined cursor-pointer mr-2`} onClick={handleGoBack} style={{ fontSize: '2rem', fontWeight: '600' }}>
+              arrow_back
             </span>
-            <div>게시글</div>
+            <span className={`${styles.title} py-1`}>포스트</span>
           </div>
 
-          <div className='flex'>
+          <div className='flex 2xl:py-10 py-4'>
             {/* 게시글 작성자 정보 */}
             <div className='flex flex-col items-center'>
               <div className={`${styles.helpTip} flex`}>
@@ -239,14 +256,15 @@ export default function PostDetail() {
                   <Image
                     priority
                     src={userProfileImagePath}
-                    width={100}
-                    height={100}
-                    className={`${styles.profileImg}`}
+                    width={80}
+                    height={80}
+                    className={`${styles.profileImg} border border-2 border-black`}
                     alt='프로필 이미지'
                     onClick={goProfile}
+                    style={{ width: '80px', height: '80px' }}
                   />
                 ) : (
-                  <Skeleton width={100} height={100} className={`${styles.profileImg}`} />
+                  <Skeleton width={80} height={80} className={`${styles.profileImg}`} />
                 )}
 
                 {/* 프로필 팝업 */}
@@ -301,35 +319,42 @@ export default function PostDetail() {
                 </div>
               </div>
 
-              <div className={`${styles.infoItem} flex`}>
-                {isLiked ? (
-                  <span className={`material-symbols-outlined ${styles.heart} cursor-pointer flex-1 text-right`} onClick={handleDeleteLike}>
-                    favorite
+              <div className={`flex flex-col space-y-2`}>
+                <div className={`${styles.nickname} mt-2`}>{post.user.nickname}</div>
+
+                <div className='flex items-center'>
+                  {isLiked ? (
+                    <span
+                      className={`material-symbols-outlined ${styles.heart} cursor-pointer flex-1 text-right mt-0.5`}
+                      onClick={handleDeleteLike}
+                      style={{ fontSize: '1.2rem' }}>
+                      favorite
+                    </span>
+                  ) : (
+                    <span
+                      className={`material-symbols-outlined cursor-pointer flex-1 text-right mt-0.5`}
+                      onClick={handlePostLike}
+                      style={{ fontSize: '1.2rem' }}>
+                      favorite
+                    </span>
+                  )}
+                  <div className='font-extrabold flex-1 flex justify-start ml-3 text-sm'>{likeCount}</div>
+                </div>
+
+                <div className={`flex items-center`}>
+                  <span className={`material-symbols-outlined flex-1 flex text-right mt-0.5`} style={{ fontSize: '1.2rem' }}>
+                    chat
                   </span>
-                ) : (
-                  <span className={`material-symbols-outlined cursor-pointer flex-1 text-right`} onClick={handlePostLike}>
-                    favorite
-                  </span>
-                )}
-                <div className='font-extrabold flex-1 flex justify-start ml-3'>{likeCount}</div>
-              </div>
-              <div className={`${styles.infoItem} flex`}>
-                <span className={`material-symbols-outlined flex-1 flex text-right`}>chat</span>
-                <div className='font-extrabold flex-1 flex justify-start ml-3'>{commentCount}</div>
+                  <div className='font-extrabold flex-1 flex justify-start ml-3 text-sm'>{commentCount}</div>
+                </div>
               </div>
             </div>
 
             {/* 게시글 정보 */}
             <div className={`${styles.subContainer} flex flex-1`} style={myNickname !== post.user.nickname ? { paddingRight: '24px' } : null}>
               <div className='flex-1 px-3'>
-                <div className='flex justify-between mb-2'>
-                  <div className={`${styles.nickname}`}>{post.user.nickname}님의 게시물</div>
-                </div>
-                <div className={`${styles.box}`}>
-                  <Image priority src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
-                </div>
-                <div className='flex justify-between mb-2'>
-                  <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
+                <div className='flex flex-col justify-between mb-2'>
+                  <div className={`flex flex-wrap flex-1 mr-5`}>
                     {post?.tags.map((tag: string, index: number) => {
                       return (
                         // TODO : 태그 검색
@@ -341,9 +366,17 @@ export default function PostDetail() {
                       );
                     })}
                   </div>
-                  <div className='w-fit'>{elapsedTime(post?.createdAt)}</div>
                 </div>
-                <div className='mb-7'>{post?.content}</div>
+
+                <div className={`${styles.box}`}>
+                  <Image priority src={post?.imagePath} width={100} height={100} alt='img' className={`${styles.imageWarrper} w-full h-full`} />
+                </div>
+
+                <div className='relative'>
+                  <div className='w-fit absolute mt-3 right-0 text-xs text-gray-500'>{elapsedTime(post?.createdAt)}</div>
+                </div>
+
+                <div className='my-10'>{post?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
                 <div>
@@ -354,12 +387,13 @@ export default function PostDetail() {
               </div>
 
               {/* 옵션 버튼 */}
-              {myNickname === post.user.nickname && (
+              {/* {myNickname === post.user.nickname && (
                 <>
                   <span className='material-symbols-outlined cursor-pointer h-fit' onClick={() => setIsOpenMenu((prev) => !prev)}>
                     more_vert
                   </span>
-                  <div className={`${styles.dropdown}`}>
+
+                  <div className={`${styles.popUp}`}>
                     <div ref={divRef} className={`${isOpenMenu ? styles.editPopUp : 'hidden'} rounded-xl overflow-hidden`}>
                       <div
                         className={`border-b border-slate-300 bg-white flex justify-center items-center cursor-pointer ${styles.dropdownMenu}`}
@@ -378,7 +412,32 @@ export default function PostDetail() {
                     </div>
                   </div>
                 </>
-              )}
+              )} */}
+
+              {myNickname === post.user.nickname ? (
+                <>
+                  <span className='material-symbols-outlined cursor-pointer h-fit' onClick={() => setIsEditPopUp(true)}>
+                    more_vert
+                  </span>
+
+                  {isEditPopUp ? (
+                    <div className='relative' ref={popUpRef}>
+                      <div className={`popUp ${styles.popUp}`}>
+                        <Link href={`/post/update/${postId}`}>
+                          <div>수정</div>
+                        </Link>
+                        <div
+                          onClick={() => {
+                            setIsOpenPostDeleteModal(true);
+                            setIsEditPopUp(false);
+                          }}>
+                          삭제
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </>
+              ) : null}
             </div>
           </div>
         </div>

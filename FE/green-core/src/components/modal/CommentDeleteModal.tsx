@@ -58,7 +58,7 @@ export default function CommentDeleteModal({ isOpen, modalTitle, handleModalClos
               </div>
 
               <div className={`flex justify-between`}>
-                <AppButton text='취소' bgColor='thin' handleClick={() => handleModalClose()} />
+                <AppButton text='취소' bgColor='white' className='border border-2 border-black' handleClick={() => handleModalClose()} />
                 <AppButton text='확인' handleClick={() => handleDelete()} />
               </div>
             </div>

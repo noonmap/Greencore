@@ -7,7 +7,7 @@ import FeedCommentList from '@/components/FeedCommentList';
 import { deleteDiary, getDiaryDetail } from '@/core/diary/diaryAPI';
 import CommentDeleteModal from '@/components/modal/CommentDeleteModal';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import { createLike, deleteLike } from '@/core/feed/feedAPI';
 import { deleteFollow, updateFollow } from '@/core/follow/followAPI';
 import { SET_SEARCH_TAG } from '@/core/search/searchSlice';
@@ -101,7 +101,7 @@ export default function DiaryDetail() {
 
   // 뒤로가기
   const handleGoBack = () => {
-    router.push(`/diaryset/list/${diary.diarySetId}`);
+    router.back();
   };
 
   // 좋아요
@@ -228,30 +228,31 @@ export default function DiaryDetail() {
           <Skeleton />
         </ul>
       ) : (
-        <div className={`${styles.container} overflow-auto flex-1 mx-auto pt-2 px-3`}>
-          <div className={`${styles.title}`}>
-            <span className={`material-symbols-outlined ${styles.backIcon} cursor-pointer`} onClick={handleGoBack}>
-              arrow_back_ios
+        <div className={`${styles.container} overflow-auto flex-1 mx-auto px-4 py-4`}>
+          <div className='flex items-center'>
+            <span className={`material-symbols-outlined cursor-pointer mr-2`} onClick={handleGoBack} style={{ fontSize: '2rem', fontWeight: '600' }}>
+              arrow_back
             </span>
-            <div>일지</div>
+            <span className={`${styles.title} py-1`}>일지</span>
           </div>
 
-          <div className='flex'>
+          <div className='flex 2xl:py-10 py-4'>
             {/* 일지 작성자 정보 */}
             <div className='flex flex-col items-center'>
               <div className={`${styles.helpTip} flex`}>
                 {userProfileImagePath ? (
                   <Image
                     priority
-                    width={100}
-                    height={100}
+                    width={80}
+                    height={80}
                     src={userProfileImagePath}
-                    className={`${styles.profileImg}`}
+                    className={`${styles.profileImg} border border-2 border-black`}
                     alt='프로필 이미지'
                     onClick={goProfile}
+                    style={{ width: '80px', height: '80px' }}
                   />
                 ) : (
-                  <Skeleton width={100} height={100} className={`${styles.profileImg}`} />
+                  <Skeleton width={80} height={80} className={`${styles.profileImg}`} />
                 )}
 
                 {/* 프로필 팝업 */}
@@ -327,14 +328,11 @@ export default function DiaryDetail() {
             {/* 일지 정보 */}
             <div className={`${styles.subContainer} flex flex-1`} style={myNickname !== diary.user.nickname ? { paddingRight: '24px' } : null}>
               <div className='flex-1 px-3'>
-                <div className='flex justify-between mb-2'>
+                <div className='flex justify-between'>
                   <div className={`${styles.nickname}`}>{diary.user.nickname}님의 일지</div>
                 </div>
-                <div className={`${styles.box}`}>
-                  <Image priority src={diary?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
-                </div>
                 <div className='flex justify-between mb-2'>
-                  <div className={`${styles.tags} flex flex-wrap flex-1 mr-5`}>
+                  <div className={` flex flex-wrap flex-1 mr-5`}>
                     {diary?.tags.map((tag: string, index: number) => {
                       return (
                         <div key={index} className='pr-2'>
@@ -345,9 +343,16 @@ export default function DiaryDetail() {
                       );
                     })}
                   </div>
-                  <div className='w-fit'>{elapsedTime(diary?.observationDate)}</div>
                 </div>
-                <div className='mb-12'>{diary?.content}</div>
+
+                <div className={`${styles.box}`}>
+                  <Image priority src={diary?.imagePath} width={100} height={100} alt='img' className={`${styles.image}`} />
+                </div>
+
+                <div className='relative'>
+                  <div className='w-fit absolute -top-3 right-0 text-xs text-gray-500'>{elapsedTime(diary?.observationDate)}</div>
+                </div>
+                <div className='mb-12 mt-5'>{diary?.content}</div>
 
                 {/* 댓글 컴포넌트 */}
                 <div>

@@ -7,7 +7,7 @@ import { getPost, updatePost } from '@/core/post/postAPI';
 import { SET_IS_SEARCH_STATE } from '@/core/common/commonSlice';
 import { checkInputFormToast } from '@/lib/utils';
 import AppButton from '@/components/button/AppButton';
-import styles from '@/styles/Diary.module.scss';
+import styles from '@/styles/post/post.module.scss';
 import Image from 'next/image';
 
 export default function updatepost() {
@@ -134,16 +134,17 @@ export default function updatepost() {
 
   return (
     <AppLayout>
-      <div className={`overflow-auto flex-1 mx-auto py-6 px-10 h-full`}>
-        <div className={`${styles.title}`}>
-          <span className={`material-symbols-outlined ${styles.backIcon} cursor-pointer`} onClick={handleGoBack}>
-            arrow_back_ios
+      <div className={`${styles.container} overflow-auto overflow-x-hidden flex-1 mx-auto px-4 py-4`}>
+        <div className='flex items-center'>
+          <span className={`material-symbols-outlined cursor-pointer mr-2`} onClick={handleGoBack} style={{ fontSize: '2rem', fontWeight: '600' }}>
+            arrow_back
           </span>
-          <div>게시글 수정</div>
+          <span className={`${styles.title} py-1`}>포스트 수정</span>
         </div>
-        <div className='flex justify-center mb-4'>
+
+        <div className='flex justify-center 2xl:py-5 py-2 w-full'>
           {/* 사진 */}
-          <div className='w-1/2'>
+          <div className=''>
             <label htmlFor='image'>
               {preview ? (
                 <Image priority src={preview} width={100} height={100} alt='이미지를 등록해주세요' className={`${styles.inputImage}`} />
@@ -170,23 +171,27 @@ export default function updatepost() {
             />
           </div>
         </div>
+
         {/* 게시글 내용 */}
-        <div className='mb-4'>
-          <div className={`${styles.label}`}>게시글 내용 입력</div>
-          <textarea required className={`${styles.textareaBox}`} {...register('content')} placeholder='게시글의 내용을 입력해주세요' />
+        <div className='my-2 mx-10'>
+          <div className={`${styles.label}`}>내용</div>
+          <textarea required className={`w-full`} {...register('content')} placeholder='게시글의 내용을 입력해주세요' />
         </div>
 
         {/* 태그 */}
-        <div className={`w-full`}>
+        <div className={` my-5 mx-10`}>
           <div className={`${styles.label}`}>태그 입력</div>
           <div className={`${styles.tagBox}`}>
             {tagList.map((tagItem, index) => {
               return (
-                <div key={index} className={`${styles.tagComponent} flex`}>
-                  <div className={`w-fit ${styles.tagName}`}>{tagItem}</div>
-                  <button onClick={handleDeleteTagItem} className={`material-symbols-outlined w-fit ${styles.tagDelete}`}>
+                <div key={index} className={`flex justify-between items-center ${styles.tagComponent}`}>
+                  <div className={`text-xs font-bold text-black`}>{tagItem}</div>
+                  <div
+                    onClick={handleDeleteTagItem}
+                    className={`material-symbols-outlined cursor-pointer ${styles.tagDelete}`}
+                    style={{ fontSize: '1.3rem' }}>
                     close
-                  </button>
+                  </div>
                 </div>
               );
             })}
@@ -203,9 +208,9 @@ export default function updatepost() {
         </div>
 
         {/* 버튼 */}
-        <div className='flex mt-16'>
-          <AppButton text='취소' bgColor='thin' handleClick={handleGoBack} className={`flex-1 mr-8 ${styles.btn}`} />
-          <AppButton text='게시글 수정' handleClick={handleUpdatePost} className={`flex-1 ${styles.btn}`} />
+        <div className='flex mt-16 mx-10'>
+          <AppButton text='취소' bgColor='transparent' handleClick={handleGoBack} className={`flex-1 mr-8 ${styles.btn}`} />
+          <AppButton text='게시글 수정' handleClick={handleUpdatePost} bgColor='yellow' className={`flex-1 ${styles.btn}`} />
         </div>
       </div>
     </AppLayout>
