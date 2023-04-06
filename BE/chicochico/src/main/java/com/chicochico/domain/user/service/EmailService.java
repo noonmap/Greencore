@@ -164,6 +164,18 @@ public class EmailService {
 			}
 		}
 
+		// 최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자
+		char[] charSet = new char[] { '~', '.', '!', '@', '#', '$', '%', '^', '(', ')', '_', '-', '+', '=', '|', ';',
+			':', '`', '"', '<', '>', ',', '?', '/' };
+
+		// 하나의 문자
+		key.append((char) ((int) (rnd.nextInt(26)) + 97));
+		// 하나의 숫자
+		key.append((rnd.nextInt(10)));
+		// 하나의 특수문자
+		int idx = (int) (charSet.length * Math.random());
+		key.append(charSet[idx]);
+
 		return key.toString();
 	}
 

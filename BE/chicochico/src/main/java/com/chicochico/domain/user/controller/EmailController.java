@@ -5,6 +5,7 @@ import com.chicochico.common.dto.ResultDto;
 import com.chicochico.domain.user.dto.request.AuthCodeRequestDto;
 import com.chicochico.domain.user.dto.request.EmailRequestDto;
 import com.chicochico.domain.user.service.EmailService;
+import com.chicochico.domain.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
 
 	private final EmailService emailService;
+	private final UserService userService;
 
 
 	@PostMapping
 	@ApiOperation(value = "인증 이메일을 발송합니다.", notes = "")
 	public ResponseEntity<ResultDto<Boolean>> sendVerificationEmail(@RequestBody EmailRequestDto emailRequestDto) {
+		Boolean checkEmail = userService.checkEmail(emailRequestDto.getEmail());
+		if (!checkEmail) {
+			return ResponseEntity.ok().body(ResultDto.ofFail());
+		}
 		emailService.sendVerificationEmail(emailRequestDto);
 
 		return ResponseEntity.ok().body(ResultDto.ofSuccess());

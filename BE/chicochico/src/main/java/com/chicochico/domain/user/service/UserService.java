@@ -94,17 +94,7 @@ public class UserService {
 	 * @return TRUE: 닉네임 중복 아님, FALSE: 닉네임 중복
 	 */
 	public Boolean checkNickname(String nickname) {
-		try {
-			// 로그인 상태라면
-			String userNickname = authService.getUserNickname();
-			if (userNickname.equals(nickname)) {
-				return true;
-			}
-			return userRepository.findByNickname(nickname).isEmpty();
-		} catch (Exception e) {
-			log.info("비로그인 상태에서 닉네임 중복 확인");
-			return userRepository.findByNickname(nickname).isEmpty();
-		}
+		return userRepository.findByNickname(nickname).isEmpty();
 	}
 
 
