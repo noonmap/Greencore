@@ -159,12 +159,12 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
 
   useEffect(() => {
     handleGetCommentList();
-  }, []);
+  }, [feedId]);
 
   return (
     <>
       <div className={`${styles.inputBox} flex-1`}>
-        <div className={`flex items-center w-full`}>
+        <div className={`${styles.textareaWrapper} flex items-center flex-1`}>
           <textarea rows={1} {...register('content')} className='w-full' />
           {!userList ||
             (userList.length > 0 &&
@@ -173,8 +173,8 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
                   {user.nickname}
                 </div>
               )))}
-          <AppButton text='작성' className='ml-2' bgColor='yellow' handleClick={handleCreateComment} />
         </div>
+        <AppButton text='작성' className='ml-2' bgColor='yellow' handleClick={handleCreateComment} />
       </div>
       {commentList.map((comment) => {
         return (
