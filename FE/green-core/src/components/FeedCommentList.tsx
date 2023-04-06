@@ -18,6 +18,7 @@ type PropsType = {
 export default function FeedCommentList({ feedId, setCommentCount, feedType, nickname }: PropsType) {
   const [commentList, setCommentList] = useState([]);
   const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
+  console.log(feedId);
 
   // GET 요청 변수
   const isStop = useRef<boolean>(false);
