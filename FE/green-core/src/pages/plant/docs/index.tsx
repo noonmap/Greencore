@@ -86,7 +86,7 @@ export default function plantDocs() {
   // 나같식키 유저
 
   useEffect(() => {
-    if (samePlantUserList.length != 0) {
+    if (samePlantUserList?.length != 0) {
       getUserProfile(samePlantUserList);
     }
   }, [samePlantUserList]);
@@ -512,37 +512,37 @@ export default function plantDocs() {
                       </div>
                       <div className='flex flex-col'>
                         {plantDocsDetail?.water ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.water}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.water}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />
                         )}
                         {plantDocsDetail?.light ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.light}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.light}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />
                         )}
                         {plantDocsDetail?.temperature ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.temperature}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.temperature}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />
                         )}
                         {plantDocsDetail?.humidity ? (
-                          <div className='py-5'>
-                            <span className='p-3 text-white' style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)' }}>
-                              {plantDocsDetail?.humidity}
-                            </span>
+                          <div
+                            className='my-5 p-3 text-white'
+                            style={{ borderRadius: '30px', backgroundColor: 'var(--main-color)', display: 'inline-block', width: 'fit-content' }}>
+                            <span>{plantDocsDetail?.humidity}</span>
                           </div>
                         ) : (
                           <Skeleton width={300} />

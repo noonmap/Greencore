@@ -46,7 +46,7 @@
             <sub><b>팀원 류승태</b></sub>
         </a>
         <br />
-        <div>FE</div>
+        <div>FE, CI/CD</div>
       </td>
       <td align="center">
         <a href="https://github.com/hyeonaseome">
@@ -64,57 +64,83 @@
             <sub><b>팀원 최형규</b></sub>
         </a>
         <br />
-        <div>AI</div>
+        <div>FE, AI</div>
       </td>
     </tr>
     </tbody>
 </table>
 
-<br/>
-<br/>
-<br/>
+<br/><br/><br/>
 
-## 👍 서비스 개요
+## :deciduous_tree: 프로젝트 개요
+
+### 프로젝트 기간
+
+- 기획 및 설계 : 23.02.20 ~ 23.02.26
+- 프로젝트 개발 : 23.02.27 ~ 23.04.07
+
+### 구성원
+
+- 백엔드 3명
+- 프론트엔드 3명
+
+<br/>
+<br/><br/>
+
+## 👍 서비스 소개
 
 ```
-반려식물을 키우는, 혹은 키우고 싶은 사람들을 위한 식물 SNS 서비스
+안녕하세요! 식물을 사랑하시는 분들을 위한 SNS 사이트를 "그린코아"를 소개해드리겠습니다.
+
+"그린코아"는 식물과 관련된 모든 정보를 공유하고 소통할 수 있는 SNS 사이트입니다. 사용자들은 자신이 기르는 식물의 사진과 정보를 공유하며, 다른 사용자들의 글에 댓글을 달아 소통할 수 있습니다.
+
+먼저, 식물 가이드 정보 기능에서는 다양한 식물 종류에 대한 정보를 제공합니다. 사용자들은 검색 창에서 관심있는 식물의 이름을 검색하면 해당 식물의 특징, 성장 환경, 관리 방법 등에 대한 상세한 정보를 얻을 수 있습니다.
+
+또한, 식물 스케줄 관리 기능에서는 사용자들이 자신이 기르는 식물에 대한 관리 일정을 관리할 수 있습니다. 이 기능을 사용하면, 사용자들은 식물에게 필요한 물, 양분, 가지런히 관리할 일정을 등록할 수 있으며, 이를 일정에 따라 관리할 수 있도록 알림 기능을 제공합니다.
+
+마지막으로, 병충해 검색 기능에서는 사용자들이 자신의 식물에 발생한 문제를 파악할 수 있도록 다양한 병충해 정보를 제공합니다. 사용자들은 검색 창에서 식물의 잎사귀 사진을 업로드하면, 해당 증상의 질병을 알아내줍니다.
+
+이러한 다양한 기능을 제공하는 "그린코아"은 사용자들이 더욱 효율적으로 식물을 관리하고, 문제를 해결할 수 있도록 도와줍니다.
 ```
 
-### Web
+<br/><br/><br/>
 
-1. 식물 관찰 일지
+## :four_leaf_clover: 주요기능
+
+### :heavy_check_mark: 식물 관찰일지
 
 - 사용자가 식물에 대한 관찰일지를 쓸 수 있다.
+
 - SNS 피드 형식으로 제공하여 다른 사용자들과 일지를 공유할 수 있다.
+
 - 사용자는 하나의 관찰 일지에 여러 개의 일지를 추가할 수 있다.
 
-2. 식물 관리
+### :heavy_check_mark: 식물 관리
 
 - 키우고 있는 식물에 대한 돌보기 스케줄링을 제공한다.
+
 - 물주기, 분갈이, 햇빛 등등의 식물 관리 할 일을 표시한다.
+
 - 식물 관리 스케줄을 등록해 놓으면 때에 맞춰 알림이 간다.
 
-3. 식물 추천 피드
+### :heavy_check_mark: 식물 병충해 검색
+
+- 상태가 좋지 않은 식물의 잎사귀 사진을 업로드하여 병충해 진단을 할 수 있다
+- 기능을 사용하기 위한 가이드라인을 제공한다
+
+### :heavy_check_mark: 식물 추천 피드
 
 - 협업 필터링을 기반으로 사용자에게 맞춤형 추천 피드를 제공한다.
+
 - 추천 피드는 인기 일지, 같은 종의 식물을 키우는 사람들의 일지 등을 제공한다.
 
-4. 식물 가이드
+### :heavy_check_mark: 식물 가이드
 
 - 식물을 검색하여 정보 및 키우기 가이드를 제공한다.
+
 - 식물 이름, 식물 이미지 등으로 검색할 수 있다.
-- 식물 이미지 검색은 AI 기술을 사용한다.
 
-### AI
 
-1. 식물 검색
-
-- 식물의 이미지를 검색하면 해당 이미지를 분석하여 어떤 식물인지 결과를 반환한다.
-- 해당 결과에 따른 식물에 대한 정보 및 가이드를 제공한다.
-
-2. 식물 일러스트화
-
-- 식물 관찰 일지를 올릴 때 식물 사진을 일러스트화하여 보여준다.
 
 <br/>
 <br/>
@@ -310,17 +336,202 @@ handleCreateBtnClick
     </tr>
   </tbody>
 </table>
-
 <br/>
-<br/>
+<br/><br/>
 
 ## 📁 프로젝트 구조
 
 ```
-AI
-BE
-FE
+[BE]
+├─main
+│  ├─generated
+│  ├─java
+│  │  └─com
+│  │      └─chicochico
+│  │          ├─common
+│  │          │  ├─code
+│  │          │  ├─controller
+│  │          │  ├─dto
+│  │          │  │  ├─request
+│  │          │  │  └─response
+│  │          │  ├─entity
+│  │          │  ├─repository
+│  │          │  └─service
+│  │          ├─config
+│  │          ├─domain
+│  │          │  ├─alert
+│  │          │  │  ├─controller
+│  │          │  │  ├─dto
+│  │          │  │  │  ├─request
+│  │          │  │  │  └─response
+│  │          │  │  ├─entity
+│  │          │  │  ├─repository
+│  │          │  │  └─service
+│  │          │  ├─feed
+│  │          │  │  ├─controller
+│  │          │  │  ├─dto
+│  │          │  │  │  ├─request
+│  │          │  │  │  └─response
+│  │          │  │  ├─entity
+│  │          │  │  ├─repository
+│  │          │  │  └─service
+│  │          │  ├─plant
+│  │          │  │  ├─controller
+│  │          │  │  ├─dto
+│  │          │  │  │  ├─request
+│  │          │  │  │  └─response
+│  │          │  │  ├─entity
+│  │          │  │  ├─repository
+│  │          │  │  └─service
+│  │          │  ├─schedule
+│  │          │  │  ├─controller
+│  │          │  │  ├─dto
+│  │          │  │  │  ├─request
+│  │          │  │  │  └─response
+│  │          │  │  ├─entity
+│  │          │  │  ├─repository
+│  │          │  │  └─service
+│  │          │  └─user
+│  │          │      ├─controller
+│  │          │      ├─dto
+│  │          │      │  ├─request
+│  │          │      │  └─response
+│  │          │      ├─entity
+│  │          │      ├─repository
+│  │          │      └─service
+│  │          └─exception
+│  └─resources
+│      ├─properties
+│      └─sql
+└─test
+    └─java
+        └─com
+            └─chicochico
+                ├─alert
+                ├─feed
+                │  ├─controller
+                │  ├─repository
+                │  └─service
+                ├─plant
+                ├─schedule
+                └─user
+                    └─service
+
+[FE]
+├─assets
+├─components
+│  ├─ai
+│  │  ├─Popup
+│  │  └─ResultPage
+│  ├─button
+│  ├─common
+│  └─modal
+├─core
+│  ├─alert
+│  ├─common
+│  ├─diary
+│  ├─diarySet
+│  ├─feed
+│  ├─follow
+│  ├─plant
+│  ├─post
+│  ├─schedule
+│  ├─search
+│  └─user
+├─layout
+├─lib
+├─pages
+│  ├─auth
+│  ├─diary
+│  │  └─update
+│  ├─diaryset
+│  │  └─list
+│  ├─home
+│  │  ├─following
+│  │  └─recommend
+│  ├─plant
+│  │  ├─disease
+│  │  └─docs
+│  ├─post
+│  │  └─update
+│  ├─schedule
+│  └─user
+│      ├─alert
+│      ├─bookmark
+│      ├─feed
+│      ├─follower
+│      ├─following
+│      └─settings
+└─styles
+    ├─common
+    ├─font
+    │  ├─woff
+    │  ├─woff-subset
+    │  ├─woff2
+    │  └─woff2-subset
+    ├─home
+    └─user
 ```
 
 <br/>
-<br/>
+<br/><br/>
+
+## :blue_book: 기술 스택
+
+### ✔️ DB
+
+- `MySQL`
+- `Redis`
+
+### ✔️ Backend
+
+- `Spring Boot`
+- `Spring Security`
+- `Spring Data JPA`
+- `Spring Data Redis`
+- `Spring Boot Websocket`
+- `Swagger-ui`
+- `JWT`
+- `Gradle`
+
+### ✔️ Frontend
+
+- `Node JS`
+- `React JS`
+- `Next JS`
+- `typescript`
+- `TailWind`
+- `sass`
+- `Redux-toolkit`
+- `Sockjs`
+- `Toastify-js`
+- `firebase`
+
+### ✔️ Deploy
+
+- `AWS EC2`
+- `Ubuntu 20.04`
+- `Docker`
+- `Docker-compose`
+- `Nginx`
+- `Jenkins`
+
+### ✔️ Communication
+
+- 형상 관리 - `Gitlab`
+- 이슈 및 스크럼 관리 - `Jira`
+- `Notion`
+- `Discord`
+- `Mattermost`
+
+## :clipboard: ER 다이어그램
+
+[사진]
+
+<br/><br/><br/>
+
+## :whale2: 아키텍처
+
+[사진]
+
+<br/><br/><br/>

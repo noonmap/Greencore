@@ -16,7 +16,7 @@ import java.util.UUID;
 public class FileService {
 
 	public static final String NGINX_PATH = "/resources/";
-	private final String DEFAULT_IMAGE_PATH = "default.jpg";
+	private final String DEFAULT_IMAGE_NAME = "default.jpg";
 	@Value("${file.dir}")
 	private String fileDir;
 	// GreenCore가 지원하는 이미지 확장자 종류
@@ -55,7 +55,7 @@ public class FileService {
 
 		// 파일이 비어있는지 확인
 		if (file == null || file.isEmpty()) {
-			return subFileDir + '/' + DEFAULT_IMAGE_PATH;
+			return subFileDir + '/' + DEFAULT_IMAGE_NAME;
 			//			throw new CustomException(ErrorCode.FILE_IS_EMPTY);
 		}
 
@@ -90,6 +90,8 @@ public class FileService {
 
 
 	public void deleteImageFile(String savedName) {
+		String[] savedFileName = savedName.split("/");
+		if (savedFileName[savedFileName.length - 1].equals(DEFAULT_IMAGE_NAME)) return; // 기본 이미지는 삭제하지 않음
 		String savedPath = fileDir + '/' + savedName;
 		File savedFile = new File(savedPath);
 		if (savedFile.exists()) {
