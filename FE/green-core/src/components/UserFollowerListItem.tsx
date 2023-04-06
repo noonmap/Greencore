@@ -82,13 +82,7 @@ export default function UserFollowerListItem({ follower, userProfileList }) {
 
         <div className='flex space-x-2 items-center'>
           {follower.isFollowed ? (
-            <AppButton
-              text='언팔로우'
-              className='hover:bg-red-100'
-              bgColor='pink'
-              size='small'
-              handleClick={(e) => handleFollowDelete(e, follower.nickname)}
-            />
+            <AppButton text='언팔로우' bgColor='main' size='small' handleClick={(e) => handleFollowDelete(e, follower.nickname)} />
           ) : (
             <AppButton text='팔로우 하기' size='small' bgColor='yellow' handleClick={(e) => handleFollowUpdate(e, follower.nickname)} />
           )}

@@ -81,13 +81,7 @@ export const UserFollowingListItem = ({ following, userProfileList }) => {
         </div>
 
         {following.isFollowed ? (
-          <AppButton
-            text='언팔로우'
-            className='hover:bg-red-100'
-            bgColor='pink'
-            size='small'
-            handleClick={(e) => handleFollowDelete(e, following.nickname)}
-          />
+          <AppButton text='언팔로우' bgColor='main' size='small' handleClick={(e) => handleFollowDelete(e, following.nickname)} />
         ) : (
           <AppButton text='팔로우 하기' size='small' bgColor='yellow' handleClick={(e) => handleFollowUpdate(e, following.nickname)} />
         )}
