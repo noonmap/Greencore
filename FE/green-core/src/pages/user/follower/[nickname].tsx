@@ -104,6 +104,7 @@ export default function follower() {
 			}
 			setIsLoaded(false);
 			setFollowerList((prev) => [...prev, ...content]);
+			setIsLoading(true);
 		} catch (error) {
 			// console.error(error);
 		}

@@ -14,7 +14,7 @@ export default function Home() {
 	const isAuth = getCookieToken() ? true : false;
 
 	useEffect(() => {
-		dispatch(SET_NOW_PAGE('home'));
+		dispatch(SET_NOW_PAGE('index'));
 		dispatch(SET_IS_SEARCH_STATE('default'));
 		return () => {};
 	}, []);
