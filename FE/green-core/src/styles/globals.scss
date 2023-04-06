@@ -123,7 +123,7 @@ input[type='checkbox']:checked::before {
 
 .inputError {
   &:focus {
-    border: 1px solid var(--like-color);
+    border: 2px solid var(--like-color);
 
     &::placeholder {
       color: var(--light-color);
@@ -152,7 +152,7 @@ h1 {
 }
 
 .error {
-  color: var(--danger-color);
+  color: var(--like-color);
   font-size: 0.85rem;
 }
 
