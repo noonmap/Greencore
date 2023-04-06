@@ -13,7 +13,7 @@ export default function FllowLayout({ children }) {
 		if (!router.isReady) return;
 		if (router.pathname.includes('following')) setIsFollowing(true);
 		else setIsFollowing(false);
-	}, []);
+	}, [router.isReady]);
 
 	return (
 		<AppLayout>
