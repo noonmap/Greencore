@@ -27,7 +27,7 @@ export default function Home() {
 					<div className={`${styles.heading01}`}>식물을 키우고 있는, 키우고 싶은 사람들을 위한 반려식물 SNS</div>
 				</div>
 
-				<div className="space-y-16 mt-20">
+				<div className="space-y-16 mt-20 ">
 					<div className={`${styles.heading1} flex flex-col justify-around items-center animate__animated animate__fadeInLeft`}>
 						<div className={`${styles.title}`}>식물 도감</div>
 						<img src="/images/heading/heading1.png" width="120" />
