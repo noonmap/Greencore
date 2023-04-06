@@ -480,7 +480,7 @@ public class ScheduleService {
 		//정기 일정 만든 유저와 현재 유저 동일
 		if (user.equals(regularSchedule.getUser())) {
 			//삭제 되지 않은 정기 일정에 포함된 오늘 이후 일정들
-			List<ScheduleEntity> scheduleList = scheduleRepository.findAllByRegularScheduleIdAndDateAfter(regularId, date);
+			List<ScheduleEntity> scheduleList = scheduleRepository.findAllByRegularScheduleIdAndDateGreaterThanEqual(regularId, date);
 
 			for (ScheduleEntity schedule : scheduleList) {
 				//정기 일정 내의 일정 삭제
