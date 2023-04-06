@@ -18,6 +18,7 @@ type PropsType = {
 export default function FeedCommentList({ feedId, setCommentCount, feedType, nickname }: PropsType) {
   const [commentList, setCommentList] = useState([]);
   const [reloadFeedId, setReloadFeedId] = useState<number>(Number(feedId));
+  console.log(reloadFeedId); /////////////////////////////////////////////////////////////////////
   const myNickname = useAppSelector((state) => state.common?.userInfo?.nickname);
 
   // GET 요청 변수
@@ -41,17 +42,13 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
 
   const [content, userList] = getValues(['content', 'userList']);
 
-  useEffect(() => {
-    watch();
-    return () => {};
-  });
-
   // 댓글 5개씩 리스트 받아오기
   const handleGetCommentList = async () => {
     if (!isStop.current) {
       const requestData = { feedId, page: page.current, size: size.current };
       try {
         const data = await getCommentList(requestData);
+        console.log('댓글 가져옴', data.data.content); ///////////////////
         if (data.result === 'SUCCESS') {
           setCommentCount(data.data.totalElements);
           if (data.data.content.length < 5) {
@@ -160,7 +157,8 @@ export default function FeedCommentList({ feedId, setCommentCount, feedType, nic
 
   useEffect(() => {
     handleGetCommentList();
-    return setCommentList([]);
+    watch();
+    return () => setCommentList([]);
   }, [reloadFeedId]);
 
   return (
