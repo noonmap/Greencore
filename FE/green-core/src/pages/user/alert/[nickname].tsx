@@ -100,7 +100,14 @@ export default function Alert() {
 	return (
 		<AppLayout>
 			{alertList.length == 0 ? (
-				<>알림 리스트가 없습니다</>
+				<div className="space-y-2 px-4 py-4">
+					<h1 className={`${styles.title} main mb-10`}>알림</h1>
+
+					<div className="text-center flex items-center justify-center space-x-2 pt-40">
+						<div className="font-italic">현재 조회되는 알림이 없습니다</div>
+						<img src="/images/emoji/face_with_rolling_eyes.png" width="24" height="24" />
+					</div>
+				</div>
 			) : (
 				<div className="space-y-2 px-4 py-4">
 					<h1 className={`${styles.title} main mb-10`}>알림</h1>
