@@ -2,10 +2,11 @@ import styles from '@/styles/Home.module.scss';
 import AppLayout from '@/layout/AppLayout';
 import { useAppDispatch } from '@/core/hooks';
 import { useEffect } from 'react';
-import { SET_NOW_PAGE } from '@/core/common/commonSlice';
+import { SET_IS_SEARCH_STATE, SET_NOW_PAGE } from '@/core/common/commonSlice';
 import AppButton from '@/components/button/AppButton';
 import { useRouter } from 'next/router';
 import { getCookieToken } from '@/lib/cookies';
+import Image from 'next/image';
 
 export default function Home() {
 	const router = useRouter();
@@ -14,17 +15,16 @@ export default function Home() {
 
 	useEffect(() => {
 		dispatch(SET_NOW_PAGE('home'));
+		dispatch(SET_IS_SEARCH_STATE('default'));
 		return () => {};
 	}, []);
 
 	return (
 		<AppLayout home>
 			<main className="mx-7 my-7 flex flex-col justify-center items-center mt-20 overflow-x-hidden">
-				<div className="flex flex-col animate__animated animate__fadeIn main">
-					<div className={`${styles.heading01}`}>식물을 키우고 있는, 키우고 싶은</div>
-					<div className={`${styles.heading02}`}>사람들을 위한</div>
-					<div className={`${styles.heading03}`}>반려식물 SNS</div>
-					<div>GreenCore</div>
+				<div className="flex flex-col animate__animated animate__fadeIn">
+					<Image src={'/logo.png'} alt="" width={200} height={100} />
+					<div className={`${styles.heading01}`}>식물을 키우고 있는, 키우고 싶은 사람들을 위한 반려식물 SNS</div>
 				</div>
 
 				<div className="space-y-16 mt-20">
@@ -63,9 +63,9 @@ export default function Home() {
 				</div>
 
 				{isAuth ? (
-					<AppButton text="추천피드 보기" className="w-full mt-20" handleClick={() => router.push('/home/recommend')} />
+					<AppButton text="추천피드 보기" className="w-full mt-20 mb-20 mb-10" handleClick={() => router.push('/home/recommend')} />
 				) : (
-					<AppButton text="회원가입 하러가기" className="w-full mt-20" handleClick={() => router.push('/auth/signup')} />
+					<AppButton text="회원가입 하러가기" className="w-full mt-20 mb-10" handleClick={() => router.push('/auth/signup')} />
 				)}
 			</main>
 		</AppLayout>

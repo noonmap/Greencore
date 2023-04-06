@@ -123,7 +123,7 @@ export default function AppHeader() {
 						<div className=" flex mb-10">
 							<Image src="/images/leaf4.png" width={32} height={32} className={`xl:hidden block`} alt="logo" />
 							<Link href="/" className={`${styles.title} xl:block hidden`} data-content="GREENCORE">
-								GREENCORE
+								<Image src={'/logo.png'} alt="" width={200} height={100} />
 							</Link>
 						</div>
 
