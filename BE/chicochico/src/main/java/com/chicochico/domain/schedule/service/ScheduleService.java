@@ -423,6 +423,8 @@ public class ScheduleService {
 			//정기 일정이랑 정기 일정에 속한 일정들 삭제
 			deleteSchedulesOfRegularSchedule(regularId);
 
+			LocalDate lastDate = LocalDate.of(date.getYear(), date.getMonth(), date.lengthOfMonth());
+
 			//수정본 저장
 			RegularScheduleEntity regularSchedule1 = scheduleRequestDto.toEntity(regularId, user, userPlant, date);
 			regularScheduleRepository.save(regularSchedule1);
@@ -432,11 +434,11 @@ public class ScheduleService {
 
 			//바뀐 정기 일정이 주간 정기 일정일 때
 			if (regularScheduleType.equals(RegularScheduleType.WEEKLY_SCHEDULE)) {
-				createWeeklySchedule(scheduleRequestDto, user, regularSchedule1, date);
+				createWeeklySchedule(scheduleRequestDto, user, regularSchedule1, lastDate);
 			}
 			//바뀐 정기 일정이 월간 정기 일정일 때
 			else if (regularScheduleType.equals(RegularScheduleType.MONTHLY_SCHEDULE)) {
-				createMonthlySchedule(scheduleRequestDto, user, regularSchedule1, date);
+				createMonthlySchedule(scheduleRequestDto, user, regularSchedule1, lastDate);
 			}
 		}
 
@@ -478,7 +480,7 @@ public class ScheduleService {
 		//정기 일정 만든 유저와 현재 유저 동일
 		if (user.equals(regularSchedule.getUser())) {
 			//삭제 되지 않은 정기 일정에 포함된 오늘 이후 일정들
-			List<ScheduleEntity> scheduleList = scheduleRepository.findAllByRegularScheduleIdAndDateAfter(regularId, date);
+			List<ScheduleEntity> scheduleList = scheduleRepository.findAllByRegularScheduleIdAndDateGreaterThanEqual(regularId, date);
 
 			for (ScheduleEntity schedule : scheduleList) {
 				//정기 일정 내의 일정 삭제
