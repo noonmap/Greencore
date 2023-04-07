@@ -20,6 +20,6 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 
 	//	@Query("SELECT feed FROM FeedEntity feed where feed.isDeleted = 'N' order by rand()")
 	//	List<FeedEntity> findByIsDeletedOrderByRandom(IsDeletedType isDeletedType, Pageable pageable);
-	List<FeedEntity> findByUserIdOrIsDeletedOrderByCreatedAtDesc(Long userId, IsDeletedType isDeletedType, Pageable pageable);
+	List<FeedEntity> findByUserIdAndIsDeletedOrderByCreatedAtDesc(Long userId, IsDeletedType isDeletedType, Pageable pageable);
 
 }
