@@ -72,4 +72,9 @@ public class FeedEntity extends CommonEntity {
 		this.likeCount--;
 	}
 
+
+	public String getFeedCode() {
+		return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+	}
+
 }
