@@ -127,7 +127,7 @@ export default function DiaryModal({
                   </div>
                 ) : null}
 
-                <input type='file' {...register('image')} />
+                <input type='file' {...register('image')} style={{ border: 'none', margin: '1rem' }} />
                 <input type='date' {...register('startDate')} />
                 <input type='text' {...register('title')} placeholder='관찰일지명' />
               </div>
