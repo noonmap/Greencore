@@ -101,7 +101,7 @@ export default function DiaryDetail() {
 
   // 뒤로가기
   const handleGoBack = () => {
-    router.back();
+    router.push(diary.diarySetId);
   };
 
   // 좋아요
