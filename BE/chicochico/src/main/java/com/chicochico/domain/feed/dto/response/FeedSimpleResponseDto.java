@@ -2,7 +2,6 @@ package com.chicochico.domain.feed.dto.response;
 
 
 import com.chicochico.common.code.FeedType;
-import com.chicochico.domain.feed.entity.DiaryEntity;
 import com.chicochico.domain.feed.entity.FeedEntity;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +28,8 @@ public class FeedSimpleResponseDto {
 
 	public static FeedSimpleResponseDto fromEntity(FeedEntity xx) {
 		FeedType feedType;
-		if (xx instanceof DiaryEntity) {
+
+		if (xx.getFeedCode().equals(FeedType.FEED_DIARY.name())) {
 			feedType = FeedType.FEED_DIARY;
 		} else {
 			feedType = FeedType.FEED_POST;
