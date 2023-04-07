@@ -82,7 +82,7 @@ export const deletePost = createAsyncThunk('deletePost', async (requestData: Del
         stopOnFocus: true,
         style: toastifyCSS.success,
       }).showToast();
-      router.push(`/home`);
+      router.push(`/`);
     } else {
       Toastify({
         text: message.DeletePostFail,
