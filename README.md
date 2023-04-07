@@ -518,6 +518,9 @@ handleCreateBtnClick
 ### ✔️ AI
 
 -   `Tensorflow`
+-   `Tensorflow JS`
+-   `MobileNet`
+-   `ImageNet`
 
 ### ✔️ Communication
 
