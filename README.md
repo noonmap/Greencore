@@ -121,10 +121,15 @@
 
 -   식물 관리 스케줄을 등록해 놓으면 때에 맞춰 알림이 간다.
 
+![Animation3](https://user-images.githubusercontent.com/109887404/230559148-3059c59f-65de-40da-ba4e-51bc62b42100.gif)
+
 ### :heavy_check_mark: 식물 병충해 검색
 
 -   상태가 좋지 않은 식물의 잎사귀 사진을 업로드하여 병충해 진단을 할 수 있다
+
 -   기능을 사용하기 위한 가이드라인을 제공한다
+
+![Animation4](https://user-images.githubusercontent.com/109887404/230559162-e0ea4528-70ed-455e-80d9-82398e08a6bc.gif)
 
 ### :heavy_check_mark: 식물 추천 피드
 
@@ -132,11 +137,15 @@
 
 -   추천 피드는 인기 일지, 같은 종의 식물을 키우는 사람들의 일지 등을 제공한다.
 
+![Animation-min](https://user-images.githubusercontent.com/109887404/230560074-f4f87dd1-a024-46d7-a3d9-576a22d67e3e.gif)
+
 ### :heavy_check_mark: 식물 가이드
 
 -   식물을 검색하여 정보 및 키우기 가이드를 제공한다.
 
 -   식물 이름, 식물 이미지 등으로 검색할 수 있다.
+
+![Animation2](https://user-images.githubusercontent.com/109887404/230559135-9af185f3-0a3d-47cc-863d-fafa3acf57c6.gif)
 
 <br/>
 <br/>
@@ -518,6 +527,9 @@ handleCreateBtnClick
 ### ✔️ AI
 
 -   `Tensorflow`
+-   `Tensorflow JS`
+-   `MobileNet`
+-   `ImageNet`
 
 ### ✔️ Communication
 
