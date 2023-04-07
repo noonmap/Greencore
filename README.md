@@ -76,13 +76,13 @@
 
 ### 프로젝트 기간
 
-- 기획 및 설계 : 23.02.20 ~ 23.02.26
-- 프로젝트 개발 : 23.02.27 ~ 23.04.07
+-   기획 및 설계 : 23.02.20 ~ 23.02.26
+-   프로젝트 개발 : 23.02.27 ~ 23.04.07
 
 ### 구성원
 
-- 백엔드 3명
-- 프론트엔드 3명
+-   백엔드 3명
+-   프론트엔드 3명
 
 <br/>
 <br/><br/>
@@ -107,36 +107,36 @@
 
 ### :heavy_check_mark: 식물 관찰일지
 
-- 사용자가 식물에 대한 관찰일지를 쓸 수 있다.
+-   사용자가 식물에 대한 관찰일지를 쓸 수 있다.
 
-- SNS 피드 형식으로 제공하여 다른 사용자들과 일지를 공유할 수 있다.
+-   SNS 피드 형식으로 제공하여 다른 사용자들과 일지를 공유할 수 있다.
 
-- 사용자는 하나의 관찰 일지에 여러 개의 일지를 추가할 수 있다.
+-   사용자는 하나의 관찰 일지에 여러 개의 일지를 추가할 수 있다.
 
 ### :heavy_check_mark: 식물 관리
 
-- 키우고 있는 식물에 대한 돌보기 스케줄링을 제공한다.
+-   키우고 있는 식물에 대한 돌보기 스케줄링을 제공한다.
 
-- 물주기, 분갈이, 햇빛 등등의 식물 관리 할 일을 표시한다.
+-   물주기, 분갈이, 햇빛 등등의 식물 관리 할 일을 표시한다.
 
-- 식물 관리 스케줄을 등록해 놓으면 때에 맞춰 알림이 간다.
+-   식물 관리 스케줄을 등록해 놓으면 때에 맞춰 알림이 간다.
 
 ### :heavy_check_mark: 식물 병충해 검색
 
-- 상태가 좋지 않은 식물의 잎사귀 사진을 업로드하여 병충해 진단을 할 수 있다
-- 기능을 사용하기 위한 가이드라인을 제공한다
+-   상태가 좋지 않은 식물의 잎사귀 사진을 업로드하여 병충해 진단을 할 수 있다
+-   기능을 사용하기 위한 가이드라인을 제공한다
 
 ### :heavy_check_mark: 식물 추천 피드
 
-- 협업 필터링을 기반으로 사용자에게 맞춤형 추천 피드를 제공한다.
+-   협업 필터링을 기반으로 사용자에게 맞춤형 추천 피드를 제공한다.
 
-- 추천 피드는 인기 일지, 같은 종의 식물을 키우는 사람들의 일지 등을 제공한다.
+-   추천 피드는 인기 일지, 같은 종의 식물을 키우는 사람들의 일지 등을 제공한다.
 
 ### :heavy_check_mark: 식물 가이드
 
-- 식물을 검색하여 정보 및 키우기 가이드를 제공한다.
+-   식물을 검색하여 정보 및 키우기 가이드를 제공한다.
 
-- 식물 이름, 식물 이미지 등으로 검색할 수 있다.
+-   식물 이름, 식물 이미지 등으로 검색할 수 있다.
 
 <br/>
 <br/>
@@ -476,49 +476,56 @@ handleCreateBtnClick
 
 ### ✔️ DB
 
-- `MySQL`
-- `Redis`
+-   `MySQL`
+-   `Redis`
+-   `Firebase`
 
 ### ✔️ Backend
 
-- `Spring Boot`
-- `Spring Security`
-- `Spring Data JPA`
-- `Spring Data Redis`
-- `Spring Boot Websocket`
-- `Swagger-ui`
-- `JWT`
-- `Gradle`
+-   `Spring Boot`
+-   `Spring Security`
+-   `Spring Data JPA`
+-   `Spring Data Redis`
+-   `Swagger-ui`
+-   `JWT`
+-   `Gradle`
+-   `JUnit`
+-   `Mocking`
+-   `Gorse`
 
 ### ✔️ Frontend
 
-- `Node JS`
-- `React JS`
-- `Next JS`
-- `typescript`
-- `TailWind`
-- `sass`
-- `Redux-toolkit`
-- `Sockjs`
-- `Toastify-js`
-- `firebase`
+-   `Node JS`
+-   `React JS`
+-   `Next JS`
+-   `typescript`
+-   `TailWind`
+-   `sass`
+-   `Redux-toolkit`
+-   `Sockjs`
+-   `Toastify-js`
 
 ### ✔️ Deploy
 
-- `AWS EC2`
-- `Ubuntu 20.04`
-- `Docker`
-- `Docker-compose`
-- `Nginx`
-- `Jenkins`
+-   `AWS EC2`
+-   `Ubuntu 20.04`
+-   `Docker`
+-   `Docker-compose`
+-   `Nginx`
+-   `Jenkins`
+-   `Certbot`
+
+### ✔️ AI
+
+-   `Tensorflow`
 
 ### ✔️ Communication
 
-- 형상 관리 - `Gitlab`
-- 이슈 및 스크럼 관리 - `Jira`
-- `Notion`
-- `Discord`
-- `Mattermost`
+-   형상 관리 - `Gitlab`
+-   이슈 및 스크럼 관리 - `Jira`
+-   `Notion`
+-   `Discord`
+-   `Mattermost`
 
 <br/><br/><br/>
 
