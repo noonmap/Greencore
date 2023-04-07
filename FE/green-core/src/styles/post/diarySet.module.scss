@@ -1,0 +1,53 @@
+.diaryAddBtn {
+	background-color: var(--thin-color);
+	color: var(--main-color);
+	min-width: 120px;
+}
+.diaryAddBtn:hover {
+	background-color: var(--main-color);
+	color: white;
+}
+
+.materialSymbolsOutlined {
+	font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+}
+
+.editPopUp {
+	width: 100px;
+	position: absolute;
+	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+	top: 0px;
+	left: 20px;
+	z-index: 99;
+}
+
+.editPopUp div:hover {
+	background-color: var(--thin-color);
+	cursor: pointer;
+}
+
+.title {
+	font-size: 1.5rem;
+	font-weight: var(--text-extra-bold);
+}
+
+.addBtn {
+	// position: fixed;
+	// width: 100px;
+	// bottom: 35px;
+	// margin-right: 35px;
+	// z-index: 999;
+	padding: 0.5rem;
+	font-size: 1rem;
+	font-weight: bold;
+	background: var(--main-color);
+	color: white;
+	border: 2px solid black;
+	border-radius: var(--border-radius-card);
+	cursor: pointer;
+	// color: black;
+	// height: 3rem;
+	// width: 3rem;
+
+	box-shadow: var(--box-shadow-card);
+}

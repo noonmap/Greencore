@@ -1,0 +1,79 @@
+server:
+  servlet:
+    context-path: /api
+    # file upload
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  #  profiles:
+  #    default: local
+  output:
+    ansi:
+      enabled: always
+
+  # MySQL
+  datasource:
+    driver-class-name: ${db.mysql.driver}
+    url: ${db.mysql.url}
+    username: ${db.mysql.username}
+    password: ${db.mysql.password}
+
+  # swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  # Mail ??
+  mail:
+    # Naver smtp server ??
+    host: smtp.naver.com
+    port: 465
+    username: ${auth.smtp.username}
+    password: ${auth.smtp.password}
+    properties:
+      debug: true
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+  # SERVER AUTO RELOAD
+  devtools:
+    livereload.enabled: true
+  freemarker:
+    cache: false
+  # JPA for auto reload
+  jpa:
+    show-sql: ${jpa.show.sql}
+    hibernate:
+      ddl-auto: create #${jpa.ddl.option}
+      naming:
+        # camelCase -> snake_case
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true #${jpa.ddl.defer-datasource-initialization} # dummy data 사용
+  sql:
+    init:
+      mode: always #${sql.init.mode} # sql파일로 init할 것인지 설정
+      schema-locations: classpath:/sql/schema.sql # schema init 사용
+      data-locations: classpath:/sql/plant_data.sql, classpath:/sql/post_data.sql, classpath:/sql/dummy_data.sql # dummy data 사용
+
+  # hibernate logging
+  logging:
+    level:
+      org.hibernate: info #${log.hibernate.level}
+
+# JWT Login
+token:
+  accesskey: ${jwt.accesskey}
+  refreshkey: ${jwt.refreshkey}
+  datakey: ${jwt.datakey}

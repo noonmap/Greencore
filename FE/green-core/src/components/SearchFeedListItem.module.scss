@@ -1,0 +1,10 @@
+.container:hover {
+	background-color: var(--thin-color);
+	border-radius: var(--border-radius);
+	cursor: pointer;
+}
+
+.img {
+	width: 100px;
+	height: 100px;
+}

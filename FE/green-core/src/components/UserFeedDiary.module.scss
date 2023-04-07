@@ -1,0 +1,11 @@
+.img {
+  width: 150px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+
+  transition: all 0.15s var(--timing-func);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

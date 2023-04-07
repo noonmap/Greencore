@@ -5,3 +5,5 @@
 **/.DS_Store
 **/env.properties
 **/.env
+**/firebaseAccountKey.json
+BE/chicochico/static/

@@ -1,0 +1,64 @@
+.container {
+	border-radius: var(--border-radius-card);
+	padding: 1.5rem 1.5rem 0.7rem 1.5rem;
+	// background: var(--thin-color);
+	// box-shadow: var(--box-shadow);
+	border: 1px solid var(--thin-color);
+	// box-shadow: inset 5px 5px 7px #9dc767, inset -5px -5px 7px #f5ffa1;
+	// background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(192, 255, 111, 1) 100%);
+}
+
+.profile {
+	// border-bottom: 1px solid var(--like-color);
+	// background: #ffffff;
+	// border-bottom: 1px solid var(--thin-color);
+	border-bottom: 1px solid var(--thin-color);
+}
+
+.nickname {
+	font-size: 1.2rem;
+	font-weight: var(--text-bold);
+}
+
+.introduction {
+	// color: var(--title-light-color);
+	// color: #000;
+	color: #fff;
+	font-size: 0.9rem;
+	font-weight: var(--text-bold);
+	padding: 0.65rem;
+	// border: 2px solid black;
+	// border: 1px solid var(--light-color);
+	// box-shadow: var(--box-shadow-input);
+
+	background-color: var(--main-color);
+	// background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgb(194, 239, 255) 100%);
+	border-radius: 0 var(--border-radius-card) var(--border-radius-card) var(--border-radius-card);
+}
+
+.follow {
+	cursor: pointer;
+	font-size: 0.9rem;
+	// padding: 0.6rem 1rem 0 1rem;
+	padding: 0.7rem;
+	transition: all 0.15s var(--timing-func);
+
+	&:hover {
+		background-color: var(--thin-color);
+		border-radius: 0 0 var(--border-radius-card) var(--border-radius-card);
+		// background: #ffffff;
+		// box-shadow: inset 5px 5px 10px #d9d9d9, inset -5px -5px 10px #ffffff;
+	}
+}
+
+.left {
+	// border-right: 1px solid rgb(194, 239, 255);
+}
+
+.image {
+	width: 100px;
+	height: 100px;
+	border-radius: 100%;
+	// border: 2px solid black;
+	// box-shadow: var(--box-shadow);
+}

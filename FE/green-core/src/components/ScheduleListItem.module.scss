@@ -1,0 +1,55 @@
+@mixin circle-background($size, $background-color) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  background-color: $background-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  // display: flex;
+  // border: 1px solid #d9d9d9;
+  border-radius: 1rem;
+  // width: 90%;
+  box-shadow: var(--box-shadow);
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.subContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.name {
+  font-size: 0.8rem;
+}
+
+.icon {
+  @include circle-background(40px, #f0f0f0);
+}
+
+.text {
+  margin-left: 1rem;
+  font-size: 1rem;
+  // width: 70%;
+  .done {
+    text-decoration: line-through;
+  }
+}
+
+.check {
+  border-radius: 50%;
+  // border: 1px solid #d9d9d9;
+  cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  // background-color: #f0f0f0;
+}

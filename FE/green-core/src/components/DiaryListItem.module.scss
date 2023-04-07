@@ -1,0 +1,14 @@
+.gradation {
+  height: 200px;
+  position: absolute;
+  bottom: 0px;
+  background: linear-gradient(to top, rgb(0, 0, 0), transparent 100%);
+  width: 100%;
+  // border-bottom-left-radius: 30px;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.materialSymbolsOutlined {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+}

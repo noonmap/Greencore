@@ -1,0 +1,33 @@
+.title {
+	font-size: 1.5rem;
+	font-weight: var(--text-extra-bold);
+}
+
+.image {
+	border-radius: var(--border-radius);
+	// border: 2px solid black;
+	border: 1px solid var(--thin-color);
+	box-shadow: var(--box-shadow-card);
+	margin-right: 1rem;
+}
+
+.bookmarkTitle {
+	width: 150px;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 1) 100%);
+	color: #fff;
+	padding: 1rem;
+	border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.bookmarkCount {
+	top: -8.5rem;
+}
+
+.bookmarkIcon {
+	transition: all 0.2s var(--timing-func);
+	color: var(--main-color);
+
+	&:hover {
+		color: var(--main-light-color);
+	}
+}
